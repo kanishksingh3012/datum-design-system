@@ -645,6 +645,31 @@ function renderComponentsPage(icons) {
       a11y: "Semantic content only - no ARIA role by default, since a generic container has no special semantics. A clickable card (not shown here) would need a real focusable element inside it, not an onclick on the div."
     })}`;
 
+  const dialogDemo = `
+    <div class="c-demo">
+      <div class="c-demo__row">
+        <button class="btn btn--secondary" id="demo-dialog-trigger">Open dialog</button>
+      </div>
+    </div>
+    <dialog class="dialog-c" id="demo-dialog" data-trigger="demo-dialog-trigger" aria-labelledby="demo-dialog-title">
+      <form method="dialog" class="dialog-c__form">
+        <h2 class="dialog-c__title" id="demo-dialog-title">Delete this item?</h2>
+        <p class="dialog-c__body">This can't be undone. The item will be permanently removed.</p>
+        <div class="dialog-c__actions">
+          <button class="btn btn--secondary" value="cancel">Cancel</button>
+          <button class="btn btn--danger" value="delete">Delete</button>
+        </div>
+      </form>
+    </dialog>
+    ${renderComponentDoc({
+      name: "Dialog",
+      purpose: "A focused, blocking overlay for a decision or a self-contained task - deliberately built last and carefully, since a broken focus trap is a real accessibility failure, not a cosmetic one.",
+      variants: "single style shown (a confirm dialog); the same structure works for any modal content",
+      states: "closed, open",
+      tokens: "color.bg.surface, radius.card, elevation.overlay, space.section, type.h3/body",
+      a11y: "Built on the native <dialog> element with .showModal() rather than a hand-rolled focus trap - the browser already implements focus trapping, Escape-to-close, and background inertness correctly, which is a smaller and more foolproof surface than reimplementing that logic in JS. Focus is explicitly saved before opening and restored to the trigger button on close (verified, not assumed). Does not close on backdrop click by default - accidental dismissal of a destructive confirmation is worse than requiring an explicit Cancel or Escape, so the safe behavior is the default rather than something bolted on for just the dangerous cases."
+    })}`;
+
   const selectDemo = `
     <div class="c-demo">
       <div class="c-demo__row c-demo__row--stack">
@@ -800,6 +825,9 @@ function renderComponentsPage(icons) {
 
     <h2 class="section-label">Navigation</h2>
     <div class="c-grid">${tabsDemo}</div>
+
+    <h2 class="section-label">Overlays</h2>
+    <div class="c-grid">${dialogDemo}</div>
 
     <h2 class="section-label">Feedback</h2>
     <div class="c-grid">${alertDemo}</div>
@@ -1046,6 +1074,13 @@ ${googleFonts}
   .progress-c{ height:8px; width:100%; background:var(--color-bg-surface); border-radius:999px; overflow:hidden; }
   .progress-c__fill{ height:100%; background:var(--color-bg-accent); border-radius:999px; transition:width var(--motion-normal) var(--motion-easing); }
 
+  .dialog-c{ border:none; padding:0; background:transparent; max-width:min(420px, calc(100vw - 2 * var(--space-default))); }
+  .dialog-c::backdrop{ background:rgba(0,0,0,.45); }
+  .dialog-c__form{ background:var(--color-bg-surface); border-radius:var(--radius-card); padding:var(--space-section); display:flex; flex-direction:column; gap:.75rem; box-shadow:var(--elevation-overlay); margin:0; }
+  .dialog-c__title{ font-size:var(--type-h3-size); font-weight:var(--type-h3-weight); line-height:var(--type-h3-lineHeight); color:var(--color-text-primary); margin:0; }
+  .dialog-c__body{ font-size:var(--type-body-size); color:var(--color-text-secondary); line-height:var(--type-body-lineHeight); margin:0; }
+  .dialog-c__actions{ display:flex; justify-content:flex-end; gap:.6rem; margin-top:.5rem; }
+
   .badge-c{ display:inline-flex; align-items:center; gap:.3rem; font-size:var(--type-label-size); font-weight:var(--type-label-weight); padding:.15rem .55rem; border-radius:999px; line-height:1.5; }
   .badge-c--neutral{ background:var(--color-bg-surface); color:var(--color-text-secondary); }
   .badge-c--accent{ background:var(--color-bg-accent); color:var(--color-text-onAccent); }
@@ -1249,6 +1284,21 @@ ${googleFonts}
       toast.style.transition = "opacity " + "var(--motion-fast, 120ms)";
       toast.style.opacity = "0";
       setTimeout(function(){ toast.style.visibility = "hidden"; }, 150);
+    });
+  });
+
+  document.querySelectorAll(".dialog-c").forEach(function(dialog){
+    var triggerId = dialog.getAttribute("data-trigger");
+    var trigger = triggerId ? document.getElementById(triggerId) : null;
+    var opener = null;
+    if (trigger) {
+      trigger.addEventListener("click", function(){
+        opener = document.activeElement;
+        dialog.showModal();
+      });
+    }
+    dialog.addEventListener("close", function(){
+      if (opener && typeof opener.focus === "function") opener.focus();
     });
   });
 })();

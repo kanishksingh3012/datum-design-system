@@ -169,6 +169,34 @@ Sourced against Material Design 3, IBM Carbon, and Atlassian Design System's rea
 
 ---
 
+## Dialog
+
+**Problem**: A focused, blocking overlay for a decision or self-contained task — built deliberately last, and carefully, since a broken focus trap is a real accessibility failure, not a cosmetic bug.
+
+**Existing patterns checked**: The shadcn research from earlier in this project flagged the real distinction — use `AlertDialog`, not a generic `Dialog`, for destructive confirmation, specifically so it isn't dismissible by an accidental backdrop click. Rather than build two components, we made the safe behavior (no backdrop-click-dismiss) the *default* for the one Dialog component, so there's no separate "careful" variant to remember to use — every instance is safe by default.
+
+**Implementation choice**: Built on the native `<dialog>` element with `.showModal()`, not a hand-rolled focus trap. The browser already implements focus trapping (confirmed via `dialog.matches(':modal')` returning true when open — that's what actually activates the trap, not just visual styling), Escape-to-close, and background inertness correctly. Reimplementing that in JS is a bigger, riskier surface for the exact same result.
+
+**API**
+| Property | Type | Default | Description |
+|---|---|---|---|
+| `title` | string | — | — |
+| `body` | string | — | — |
+| Trigger button | — | — | Wired via a `data-trigger="<dialog id>"` attribute |
+
+**States**: closed, open.
+
+**Tokens used**: `color.bg.surface`, `radius.card`, `elevation.overlay`, `space.section`, `type.h3`/`type.body`.
+
+**Accessibility — everything below was actually tested, not assumed**:
+- Focus moves into the dialog on open (`document.activeElement` inside the dialog — verified).
+- Tab/Shift+Tab stay trapped inside while open — this is the native `:modal` state behavior, confirmed active.
+- Backdrop click does **not** close it (verified with a synthetic click on the dialog element) — the safe default described above.
+- The Cancel/Delete buttons close it via native `<form method="dialog">` semantics, and `dialog.returnValue` correctly captures which button was pressed — no custom close-handling JS needed for that part.
+- Focus is explicitly saved before opening and restored to the trigger button after close — verified by checking `document.activeElement === trigger` post-close, not just assumed from the native behavior.
+
+---
+
 ## Select
 
 **Problem**: Choosing one option from a list too long to show as radio buttons.
@@ -345,8 +373,7 @@ Sourced against Material Design 3, IBM Carbon, and Atlassian Design System's rea
 
 ## Cross-cutting notes
 
-- **Naming**: every class is scoped with a `-c` suffix or unique prefix (`.badge-c`, `.card-c`, `.select-c`, `.avatar-c`, `.tabs-c`, `.alert-c`, `.toast-c`, `.skeleton-c`, `.progress-c`, `.btn`, `.field`, `.checkbox`, `.radio`, `.switch`, `.icon-btn`, `[data-tooltip]`) to avoid colliding with the Token Atlas dashboard's own chrome classes (`.card`, `.badge`, `.tabs`), which style a completely different thing.
-- **Eighteen components total now**, across five sections: Actions (Button, Icon Button, Tooltip), Forms (Text Field, Textarea, Select, Checkbox, Radio Group, Switch), Navigation (Tabs), Feedback (Alert, Toast, Skeleton, Progress bar), Display (Badge, Avatar, Card).
-- **Deliberately not built yet**: Dialog/Modal. It needs a real focus-trap implementation (trap focus while open, restore it on close) to be genuinely accessible rather than just visually correct — that's worth doing carefully as its own pass, not folding into a batch of simpler components.
+- **Naming**: every class is scoped with a `-c` suffix or unique prefix (`.badge-c`, `.card-c`, `.select-c`, `.avatar-c`, `.tabs-c`, `.alert-c`, `.toast-c`, `.skeleton-c`, `.progress-c`, `.dialog-c`, `.btn`, `.field`, `.checkbox`, `.radio`, `.switch`, `.icon-btn`, `[data-tooltip]`) to avoid colliding with the Token Atlas dashboard's own chrome classes (`.card`, `.badge`, `.tabs`), which style a completely different thing.
+- **Nineteen components total now**, across six sections: Actions (Button, Icon Button, Tooltip), Forms (Text Field, Textarea, Select, Checkbox, Radio Group, Switch), Navigation (Tabs), Overlays (Dialog), Feedback (Alert, Toast, Skeleton, Progress bar), Display (Badge, Avatar, Card).
 - **Touch targets**: Button (default), Icon button, and Text field all hit `interaction.minTarget` (44px) directly. Checkbox reaches it through the label's padding, not the visual box — matching how every real system we checked handles the same tension.
 - **Nothing here is React/Vue/etc.** — deliberately. That's a framework decision for when the person who owns this system is actually present to make it, not something to lock in overnight.
