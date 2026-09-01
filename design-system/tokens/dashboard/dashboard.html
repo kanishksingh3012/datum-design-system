@@ -1,0 +1,1453 @@
+<title>Token atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>:root[data-theme="minimal"] {
+  color-scheme: light dark;
+  --color-bg-page: light-dark(#F8F8F7, #282825);
+  --color-bg-surface: light-dark(#EEEEEC, #42423D);
+  --color-bg-accent: #1E69B3;
+  --color-bg-danger: #B02121;
+  --color-bg-dangerSubtle: light-dark(#F9F5F5, #381414);
+  --color-bg-warning: #6B4815;
+  --color-bg-warningSubtle: light-dark(#FAF8F5, #3C2B11);
+  --color-bg-success: #425F21;
+  --color-bg-successSubtle: light-dark(#F7F9F6, #273617);
+  --color-bg-disabled: light-dark(#EEEEEC, #42423D);
+  --color-text-primary: light-dark(#282825, #F8F8F7);
+  --color-text-secondary: light-dark(#585851, #BFBFBA);
+  --color-text-onAccent: #F8F8F7;
+  --color-text-onDanger: #F8F8F7;
+  --color-text-onWarning: #F8F8F7;
+  --color-text-onSuccess: #F8F8F7;
+  --color-text-danger: light-dark(#B02121, #DE9B9B);
+  --color-text-warning: light-dark(#946114, #E5AC57);
+  --color-text-success: light-dark(#425F21, #A2D16B);
+  --color-text-disabled: light-dark(#A2A29A, #85857A);
+  --color-border-default: light-dark(#DADAD7, #585851);
+  --color-border-strong: light-dark(#A2A29A, #85857A);
+  --color-border-focus: light-dark(#1E69B3, #609EDC);
+  --color-border-danger: light-dark(#B02121, #DE9B9B);
+  --color-border-disabled: light-dark(#DADAD7, #585851);
+  --font-display: 'Geist', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: 'Geist', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: 'Geist Mono', 'SF Mono', Menlo, Consolas, monospace;
+  --space-compact: 8px;
+  --space-default: 16px;
+  --space-section: 32px;
+  --radius-base: 8px;
+  --radius-control: var(--radius-base);
+  --radius-card: calc(var(--radius-base) * 2);
+  --icon-inline: 16px;
+  --icon-control: 24px;
+  --grid-gutter: clamp(16px, 2vw, 24px);
+  --grid-margin: clamp(16px, 5vw, 64px);
+  --grid-container: 1280px;
+  --interaction-minTarget: 44px;
+  --shape-navbar: rectangle;
+  --elevation-raised: 0 1px 2px rgba(0,0,0,0.08);
+  --elevation-overlay: 0 4px 12px rgba(0,0,0,0.12);
+  --motion-fast: 120ms;
+  --motion-normal: 200ms;
+  --motion-slow: 320ms;
+  --motion-easing: cubic-bezier(.4,0,.2,1);
+  --type-display-size: 48px;
+  --type-display-weight: 700;
+  --type-display-lineHeight: 1.2;
+  --type-h1-size: 40px;
+  --type-h1-weight: 700;
+  --type-h1-lineHeight: 1.2;
+  --type-h2-size: 32px;
+  --type-h2-weight: 600;
+  --type-h2-lineHeight: 1.3;
+  --type-h3-size: 20px;
+  --type-h3-weight: 600;
+  --type-h3-lineHeight: 1.3;
+  --type-body-size: 16px;
+  --type-body-weight: 400;
+  --type-body-lineHeight: 1.5;
+  --type-bodySmall-size: 14px;
+  --type-bodySmall-weight: 400;
+  --type-bodySmall-lineHeight: 1.5;
+  --type-caption-size: 12px;
+  --type-caption-weight: 400;
+  --type-caption-lineHeight: 1.5;
+  --type-label-size: 12px;
+  --type-label-weight: 500;
+  --type-label-lineHeight: 1.2;
+}
+</style>
+<style>
+  :root{
+    color-scheme: light;
+    --dash-bg:#FBFBF9; --dash-surface:#FFFFFF; --dash-border:#E7E4DD;
+    --dash-text:#1C1B19; --dash-text-muted:#6E6B63; --dash-accent:#4A5573;
+    --dash-good:#3B6D11; --dash-good-bg:#EAF3DE; --dash-bad:#A32D2D; --dash-bad-bg:#FCEBEB;
+    --dash-shadow: 0 1px 2px rgba(20,20,18,.05), 0 1px 1px rgba(20,20,18,.03);
+  }
+  *{ box-sizing:border-box; }
+  body{ background:var(--dash-bg); color:var(--dash-text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; -webkit-font-smoothing:antialiased; }
+  .wrap{ max-width:1080px; margin:0 auto; padding:2.5rem 1.5rem 5rem; }
+  header{ display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem; margin-bottom:2rem; padding-bottom:1.8rem; border-bottom:1px solid var(--dash-border); }
+  .eyebrow{ font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.09em; color:var(--dash-accent); margin:0 0 .5rem; }
+  h1{ font-size:28px; font-weight:600; letter-spacing:-.015em; margin:0 0 .6rem; }
+  .header__desc{ font-size:13.5px; line-height:1.6; color:var(--dash-text-muted); max-width:46ch; margin:0; }
+  .timestamp{ font-size:11px; color:var(--dash-text-muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .controls-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.8rem; margin-bottom:1.4rem; }
+  .page-switcher{ display:flex; gap:1.6rem; margin-bottom:2rem; border-bottom:1px solid var(--dash-border); }
+  .page-switcher__btn{ font:inherit; font-size:14px; font-weight:500; padding:0 0 .8rem; background:none; border:none; border-bottom:2px solid transparent; color:var(--dash-text-muted); cursor:pointer; margin-bottom:-1px; }
+  .page-switcher__btn.is-active{ color:var(--dash-text); font-weight:600; border-bottom-color:var(--dash-accent); }
+  .tabs{ display:flex; gap:.5rem; flex-wrap:wrap; }
+  .tab{ font:inherit; font-size:13px; font-weight:500; padding:.5rem 1rem; border-radius:999px; border:1px solid var(--dash-border); background:var(--dash-surface); color:var(--dash-text-muted); cursor:pointer; }
+  .tab.is-active{ background:var(--dash-accent); border-color:var(--dash-accent); color:#FFFFFF; }
+  .badge{ display:inline-flex; align-items:center; gap:.4rem; font-size:12.5px; font-weight:600; padding:.35rem .75rem; border-radius:999px; margin-bottom:1.6rem; }
+  .badge.is-good{ background:var(--dash-good-bg); color:var(--dash-good); }
+  .badge.is-bad{ background:var(--dash-bad-bg); color:var(--dash-bad); }
+  .missing-list{ font-size:12px; color:var(--dash-bad); margin:0 0 1.4rem; }
+  .notice{ font-size:13px; color:var(--dash-text-muted); background:var(--dash-surface); border:1px dashed var(--dash-border); border-radius:10px; padding:1rem; }
+  .section-label{ font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--dash-text-muted); margin:2.4rem 0 1rem; padding-top:1.8rem; border-top:1px solid var(--dash-border); }
+  .section-label--first{ margin-top:0; padding-top:0; border-top:0; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1.2rem; margin-bottom:1.2rem; }
+  .card{ background:var(--dash-surface); border:1px solid var(--dash-border); border-radius:14px; padding:1.25rem 1.35rem; box-shadow:var(--dash-shadow); }
+  .card h3{ font-size:13px; font-weight:600; letter-spacing:-.005em; margin:0 0 .9rem; }
+  .card__sub{ font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--dash-text-muted); margin:.9rem 0 .5rem; }
+  .swatch-grid{ display:flex; flex-direction:column; gap:.6rem; }
+  .swatch{ display:grid; grid-template-columns:20px auto 1fr auto; align-items:center; gap:.5rem; font-size:12px; }
+  .swatch__color{ width:20px; height:20px; border-radius:5px; border:1px solid var(--dash-border); }
+  .swatch__label{ color:var(--dash-text); }
+  .swatch__var{ color:var(--dash-text-muted); font-size:11px; }
+  .swatch__value{ color:var(--dash-text-muted); font-size:11px; font-variant-numeric:tabular-nums; text-align:right; }
+  .type-block{ display:flex; flex-direction:column; gap:.35rem; padding:.6rem 0; border-bottom:1px solid var(--dash-border); }
+  .type-block:last-child{ border-bottom:0; }
+  .type-block__label{ font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--dash-text-muted); }
+  .type-block__sample{ margin:0; color:var(--dash-text); }
+  .scale-list{ display:flex; flex-direction:column; gap:.4rem; }
+  .scale-row{ display:grid; grid-template-columns:90px 1fr 50px; align-items:center; gap:.5rem; font-size:11px; color:var(--dash-text-muted); }
+  .scale-row__bar{ height:8px; background:var(--dash-accent); border-radius:3px; }
+  .kv-list{ display:flex; flex-direction:column; gap:.4rem; }
+  .kv-row{ display:flex; justify-content:space-between; gap:.5rem; font-size:12px; }
+  .kv-row code{ color:var(--dash-text-muted); }
+  .radius-list{ display:flex; flex-wrap:wrap; gap:1rem; }
+  .radius-item{ display:flex; flex-direction:column; align-items:center; gap:.4rem; font-size:10.5px; color:var(--dash-text-muted); width:100px; }
+  .radius-item__box{ width:48px; height:48px; background:var(--dash-accent); }
+  .icon-list{ display:flex; flex-direction:column; gap:.6rem; }
+  .icon-row{ display:flex; align-items:center; gap:.9rem; font-size:11px; color:var(--dash-text-muted); }
+  .icon-row__label{ width:150px; flex:0 0 auto; }
+  .icon-row__glyphs{ display:flex; gap:.7rem; }
+  .icon-glyph{ display:inline-flex; color:var(--dash-text); }
+  .bp-list{ display:flex; gap:.5rem; flex-wrap:wrap; }
+  .bp-chip{ font-size:10.5px; text-align:center; line-height:1.4; color:var(--dash-text-muted); border:1px solid var(--dash-border); border-radius:8px; padding:.4rem .6rem; }
+  .bp-chip.is-active{ border-color:var(--dash-accent); color:var(--dash-text); background:var(--dash-good-bg); }
+  .components-placeholder{ margin-top:1.4rem; font-size:12.5px; color:var(--dash-text-muted); border-top:1px solid var(--dash-border); padding-top:1.2rem; }
+  .elevation-list{ display:flex; gap:1.6rem; flex-wrap:wrap; }
+  .elevation-item{ display:flex; flex-direction:column; align-items:center; gap:.5rem; font-size:11px; color:var(--dash-text-muted); }
+  .elevation-item__box{ width:64px; height:64px; border-radius:10px; background:var(--dash-surface); }
+  .motion-demo{ display:block; width:28px; height:28px; margin-top:.7rem; border-radius:8px; background:var(--dash-accent); transition:transform var(--motion-normal, 200ms) var(--motion-easing, ease); }
+  .motion-demo:hover{ transform:translateX(48px); }
+  .type-block__meta{ display:flex; gap:.9rem; font-size:11px; color:var(--dash-text-muted); font-variant-numeric:tabular-nums; }
+  .color-scale-list{ display:flex; flex-direction:column; gap:.55rem; }
+  .color-scale__row{ display:grid; grid-template-columns:70px 1fr; align-items:center; gap:.6rem; }
+  .color-scale__label{ font-size:11px; color:var(--dash-text-muted); text-transform:capitalize; }
+  .color-scale__strip{ display:flex; gap:3px; }
+  .color-scale__chip{ width:24px; height:24px; border-radius:4px; border:1px solid var(--dash-border); flex:0 0 auto; }
+  .mode-toggle{ display:flex; gap:.3rem; }
+  .mode-toggle button{ font:inherit; font-size:12px; padding:.35rem .7rem; border-radius:999px; border:1px solid var(--dash-border); background:var(--dash-surface); color:var(--dash-text-muted); cursor:pointer; }
+  .mode-toggle button.is-active{ background:var(--dash-text); border-color:var(--dash-text); color:var(--dash-bg); }
+
+  .components-intro{ max-width:64ch; margin-bottom:1.6rem; }
+  .c-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1.4rem; margin-bottom:1.4rem; align-items:start; }
+  @media (max-width: 720px){ .c-grid{ grid-template-columns:1fr; } }
+  .c-demo{ background:var(--color-bg-page,var(--dash-bg)); border:1px solid var(--dash-border); border-radius:14px; padding:1.5rem; display:flex; flex-direction:column; gap:1rem; }
+  .c-demo__row{ display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; }
+  .c-demo__row--stack{ flex-direction:column; align-items:flex-start; gap:1rem; width:100%; }
+  .c-demo__row--cards{ align-items:stretch; }
+  .c-doc{ background:var(--dash-surface); border:1px solid var(--dash-border); border-radius:14px; padding:1.25rem 1.35rem; box-shadow:var(--dash-shadow); }
+  .c-doc h3{ font-size:13px; font-weight:600; margin:0 0 .5rem; color:var(--dash-text); }
+  .c-doc__purpose{ font-size:12.5px; line-height:1.55; color:var(--dash-text-muted); margin:0 0 .9rem; }
+  .c-doc__list{ margin:0; display:flex; flex-direction:column; gap:.55rem; }
+  .c-doc__list dt{ font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--dash-text-muted); margin:0; }
+  .c-doc__list dd{ font-size:12px; line-height:1.5; color:var(--dash-text); margin:.15rem 0 0; }
+
+  /* --- component reference implementations: styled entirely from design-system tokens, not dashboard chrome --- */
+  .btn{ display:inline-flex; align-items:center; justify-content:center; gap:.5rem; font-family:var(--font-body); font-weight:500; font-size:var(--type-body-size); border-radius:var(--radius-control); border:1px solid transparent; cursor:pointer; min-height:var(--interaction-minTarget); padding:0 var(--space-default); transition:filter var(--motion-fast) var(--motion-easing), background var(--motion-fast) var(--motion-easing), transform var(--motion-fast) var(--motion-easing); }
+  .btn:focus-visible{ outline:2px solid var(--color-border-focus); outline-offset:2px; }
+  .btn:active:not(:disabled){ transform:scale(.98); }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
+  .btn--sm{ min-height:36px; padding:0 var(--space-compact); font-size:var(--type-caption-size); }
+  .btn--primary{ background:var(--color-bg-accent); color:var(--color-text-onAccent); }
+  .btn--primary:hover:not(:disabled){ filter:brightness(0.92); }
+  .btn--secondary{ background:transparent; border-color:var(--color-border-strong); color:var(--color-text-primary); }
+  .btn--secondary:hover:not(:disabled){ background:var(--color-bg-surface); }
+  .btn--ghost{ background:transparent; color:var(--color-text-primary); }
+  .btn--ghost:hover:not(:disabled){ background:var(--color-bg-surface); }
+  .btn--danger{ background:var(--color-bg-danger); color:var(--color-text-onDanger); }
+  .btn--danger:hover:not(:disabled){ filter:brightness(0.92); }
+  .btn__spinner{ width:14px; height:14px; border-radius:50%; border:2px solid currentColor; border-top-color:transparent; display:inline-block; animation:btn-spin var(--motion-slow) linear infinite; }
+  @keyframes btn-spin{ to{ transform:rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce){ .btn__spinner{ animation-duration:1.4s; } }
+
+  .icon-btn{ display:inline-flex; align-items:center; justify-content:center; width:var(--interaction-minTarget); height:var(--interaction-minTarget); border-radius:var(--radius-control); border:1px solid transparent; background:transparent; color:var(--color-text-primary); cursor:pointer; transition:background var(--motion-fast) var(--motion-easing); }
+  .icon-btn svg{ width:var(--icon-control); height:var(--icon-control); }
+  .icon-btn:hover:not(:disabled){ background:var(--color-bg-surface); }
+  .icon-btn:focus-visible{ outline:2px solid var(--color-border-focus); outline-offset:2px; }
+  .icon-btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+  .field{ display:flex; flex-direction:column; gap:.4rem; max-width:280px; width:100%; }
+  .field__label{ font-size:var(--type-label-size); font-weight:var(--type-label-weight); color:var(--color-text-primary); }
+  .field__input{ font-family:var(--font-body); font-size:var(--type-body-size); color:var(--color-text-primary); background:var(--color-bg-page); border:1px solid var(--color-border-default); border-radius:var(--radius-control); padding:0 var(--space-default); min-height:var(--interaction-minTarget); transition:border-color var(--motion-fast) var(--motion-easing); }
+  .field__input::placeholder{ color:var(--color-text-disabled); }
+  .field__input:hover:not(:disabled){ border-color:var(--color-border-strong); }
+  .field__input:focus-visible{ outline:2px solid var(--color-border-focus); outline-offset:1px; border-color:var(--color-border-focus); }
+  .field__input:disabled{ opacity:.5; cursor:not-allowed; }
+  .field__help{ font-size:var(--type-caption-size); color:var(--color-text-secondary); }
+  .field--error .field__input{ border-color:var(--color-border-danger); }
+  .field--error .field__help{ color:var(--color-text-danger); }
+
+  .checkbox{ position:relative; display:inline-flex; align-items:center; gap:.6rem; cursor:pointer; min-height:var(--interaction-minTarget); }
+  .checkbox input{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  .checkbox__box{ width:18px; height:18px; flex:0 0 auto; border-radius:calc(var(--radius-base) * 0.5); border:1.5px solid var(--color-border-strong); background:var(--color-bg-page); display:inline-flex; align-items:center; justify-content:center; transition:background var(--motion-fast) var(--motion-easing), border-color var(--motion-fast) var(--motion-easing); }
+  .checkbox__box svg{ width:13px; height:13px; color:var(--color-text-onAccent); opacity:0; transition:opacity var(--motion-fast) var(--motion-easing); }
+  .checkbox input:checked ~ .checkbox__box{ background:var(--color-bg-accent); border-color:var(--color-bg-accent); }
+  .checkbox input:checked ~ .checkbox__box svg{ opacity:1; }
+  .checkbox input:focus-visible ~ .checkbox__box{ outline:2px solid var(--color-border-focus); outline-offset:2px; }
+  .checkbox input:disabled ~ .checkbox__box{ opacity:.5; }
+  .checkbox__label{ font-size:var(--type-body-size); color:var(--color-text-primary); }
+
+  .field__input--textarea{ min-height:96px; padding:var(--space-compact) var(--space-default); resize:vertical; font-family:var(--font-body); font-size:var(--type-body-size); color:var(--color-text-primary); }
+
+  .radio{ position:relative; display:inline-flex; align-items:center; gap:.6rem; cursor:pointer; min-height:var(--interaction-minTarget); }
+  .radio input{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  .radio__circle{ width:18px; height:18px; flex:0 0 auto; border-radius:50%; border:1.5px solid var(--color-border-strong); background:var(--color-bg-page); position:relative; transition:border-color var(--motion-fast) var(--motion-easing); }
+  .radio__circle::after{ content:""; position:absolute; inset:4px; border-radius:50%; background:var(--color-bg-accent); opacity:0; transition:opacity var(--motion-fast) var(--motion-easing); }
+  .radio input:checked ~ .radio__circle{ border-color:var(--color-bg-accent); }
+  .radio input:checked ~ .radio__circle::after{ opacity:1; }
+  .radio input:focus-visible ~ .radio__circle{ outline:2px solid var(--color-border-focus); outline-offset:2px; }
+  .radio input:disabled ~ .radio__circle{ opacity:.5; }
+
+  .switch{ position:relative; display:inline-flex; align-items:center; gap:.6rem; cursor:pointer; min-height:var(--interaction-minTarget); }
+  .switch input{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  .switch__track{ width:38px; height:22px; flex:0 0 auto; border-radius:999px; background:var(--color-border-strong); position:relative; transition:background var(--motion-fast) var(--motion-easing); display:inline-block; }
+  .switch__thumb{ position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:var(--color-bg-page); transition:transform var(--motion-normal) var(--motion-easing); }
+  .switch input:checked ~ .switch__track{ background:var(--color-bg-accent); }
+  .switch input:checked ~ .switch__track .switch__thumb{ transform:translateX(16px); }
+  .switch input:focus-visible ~ .switch__track{ outline:2px solid var(--color-border-focus); outline-offset:2px; }
+  .switch input:disabled ~ .switch__track{ opacity:.5; }
+
+  .select-wrap{ position:relative; }
+  .select-c{ appearance:none; -webkit-appearance:none; width:100%; padding-right:calc(var(--space-default) + 20px); cursor:pointer; }
+  .select-c:disabled{ cursor:not-allowed; }
+  .select-c__chevron{ position:absolute; right:var(--space-default); top:50%; transform:translateY(-50%) rotate(90deg); width:12px; height:12px; color:var(--color-text-secondary); pointer-events:none; }
+  .select-c__chevron svg{ width:100%; height:100%; }
+
+  .avatar-c{ display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; background:var(--color-bg-accent); color:var(--color-text-onAccent); font-family:var(--font-body); font-size:var(--type-label-size); font-weight:var(--type-label-weight); flex:0 0 auto; object-fit:cover; }
+  .avatar-c--sm{ width:28px; height:28px; font-size:10px; }
+
+  .tabs-c{ display:flex; gap:1.6rem; border-bottom:1px solid var(--color-border-default); }
+  .tabs-c__tab{ font-family:var(--font-body); font-size:var(--type-body-size); font-weight:500; padding:0 0 var(--space-compact); background:none; border:none; border-bottom:2px solid transparent; color:var(--color-text-secondary); cursor:pointer; margin-bottom:-1px; min-height:var(--interaction-minTarget); transition:color var(--motion-fast) var(--motion-easing), border-color var(--motion-fast) var(--motion-easing); }
+  .tabs-c__tab.is-active{ color:var(--color-text-primary); border-bottom-color:var(--color-bg-accent); font-weight:600; }
+  .tabs-c__tab:focus-visible{ outline:2px solid var(--color-border-focus); outline-offset:2px; }
+  .tabs-c__tab:disabled{ opacity:.5; cursor:not-allowed; }
+
+  .alert-c{ display:flex; flex-direction:column; gap:.3rem; padding:var(--space-default); border-radius:0; border-left:3px solid; }
+  .alert-c--danger{ background:var(--color-bg-dangerSubtle); border-left-color:var(--color-border-danger); }
+  .alert-c--warning{ background:var(--color-bg-warningSubtle); border-left-color:var(--color-text-warning); }
+  .alert-c--success{ background:var(--color-bg-successSubtle); border-left-color:var(--color-text-success); }
+  .alert-c__title{ font-size:var(--type-body-size); font-weight:600; color:var(--color-text-primary); margin:0; }
+  .alert-c__body{ font-size:var(--type-bodySmall-size); margin:0; color:var(--color-text-secondary); }
+
+  .c-demo__hint{ font-size:12.5px; color:var(--dash-text-muted); margin:0; }
+
+  [data-tooltip]{ position:relative; }
+  [data-tooltip]::after{ content:attr(data-tooltip); position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%) translateY(4px); background:var(--color-text-primary); color:var(--color-bg-page); font-size:var(--type-caption-size); font-weight:500; padding:.3rem .6rem; border-radius:calc(var(--radius-base) * 0.5); white-space:nowrap; pointer-events:none; opacity:0; transition:opacity var(--motion-fast) var(--motion-easing), transform var(--motion-fast) var(--motion-easing); z-index:10; }
+  [data-tooltip]:hover::after, [data-tooltip]:focus-visible::after{ opacity:1; transform:translateX(-50%) translateY(0); }
+  @media (prefers-reduced-motion: reduce){ [data-tooltip]::after{ transition:none; } }
+
+  .toast-c{ display:inline-flex; align-items:center; gap:.75rem; background:var(--color-text-primary); color:var(--color-bg-page); padding:.7rem 1rem; border-radius:var(--radius-control); box-shadow:var(--elevation-overlay); font-size:var(--type-bodySmall-size); }
+  .toast-c__dismiss{ background:none; border:none; color:inherit; opacity:.7; cursor:pointer; display:inline-flex; padding:0; }
+  .toast-c__dismiss svg{ width:14px; height:14px; }
+  .toast-c__dismiss:hover{ opacity:1; }
+
+  .skeleton-c{ background:var(--color-bg-surface); border-radius:var(--radius-control); animation:skeleton-pulse 1.6s ease-in-out infinite; }
+  .skeleton-c--text{ height:14px; }
+  .skeleton-c--avatar{ width:40px; height:40px; border-radius:50%; }
+  @keyframes skeleton-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.45; } }
+  @media (prefers-reduced-motion: reduce){ .skeleton-c{ animation-duration:3.2s; } }
+
+  .progress-c{ height:8px; width:100%; background:var(--color-bg-surface); border-radius:999px; overflow:hidden; }
+  .progress-c__fill{ height:100%; background:var(--color-bg-accent); border-radius:999px; transition:width var(--motion-normal) var(--motion-easing); }
+
+  .badge-c{ display:inline-flex; align-items:center; gap:.3rem; font-size:var(--type-label-size); font-weight:var(--type-label-weight); padding:.15rem .55rem; border-radius:999px; line-height:1.5; }
+  .badge-c--neutral{ background:var(--color-bg-surface); color:var(--color-text-secondary); }
+  .badge-c--accent{ background:var(--color-bg-accent); color:var(--color-text-onAccent); }
+  .badge-c--danger{ background:var(--color-bg-danger); color:var(--color-text-onDanger); }
+  .badge-c--warning{ background:var(--color-bg-warning); color:var(--color-text-onWarning); }
+  .badge-c--success{ background:var(--color-bg-success); color:var(--color-text-onSuccess); }
+
+  .card-c{ background:var(--color-bg-surface); border:1px solid var(--color-border-default); border-radius:var(--radius-card); padding:var(--space-section); flex:1; }
+  .card-c--elevated{ border:none; box-shadow:var(--elevation-raised); }
+  .card-c__title{ font-size:var(--type-h3-size); font-weight:var(--type-h3-weight); line-height:var(--type-h3-lineHeight); color:var(--color-text-primary); margin:0 0 .5rem; }
+  .card-c__body{ font-size:var(--type-body-size); color:var(--color-text-secondary); line-height:var(--type-body-lineHeight); margin:0; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Design system</p>
+      <h1>Token atlas</h1>
+      <p class="header__desc">Live, generated reference for every token and component in the system - regenerated from the real files, never hand-typed.</p>
+    </div>
+    <span class="timestamp">generated 2026-08-30T17:19:19.879Z</span>
+  </header>
+
+  <div class="controls-row">
+    <div class="tabs" role="tablist">
+      <button class="tab is-active" data-theme="minimal" data-built="true">
+        Minimal &amp; neutral
+      </button></div>
+    <div class="mode-toggle" role="group" aria-label="Preview color mode">
+      <button data-mode="light dark">Auto</button>
+      <button data-mode="light">Light</button>
+      <button data-mode="dark">Dark</button>
+    </div>
+  </div>
+
+  <div class="page-switcher" role="tablist" aria-label="Section">
+    <button class="page-switcher__btn is-active" data-page="tokens">Tokens</button>
+    <button class="page-switcher__btn" data-page="components">Components</button>
+  </div>
+
+  <div id="notice" class="notice" hidden></div>
+
+  <div id="page-tokens">
+    <div id="preview">
+      <div id="coverage-badge" class="badge"></div>
+      <ul id="missing-list" class="missing-list" hidden></ul>
+
+      <h2 class="section-label section-label--first">Color</h2>
+      <div class="grid">
+        
+    <div class="card">
+      <h3>Color scale</h3>
+      <p class="card__sub">Primitives (theme-independent, 10-step)</p>
+      <div class="color-scale-list">
+        <div class="color-scale__row">
+          <span class="color-scale__label">gray</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F8F8F7" title="gray.50 - #F8F8F7"></span><span class="color-scale__chip" style="background:#EEEEEC" title="gray.100 - #EEEEEC"></span><span class="color-scale__chip" style="background:#DADAD7" title="gray.200 - #DADAD7"></span><span class="color-scale__chip" style="background:#BFBFBA" title="gray.300 - #BFBFBA"></span><span class="color-scale__chip" style="background:#A2A29A" title="gray.400 - #A2A29A"></span><span class="color-scale__chip" style="background:#85857A" title="gray.500 - #85857A"></span><span class="color-scale__chip" style="background:#6D6D64" title="gray.600 - #6D6D64"></span><span class="color-scale__chip" style="background:#585851" title="gray.700 - #585851"></span><span class="color-scale__chip" style="background:#42423D" title="gray.800 - #42423D"></span><span class="color-scale__chip" style="background:#282825" title="gray.900 - #282825"></span></div>
+        </div>
+        <div class="color-scale__row">
+          <span class="color-scale__label">blue</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F5F7F9" title="blue.50 - #F5F7F9"></span><span class="color-scale__chip" style="background:#E7EDF3" title="blue.100 - #E7EDF3"></span><span class="color-scale__chip" style="background:#C9D9E9" title="blue.200 - #C9D9E9"></span><span class="color-scale__chip" style="background:#9ABDE0" title="blue.300 - #9ABDE0"></span><span class="color-scale__chip" style="background:#609EDC" title="blue.400 - #609EDC"></span><span class="color-scale__chip" style="background:#207FDF" title="blue.500 - #207FDF"></span><span class="color-scale__chip" style="background:#1E69B3" title="blue.600 - #1E69B3"></span><span class="color-scale__chip" style="background:#1D548C" title="blue.700 - #1D548C"></span><span class="color-scale__chip" style="background:#1A4065" title="blue.800 - #1A4065"></span><span class="color-scale__chip" style="background:#142639" title="blue.900 - #142639"></span></div>
+        </div>
+        <div class="color-scale__row">
+          <span class="color-scale__label">red</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F9F5F5" title="red.50 - #F9F5F5"></span><span class="color-scale__chip" style="background:#F3E7E7" title="red.100 - #F3E7E7"></span><span class="color-scale__chip" style="background:#E8CACA" title="red.200 - #E8CACA"></span><span class="color-scale__chip" style="background:#DE9B9B" title="red.300 - #DE9B9B"></span><span class="color-scale__chip" style="background:#D96363" title="red.400 - #D96363"></span><span class="color-scale__chip" style="background:#DB2424" title="red.500 - #DB2424"></span><span class="color-scale__chip" style="background:#B02121" title="red.600 - #B02121"></span><span class="color-scale__chip" style="background:#891F1F" title="red.700 - #891F1F"></span><span class="color-scale__chip" style="background:#641C1C" title="red.800 - #641C1C"></span><span class="color-scale__chip" style="background:#381414" title="red.900 - #381414"></span></div>
+        </div>
+        <div class="color-scale__row">
+          <span class="color-scale__label">amber</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#FAF8F5" title="amber.50 - #FAF8F5"></span><span class="color-scale__chip" style="background:#F4EFE6" title="amber.100 - #F4EFE6"></span><span class="color-scale__chip" style="background:#EBDCC7" title="amber.200 - #EBDCC7"></span><span class="color-scale__chip" style="background:#E5C595" title="amber.300 - #E5C595"></span><span class="color-scale__chip" style="background:#E5AC57" title="amber.400 - #E5AC57"></span><span class="color-scale__chip" style="background:#ED9512" title="amber.500 - #ED9512"></span><span class="color-scale__chip" style="background:#BE7A13" title="amber.600 - #BE7A13"></span><span class="color-scale__chip" style="background:#946114" title="amber.700 - #946114"></span><span class="color-scale__chip" style="background:#6B4815" title="amber.800 - #6B4815"></span><span class="color-scale__chip" style="background:#3C2B11" title="amber.900 - #3C2B11"></span></div>
+        </div>
+        <div class="color-scale__row">
+          <span class="color-scale__label">green</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F7F9F6" title="green.50 - #F7F9F6"></span><span class="color-scale__chip" style="background:#EDF2E8" title="green.100 - #EDF2E8"></span><span class="color-scale__chip" style="background:#DAE6CC" title="green.200 - #DAE6CC"></span><span class="color-scale__chip" style="background:#BFD9A0" title="green.300 - #BFD9A0"></span><span class="color-scale__chip" style="background:#A2D16B" title="green.400 - #A2D16B"></span><span class="color-scale__chip" style="background:#85CF30" title="green.500 - #85CF30"></span><span class="color-scale__chip" style="background:#6DA62B" title="green.600 - #6DA62B"></span><span class="color-scale__chip" style="background:#578226" title="green.700 - #578226"></span><span class="color-scale__chip" style="background:#425F21" title="green.800 - #425F21"></span><span class="color-scale__chip" style="background:#273617" title="green.900 - #273617"></span></div>
+        </div>
+        <div class="color-scale__row">
+          <span class="color-scale__label">teal</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F6F9F8" title="teal.50 - #F6F9F8"></span><span class="color-scale__chip" style="background:#E8F3EF" title="teal.100 - #E8F3EF"></span><span class="color-scale__chip" style="background:#CAE7DE" title="teal.200 - #CAE7DE"></span><span class="color-scale__chip" style="background:#9DDDC8" title="teal.300 - #9DDDC8"></span><span class="color-scale__chip" style="background:#65D7B3" title="teal.400 - #65D7B3"></span><span class="color-scale__chip" style="background:#28D7A0" title="teal.500 - #28D7A0"></span><span class="color-scale__chip" style="background:#24AD82" title="teal.600 - #24AD82"></span><span class="color-scale__chip" style="background:#218767" title="teal.700 - #218767"></span><span class="color-scale__chip" style="background:#1D624C" title="teal.800 - #1D624C"></span><span class="color-scale__chip" style="background:#15372D" title="teal.900 - #15372D"></span></div>
+        </div>
+        <div class="color-scale__row">
+          <span class="color-scale__label">purple</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F7F6F9" title="purple.50 - #F7F6F9"></span><span class="color-scale__chip" style="background:#ECE9F2" title="purple.100 - #ECE9F2"></span><span class="color-scale__chip" style="background:#D7CDE4" title="purple.200 - #D7CDE4"></span><span class="color-scale__chip" style="background:#B8A3D6" title="purple.300 - #B8A3D6"></span><span class="color-scale__chip" style="background:#9771CB" title="purple.400 - #9771CB"></span><span class="color-scale__chip" style="background:#7439C6" title="purple.500 - #7439C6"></span><span class="color-scale__chip" style="background:#5F329F" title="purple.600 - #5F329F"></span><span class="color-scale__chip" style="background:#4D2B7D" title="purple.700 - #4D2B7D"></span><span class="color-scale__chip" style="background:#3B245B" title="purple.800 - #3B245B"></span><span class="color-scale__chip" style="background:#241934" title="purple.900 - #241934"></span></div>
+        </div>
+        <div class="color-scale__row">
+          <span class="color-scale__label">pink</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F9F6F7" title="pink.50 - #F9F6F7"></span><span class="color-scale__chip" style="background:#F2E8ED" title="pink.100 - #F2E8ED"></span><span class="color-scale__chip" style="background:#E6CBD9" title="pink.200 - #E6CBD9"></span><span class="color-scale__chip" style="background:#DB9FBD" title="pink.300 - #DB9FBD"></span><span class="color-scale__chip" style="background:#D4699E" title="pink.400 - #D4699E"></span><span class="color-scale__chip" style="background:#D22D80" title="pink.500 - #D22D80"></span><span class="color-scale__chip" style="background:#A92869" title="pink.600 - #A92869"></span><span class="color-scale__chip" style="background:#842454" title="pink.700 - #842454"></span><span class="color-scale__chip" style="background:#601F40" title="pink.800 - #601F40"></span><span class="color-scale__chip" style="background:#361626" title="pink.900 - #361626"></span></div>
+        </div></div>
+    </div>
+      </div>
+      <div class="grid">
+        
+    <div class="card">
+      <h3>Background</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-page)"></span>
+          <span class="swatch__label">page</span>
+          <code class="swatch__var">--color-bg-page</code>
+          <span class="swatch__value" data-var="--color-bg-page">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-surface)"></span>
+          <span class="swatch__label">surface</span>
+          <code class="swatch__var">--color-bg-surface</code>
+          <span class="swatch__value" data-var="--color-bg-surface">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-accent)"></span>
+          <span class="swatch__label">accent</span>
+          <code class="swatch__var">--color-bg-accent</code>
+          <span class="swatch__value" data-var="--color-bg-accent">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-danger)"></span>
+          <span class="swatch__label">danger</span>
+          <code class="swatch__var">--color-bg-danger</code>
+          <span class="swatch__value" data-var="--color-bg-danger">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-dangerSubtle)"></span>
+          <span class="swatch__label">dangerSubtle</span>
+          <code class="swatch__var">--color-bg-dangerSubtle</code>
+          <span class="swatch__value" data-var="--color-bg-dangerSubtle">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-warning)"></span>
+          <span class="swatch__label">warning</span>
+          <code class="swatch__var">--color-bg-warning</code>
+          <span class="swatch__value" data-var="--color-bg-warning">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-warningSubtle)"></span>
+          <span class="swatch__label">warningSubtle</span>
+          <code class="swatch__var">--color-bg-warningSubtle</code>
+          <span class="swatch__value" data-var="--color-bg-warningSubtle">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-success)"></span>
+          <span class="swatch__label">success</span>
+          <code class="swatch__var">--color-bg-success</code>
+          <span class="swatch__value" data-var="--color-bg-success">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-successSubtle)"></span>
+          <span class="swatch__label">successSubtle</span>
+          <code class="swatch__var">--color-bg-successSubtle</code>
+          <span class="swatch__value" data-var="--color-bg-successSubtle">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-disabled)"></span>
+          <span class="swatch__label">disabled</span>
+          <code class="swatch__var">--color-bg-disabled</code>
+          <span class="swatch__value" data-var="--color-bg-disabled">...</span>
+        </div></div>
+    </div>
+        
+    <div class="card">
+      <h3>Text</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-primary)"></span>
+          <span class="swatch__label">primary</span>
+          <code class="swatch__var">--color-text-primary</code>
+          <span class="swatch__value" data-var="--color-text-primary">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-secondary)"></span>
+          <span class="swatch__label">secondary</span>
+          <code class="swatch__var">--color-text-secondary</code>
+          <span class="swatch__value" data-var="--color-text-secondary">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-onAccent)"></span>
+          <span class="swatch__label">onAccent</span>
+          <code class="swatch__var">--color-text-onAccent</code>
+          <span class="swatch__value" data-var="--color-text-onAccent">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-onDanger)"></span>
+          <span class="swatch__label">onDanger</span>
+          <code class="swatch__var">--color-text-onDanger</code>
+          <span class="swatch__value" data-var="--color-text-onDanger">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-onWarning)"></span>
+          <span class="swatch__label">onWarning</span>
+          <code class="swatch__var">--color-text-onWarning</code>
+          <span class="swatch__value" data-var="--color-text-onWarning">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-onSuccess)"></span>
+          <span class="swatch__label">onSuccess</span>
+          <code class="swatch__var">--color-text-onSuccess</code>
+          <span class="swatch__value" data-var="--color-text-onSuccess">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-danger)"></span>
+          <span class="swatch__label">danger</span>
+          <code class="swatch__var">--color-text-danger</code>
+          <span class="swatch__value" data-var="--color-text-danger">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-warning)"></span>
+          <span class="swatch__label">warning</span>
+          <code class="swatch__var">--color-text-warning</code>
+          <span class="swatch__value" data-var="--color-text-warning">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-success)"></span>
+          <span class="swatch__label">success</span>
+          <code class="swatch__var">--color-text-success</code>
+          <span class="swatch__value" data-var="--color-text-success">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-disabled)"></span>
+          <span class="swatch__label">disabled</span>
+          <code class="swatch__var">--color-text-disabled</code>
+          <span class="swatch__value" data-var="--color-text-disabled">...</span>
+        </div></div>
+    </div>
+        
+    <div class="card">
+      <h3>Border</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-border-default)"></span>
+          <span class="swatch__label">default</span>
+          <code class="swatch__var">--color-border-default</code>
+          <span class="swatch__value" data-var="--color-border-default">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-border-strong)"></span>
+          <span class="swatch__label">strong</span>
+          <code class="swatch__var">--color-border-strong</code>
+          <span class="swatch__value" data-var="--color-border-strong">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-border-focus)"></span>
+          <span class="swatch__label">focus</span>
+          <code class="swatch__var">--color-border-focus</code>
+          <span class="swatch__value" data-var="--color-border-focus">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-border-danger)"></span>
+          <span class="swatch__label">danger</span>
+          <code class="swatch__var">--color-border-danger</code>
+          <span class="swatch__value" data-var="--color-border-danger">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-border-disabled)"></span>
+          <span class="swatch__label">disabled</span>
+          <code class="swatch__var">--color-border-disabled</code>
+          <span class="swatch__value" data-var="--color-border-disabled">...</span>
+        </div></div>
+    </div>
+      </div>
+
+      <h2 class="section-label">Typography</h2>
+      <div class="grid">
+        <div class="card">
+        <div class="type-block">
+          <span class="type-block__label">display</span>
+          <p class="type-block__sample" style="font-family:var(--font-display);font-size:28px">Morning pages</p>
+          <code class="swatch__var">--font-display</code>
+          <span class="swatch__value" data-var="--font-display">...</span>
+        </div>
+        <div class="type-block">
+          <span class="type-block__label">body</span>
+          <p class="type-block__sample" style="font-family:var(--font-body);font-size:15px">The quick brown fox jumps over the lazy dog.</p>
+          <code class="swatch__var">--font-body</code>
+          <span class="swatch__value" data-var="--font-body">...</span>
+        </div>
+        <div class="type-block">
+          <span class="type-block__label">mono</span>
+          <p class="type-block__sample" style="font-family:var(--font-mono);font-size:15px">The quick brown fox jumps over the lazy dog.</p>
+          <code class="swatch__var">--font-mono</code>
+          <span class="swatch__value" data-var="--font-mono">...</span>
+        </div></div>
+      </div>
+      <div class="grid">
+        <div class="card">
+        <div class="type-block">
+          <span class="type-block__label">display</span>
+          <p class="type-block__sample" style="font-size:var(--type-display-size);font-weight:var(--type-display-weight);line-height:var(--type-display-lineHeight)">Morning pages</p>
+          <div class="type-block__meta">
+            <span>size <span data-var="--type-display-size">...</span></span>
+            <span>weight <span data-var="--type-display-weight">...</span></span>
+            <span>line-height <span data-var="--type-display-lineHeight">...</span></span>
+          </div>
+        </div>
+        <div class="type-block">
+          <span class="type-block__label">h1</span>
+          <p class="type-block__sample" style="font-size:var(--type-h1-size);font-weight:var(--type-h1-weight);line-height:var(--type-h1-lineHeight)">Track every streak</p>
+          <div class="type-block__meta">
+            <span>size <span data-var="--type-h1-size">...</span></span>
+            <span>weight <span data-var="--type-h1-weight">...</span></span>
+            <span>line-height <span data-var="--type-h1-lineHeight">...</span></span>
+          </div>
+        </div>
+        <div class="type-block">
+          <span class="type-block__label">h2</span>
+          <p class="type-block__sample" style="font-size:var(--type-h2-size);font-weight:var(--type-h2-weight);line-height:var(--type-h2-lineHeight)">Weekly reflection</p>
+          <div class="type-block__meta">
+            <span>size <span data-var="--type-h2-size">...</span></span>
+            <span>weight <span data-var="--type-h2-weight">...</span></span>
+            <span>line-height <span data-var="--type-h2-lineHeight">...</span></span>
+          </div>
+        </div>
+        <div class="type-block">
+          <span class="type-block__label">h3</span>
+          <p class="type-block__sample" style="font-size:var(--type-h3-size);font-weight:var(--type-h3-weight);line-height:var(--type-h3-lineHeight)">Today's entry</p>
+          <div class="type-block__meta">
+            <span>size <span data-var="--type-h3-size">...</span></span>
+            <span>weight <span data-var="--type-h3-weight">...</span></span>
+            <span>line-height <span data-var="--type-h3-lineHeight">...</span></span>
+          </div>
+        </div>
+        <div class="type-block">
+          <span class="type-block__label">body</span>
+          <p class="type-block__sample" style="font-size:var(--type-body-size);font-weight:var(--type-body-weight);line-height:var(--type-body-lineHeight)">The quick brown fox jumps over the lazy dog.</p>
+          <div class="type-block__meta">
+            <span>size <span data-var="--type-body-size">...</span></span>
+            <span>weight <span data-var="--type-body-weight">...</span></span>
+            <span>line-height <span data-var="--type-body-lineHeight">...</span></span>
+          </div>
+        </div>
+        <div class="type-block">
+          <span class="type-block__label">bodySmall</span>
+          <p class="type-block__sample" style="font-size:var(--type-bodySmall-size);font-weight:var(--type-bodySmall-weight);line-height:var(--type-bodySmall-lineHeight)">Synced 2 minutes ago.</p>
+          <div class="type-block__meta">
+            <span>size <span data-var="--type-bodySmall-size">...</span></span>
+            <span>weight <span data-var="--type-bodySmall-weight">...</span></span>
+            <span>line-height <span data-var="--type-bodySmall-lineHeight">...</span></span>
+          </div>
+        </div>
+        <div class="type-block">
+          <span class="type-block__label">caption</span>
+          <p class="type-block__sample" style="font-size:var(--type-caption-size);font-weight:var(--type-caption-weight);line-height:var(--type-caption-lineHeight)">10 min - day 12 streak</p>
+          <div class="type-block__meta">
+            <span>size <span data-var="--type-caption-size">...</span></span>
+            <span>weight <span data-var="--type-caption-weight">...</span></span>
+            <span>line-height <span data-var="--type-caption-lineHeight">...</span></span>
+          </div>
+        </div>
+        <div class="type-block">
+          <span class="type-block__label">label</span>
+          <p class="type-block__sample" style="font-size:var(--type-label-size);font-weight:var(--type-label-weight);line-height:var(--type-label-lineHeight)">STATUS</p>
+          <div class="type-block__meta">
+            <span>size <span data-var="--type-label-size">...</span></span>
+            <span>weight <span data-var="--type-label-weight">...</span></span>
+            <span>line-height <span data-var="--type-label-lineHeight">...</span></span>
+          </div>
+        </div></div>
+      </div>
+
+      <h2 class="section-label">Layout</h2>
+      <div class="grid">
+        
+    <div class="card">
+      <h3>Spacing</h3>
+      <p class="card__sub">Scale (theme-independent)</p>
+      <div class="scale-list">
+        <div class="scale-row">
+          <span class="scale-row__label">spacing.0</span>
+          <span class="scale-row__bar" style="width:0px"></span>
+          <span class="scale-row__value">0px</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-row__label">spacing.1</span>
+          <span class="scale-row__bar" style="width:12px"></span>
+          <span class="scale-row__value">4px</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-row__label">spacing.2</span>
+          <span class="scale-row__bar" style="width:24px"></span>
+          <span class="scale-row__value">8px</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-row__label">spacing.3</span>
+          <span class="scale-row__bar" style="width:36px"></span>
+          <span class="scale-row__value">12px</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-row__label">spacing.4</span>
+          <span class="scale-row__bar" style="width:48px"></span>
+          <span class="scale-row__value">16px</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-row__label">spacing.5</span>
+          <span class="scale-row__bar" style="width:60px"></span>
+          <span class="scale-row__value">20px</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-row__label">spacing.6</span>
+          <span class="scale-row__bar" style="width:72px"></span>
+          <span class="scale-row__value">24px</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-row__label">spacing.8</span>
+          <span class="scale-row__bar" style="width:96px"></span>
+          <span class="scale-row__value">32px</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-row__label">spacing.10</span>
+          <span class="scale-row__bar" style="width:120px"></span>
+          <span class="scale-row__value">40px</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-row__label">spacing.12</span>
+          <span class="scale-row__bar" style="width:144px"></span>
+          <span class="scale-row__value">48px</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-row__label">spacing.16</span>
+          <span class="scale-row__bar" style="width:192px"></span>
+          <span class="scale-row__value">64px</span>
+        </div></div>
+      <p class="card__sub">Semantic (active theme)</p>
+      <div class="kv-list">
+        <div class="kv-row">
+          <code>--space-compact</code>
+          <span class="kv-row__label">compact</span>
+          <span class="swatch__value" data-var="--space-compact">...</span>
+        </div>
+        <div class="kv-row">
+          <code>--space-default</code>
+          <span class="kv-row__label">default</span>
+          <span class="swatch__value" data-var="--space-default">...</span>
+        </div>
+        <div class="kv-row">
+          <code>--space-section</code>
+          <span class="kv-row__label">section</span>
+          <span class="swatch__value" data-var="--space-section">...</span>
+        </div></div>
+    </div>
+        
+    <div class="card">
+      <h3>Radius</h3>
+      <p class="card__sub">Scale (theme-independent)</p>
+      <div class="radius-list">
+        <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:8px"></span>
+          <span class="radius-item__label">radius.base - 8px</span>
+        </div>
+        <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:0px"></span>
+          <span class="radius-item__label">radius.none - 0px</span>
+        </div>
+        <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:calc(var(--radius-base) * 0.5)"></span>
+          <span class="radius-item__label">radius.sm - calc(var(--radius-base) * 0.5)</span>
+        </div>
+        <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:var(--radius-base)"></span>
+          <span class="radius-item__label">radius.md - var(--radius-base)</span>
+        </div>
+        <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:calc(var(--radius-base) * 2)"></span>
+          <span class="radius-item__label">radius.lg - calc(var(--radius-base) * 2)</span>
+        </div>
+        <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:999px"></span>
+          <span class="radius-item__label">radius.pill - 999px</span>
+        </div></div>
+      <p class="card__sub">Semantic (active theme)</p>
+      <div class="radius-list">
+        <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:var(--radius-base)"></span>
+          <span class="radius-item__label">base - <span data-var="--radius-base">...</span></span>
+        </div>
+        <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:var(--radius-control)"></span>
+          <span class="radius-item__label">control - <span data-var="--radius-control">...</span></span>
+        </div>
+        <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:var(--radius-card)"></span>
+          <span class="radius-item__label">card - <span data-var="--radius-card">...</span></span>
+        </div></div>
+    </div>
+        
+    <div class="card">
+      <h3>Grid</h3>
+      <p class="card__sub">Breakpoints (structural, non-themeable - your viewport is highlighted)</p>
+      <div class="bp-list" id="bp-list"><span class="bp-chip" data-bp-min="640">sm<br>640px</span><span class="bp-chip" data-bp-min="768">md<br>768px</span><span class="bp-chip" data-bp-min="1024">lg<br>1024px</span><span class="bp-chip" data-bp-min="1280">xl<br>1280px</span><span class="bp-chip" data-bp-min="1536">2xl<br>1536px</span></div>
+      <p class="card__sub">Semantic (active theme)</p>
+      <div class="kv-list">
+        <div class="kv-row">
+          <code>--grid-gutter</code>
+          <span class="kv-row__label">gutter</span>
+          <span class="swatch__value" data-var="--grid-gutter">...</span>
+        </div>
+        <div class="kv-row">
+          <code>--grid-margin</code>
+          <span class="kv-row__label">margin</span>
+          <span class="swatch__value" data-var="--grid-margin">...</span>
+        </div>
+        <div class="kv-row">
+          <code>--grid-container</code>
+          <span class="kv-row__label">container</span>
+          <span class="swatch__value" data-var="--grid-container">...</span>
+        </div></div>
+    </div>
+      </div>
+
+      <h2 class="section-label">Icons</h2>
+      <div class="grid">
+        
+    <div class="card">
+      <h3>Icons</h3>
+      <p class="card__sub">Scale (theme-independent)</p>
+      <div class="icon-list">
+        <div class="icon-row">
+          <span class="icon-row__label">icon.sm - 16px</span>
+          <div class="icon-row__glyphs"><span class="icon-glyph" style="width:16px;height:16px" title="check"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4 10.5 L8.5 15 L16.5 5" />
+</svg></span><span class="icon-glyph" style="width:16px;height:16px" title="chevron-right"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.5 5 L12.5 10 L7.5 15" />
+</svg></span><span class="icon-glyph" style="width:16px;height:16px" title="x"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 5 L15 15 M15 5 L5 15" />
+</svg></span></div>
+        </div>
+        <div class="icon-row">
+          <span class="icon-row__label">icon.md - 24px</span>
+          <div class="icon-row__glyphs"><span class="icon-glyph" style="width:24px;height:24px" title="check"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4 10.5 L8.5 15 L16.5 5" />
+</svg></span><span class="icon-glyph" style="width:24px;height:24px" title="chevron-right"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.5 5 L12.5 10 L7.5 15" />
+</svg></span><span class="icon-glyph" style="width:24px;height:24px" title="x"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 5 L15 15 M15 5 L5 15" />
+</svg></span></div>
+        </div>
+        <div class="icon-row">
+          <span class="icon-row__label">icon.lg - 32px</span>
+          <div class="icon-row__glyphs"><span class="icon-glyph" style="width:32px;height:32px" title="check"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4 10.5 L8.5 15 L16.5 5" />
+</svg></span><span class="icon-glyph" style="width:32px;height:32px" title="chevron-right"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.5 5 L12.5 10 L7.5 15" />
+</svg></span><span class="icon-glyph" style="width:32px;height:32px" title="x"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 5 L15 15 M15 5 L5 15" />
+</svg></span></div>
+        </div></div>
+      <p class="card__sub">Semantic (active theme)</p>
+      <div class="icon-list">
+        <div class="icon-row">
+          <span class="icon-row__label">inline - <span data-var="--icon-inline">...</span></span>
+          <div class="icon-row__glyphs"><span class="icon-glyph" style="width:var(--icon-inline);height:var(--icon-inline)" title="check"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4 10.5 L8.5 15 L16.5 5" />
+</svg></span><span class="icon-glyph" style="width:var(--icon-inline);height:var(--icon-inline)" title="chevron-right"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.5 5 L12.5 10 L7.5 15" />
+</svg></span><span class="icon-glyph" style="width:var(--icon-inline);height:var(--icon-inline)" title="x"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 5 L15 15 M15 5 L5 15" />
+</svg></span></div>
+        </div>
+        <div class="icon-row">
+          <span class="icon-row__label">control - <span data-var="--icon-control">...</span></span>
+          <div class="icon-row__glyphs"><span class="icon-glyph" style="width:var(--icon-control);height:var(--icon-control)" title="check"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4 10.5 L8.5 15 L16.5 5" />
+</svg></span><span class="icon-glyph" style="width:var(--icon-control);height:var(--icon-control)" title="chevron-right"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.5 5 L12.5 10 L7.5 15" />
+</svg></span><span class="icon-glyph" style="width:var(--icon-control);height:var(--icon-control)" title="x"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 5 L15 15 M15 5 L5 15" />
+</svg></span></div>
+        </div></div>
+    </div>
+      </div>
+
+      <h2 class="section-label">Depth &amp; motion</h2>
+      <div class="grid">
+        <div class="card"><h3>Elevation</h3><div class="elevation-list">
+        <div class="elevation-item">
+          <span class="elevation-item__box" style="box-shadow:var(--elevation-raised)"></span>
+          <span class="elevation-item__label">raised</span>
+          <code class="swatch__var">--elevation-raised</code>
+          <span class="swatch__value" data-var="--elevation-raised">...</span>
+        </div>
+        <div class="elevation-item">
+          <span class="elevation-item__box" style="box-shadow:var(--elevation-overlay)"></span>
+          <span class="elevation-item__label">overlay</span>
+          <code class="swatch__var">--elevation-overlay</code>
+          <span class="swatch__value" data-var="--elevation-overlay">...</span>
+        </div></div></div>
+        
+    <div class="card">
+      <h3>Motion</h3>
+      <div class="kv-list">
+        <div class="kv-row">
+          <code>--motion-fast</code>
+          <span class="kv-row__label">fast</span>
+          <span class="swatch__value" data-var="--motion-fast">...</span>
+        </div>
+        <div class="kv-row">
+          <code>--motion-normal</code>
+          <span class="kv-row__label">normal</span>
+          <span class="swatch__value" data-var="--motion-normal">...</span>
+        </div>
+        <div class="kv-row">
+          <code>--motion-slow</code>
+          <span class="kv-row__label">slow</span>
+          <span class="swatch__value" data-var="--motion-slow">...</span>
+        </div>
+        <div class="kv-row">
+          <code>--motion-easing</code>
+          <span class="kv-row__label">easing</span>
+          <span class="swatch__value" data-var="--motion-easing">...</span>
+        </div></div>
+      <p class="card__sub">Hover to feel it</p>
+      <span class="motion-demo"></span>
+    </div>
+      </div>
+
+      <h2 class="section-label">Other tokens</h2>
+      <div class="grid">
+        <div class="card"><h3>Other tokens</h3><div class="kv-list">
+        <div class="kv-row">
+          <code>--interaction-minTarget</code>
+          <span class="swatch__value" data-var="--interaction-minTarget">...</span>
+        </div>
+        <div class="kv-row">
+          <code>--shape-navbar</code>
+          <span class="swatch__value" data-var="--shape-navbar">...</span>
+        </div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-components" hidden>
+    
+    <p class="header__desc components-intro">Framework-agnostic reference implementations - real semantic HTML and CSS, driven entirely by the tokens on the Tokens page. No framework decision has been made yet; these are the ground truth a future React/Radix (or any other) implementation would need to match.</p>
+
+    <h2 class="section-label section-label--first">Actions</h2>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row">
+        <button class="btn btn--primary">Primary</button>
+        <button class="btn btn--secondary">Secondary</button>
+        <button class="btn btn--ghost">Ghost</button>
+        <button class="btn btn--danger">Danger</button>
+      </div>
+      <div class="c-demo__row">
+        <button class="btn btn--primary btn--sm">Small</button>
+        <button class="btn btn--secondary" disabled>Disabled</button>
+        <button class="btn btn--primary" aria-busy="true" disabled>
+          <span class="btn__spinner" aria-hidden="true"></span> Loading
+        </button>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Button</h3>
+      <p class="c-doc__purpose">The primary way to trigger an action. One filled (primary/danger) button per view region - everything else outline or ghost.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>primary, secondary (outlined), ghost, danger - each at default (44px, meets the 2.5.5 touch-target minimum) or small (36px, dense contexts only)</dd>
+        <dt>States</dt><dd>default, hover, focus-visible (visible outline via border.focus), active/pressed, disabled, loading</dd>
+        <dt>Tokens used</dt><dd>color.bg.accent/danger, color.text.onAccent/onDanger, color.border.strong/focus, radius.control, space.default, motion.fast, interaction.minTarget</dd>
+        <dt>Accessibility</dt><dd>Real &lt;button&gt; element - keyboard and screen reader support come free. Loading state sets aria-busy and disables the control so it can't be double-activated.</dd>
+      </dl>
+    </div></div>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row">
+        <button class="icon-btn" aria-label="Close" data-tooltip="Close"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 5 L15 15 M15 5 L5 15" />
+</svg></button>
+        <button class="icon-btn" aria-label="Confirm" data-tooltip="Confirm"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4 10.5 L8.5 15 L16.5 5" />
+</svg></button>
+        <button class="icon-btn" aria-label="Next" data-tooltip="Next" disabled><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.5 5 L12.5 10 L7.5 15" />
+</svg></button>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Icon button</h3>
+      <p class="c-doc__purpose">A button whose only content is a glyph - always requires an accessible name since there's no visible label.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>ghost only for now (matches Button's ghost treatment)</dd>
+        <dt>States</dt><dd>default, hover, focus-visible, disabled</dd>
+        <dt>Tokens used</dt><dd>icon.control (the glyph), interaction.minTarget (the hit area - deliberately larger than the 24px glyph itself), radius.control</dd>
+        <dt>Accessibility</dt><dd>aria-label is mandatory, not optional - there is no text fallback. Hit area is 44px even though the glyph is 24px, exactly the gap WCAG 2.5.5 exists for. Hover/focus this button to see the Tooltip component below in action.</dd>
+      </dl>
+    </div></div>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row">
+        <p class="c-demo__hint">Hover or focus the icon buttons above - each one carries a real data-tooltip.</p>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Tooltip</h3>
+      <p class="c-doc__purpose">A short label that appears on hover or keyboard focus, for sighted users who can't tell what an icon-only control does just by looking at it.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>single style, positioned above the trigger</dd>
+        <dt>States</dt><dd>hidden, visible (on hover or focus-visible)</dd>
+        <dt>Tokens used</dt><dd>color.text.primary (as the chip's background, inverted), color.bg.page (as the chip's text), radius primitive, type.caption, motion.fast</dd>
+        <dt>Accessibility</dt><dd>CSS-generated content (the attr() tooltip text) is not reliably read by screen readers - this is a real, known limitation of the pure-CSS approach, not an oversight. That's exactly why every icon button already carries aria-label independently: the tooltip is a visual convenience for sighted mouse/keyboard users, the aria-label is what actually makes the control accessible. Neither one substitutes for the other.</dd>
+      </dl>
+    </div></div>
+
+    <h2 class="section-label">Forms</h2>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row c-demo__row--stack">
+        <div class="field">
+          <label class="field__label" for="demo-email">Email</label>
+          <input class="field__input" type="email" id="demo-email" placeholder="you@example.com" />
+          <span class="field__help">We'll only use this to send your receipt.</span>
+        </div>
+        <div class="field field--error">
+          <label class="field__label" for="demo-email-err">Email</label>
+          <input class="field__input" type="email" id="demo-email-err" value="not-an-email" aria-invalid="true" aria-describedby="demo-email-err-msg" />
+          <span class="field__help" id="demo-email-err-msg">Enter a valid email address.</span>
+        </div>
+        <div class="field">
+          <label class="field__label" for="demo-email-dis">Email</label>
+          <input class="field__input" type="email" id="demo-email-dis" value="locked@example.com" disabled />
+        </div>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Text field</h3>
+      <p class="c-doc__purpose">A labeled single-line input. Label sits statically above the field, never as a placeholder substitute - placeholders disappear on input and can't serve as the field's name.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>single line shown here; textarea follows the same label/help/error structure</dd>
+        <dt>States</dt><dd>default, hover, focus-visible, error, disabled</dd>
+        <dt>Tokens used</dt><dd>color.border.default/strong/focus/danger, color.bg.page, radius.control, interaction.minTarget, type.label, type.body, type.caption</dd>
+        <dt>Accessibility</dt><dd>Real &lt;label for&gt; association. Error state sets aria-invalid and aria-describedby pointing at the message, so a screen reader announces the problem, not just a red border.</dd>
+      </dl>
+    </div></div>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row c-demo__row--stack">
+        <div class="field">
+          <label class="field__label" for="demo-notes">Notes</label>
+          <textarea class="field__input field__input--textarea" id="demo-notes" placeholder="Add any details..."></textarea>
+          <span class="field__help">Optional - visible to your team only.</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Textarea</h3>
+      <p class="c-doc__purpose">Multi-line text input - same label/help/error structure as Text field, just taller and resizable.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>single surface, resizes vertically only</dd>
+        <dt>States</dt><dd>default, hover, focus-visible, error, disabled (identical to Text field)</dd>
+        <dt>Tokens used</dt><dd>same as Text field: color.border.default/strong/focus/danger, color.bg.page, radius.control, type.label/body/caption</dd>
+        <dt>Accessibility</dt><dd>Same &lt;label for&gt; requirement as Text field. resize:vertical only, so it can't grow wider than its container and break layout.</dd>
+      </dl>
+    </div></div>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row c-demo__row--stack">
+        <div class="field">
+          <label class="field__label" for="demo-country">Country</label>
+          <div class="select-wrap">
+            <select class="field__input select-c" id="demo-country">
+              <option>United States</option>
+              <option>India</option>
+              <option>Germany</option>
+            </select>
+            <span class="select-c__chevron" aria-hidden="true"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.5 5 L12.5 10 L7.5 15" />
+</svg></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Select</h3>
+      <p class="c-doc__purpose">Choosing one option from a longer list where showing every option as radio buttons would take too much space.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>single style; error/disabled follow the same .field wrapper pattern as Text field</dd>
+        <dt>States</dt><dd>default, hover, focus-visible, disabled</dd>
+        <dt>Tokens used</dt><dd>same field tokens as Text field, plus icon.inline rotated 90deg as the chevron (reused, not a new glyph)</dd>
+        <dt>Accessibility</dt><dd>Native &lt;select&gt; - full keyboard support (type-ahead, arrow keys, Escape) comes from the browser for free, which is exactly why this isn't a custom-built listbox. The chevron is aria-hidden since the native control already conveys its own affordance.</dd>
+      </dl>
+    </div></div>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row c-demo__row--stack">
+        <label class="checkbox">
+          <input type="checkbox" />
+          <span class="checkbox__box"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4 10.5 L8.5 15 L16.5 5" />
+</svg></span>
+          <span class="checkbox__label">Unchecked</span>
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" checked />
+          <span class="checkbox__box"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4 10.5 L8.5 15 L16.5 5" />
+</svg></span>
+          <span class="checkbox__label">Checked</span>
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" disabled />
+          <span class="checkbox__box"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4 10.5 L8.5 15 L16.5 5" />
+</svg></span>
+          <span class="checkbox__label">Disabled</span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Checkbox</h3>
+      <p class="c-doc__purpose">Binary or multi-select choice in a list or form.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>single checkbox shown; indeterminate (partial-selection) state uses the same box with a dash glyph, added when a tri-state parent control exists</dd>
+        <dt>States</dt><dd>unchecked, checked, focus-visible, disabled</dd>
+        <dt>Tokens used</dt><dd>color.bg.accent (checked fill), color.border.strong (unchecked outline), color.border.focus, radius primitive (half of radius.base)</dd>
+        <dt>Accessibility</dt><dd>Real &lt;input type=checkbox&gt;, visually hidden (clip technique, not display:none) so it stays in the accessibility tree and keyboard-operable. Visual box is 18px but the clickable label area is padded to meet the touch-target minimum - matches how Material and Atlassian both handle the same visual/touch-size gap.</dd>
+      </dl>
+    </div></div>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row c-demo__row--stack">
+        <label class="radio">
+          <input type="radio" name="demo-plan" value="basic" checked />
+          <span class="radio__circle"></span>
+          <span class="checkbox__label">Basic</span>
+        </label>
+        <label class="radio">
+          <input type="radio" name="demo-plan" value="pro" />
+          <span class="radio__circle"></span>
+          <span class="checkbox__label">Pro</span>
+        </label>
+        <label class="radio">
+          <input type="radio" name="demo-plan" value="team" disabled />
+          <span class="radio__circle"></span>
+          <span class="checkbox__label">Team (disabled)</span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Radio group</h3>
+      <p class="c-doc__purpose">Single choice from a small set of mutually exclusive options - real radio inputs sharing one name group natively.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>single group shown; same pattern for any option count</dd>
+        <dt>States</dt><dd>unselected, selected, focus-visible, disabled</dd>
+        <dt>Tokens used</dt><dd>color.bg.accent (selected fill), color.border.strong (unselected outline), color.border.focus</dd>
+        <dt>Accessibility</dt><dd>Native radio grouping via a shared name attribute - arrow-key navigation between options is free browser behavior, not something we had to build. Same visually-hidden-input technique as Checkbox.</dd>
+      </dl>
+    </div></div>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row c-demo__row--stack">
+        <label class="switch">
+          <input type="checkbox" role="switch" />
+          <span class="switch__track"><span class="switch__thumb"></span></span>
+          <span class="checkbox__label">Off</span>
+        </label>
+        <label class="switch">
+          <input type="checkbox" role="switch" checked />
+          <span class="switch__track"><span class="switch__thumb"></span></span>
+          <span class="checkbox__label">On</span>
+        </label>
+        <label class="switch">
+          <input type="checkbox" role="switch" disabled />
+          <span class="switch__track"><span class="switch__thumb"></span></span>
+          <span class="checkbox__label">Disabled</span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Switch</h3>
+      <p class="c-doc__purpose">An immediate on/off action (a setting that applies right away) - distinct from Checkbox, which implies a choice batched until a form is submitted.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>single track/thumb design</dd>
+        <dt>States</dt><dd>off, on, focus-visible, disabled</dd>
+        <dt>Tokens used</dt><dd>color.bg.accent (on-state track), color.border.strong (off-state track), color.border.focus, motion.normal (thumb slide)</dd>
+        <dt>Accessibility</dt><dd>role=switch on the underlying input tells assistive tech this is a toggle, announced as on/off rather than checked/unchecked.</dd>
+      </dl>
+    </div></div>
+
+    <h2 class="section-label">Navigation</h2>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row">
+        <div class="tabs-c" role="tablist" aria-label="Demo tabs">
+          <button class="tabs-c__tab is-active" role="tab" aria-selected="true">Overview</button>
+          <button class="tabs-c__tab" role="tab" aria-selected="false">Activity</button>
+          <button class="tabs-c__tab" role="tab" aria-selected="false" disabled>Settings</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Tabs</h3>
+      <p class="c-doc__purpose">Switching between views that occupy the same space - the dashboard you're looking at right now uses this exact pattern for its own Tokens/Components switcher.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>underline style only</dd>
+        <dt>States</dt><dd>inactive, active, focus-visible, disabled</dd>
+        <dt>Tokens used</dt><dd>color.bg.accent (active underline), color.text.primary/secondary, color.border.default, color.border.focus, interaction.minTarget</dd>
+        <dt>Accessibility</dt><dd>role=tablist/tab/aria-selected are wired in this demo; full roving-tabindex arrow-key navigation (ARIA APG's tab pattern) isn't implemented here since that needs real per-instance JS in an actual app, not a static reference page - flagged as a real gap, not silently skipped.</dd>
+      </dl>
+    </div></div>
+
+    <h2 class="section-label">Feedback</h2>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row c-demo__row--stack">
+        <div class="alert-c alert-c--danger" role="alert">
+          <p class="alert-c__title">Payment failed</p>
+          <p class="alert-c__body">Your card was declined. Try another payment method.</p>
+        </div>
+        <div class="alert-c alert-c--warning" role="status">
+          <p class="alert-c__title">Storage almost full</p>
+          <p class="alert-c__body">You're using 92% of your available space.</p>
+        </div>
+        <div class="alert-c alert-c--success" role="status">
+          <p class="alert-c__title">Changes saved</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Alert</h3>
+      <p class="c-doc__purpose">A page or section-level message about status or an error - persistent until dismissed or resolved, unlike a transient Toast, which disappears on its own.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>danger, warning, success</dd>
+        <dt>States</dt><dd>static - no hover/focus, it's not interactive itself</dd>
+        <dt>Tokens used</dt><dd>color.bg.dangerSubtle/warningSubtle/successSubtle (new this round - the strong bg.danger/warning/success tokens were too loud for a persistent message box), color.text.danger/warning/success</dd>
+        <dt>Accessibility</dt><dd>role=alert (danger) interrupts and announces immediately - reserve for things that need urgent attention. role=status (warning, success) announces politely without interrupting whatever the screen reader is already doing. No status icon yet - the icon set only has chevron/check/x so far, not alert-triangle or similar; text carries the meaning alone for now, which still passes 1.4.1 since color isn't the only signal.</dd>
+      </dl>
+    </div></div>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row">
+        <div class="toast-c" role="status">
+          <span class="toast-c__text">Message sent</span>
+          <button class="toast-c__dismiss" aria-label="Dismiss"><svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 5 L15 15 M15 5 L5 15" />
+</svg></button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Toast</h3>
+      <p class="c-doc__purpose">A brief, transient confirmation that appears after an action and disappears on its own - shown here as a static sample since a real one auto-dismissing after a few seconds would just look broken on a reference page.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>single style - severity is rarely needed for a toast, that's what Alert is for</dd>
+        <dt>States</dt><dd>visible, dismissing (not animated in this static demo)</dd>
+        <dt>Tokens used</dt><dd>color.text.primary (inverted as the chip background), color.bg.page (as the chip's text color), elevation.overlay, radius.control, type.bodySmall</dd>
+        <dt>Accessibility</dt><dd>role=status, not role=alert - a toast confirms something that already happened, it doesn't need to interrupt. In a real app it should auto-dismiss after several seconds AND stay manually dismissible for anyone who reads slower than the timeout assumes - never rely on the timer alone.</dd>
+      </dl>
+    </div></div>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row c-demo__row--stack">
+        <div class="skeleton-c skeleton-c--avatar"></div>
+        <div class="skeleton-c skeleton-c--text" style="width:70%"></div>
+        <div class="skeleton-c skeleton-c--text" style="width:45%"></div>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Skeleton</h3>
+      <p class="c-doc__purpose">A placeholder shown while real content is still loading, in roughly the shape of what's coming - reduces the jarring layout shift of content popping in.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>text (a line), avatar (a circle) - shown here; any shape follows the same pulsing-block pattern</dd>
+        <dt>States</dt><dd>loading only - it's removed once real content arrives, it has no other state</dd>
+        <dt>Tokens used</dt><dd>color.bg.surface, radius.control</dd>
+        <dt>Accessibility</dt><dd>Purely decorative - no ARIA role needed on the skeleton itself, but the region containing it should be marked aria-busy=true while loading so assistive tech knows content is still arriving. Animation respects prefers-reduced-motion (pulses via opacity only, nothing that moves).</dd>
+      </dl>
+    </div></div>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row c-demo__row--stack">
+        <div class="progress-c" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" aria-label="Upload progress">
+          <div class="progress-c__fill" style="width:65%"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Progress bar</h3>
+      <p class="c-doc__purpose">Shows how far a determinate operation (upload, multi-step setup) has gotten - not for open-ended waits with no known duration, which want a spinner instead.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>determinate (shown) - indeterminate would need a different, continuously-animating fill and isn't built yet</dd>
+        <dt>States</dt><dd>0-100%, driven by aria-valuenow</dd>
+        <dt>Tokens used</dt><dd>color.bg.surface (track), color.bg.accent (fill), motion.normal (fill transition when the value changes)</dd>
+        <dt>Accessibility</dt><dd>role=progressbar with aria-valuenow/min/max is what makes the percentage announced to assistive tech - the visual bar alone communicates nothing to a screen reader without it.</dd>
+      </dl>
+    </div></div>
+
+    <h2 class="section-label">Display</h2>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row">
+        <span class="badge-c badge-c--neutral">Draft</span>
+        <span class="badge-c badge-c--accent">New</span>
+        <span class="badge-c badge-c--success">Active</span>
+        <span class="badge-c badge-c--warning">Pending</span>
+        <span class="badge-c badge-c--danger">Failed</span>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Badge</h3>
+      <p class="c-doc__purpose">A small, non-interactive status or count label riding on other content - never clickable itself (that's what Tag/Chip is for, not built yet).</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>neutral, accent, success, warning, danger</dd>
+        <dt>States</dt><dd>static only - no hover/focus/disabled, since it's not interactive</dd>
+        <dt>Tokens used</dt><dd>color.bg.{accent,success,warning,danger}, color.text.on*, type.label</dd>
+        <dt>Accessibility</dt><dd>Plain &lt;span&gt;. If a badge conveys meaning through color alone (e.g. a status dot), the label text must say the status in words too - color can't be the only signal.</dd>
+      </dl>
+    </div></div>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row">
+        <span class="avatar-c">JD</span>
+        <span class="avatar-c avatar-c--sm">A</span>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Avatar</h3>
+      <p class="c-doc__purpose">A person or entity's visual identifier - initials shown here as the fallback; a real instance would use a photo with initials as the loading/error fallback.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>default (40px), small (28px)</dd>
+        <dt>States</dt><dd>static display</dd>
+        <dt>Tokens used</dt><dd>color.bg.accent, color.text.onAccent, type.label</dd>
+        <dt>Accessibility</dt><dd>When used as an &lt;img&gt;, alt text should be the person's name, not generic text like 'avatar' or 'profile picture' - a screen reader user needs to know whose photo it is.</dd>
+      </dl>
+    </div></div>
+    <div class="c-grid">
+    <div class="c-demo">
+      <div class="c-demo__row c-demo__row--cards">
+        <div class="card-c">
+          <p class="card-c__title">Flat (default)</p>
+          <p class="card-c__body">Border-only, no shadow - the default per Carbon and Atlassian's own guidance: flat surfaces unless the card is meant to feel liftable.</p>
+        </div>
+        <div class="card-c card-c--elevated">
+          <p class="card-c__title">Elevated</p>
+          <p class="card-c__body">Shadow instead of border, reserved for cards that are draggable or need to visually float above the page.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="c-doc">
+      <h3>Card</h3>
+      <p class="c-doc__purpose">A bounded content container. Default is flat (border, no shadow) - shadow is an opt-in variant, not the default, based on cross-referencing Carbon and Atlassian's real guidance.</p>
+      <dl class="c-doc__list">
+        <dt>Variants</dt><dd>flat (default), elevated</dd>
+        <dt>States</dt><dd>static container - interactive states apply to whatever's inside it (a button, a link), not the card itself</dd>
+        <dt>Tokens used</dt><dd>color.bg.surface, color.border.default, radius.card, elevation.raised (elevated variant only), space.section</dd>
+        <dt>Accessibility</dt><dd>Semantic content only - no ARIA role by default, since a generic container has no special semantics. A clickable card (not shown here) would need a real focusable element inside it, not an onclick on the div.</dd>
+      </dl>
+    </div></div>
+  
+  </div>
+</div>
+
+<script>
+(function(){
+  var CONTRACT = ["color.bg.page","color.bg.surface","color.bg.accent","color.bg.danger","color.bg.dangerSubtle","color.bg.warning","color.bg.warningSubtle","color.bg.success","color.bg.successSubtle","color.bg.disabled","color.text.primary","color.text.secondary","color.text.onAccent","color.text.onDanger","color.text.onWarning","color.text.onSuccess","color.text.danger","color.text.warning","color.text.success","color.text.disabled","color.border.default","color.border.strong","color.border.focus","color.border.danger","color.border.disabled","font.display","font.body","font.mono","space.compact","space.default","space.section","radius.base","radius.control","radius.card","icon.inline","icon.control","grid.gutter","grid.margin","grid.container","interaction.minTarget","shape.navbar","elevation.raised","elevation.overlay","motion.fast","motion.normal","motion.slow","motion.easing","type.display.size","type.display.weight","type.display.lineHeight","type.h1.size","type.h1.weight","type.h1.lineHeight","type.h2.size","type.h2.weight","type.h2.lineHeight","type.h3.size","type.h3.weight","type.h3.lineHeight","type.body.size","type.body.weight","type.body.lineHeight","type.bodySmall.size","type.bodySmall.weight","type.bodySmall.lineHeight","type.caption.size","type.caption.weight","type.caption.lineHeight","type.label.size","type.label.weight","type.label.lineHeight"];
+
+  var pageButtons = Array.prototype.slice.call(document.querySelectorAll(".page-switcher__btn"));
+  var pages = { tokens: document.getElementById("page-tokens"), components: document.getElementById("page-components") };
+  function showPage(name){
+    pageButtons.forEach(function(b){ b.classList.toggle("is-active", b.getAttribute("data-page") === name); });
+    Object.keys(pages).forEach(function(k){ pages[k].hidden = k !== name; });
+  }
+  pageButtons.forEach(function(b){
+    b.addEventListener("click", function(){ showPage(b.getAttribute("data-page")); });
+  });
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+  var notice = document.getElementById("notice");
+  var preview = document.getElementById("preview");
+  var badge = document.getElementById("coverage-badge");
+  var missingList = document.getElementById("missing-list");
+
+  function dottedToVarName(dotted){ return "--" + dotted.split(".").join("-"); }
+
+  // getComputedStyle on a custom property returns its raw text, including an unresolved
+  // light-dark(...) call - that only resolves when consumed by an actual CSS property.
+  // Pick the half that matches what's actually on screen so the label never lies about it.
+  function resolveDisplayValue(raw){
+    var match = raw.match(/^light-dark\((.+),\s*(.+)\)$/);
+    if (!match) return raw;
+    var scheme = document.documentElement.style.colorScheme;
+    var isDark = scheme === "dark" || (scheme !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    return isDark ? match[2].trim() : match[1].trim();
+  }
+
+  function refresh(){
+    var vals = getComputedStyle(document.documentElement);
+    document.querySelectorAll("[data-var]").forEach(function(el){
+      var v = resolveDisplayValue(vals.getPropertyValue(el.getAttribute("data-var")).trim());
+      el.textContent = v || "-";
+    });
+    var missing = CONTRACT.filter(function(k){
+      return !vals.getPropertyValue(dottedToVarName(k)).trim();
+    });
+    badge.textContent = (CONTRACT.length - missing.length) + "/" + CONTRACT.length + " tokens resolved";
+    badge.className = "badge " + (missing.length === 0 ? "is-good" : "is-bad");
+    if (missing.length){
+      missingList.hidden = false;
+      missingList.innerHTML = missing.map(function(k){ return "<li>" + k + "</li>"; }).join("");
+    } else {
+      missingList.hidden = true;
+    }
+  }
+
+  function activate(name, isBuilt){
+    document.documentElement.setAttribute("data-theme", name);
+    tabs.forEach(function(t){ t.classList.toggle("is-active", t.getAttribute("data-theme") === name); });
+    if (isBuilt === "false"){
+      notice.hidden = false;
+      notice.textContent = 'Theme "' + name + '" is defined but not built yet - run: node build.cjs ' + name;
+      preview.style.display = "none";
+    } else {
+      notice.hidden = true;
+      preview.style.display = "";
+      refresh();
+    }
+  }
+
+  tabs.forEach(function(t){
+    t.addEventListener("click", function(){ activate(t.getAttribute("data-theme"), t.getAttribute("data-built")); });
+  });
+  if (tabs.length){ activate(tabs[0].getAttribute("data-theme"), tabs[0].getAttribute("data-built")); }
+
+  var modeButtons = Array.prototype.slice.call(document.querySelectorAll(".mode-toggle button"));
+  function setMode(mode){
+    document.documentElement.style.colorScheme = mode;
+    modeButtons.forEach(function(b){ b.classList.toggle("is-active", b.getAttribute("data-mode") === mode); });
+    refresh();
+  }
+  modeButtons.forEach(function(b){
+    b.addEventListener("click", function(){ setMode(b.getAttribute("data-mode")); });
+  });
+  setMode("light dark");
+
+  var bpChips = Array.prototype.slice.call(document.querySelectorAll(".bp-chip"));
+  function updateBreakpoints(){
+    var w = window.innerWidth;
+    var active = null;
+    bpChips.forEach(function(c){
+      if (w >= parseFloat(c.getAttribute("data-bp-min"))) active = c;
+    });
+    bpChips.forEach(function(c){ c.classList.toggle("is-active", c === active); });
+  }
+  window.addEventListener("resize", updateBreakpoints);
+  updateBreakpoints();
+
+  document.querySelectorAll(".tabs-c__tab").forEach(function(t){
+    t.addEventListener("click", function(){
+      if (t.disabled) return;
+      var group = t.closest(".tabs-c").querySelectorAll(".tabs-c__tab");
+      group.forEach(function(sib){
+        sib.classList.toggle("is-active", sib === t);
+        sib.setAttribute("aria-selected", sib === t ? "true" : "false");
+      });
+    });
+  });
+
+  document.querySelectorAll(".toast-c__dismiss").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var toast = btn.closest(".toast-c");
+      toast.style.transition = "opacity " + "var(--motion-fast, 120ms)";
+      toast.style.opacity = "0";
+      setTimeout(function(){ toast.style.visibility = "hidden"; }, 150);
+    });
+  });
+})();
+</script>
