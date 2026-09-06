@@ -1,6 +1,6 @@
 # Component contracts
 
-Six components, each documented with the `design-system extend` template. These are framework-agnostic reference implementations (real semantic HTML/CSS, no JS framework) — the ground truth a future React/Radix/Vue/whatever implementation has to match. Live, working versions of all six are on the **Components** page of [Token atlas](https://claude.ai/code/artifact/578d3487-b6ad-44df-84c6-461bd61ba614) — that page is generated from the same styling described here, so it can't drift from this doc.
+Six components, each documented with the `design-system extend` template. These are framework-agnostic reference implementations (real semantic HTML/CSS, no JS framework) — the ground truth a future React/Radix/Vue/whatever implementation has to match. Live, working versions of all six are on the **Components** page of [Datum](https://claude.ai/code/artifact/578d3487-b6ad-44df-84c6-461bd61ba614) — that page is generated from the same styling described here, so it can't drift from this doc.
 
 Sourced against Material Design 3, IBM Carbon, and Atlassian Design System's real published component docs (not memory) before designing each one — see the rationale line under each component for what specifically came from that research versus our own judgment call.
 
@@ -236,7 +236,7 @@ Sourced against Material Design 3, IBM Carbon, and Atlassian Design System's rea
 
 **Problem**: Switching between views that share the same screen space without navigating away.
 
-**Existing patterns checked**: This is the exact pattern the Token Atlas dashboard already uses for its own Tokens/Components page switcher and theme selector — building a formal version of something we'd already proven works in practice.
+**Existing patterns checked**: This is the exact pattern the Datum dashboard already uses for its own Tokens/Components page switcher and theme selector — building a formal version of something we'd already proven works in practice.
 
 **API**
 | Property | Type | Default | Description |
@@ -373,7 +373,7 @@ Sourced against Material Design 3, IBM Carbon, and Atlassian Design System's rea
 
 ## Cross-cutting notes
 
-- **Naming**: every class is scoped with a `-c` suffix or unique prefix (`.badge-c`, `.card-c`, `.select-c`, `.avatar-c`, `.tabs-c`, `.alert-c`, `.toast-c`, `.skeleton-c`, `.progress-c`, `.dialog-c`, `.btn`, `.field`, `.checkbox`, `.radio`, `.switch`, `.icon-btn`, `[data-tooltip]`) to avoid colliding with the Token Atlas dashboard's own chrome classes (`.card`, `.badge`, `.tabs`), which style a completely different thing.
+- **Naming**: every class is scoped with a `-c` suffix or unique prefix (`.badge-c`, `.card-c`, `.select-c`, `.avatar-c`, `.tabs-c`, `.alert-c`, `.toast-c`, `.skeleton-c`, `.progress-c`, `.dialog-c`, `.btn`, `.field`, `.checkbox`, `.radio`, `.switch`, `.icon-btn`, `[data-tooltip]`) to avoid colliding with the Datum dashboard's own chrome classes (`.card`, `.badge`, `.tabs`), which style a completely different thing.
 - **Nineteen components total now**, across six sections: Actions (Button, Icon Button, Tooltip), Forms (Text Field, Textarea, Select, Checkbox, Radio Group, Switch), Navigation (Tabs), Overlays (Dialog), Feedback (Alert, Toast, Skeleton, Progress bar), Display (Badge, Avatar, Card).
 - **Touch targets**: Button (default), Icon button, and Text field all hit `interaction.minTarget` (44px) directly. Checkbox reaches it through the label's padding, not the visual box — matching how every real system we checked handles the same tension.
 - **Nothing here is React/Vue/etc.** — deliberately. That's a framework decision for when the person who owns this system is actually present to make it, not something to lock in overnight.
