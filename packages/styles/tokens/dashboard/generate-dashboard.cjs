@@ -872,7 +872,7 @@ function renderPage({ themes, distCss, contract, primitives, icons }) {
 
   const generatedAt = new Date().toISOString();
 
-  return `<title>Token atlas</title>
+  return `<title>Datum</title>
 ${googleFonts}
 <style>${embeddedCss}</style>
 <style>
@@ -1098,7 +1098,7 @@ ${googleFonts}
   <header>
     <div>
       <p class="eyebrow">Design system</p>
-      <h1>Token atlas</h1>
+      <h1>Datum</h1>
       <p class="header__desc">Live, generated reference for every token and component in the system - regenerated from the real files, never hand-typed.</p>
     </div>
     <span class="timestamp">generated ${generatedAt}</span>

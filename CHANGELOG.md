@@ -4,6 +4,12 @@ All notable changes to this project are recorded here. Format loosely follows [K
 
 ## [Unreleased]
 
+## 2026-09-07 — Renamed: Atlas → Datum
+
+### Changed
+- Project renamed from **Atlas** to **Datum** — a design-tokens pun (a "datum" is literally a reference point everything else is measured from) rather than a generic nice-sounding word. Package scope `@atlas-design/*` → `@datum-design/*` (confirmed unclaimed on the npm registry before renaming, same as the plain `datum`/`datum-ui` package names being already taken by unrelated projects — the scoped names were free). CSS Modules class prefix and the compiled stylesheet (`atlas.css` → `datum.css`) updated to match. GitHub repo renamed accordingly (GitHub redirects the old URL automatically). Dashboard rebranded from "Token Atlas" to "Datum."
+- Nothing behavioral changed — same 71 tokens, same 19 component contracts, same passing tests, rebuilt and re-verified under the new names before this was committed.
+
 ## 2026-09-07 — First real, installable package
 
 ### Added

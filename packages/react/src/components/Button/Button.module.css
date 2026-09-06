@@ -78,10 +78,10 @@
   border: 2px solid currentColor;
   border-top-color: transparent;
   display: inline-block;
-  animation: atlas-button-spin var(--motion-slow) linear infinite;
+  animation: datum-button-spin var(--motion-slow) linear infinite;
 }
 
-@keyframes atlas-button-spin {
+@keyframes datum-button-spin {
   to {
     transform: rotate(360deg);
   }

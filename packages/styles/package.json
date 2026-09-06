@@ -1,7 +1,7 @@
 {
-  "name": "@atlas-design/styles",
+  "name": "@datum-design/styles",
   "version": "0.1.0",
-  "description": "Design tokens and theme CSS for the Atlas design system.",
+  "description": "Design tokens and theme CSS for the Datum design system.",
   "license": "MIT",
   "type": "commonjs",
   "files": [

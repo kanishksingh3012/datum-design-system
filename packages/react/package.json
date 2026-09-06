@@ -1,13 +1,13 @@
 {
-  "name": "@atlas-design/react",
+  "name": "@datum-design/react",
   "version": "0.1.0",
-  "description": "React components for the Atlas design system.",
+  "description": "React components for the Datum design system.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "style": "./dist/atlas.css",
+  "style": "./dist/datum.css",
   "sideEffects": [
     "*.css"
   ],
@@ -17,7 +17,7 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./styles.css": "./dist/atlas.css"
+    "./styles.css": "./dist/datum.css"
   },
   "files": [
     "dist"
@@ -27,7 +27,7 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@atlas-design/styles": "*"
+    "@datum-design/styles": "*"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",

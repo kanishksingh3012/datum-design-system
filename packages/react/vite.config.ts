@@ -14,8 +14,8 @@ export default defineConfig({
       // function since Vite's built-in pattern tokens don't include a
       // parent-folder placeholder.
       generateScopedName: (name, filename) => {
-        const folder = filename.split("/").slice(-2, -1)[0] ?? "atlas";
-        return `atlas-${folder}-${name}`;
+        const folder = filename.split("/").slice(-2, -1)[0] ?? "datum";
+        return `datum-${folder}-${name}`;
       },
     },
   },
@@ -29,7 +29,7 @@ export default defineConfig({
       external: ["react", "react-dom", "react/jsx-runtime"],
       output: {
         assetFileNames: (assetInfo) =>
-          assetInfo.name?.endsWith(".css") ? "atlas.css" : (assetInfo.name ?? "[name][extname]"),
+          assetInfo.name?.endsWith(".css") ? "datum.css" : (assetInfo.name ?? "[name][extname]"),
       },
     },
     cssCodeSplit: false,
