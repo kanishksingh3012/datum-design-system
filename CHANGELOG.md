@@ -4,6 +4,20 @@ All notable changes to this project are recorded here. Format loosely follows [K
 
 ## [Unreleased]
 
+## 2026-09-07 — First real, installable package
+
+### Added
+- Real npm workspace monorepo: `packages/styles` (`@atlas-design/styles`) and `packages/react` (`@atlas-design/react`), modeled on kernelui.com's real, sourced implementation (Vite library mode, CSS Modules + hand-written `data-*` variants rather than `class-variance-authority`, Vitest + React Testing Library, a `render` prop for polymorphism rather than Radix-style `asChild`).
+- `Button` converted end-to-end from spec to real code: props, TypeScript types, 7 passing tests, and a built `dist/` verified to work when imported from outside the source tree (not just "it compiles").
+
+### Changed
+- Relocated `design-system/tokens/` to `packages/styles/tokens/` via `git mv` (history preserved). Zero code changes — `build.cjs` is fully `__dirname`-relative — and the resulting `minimal.css` was diffed byte-for-byte against the pre-move version to confirm no regression.
+
+### Decided
+- npm workspaces over Bun, despite Bun matching the Kernel UI reference exactly and already being installed: this is a public repo, and npm ships with every Node install a future contributor already has.
+- Tooltip stays a CSS-only `data-tooltip` attribute rather than becoming a full stateful component — no real need is driving that yet.
+- Visual restyling per real design inspiration is deliberately a separate, later pass from the package/tooling work — the latter doesn't depend on what anything looks like.
+
 ### Added
 - `README.md`, `LICENSE` (MIT), and this changelog.
 

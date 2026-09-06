@@ -1,0 +1,26 @@
+{
+  "name": "@atlas-design/styles",
+  "version": "0.1.0",
+  "description": "Design tokens and theme CSS for the Atlas design system.",
+  "license": "MIT",
+  "type": "commonjs",
+  "files": [
+    "tokens/dist",
+    "tokens/icons",
+    "tokens/primitives.json",
+    "tokens/contract.json"
+  ],
+  "style": "./tokens/dist/minimal.css",
+  "exports": {
+    "./minimal.css": "./tokens/dist/minimal.css",
+    "./icons/*": "./tokens/icons/*",
+    "./contract.json": "./tokens/contract.json",
+    "./primitives.json": "./tokens/primitives.json"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "build": "node tokens/build.cjs"
+  }
+}

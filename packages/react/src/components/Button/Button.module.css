@@ -1,0 +1,94 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--type-body-size);
+  border-radius: var(--radius-control);
+  border: 1px solid transparent;
+  cursor: pointer;
+  min-height: var(--interaction-minTarget);
+  padding: 0 var(--space-default);
+  transition:
+    filter var(--motion-fast) var(--motion-easing),
+    background var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+
+.root:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.root:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.98);
+}
+
+.root:disabled,
+.root[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.root[data-size="sm"] {
+  min-height: 36px;
+  padding: 0 var(--space-compact);
+  font-size: var(--type-caption-size);
+}
+
+.root[data-variant="primary"] {
+  background: var(--color-bg-accent);
+  color: var(--color-text-onAccent);
+}
+.root[data-variant="primary"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  filter: brightness(0.92);
+}
+
+.root[data-variant="secondary"] {
+  background: transparent;
+  border-color: var(--color-border-strong);
+  color: var(--color-text-primary);
+}
+.root[data-variant="secondary"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--color-bg-surface);
+}
+
+.root[data-variant="ghost"] {
+  background: transparent;
+  color: var(--color-text-primary);
+}
+.root[data-variant="ghost"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--color-bg-surface);
+}
+
+.root[data-variant="danger"] {
+  background: var(--color-bg-danger);
+  color: var(--color-text-onDanger);
+}
+.root[data-variant="danger"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  filter: brightness(0.92);
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  display: inline-block;
+  animation: atlas-button-spin var(--motion-slow) linear infinite;
+}
+
+@keyframes atlas-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 1.4s;
+  }
+}
