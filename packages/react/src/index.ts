@@ -101,3 +101,15 @@ export type {
   PaginationItemProps,
   PaginationItemOwnProps,
 } from "./components/Pagination/Pagination";
+
+export { Slider } from "./components/Slider/Slider";
+export type { SliderProps, SliderOwnProps } from "./components/Slider/Slider";
+
+export { NumberField } from "./components/NumberField/NumberField";
+export type { NumberFieldProps, NumberFieldOwnProps } from "./components/NumberField/NumberField";
+
+export { ScrollArea } from "./components/ScrollArea/ScrollArea";
+export type { ScrollAreaProps, ScrollAreaOwnProps } from "./components/ScrollArea/ScrollArea";
+
+export { Resizable } from "./components/Resizable/Resizable";
+export type { ResizableProps, ResizableOwnProps } from "./components/Resizable/Resizable";
