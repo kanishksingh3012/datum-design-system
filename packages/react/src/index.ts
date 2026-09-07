@@ -166,3 +166,6 @@ export type { DatePickerOwnProps } from "./components/DatePicker/DatePicker";
 
 export { DateRangePicker } from "./components/DateRangePicker/DateRangePicker";
 export type { DateRangePickerOwnProps, DateRange } from "./components/DateRangePicker/DateRangePicker";
+
+export { Carousel } from "./components/Carousel/Carousel";
+export type { CarouselOwnProps, CarouselSlideDef } from "./components/Carousel/Carousel";
