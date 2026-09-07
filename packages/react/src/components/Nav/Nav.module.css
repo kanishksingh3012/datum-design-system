@@ -1,0 +1,33 @@
+.root {
+  display: block;
+}
+.list {
+  display: flex;
+  gap: var(--space-default);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.item {
+  display: contents;
+}
+.link {
+  font-family: var(--font-body);
+  font-size: var(--type-body-size);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  min-height: var(--interaction-minTarget);
+  display: inline-flex;
+  align-items: center;
+}
+.link:hover {
+  color: var(--color-text-primary);
+}
+.link:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.link[data-active] {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}

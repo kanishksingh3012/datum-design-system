@@ -1,0 +1,10 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-default);
+  padding: var(--space-default) var(--space-section);
+  border-top: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+  font-size: var(--type-bodySmall-size);
+}

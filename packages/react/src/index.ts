@@ -67,3 +67,37 @@ export type {
   AccordionItemProps,
   AccordionItemOwnProps,
 } from "./components/Accordion/Accordion";
+
+export { Header } from "./components/Header/Header";
+export type { HeaderProps, HeaderOwnProps } from "./components/Header/Header";
+
+export { Footer } from "./components/Footer/Footer";
+export type { FooterProps, FooterOwnProps } from "./components/Footer/Footer";
+
+export { Sidebar } from "./components/Sidebar/Sidebar";
+export type { SidebarProps, SidebarOwnProps } from "./components/Sidebar/Sidebar";
+
+export { Nav, NavLink } from "./components/Nav/Nav";
+export type { NavProps, NavOwnProps, NavLinkProps, NavLinkOwnProps } from "./components/Nav/Nav";
+
+export { Breadcrumbs, BreadcrumbItem } from "./components/Breadcrumbs/Breadcrumbs";
+export type {
+  BreadcrumbsProps,
+  BreadcrumbsOwnProps,
+  BreadcrumbItemProps,
+  BreadcrumbItemOwnProps,
+} from "./components/Breadcrumbs/Breadcrumbs";
+
+export {
+  Pagination,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from "./components/Pagination/Pagination";
+export type {
+  PaginationProps,
+  PaginationOwnProps,
+  PaginationItemProps,
+  PaginationItemOwnProps,
+} from "./components/Pagination/Pagination";

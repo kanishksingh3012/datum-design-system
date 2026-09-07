@@ -1,0 +1,9 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-default);
+  padding: var(--space-default) var(--space-section);
+  border-bottom: 1px solid var(--color-border-default);
+  background: var(--color-bg-page);
+}

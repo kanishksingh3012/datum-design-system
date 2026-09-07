@@ -1,0 +1,10 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+  width: 240px;
+  flex: 0 0 auto;
+  padding: var(--space-default);
+  border-right: 1px solid var(--color-border-default);
+  background: var(--color-bg-page);
+}
