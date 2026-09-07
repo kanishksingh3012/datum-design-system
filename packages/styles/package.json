@@ -3,6 +3,26 @@
   "version": "0.1.0",
   "description": "Design tokens and theme CSS for the Datum design system.",
   "license": "MIT",
+  "author": "Kanishk Singh",
+  "homepage": "https://github.com/kanishksingh3012/datum-design-system#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kanishksingh3012/datum-design-system.git",
+    "directory": "packages/styles"
+  },
+  "bugs": {
+    "url": "https://github.com/kanishksingh3012/datum-design-system/issues"
+  },
+  "keywords": [
+    "design-tokens",
+    "design-system",
+    "css",
+    "theme",
+    "datum"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "commonjs",
   "files": [
     "tokens/dist",
