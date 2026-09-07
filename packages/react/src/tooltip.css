@@ -1,0 +1,36 @@
+/*
+  Tooltip is CSS-only by design - add data-tooltip="text" to any trigger element,
+  no component needed. CSS-generated content isn't reliably read by screen readers,
+  so this is a sighted-user convenience only; pair it with a real aria-label.
+*/
+[data-tooltip] {
+  position: relative;
+}
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--color-text-primary);
+  color: var(--color-bg-page);
+  font-size: var(--type-caption-size);
+  font-weight: 500;
+  padding: 0.3rem 0.6rem;
+  border-radius: calc(var(--radius-base) * 0.5);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--motion-easing), transform var(--motion-fast) var(--motion-easing);
+  z-index: 10;
+}
+[data-tooltip]:hover::after,
+[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-tooltip]::after {
+    transition: none;
+  }
+}
