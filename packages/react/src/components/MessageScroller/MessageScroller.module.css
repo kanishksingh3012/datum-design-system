@@ -1,0 +1,7 @@
+.root {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+}

@@ -223,3 +223,7 @@ export type { CodeToken, CodeLine } from "./lib/codeTokens";
 
 export { FileDiff } from "./components/FileDiff/FileDiff";
 export type { FileDiffOwnProps, DiffRow, DiffRowKind } from "./components/FileDiff/FileDiff";
+
+export { MessageScroller, useStickToBottom, StickToBottomController } from "./components/MessageScroller/MessageScroller";
+export type { MessageScrollerOwnProps } from "./components/MessageScroller/MessageScroller";
+export type { UseStickToBottomOptions } from "./lib/useStickToBottom";
