@@ -1,0 +1,38 @@
+.anchor {
+  position: relative;
+}
+.menu {
+  position: fixed;
+  z-index: 30;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  padding: 0.3rem;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-overlay);
+}
+.item {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: var(--type-body-size);
+  color: var(--color-text-primary);
+  background: none;
+  border: none;
+  border-radius: var(--radius-control);
+  min-height: var(--interaction-minTarget);
+  padding: 0 var(--space-compact);
+  cursor: pointer;
+}
+.item:hover:not(:disabled),
+.item:focus-visible {
+  background: var(--color-bg-page);
+  outline: none;
+}
+.item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
