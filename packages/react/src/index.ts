@@ -202,3 +202,16 @@ export type { ReasoningOwnProps } from "./components/Reasoning/Reasoning";
 
 export { ToolCall } from "./components/ToolCall/ToolCall";
 export type { ToolCallOwnProps, ToolCallStatus } from "./components/ToolCall/ToolCall";
+
+export { TodoList, TodoItem } from "./components/TodoList/TodoList";
+export type {
+  TodoListOwnProps,
+  TodoItemOwnProps,
+  TodoItemStatus,
+} from "./components/TodoList/TodoList";
+
+export { Sources, Source, Citation } from "./components/Sources/Sources";
+export type { SourcesOwnProps, SourceOwnProps, CitationOwnProps } from "./components/Sources/Sources";
+
+export { Composer } from "./components/Composer/Composer";
+export type { ComposerOwnProps } from "./components/Composer/Composer";
