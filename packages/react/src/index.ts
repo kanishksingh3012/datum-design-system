@@ -154,3 +154,9 @@ export type { DropdownMenuOwnProps, MenuItemDef } from "./components/DropdownMen
 
 export { ContextMenu } from "./components/ContextMenu/ContextMenu";
 export type { ContextMenuOwnProps, ContextMenuItemDef } from "./components/ContextMenu/ContextMenu";
+
+export { Combobox } from "./components/Combobox/Combobox";
+export type { ComboboxOwnProps, ComboboxOption } from "./components/Combobox/Combobox";
+
+export { CommandPalette } from "./components/CommandPalette/CommandPalette";
+export type { CommandPaletteOwnProps, CommandPaletteItem } from "./components/CommandPalette/CommandPalette";
