@@ -1,0 +1,56 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  min-height: var(--interaction-minTarget);
+}
+.root input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.box {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  border-radius: calc(var(--radius-base) * 0.5);
+  border: 1.5px solid var(--color-border-strong);
+  background: var(--color-bg-page);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--motion-fast) var(--motion-easing), border-color var(--motion-fast) var(--motion-easing);
+}
+.box svg {
+  width: 13px;
+  height: 13px;
+  color: var(--color-text-onAccent);
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--motion-easing);
+}
+.root input:checked ~ .box {
+  background: var(--color-bg-accent);
+  border-color: var(--color-bg-accent);
+}
+.root input:checked ~ .box svg {
+  opacity: 1;
+}
+.root input:focus-visible ~ .box {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.root input:disabled ~ .box {
+  opacity: 0.5;
+}
+.label {
+  font-size: var(--type-body-size);
+  color: var(--color-text-primary);
+}

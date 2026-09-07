@@ -1,0 +1,55 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  min-height: var(--interaction-minTarget);
+}
+.root input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.circle {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border-strong);
+  background: var(--color-bg-page);
+  position: relative;
+  transition: border-color var(--motion-fast) var(--motion-easing);
+}
+.circle::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--color-bg-accent);
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--motion-easing);
+}
+.root input:checked ~ .circle {
+  border-color: var(--color-bg-accent);
+}
+.root input:checked ~ .circle::after {
+  opacity: 1;
+}
+.root input:focus-visible ~ .circle {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.root input:disabled ~ .circle {
+  opacity: 0.5;
+}
+.label {
+  font-size: var(--type-body-size);
+  color: var(--color-text-primary);
+}

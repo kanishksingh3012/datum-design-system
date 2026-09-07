@@ -1,0 +1,56 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  min-height: var(--interaction-minTarget);
+}
+.root input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.track {
+  width: 38px;
+  height: 22px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--color-border-strong);
+  position: relative;
+  transition: background var(--motion-fast) var(--motion-easing);
+  display: inline-block;
+}
+.thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-bg-page);
+  transition: transform var(--motion-normal) var(--motion-easing);
+}
+.root input:checked ~ .track {
+  background: var(--color-bg-accent);
+}
+.root input:checked ~ .track .thumb {
+  transform: translateX(16px);
+}
+.root input:focus-visible ~ .track {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.root input:disabled ~ .track {
+  opacity: 0.5;
+}
+.label {
+  font-size: var(--type-body-size);
+  color: var(--color-text-primary);
+}

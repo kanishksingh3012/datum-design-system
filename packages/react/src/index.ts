@@ -18,3 +18,12 @@ export type { SkeletonProps, SkeletonOwnProps, SkeletonShape } from "./component
 
 export { ProgressBar } from "./components/ProgressBar/ProgressBar";
 export type { ProgressBarProps, ProgressBarOwnProps } from "./components/ProgressBar/ProgressBar";
+
+export { Checkbox } from "./components/Checkbox/Checkbox";
+export type { CheckboxProps, CheckboxOwnProps } from "./components/Checkbox/Checkbox";
+
+export { Switch } from "./components/Switch/Switch";
+export type { SwitchProps, SwitchOwnProps } from "./components/Switch/Switch";
+
+export { Radio } from "./components/Radio/Radio";
+export type { RadioProps, RadioOwnProps } from "./components/Radio/Radio";
