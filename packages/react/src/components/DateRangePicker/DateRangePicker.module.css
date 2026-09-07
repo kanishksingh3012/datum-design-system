@@ -1,0 +1,97 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: fit-content;
+}
+.label {
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  color: var(--color-text-primary);
+}
+.controls {
+  display: flex;
+  gap: 0.4rem;
+}
+.trigger {
+  font-family: var(--font-body);
+  font-size: var(--type-body-size);
+  min-height: var(--interaction-minTarget);
+  padding: 0 var(--space-default);
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-page);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.dialog {
+  border: none;
+  border-radius: var(--radius-card);
+  padding: var(--space-default);
+  background: var(--color-bg-surface);
+  box-shadow: var(--elevation-overlay);
+}
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-compact);
+}
+.heading {
+  font-size: var(--type-body-size);
+  font-weight: 600;
+  margin: 0;
+}
+.navButton {
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  min-width: var(--interaction-minTarget);
+  min-height: var(--interaction-minTarget);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+}
+.navButton:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.grid {
+  border-collapse: collapse;
+}
+.weekday {
+  font-size: var(--type-caption-size);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  padding: 0.2rem;
+}
+.day {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.day[data-outside] {
+  color: var(--color-text-disabled);
+}
+.day[data-in-range] {
+  background: var(--color-bg-page);
+  border-radius: 0;
+}
+.day:hover {
+  background: var(--color-bg-page);
+}
+.day:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 1px;
+}
+.day[aria-selected="true"] {
+  background: var(--color-bg-accent);
+  color: var(--color-text-onAccent);
+  border-radius: 50%;
+}

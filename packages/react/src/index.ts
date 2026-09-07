@@ -160,3 +160,9 @@ export type { ComboboxOwnProps, ComboboxOption } from "./components/Combobox/Com
 
 export { CommandPalette } from "./components/CommandPalette/CommandPalette";
 export type { CommandPaletteOwnProps, CommandPaletteItem } from "./components/CommandPalette/CommandPalette";
+
+export { DatePicker } from "./components/DatePicker/DatePicker";
+export type { DatePickerOwnProps } from "./components/DatePicker/DatePicker";
+
+export { DateRangePicker } from "./components/DateRangePicker/DateRangePicker";
+export type { DateRangePickerOwnProps, DateRange } from "./components/DateRangePicker/DateRangePicker";
