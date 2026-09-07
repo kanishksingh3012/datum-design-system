@@ -1,0 +1,32 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--interaction-minTarget);
+  height: var(--interaction-minTarget);
+  border-radius: var(--radius-control);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background var(--motion-fast) var(--motion-easing);
+}
+
+.root svg {
+  width: var(--icon-control);
+  height: var(--icon-control);
+}
+
+.root:hover:not(:disabled) {
+  background: var(--color-bg-surface);
+}
+
+.root:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.root:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
