@@ -113,3 +113,9 @@ export type { ScrollAreaProps, ScrollAreaOwnProps } from "./components/ScrollAre
 
 export { Resizable } from "./components/Resizable/Resizable";
 export type { ResizableProps, ResizableOwnProps } from "./components/Resizable/Resizable";
+
+export { Popover } from "./components/Popover/Popover";
+export type { PopoverOwnProps } from "./components/Popover/Popover";
+
+export { HoverCard } from "./components/HoverCard/HoverCard";
+export type { HoverCardOwnProps } from "./components/HoverCard/HoverCard";
