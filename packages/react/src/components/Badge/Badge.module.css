@@ -1,0 +1,32 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  line-height: 1.5;
+}
+
+.root[data-variant="neutral"] {
+  background: var(--color-bg-surface);
+  color: var(--color-text-secondary);
+}
+.root[data-variant="accent"] {
+  background: var(--color-bg-accent);
+  color: var(--color-text-onAccent);
+}
+.root[data-variant="success"] {
+  background: var(--color-bg-success);
+  color: var(--color-text-onSuccess);
+}
+.root[data-variant="warning"] {
+  background: var(--color-bg-warning);
+  color: var(--color-text-onWarning);
+}
+.root[data-variant="danger"] {
+  background: var(--color-bg-danger);
+  color: var(--color-text-onDanger);
+}

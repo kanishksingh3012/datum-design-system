@@ -1,0 +1,20 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-bg-accent);
+  color: var(--color-text-onAccent);
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  flex: 0 0 auto;
+  object-fit: cover;
+}
+.root[data-size="sm"] {
+  width: 28px;
+  height: 28px;
+  font-size: 10px;
+}
