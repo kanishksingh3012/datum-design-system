@@ -128,3 +128,23 @@ export type { InputOTPProps, InputOTPOwnProps } from "./components/InputOTP/Inpu
 
 export { TagInput } from "./components/TagInput/TagInput";
 export type { TagInputProps, TagInputOwnProps } from "./components/TagInput/TagInput";
+
+export {
+  Table,
+  TableCaption,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "./components/Table/Table";
+export type {
+  TableProps,
+  TableOwnProps,
+  TableHeadProps,
+  TableHeadOwnProps,
+  TableSortDirection,
+} from "./components/Table/Table";
+
+export { ColorPicker } from "./components/ColorPicker/ColorPicker";
+export type { ColorPickerProps, ColorPickerOwnProps } from "./components/ColorPicker/ColorPicker";
