@@ -1,0 +1,43 @@
+.root {
+  display: inline-block;
+}
+.dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 96px;
+  min-width: 240px;
+  padding: var(--space-default);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-control);
+  background: var(--color-bg-page);
+  color: var(--color-text-secondary);
+  font-size: var(--type-body-size);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--motion-fast) var(--motion-easing), background var(--motion-fast) var(--motion-easing);
+}
+.dropzone:hover {
+  border-color: var(--color-border-focus);
+}
+.dragOver {
+  border-color: var(--color-border-focus);
+  background: var(--color-bg-accentSubtle, var(--color-bg-page));
+}
+/* Real, keyboard-operable input - visually hidden, not display:none. */
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.input:focus-visible ~ .dropzone,
+.input:focus-visible + .dropzone {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}

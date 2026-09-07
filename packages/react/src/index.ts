@@ -119,3 +119,12 @@ export type { PopoverOwnProps } from "./components/Popover/Popover";
 
 export { HoverCard } from "./components/HoverCard/HoverCard";
 export type { HoverCardOwnProps } from "./components/HoverCard/HoverCard";
+
+export { FileUpload } from "./components/FileUpload/FileUpload";
+export type { FileUploadProps, FileUploadOwnProps, FileUploadErrorType } from "./components/FileUpload/FileUpload";
+
+export { InputOTP } from "./components/InputOTP/InputOTP";
+export type { InputOTPProps, InputOTPOwnProps } from "./components/InputOTP/InputOTP";
+
+export { TagInput } from "./components/TagInput/TagInput";
+export type { TagInputProps, TagInputOwnProps } from "./components/TagInput/TagInput";
