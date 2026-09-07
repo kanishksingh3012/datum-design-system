@@ -227,3 +227,16 @@ export type { FileDiffOwnProps, DiffRow, DiffRowKind } from "./components/FileDi
 export { MessageScroller, useStickToBottom, StickToBottomController } from "./components/MessageScroller/MessageScroller";
 export type { MessageScrollerOwnProps } from "./components/MessageScroller/MessageScroller";
 export type { UseStickToBottomOptions } from "./lib/useStickToBottom";
+
+export { MessageList, Message, MessageBubble } from "./components/Message/Message";
+export type {
+  MessageListOwnProps,
+  MessageOwnProps,
+  MessageAuthor,
+  MessageBubbleOwnProps,
+  MessageTone,
+  MessageAlign,
+} from "./components/Message/Message";
+
+export { AgentActivity } from "./components/AgentActivity/AgentActivity";
+export type { AgentActivityOwnProps, AgentActivityItemDef, AgentActivityStepKind } from "./components/AgentActivity/AgentActivity";

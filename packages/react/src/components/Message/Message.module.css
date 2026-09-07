@@ -1,0 +1,100 @@
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-default);
+}
+.item {
+  display: contents;
+}
+.article {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.article[data-author="user"] {
+  align-items: flex-end;
+}
+.animateOnMount {
+  animation: datum-message-enter var(--motion-normal) var(--motion-easing) both;
+}
+@keyframes datum-message-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animateOnMount {
+    animation: none;
+  }
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--type-caption-size);
+  color: var(--color-text-secondary);
+}
+.avatar {
+  display: inline-flex;
+}
+.name {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.metadata {
+  color: var(--color-text-disabled);
+}
+.body {
+  max-width: 70ch;
+}
+.bubble {
+  border-radius: var(--radius-card);
+  padding: var(--space-compact) var(--space-default);
+  max-width: 70ch;
+}
+.bubble[data-align="end"] {
+  margin-left: auto;
+}
+.bubble[data-align="center"] {
+  margin-left: auto;
+  margin-right: auto;
+}
+.bubble[data-tone="neutral"] {
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+}
+.bubble[data-tone="accent"] {
+  background: var(--color-bg-accent);
+  color: var(--color-text-onAccent);
+}
+.bubble[data-tone="muted"] {
+  background: none;
+  color: var(--color-text-secondary);
+}
+.bubble[data-tone="danger"] {
+  background: var(--color-bg-dangerSubtle);
+  color: var(--color-text-danger);
+}
+.expandSummary {
+  font-size: var(--type-caption-size);
+  font-weight: 600;
+  cursor: pointer;
+  min-height: var(--interaction-minTarget);
+  display: flex;
+  align-items: center;
+}
+.expandSummary:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.bubbleContent {
+  font-size: var(--type-body-size);
+}
