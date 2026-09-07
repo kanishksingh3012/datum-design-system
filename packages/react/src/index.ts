@@ -190,3 +190,15 @@ export type {
   NavigationMenuTriggerOwnProps,
   NavigationMenuContentOwnProps,
 } from "./components/NavigationMenu/NavigationMenu";
+
+export { ThinkingIndicator } from "./components/ThinkingIndicator/ThinkingIndicator";
+export type { ThinkingIndicatorOwnProps } from "./components/ThinkingIndicator/ThinkingIndicator";
+
+export { Suggestion, SuggestionItem } from "./components/Suggestion/Suggestion";
+export type { SuggestionOwnProps, SuggestionItemProps } from "./components/Suggestion/Suggestion";
+
+export { Reasoning } from "./components/Reasoning/Reasoning";
+export type { ReasoningOwnProps } from "./components/Reasoning/Reasoning";
+
+export { ToolCall } from "./components/ToolCall/ToolCall";
+export type { ToolCallOwnProps, ToolCallStatus } from "./components/ToolCall/ToolCall";

@@ -1,0 +1,41 @@
+.root {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-control);
+  padding: 0 var(--space-default);
+}
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: var(--interaction-minTarget);
+  font-size: var(--type-bodySmall-size);
+  font-weight: var(--type-label-weight);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+.summary:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.liveDot {
+  display: inline-flex;
+}
+.liveDot span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-bg-accent);
+  animation: datum-reasoning-pulse 1.2s ease-in-out infinite;
+}
+@keyframes datum-reasoning-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liveDot span { animation: none; }
+}
+.content {
+  padding: 0 0 var(--space-default);
+  font-size: var(--type-bodySmall-size);
+  color: var(--color-text-secondary);
+}
