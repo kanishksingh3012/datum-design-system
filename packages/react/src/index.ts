@@ -50,3 +50,20 @@ export type { ToastProps, ToastOwnProps } from "./components/Toast/Toast";
 
 export { Dialog } from "./components/Dialog/Dialog";
 export type { DialogProps, DialogOwnProps } from "./components/Dialog/Dialog";
+
+export { Label } from "./components/Label/Label";
+export type { LabelProps, LabelOwnProps } from "./components/Label/Label";
+
+export { Separator } from "./components/Separator/Separator";
+export type { SeparatorProps, SeparatorOwnProps, SeparatorOrientation } from "./components/Separator/Separator";
+
+export { Toggle } from "./components/Toggle/Toggle";
+export type { ToggleProps, ToggleOwnProps } from "./components/Toggle/Toggle";
+
+export { Accordion, AccordionItem } from "./components/Accordion/Accordion";
+export type {
+  AccordionProps,
+  AccordionOwnProps,
+  AccordionItemProps,
+  AccordionItemOwnProps,
+} from "./components/Accordion/Accordion";
