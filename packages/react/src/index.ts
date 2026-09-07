@@ -172,3 +172,6 @@ export type { CarouselOwnProps, CarouselSlideDef } from "./components/Carousel/C
 
 export { DataTable } from "./components/DataTable/DataTable";
 export type { DataTableOwnProps, DataTableColumn } from "./components/DataTable/DataTable";
+
+export { Sheet } from "./components/Sheet/Sheet";
+export type { SheetOwnProps, SheetSide } from "./components/Sheet/Sheet";
