@@ -1,0 +1,75 @@
+.root {
+  display: block;
+}
+.list {
+  display: flex;
+  gap: var(--space-default);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.item {
+  position: relative;
+}
+.link {
+  font-family: var(--font-body);
+  font-size: var(--type-body-size);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  min-height: var(--interaction-minTarget);
+  display: inline-flex;
+  align-items: center;
+}
+.link:hover {
+  color: var(--color-text-primary);
+}
+.link:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.link[aria-current="page"] {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-body);
+  font-size: var(--type-body-size);
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  min-height: var(--interaction-minTarget);
+  cursor: pointer;
+}
+.trigger:hover {
+  color: var(--color-text-primary);
+}
+.trigger:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.trigger[aria-expanded="true"] {
+  color: var(--color-text-primary);
+}
+.chevron {
+  width: 12px;
+  height: 12px;
+  transition: transform var(--motion-fast) var(--motion-easing);
+}
+.trigger[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+.content {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+  min-width: 280px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-overlay);
+  padding: var(--space-default);
+}

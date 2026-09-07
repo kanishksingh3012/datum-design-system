@@ -175,3 +175,18 @@ export type { DataTableOwnProps, DataTableColumn } from "./components/DataTable/
 
 export { Sheet } from "./components/Sheet/Sheet";
 export type { SheetOwnProps, SheetSide } from "./components/Sheet/Sheet";
+
+export {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+} from "./components/NavigationMenu/NavigationMenu";
+export type {
+  NavigationMenuOwnProps,
+  NavigationMenuItemOwnProps,
+  NavigationMenuLinkOwnProps,
+  NavigationMenuTriggerOwnProps,
+  NavigationMenuContentOwnProps,
+} from "./components/NavigationMenu/NavigationMenu";
