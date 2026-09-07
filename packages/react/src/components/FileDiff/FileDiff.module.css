@@ -1,0 +1,87 @@
+.root {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+  padding: 0 var(--space-default);
+  overflow: hidden;
+}
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: var(--interaction-minTarget);
+  cursor: pointer;
+}
+.summary:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.path {
+  font-family: var(--font-mono);
+  font-size: var(--type-bodySmall-size);
+  color: var(--color-text-primary);
+}
+.counts {
+  display: flex;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption-size);
+  font-weight: 600;
+}
+.added {
+  color: var(--color-text-success);
+}
+.removed {
+  color: var(--color-text-danger);
+}
+.table {
+  width: calc(100% + 2 * var(--space-default));
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: var(--type-bodySmall-size);
+  margin: 0 calc(-1 * var(--space-default)) var(--space-default);
+}
+.caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.row[data-kind="add"] {
+  background: var(--color-bg-successSubtle);
+}
+.row[data-kind="remove"] {
+  background: var(--color-bg-dangerSubtle);
+}
+.row[data-kind="hunk"] {
+  color: var(--color-text-secondary);
+}
+.lineNumber {
+  width: 3ch;
+  text-align: right;
+  padding: 0.1rem 0.5rem;
+  color: var(--color-text-disabled);
+  user-select: none;
+}
+.marker {
+  width: 2ch;
+  text-align: center;
+  padding: 0.1rem 0;
+  color: var(--color-text-secondary);
+}
+.row[data-kind="add"] .marker {
+  color: var(--color-text-success);
+}
+.row[data-kind="remove"] .marker {
+  color: var(--color-text-danger);
+}
+.content {
+  padding: 0.1rem 0.5rem;
+  white-space: pre;
+  color: var(--color-text-primary);
+}

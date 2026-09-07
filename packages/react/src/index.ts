@@ -215,3 +215,11 @@ export type { SourcesOwnProps, SourceOwnProps, CitationOwnProps } from "./compon
 
 export { Composer } from "./components/Composer/Composer";
 export type { ComposerOwnProps } from "./components/Composer/Composer";
+
+export { CodeBlock } from "./components/CodeBlock/CodeBlock";
+export type { CodeBlockOwnProps } from "./components/CodeBlock/CodeBlock";
+export { linesFromCode, linesText } from "./lib/codeTokens";
+export type { CodeToken, CodeLine } from "./lib/codeTokens";
+
+export { FileDiff } from "./components/FileDiff/FileDiff";
+export type { FileDiffOwnProps, DiffRow, DiffRowKind } from "./components/FileDiff/FileDiff";
