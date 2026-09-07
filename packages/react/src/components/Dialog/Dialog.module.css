@@ -1,0 +1,31 @@
+.root {
+  border: none;
+  padding: 0;
+  background: transparent;
+  max-width: min(420px, calc(100vw - 2 * var(--space-default)));
+}
+.root::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+.panel {
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-card);
+  padding: var(--space-section);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: var(--elevation-overlay);
+}
+.title {
+  font-size: var(--type-h3-size);
+  font-weight: var(--type-h3-weight);
+  line-height: var(--type-h3-lineHeight);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+.body {
+  font-size: var(--type-body-size);
+  color: var(--color-text-secondary);
+  line-height: var(--type-body-lineHeight);
+  margin: 0;
+}

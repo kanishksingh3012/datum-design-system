@@ -47,3 +47,6 @@ export type { TabsProps, TabsOwnProps, TabItem } from "./components/Tabs/Tabs";
 
 export { Toast } from "./components/Toast/Toast";
 export type { ToastProps, ToastOwnProps } from "./components/Toast/Toast";
+
+export { Dialog } from "./components/Dialog/Dialog";
+export type { DialogProps, DialogOwnProps } from "./components/Dialog/Dialog";
