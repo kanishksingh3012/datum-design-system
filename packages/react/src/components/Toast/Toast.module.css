@@ -1,0 +1,27 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--color-text-primary);
+  color: var(--color-bg-page);
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-control);
+  box-shadow: var(--elevation-overlay);
+  font-size: var(--type-bodySmall-size);
+}
+.dismiss {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+.dismiss svg {
+  width: 14px;
+  height: 14px;
+}
+.dismiss:hover {
+  opacity: 1;
+}

@@ -38,3 +38,12 @@ export type { TextareaProps, TextareaOwnProps } from "./components/Textarea/Text
 
 export { Alert } from "./components/Alert/Alert";
 export type { AlertProps, AlertOwnProps, AlertVariant } from "./components/Alert/Alert";
+
+export { Select } from "./components/Select/Select";
+export type { SelectProps, SelectOwnProps } from "./components/Select/Select";
+
+export { Tabs } from "./components/Tabs/Tabs";
+export type { TabsProps, TabsOwnProps, TabItem } from "./components/Tabs/Tabs";
+
+export { Toast } from "./components/Toast/Toast";
+export type { ToastProps, ToastOwnProps } from "./components/Toast/Toast";
