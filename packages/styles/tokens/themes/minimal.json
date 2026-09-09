@@ -2,7 +2,7 @@
   "_meta": {
     "label": "Minimal & neutral",
     "description": "Foundation theme — whitespace does the work, one restrained accent",
-    "googleFonts": ["Geist:wght@400;500;600;700", "Geist+Mono:wght@400;500;600"]
+    "googleFonts": ["Instrument+Sans:wght@400;500;600;700", "Barlow:wght@700;800", "IBM+Plex+Mono:wght@400;500"]
   },
   "color": {
     "bg": {
@@ -38,9 +38,9 @@
     }
   },
   "font": {
-    "display": "'Geist', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-    "body": "'Geist', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-    "mono": "'Geist Mono', 'SF Mono', Menlo, Consolas, monospace"
+    "display": "'Barlow', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    "body": "'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    "mono": "'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace"
   },
   "space": {
     "compact": "{spacing.2}",
@@ -50,7 +50,7 @@
   "radius": {
     "base": "{radius.base}",
     "control": "{radius.md}",
-    "card": "{radius.lg}"
+    "card": "{radius.base}"
   },
   "icon": {
     "inline": "{icon.sm}",
@@ -78,9 +78,9 @@
     "easing": "cubic-bezier(.4,0,.2,1)"
   },
   "type": {
-    "display":   { "size": "{fontSize.5xl}", "weight": "{fontWeight.bold}",     "lineHeight": "{lineHeight.tight}" },
-    "h1":        { "size": "{fontSize.4xl}", "weight": "{fontWeight.bold}",     "lineHeight": "{lineHeight.tight}" },
-    "h2":        { "size": "{fontSize.3xl}", "weight": "{fontWeight.semibold}", "lineHeight": "{lineHeight.snug}" },
+    "display":   { "size": "{fontSize.5xl}", "weight": "{fontWeight.extrabold}", "lineHeight": "{lineHeight.tight}" },
+    "h1":        { "size": "{fontSize.4xl}", "weight": "{fontWeight.extrabold}", "lineHeight": "{lineHeight.tight}" },
+    "h2":        { "size": "{fontSize.3xl}", "weight": "{fontWeight.extrabold}", "lineHeight": "{lineHeight.snug}" },
     "h3":        { "size": "{fontSize.xl}",  "weight": "{fontWeight.semibold}", "lineHeight": "{lineHeight.snug}" },
     "body":      { "size": "{fontSize.md}",  "weight": "{fontWeight.regular}",  "lineHeight": "{lineHeight.normal}" },
     "bodySmall": { "size": "{fontSize.sm}",  "weight": "{fontWeight.regular}",  "lineHeight": "{lineHeight.normal}" },

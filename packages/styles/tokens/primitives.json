@@ -10,16 +10,16 @@
     "pink":   { "50": "#F9F6F7", "100": "#F2E8ED", "200": "#E6CBD9", "300": "#DB9FBD", "400": "#D4699E", "500": "#D22D80", "600": "#A92869", "700": "#842454", "800": "#601F40", "900": "#361626" }
   },
   "spacing": { "0": "0px", "1": "4px", "2": "8px", "3": "12px", "4": "16px", "5": "20px", "6": "24px", "8": "32px", "10": "40px", "12": "48px", "16": "64px" },
-  "radius": { "base": "8px", "none": "0px", "sm": "calc(var(--radius-base) * 0.5)", "md": "var(--radius-base)", "lg": "calc(var(--radius-base) * 2)", "pill": "999px" },
+  "radius": { "base": "10px", "none": "0px", "sm": "calc(var(--radius-base) * 0.5)", "md": "var(--radius-base)", "lg": "calc(var(--radius-base) * 2)", "pill": "999px" },
   "icon": { "sm": "16px", "md": "24px", "lg": "32px" },
   "breakpoint": { "sm": "640px", "md": "768px", "lg": "1024px", "xl": "1280px", "2xl": "1536px" },
   "interaction": { "minTarget": "44px" },
   "fontSize": { "xs": "12px", "sm": "14px", "md": "16px", "lg": "18px", "xl": "20px", "2xl": "24px", "3xl": "32px", "4xl": "40px", "5xl": "48px" },
-  "fontWeight": { "regular": "400", "medium": "500", "semibold": "600", "bold": "700" },
+  "fontWeight": { "regular": "400", "medium": "500", "semibold": "600", "bold": "700", "extrabold": "800" },
   "lineHeight": { "tight": "1.2", "snug": "1.3", "normal": "1.5", "relaxed": "1.7" },
   "shadow": {
-    "sm": "0 1px 2px rgba(0,0,0,0.08)",
-    "md": "0 4px 12px rgba(0,0,0,0.12)"
+    "sm": "0px 4px 10px rgba(100,116,145,0.10), 0px 14px 28px rgba(100,116,145,0.12)",
+    "md": "0px 8px 20px rgba(100,116,145,0.14), 0px 24px 48px rgba(100,116,145,0.18)"
   },
   "motion": { "fast": "120ms", "normal": "200ms", "slow": "320ms" }
 }
