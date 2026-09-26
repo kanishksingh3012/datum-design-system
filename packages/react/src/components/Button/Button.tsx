@@ -1,4 +1,5 @@
-import { forwardRef, type ButtonHTMLAttributes, type MouseEvent, type ReactElement, type ReactNode } from "react";
+import { forwardRef, useContext, type ButtonHTMLAttributes, type MouseEvent, type ReactElement, type ReactNode } from "react";
+import { ButtonGroupContext } from "../../lib/buttonGroupContext";
 import styles from "./Button.module.css";
 
 export type ButtonIntent = "accent" | "neutral" | "danger";
@@ -63,9 +64,9 @@ export type ButtonProps = ButtonOwnProps & Omit<ButtonHTMLAttributes<HTMLButtonE
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
-    intent = "accent",
-    appearance = "solid",
-    size = "md",
+    intent: intentProp,
+    appearance: appearanceProp,
+    size: sizeProp,
     loading = false,
     prefix,
     suffix,
@@ -85,6 +86,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   },
   ref
 ) {
+  const group = useContext(ButtonGroupContext);
+  const intent = intentProp ?? group?.intent ?? "accent";
+  const appearance = appearanceProp ?? group?.appearance ?? "solid";
+  const size = sizeProp ?? group?.size ?? "md";
   const isBlocked = disabled || loading;
   const isToggle = pressed !== undefined;
 
@@ -115,6 +120,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     "data-icon-only": iconOnly || undefined,
     "data-floating": floating || undefined,
     "data-full-width": fullWidth || undefined,
+    "data-group": group?.attached ? "attached" : undefined,
     "data-pressed": isToggle && pressed ? true : undefined,
     "aria-busy": loading || undefined,
     "aria-pressed": isToggle ? pressed : undefined,

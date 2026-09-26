@@ -46,7 +46,7 @@
     "border": {
       "subtle": ["{color.stone.100}","{color.stone.900}"],
       "default": ["{color.stone.200}","{color.stone.800}"],
-      "strong": "{color.stone.500}",
+      "strong": ["{color.stone.500}","{color.stone.400}"],
       "focus": ["{color.orange.600}","{color.orange.400}"],
       "accent": ["{color.orange.600}","{color.orange.500}"],
       "danger": ["{color.crimson.600}","{color.crimson.400}"],

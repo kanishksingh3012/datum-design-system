@@ -163,7 +163,7 @@
   --color-text-onInfo: #FFFFFF;
   --color-border-subtle: light-dark(#E5E8EC, #343A40);
   --color-border-default: light-dark(#CED4DA, #3F464D);
-  --color-border-strong: #818A93;
+  --color-border-strong: light-dark(#666E77, #9FA7B0);
   --color-border-focus: light-dark(#486EB6, #AAC3F1);
   --color-border-accent: light-dark(#355695, #85A6E2);
   --color-border-danger: light-dark(#D52F4A, #FD8188);
@@ -342,7 +342,7 @@
   --color-text-onInfo: #FFFFFF;
   --color-border-subtle: light-dark(#F6F1EC, #323232);
   --color-border-default: light-dark(#E7E2DD, #424140);
-  --color-border-strong: #8C8885;
+  --color-border-strong: light-dark(#8C8885, #AFABA8);
   --color-border-focus: light-dark(#DA540A, #FF9A64);
   --color-border-accent: light-dark(#DA540A, #FC6E20);
   --color-border-danger: light-dark(#D52F4A, #FD8188);

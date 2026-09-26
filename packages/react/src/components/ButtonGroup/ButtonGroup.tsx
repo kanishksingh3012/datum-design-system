@@ -1,4 +1,6 @@
-import { forwardRef, type HTMLAttributes } from "react";
+import { forwardRef, useMemo, type HTMLAttributes } from "react";
+import { ButtonGroupContext } from "../../lib/buttonGroupContext";
+import type { ButtonAppearance, ButtonIntent, ButtonSize } from "../Button/Button";
 import styles from "./ButtonGroup.module.css";
 
 export type ButtonGroupOrientation = "horizontal" | "vertical";
@@ -6,27 +8,42 @@ export type ButtonGroupOrientation = "horizontal" | "vertical";
 export interface ButtonGroupOwnProps {
   /** @default "horizontal" */
   orientation?: ButtonGroupOrientation;
+  /**
+   * Joins the buttons into one track: no borders between segments, and a
+   * pressed segment becomes a raised thumb (use `pressed` on each Button for
+   * a view switcher). Without it, the buttons are simply spaced. @default false
+   */
+  attached?: boolean;
+  /** Passed down to every Button; a Button's own prop wins. */
+  size?: ButtonSize;
+  /** Passed down to every Button in a spaced group; a Button's own prop wins. */
+  intent?: ButtonIntent;
+  /** Passed down to every Button in a spaced group; a Button's own prop wins. */
+  appearance?: ButtonAppearance;
 }
 
 export type ButtonGroupProps = ButtonGroupOwnProps & HTMLAttributes<HTMLDivElement>;
 
 /**
- * Visually merges adjacent Buttons into a single segmented control via
- * CSS on direct children — it doesn't clone or inspect its children, so
- * any Button-shaped element works, including ones rendered via `render`.
+ * Related actions as one unit. Vertical groups are as wide as their widest
+ * button, and every button shares that width.
  */
 export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function ButtonGroup(
-  { orientation = "horizontal", role = "group", className, ...rest },
+  { orientation = "horizontal", attached = false, size, intent, appearance, role = "group", className, ...rest },
   ref
 ) {
+  const context = useMemo(() => ({ size, intent, appearance, attached }), [size, intent, appearance, attached]);
   return (
-    <div
-      ref={ref}
-      role={role}
-      data-orientation={orientation}
-      className={[styles.root, className].filter(Boolean).join(" ")}
-      {...rest}
-    />
+    <ButtonGroupContext.Provider value={context}>
+      <div
+        ref={ref}
+        role={role}
+        data-orientation={orientation}
+        data-attached={attached || undefined}
+        className={[styles.root, className].filter(Boolean).join(" ")}
+        {...rest}
+      />
+    </ButtonGroupContext.Provider>
   );
 });
 

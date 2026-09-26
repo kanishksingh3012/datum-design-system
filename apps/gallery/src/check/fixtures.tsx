@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { Button } from "@datum-design/react";
-import { Plus } from "lucide-react";
+import { Button, ButtonGroup } from "@datum-design/react";
+import { AlignCenter, AlignLeft, AlignRight, Plus } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
 const appearances = ["solid", "soft", "outline", "ghost"] as const;
@@ -54,6 +54,45 @@ export const fixtures: Record<string, () => ReactNode> = {
       <div className="row">
         <Button render={(props) => <a href="#check" {...props} />}>Rendered as link</Button>
       </div>
+    </>
+  ),
+  ButtonGroup: () => (
+    <>
+      {(["horizontal", "vertical", "on-surface"] as const).map((variant) => {
+        const orientation = variant === "vertical" ? "vertical" : "horizontal";
+        return (
+        <div className="row" key={variant} style={variant === "on-surface" ? { background: "var(--color-bg-surface)" } : undefined}>
+          {sizes.map((size) => (
+            <ButtonGroup key={size} attached orientation={orientation} size={size} aria-label={`attached ${orientation} ${size}`}>
+              <Button pressed={false} onPressedChange={noop}>{`Day ${size}`}</Button>
+              <Button pressed onPressedChange={noop}>{`Week ${size}`}</Button>
+              <Button pressed={false} onPressedChange={noop} disabled>
+                Month
+              </Button>
+            </ButtonGroup>
+          ))}
+          <ButtonGroup attached orientation={orientation} aria-label="attached icons">
+            <Button iconOnly label="Left" pressed onPressedChange={noop}>
+              <AlignLeft />
+            </Button>
+            <Button iconOnly label="Center" pressed={false} onPressedChange={noop}>
+              <AlignCenter />
+            </Button>
+            <Button iconOnly label="Right" pressed={false} onPressedChange={noop}>
+              <AlignRight />
+            </Button>
+          </ButtonGroup>
+          {appearances.map((appearance) => (
+            <ButtonGroup key={appearance} orientation={orientation} intent="neutral" appearance={appearance}>
+              <Button>{`Spaced ${appearance}`}</Button>
+              <Button intent="accent" appearance="solid">
+                Save
+              </Button>
+            </ButtonGroup>
+          ))}
+        </div>
+        );
+      })}
     </>
   ),
 };

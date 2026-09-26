@@ -85,7 +85,7 @@ Each theme also has an ink fill for neutral solid buttons and dark bands: `bg.in
 ### Rules for both
 - A fill (`bg.accent`, `bg.danger`, …) is always paired with its `text.on*` token. **Never hardcode white on an accent** — orange's on-accent is dark.
 - Colored text on the page uses `text.*` roles, which are chosen per mode for contrast.
-- Borders on interactive controls (`border.strong`, `border.focus`) meet 3:1; `border.subtle` and `border.default` are decorative and have no minimum.
+- Borders on interactive controls (`border.strong`, `border.focus`) meet 3:1 against both the page and `bg.surface`; `border.subtle` and `border.default` are decorative and have no minimum.
 
 ## Typography
 
@@ -151,3 +151,5 @@ Radius is still one base (10px) times a ratio underneath (xs ×0.25 through 3xl 
 - **2026-09-27** — Header, Nav and NavigationMenu merge into one versatile Navbar. Table and Slider stay in wave 2; page blocks come after the components. Component plan approved.
 - **2026-09-27** — Button rebuilt to the plan (intent × appearance × size, pill only, ink for neutral solid). `npm run check` added: every registered component is rendered in all four combinations and fails on contrast or hardcoded colors.
 - **2026-09-27** — Navy accent fill moved from navy-900 to navy-700 (hover navy-600, active navy-800) so it is distinct from the ink button in light mode.
+- **2026-09-27** — ButtonGroup rebuilt: spaced by default; `attached` is one tinted track with a raised thumb for the pressed segment (chosen over a split-pill design). Vertical tracks use `radius.card`, and their segments use `radius.card` minus the track inset so the corners stay concentric. `size`, `intent` and `appearance` pass down to child Buttons.
+- **2026-09-27** — `border.strong` becomes mode-aware (navy: slate-600 / slate-400; orange: stone-500 / stone-400). It failed 3:1 on `bg.surface` in three of the four combinations.

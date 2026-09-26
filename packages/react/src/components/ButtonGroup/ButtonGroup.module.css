@@ -1,46 +1,36 @@
+/* Hugs its content. Vertical items stretch to the widest one. */
 .root {
   display: inline-flex;
-}
-
-.root[data-orientation="horizontal"] {
-  flex-direction: row;
-}
-.root[data-orientation="horizontal"] > :global(button) {
-  border-radius: 0;
-}
-.root[data-orientation="horizontal"] > :global(button):not(:first-child) {
-  margin-left: -1px;
-}
-.root[data-orientation="horizontal"] > :global(button):first-child {
-  border-top-left-radius: var(--radius-pill);
-  border-bottom-left-radius: var(--radius-pill);
-}
-.root[data-orientation="horizontal"] > :global(button):last-child {
-  border-top-right-radius: var(--radius-pill);
-  border-bottom-right-radius: var(--radius-pill);
+  gap: var(--space-compact);
 }
 
 .root[data-orientation="vertical"] {
   flex-direction: column;
-}
-.root[data-orientation="vertical"] > :global(button) {
-  border-radius: 0;
-}
-.root[data-orientation="vertical"] > :global(button):not(:first-child) {
-  margin-top: -1px;
-}
-.root[data-orientation="vertical"] > :global(button):first-child {
-  border-top-left-radius: var(--radius-pill);
-  border-top-right-radius: var(--radius-pill);
-}
-.root[data-orientation="vertical"] > :global(button):last-child {
-  border-bottom-left-radius: var(--radius-pill);
-  border-bottom-right-radius: var(--radius-pill);
+  align-items: stretch;
 }
 
-.root > :global(button) {
+/* attached — one track; the segment treatment lives in Button (data-group="attached") */
+.root[data-attached] {
+  --_inset: calc(var(--space-compact) / 2);
+  gap: calc(var(--space-compact) / 4);
+  padding: var(--_inset);
+  /* a tint of the text color, so the track shows on the page and on any surface */
+  background: color-mix(in oklab, var(--color-text-primary) 7%, transparent);
+  border-radius: var(--radius-control);
+}
+
+/* a tall box is never a pill; segments nest inside it with outer radius − inset,
+   so the thumb's corners run parallel to the track's */
+.root[data-attached][data-orientation="vertical"] {
+  border-radius: var(--radius-card);
+}
+.root[data-attached][data-orientation="vertical"] > * {
+  border-radius: calc(var(--radius-card) - var(--_inset));
+}
+
+.root > * {
   position: relative;
 }
-.root > :global(button):focus-visible {
+.root > :focus-visible {
   z-index: 1;
 }

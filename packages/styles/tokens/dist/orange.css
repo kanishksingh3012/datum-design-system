@@ -163,7 +163,7 @@
   --color-text-onInfo: #FFFFFF;
   --color-border-subtle: light-dark(#F6F1EC, #323232);
   --color-border-default: light-dark(#E7E2DD, #424140);
-  --color-border-strong: #8C8885;
+  --color-border-strong: light-dark(#8C8885, #AFABA8);
   --color-border-focus: light-dark(#DA540A, #FF9A64);
   --color-border-accent: light-dark(#DA540A, #FC6E20);
   --color-border-danger: light-dark(#D52F4A, #FD8188);

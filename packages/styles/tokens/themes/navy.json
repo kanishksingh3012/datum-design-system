@@ -46,7 +46,7 @@
     "border": {
       "subtle": ["{color.slate.100}","{color.slate.900}"],
       "default": ["{color.slate.200}","{color.slate.800}"],
-      "strong": "{color.slate.500}",
+      "strong": ["{color.slate.600}","{color.slate.400}"],
       "focus": ["{color.navy.600}","{color.navy.300}"],
       "accent": ["{color.navy.700}","{color.navy.400}"],
       "danger": ["{color.crimson.600}","{color.crimson.400}"],
