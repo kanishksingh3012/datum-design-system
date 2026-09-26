@@ -1,0 +1,27 @@
+.root {
+  color: var(--color-text-accent);
+  font-family: var(--font-body);
+  text-decoration-line: underline;
+  text-underline-offset: 2px;
+  border-radius: 2px;
+}
+
+.root:hover {
+  filter: brightness(0.85);
+}
+
+.root:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.root[data-underline="hover"] {
+  text-decoration-line: none;
+}
+.root[data-underline="hover"]:hover {
+  text-decoration-line: underline;
+}
+
+.root[data-underline="none"] {
+  text-decoration-line: none;
+}

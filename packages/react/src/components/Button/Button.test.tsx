@@ -9,11 +9,21 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Save" }).tagName).toBe("BUTTON");
   });
 
-  it("defaults to variant=primary and size=default", () => {
+  it("defaults to variant=primary and size=md", () => {
     render(<Button>Save</Button>);
     const button = screen.getByRole("button", { name: "Save" });
     expect(button).toHaveAttribute("data-variant", "primary");
-    expect(button).toHaveAttribute("data-size", "default");
+    expect(button).toHaveAttribute("data-size", "md");
+  });
+
+  it("reflects every documented variant via data-variant", () => {
+    const variants = ["primary", "secondary", "tertiary", "outline", "text", "link", "danger", "danger-soft"] as const;
+    for (const variant of variants) {
+      render(<Button variant={variant}>Action</Button>);
+    }
+    for (const variant of variants) {
+      expect(screen.getAllByRole("button").some((b) => b.getAttribute("data-variant") === variant)).toBe(true);
+    }
   });
 
   it("reflects variant and size props via data attributes", () => {
@@ -73,5 +83,77 @@ describe("Button", () => {
     expect(link).toHaveAttribute("aria-disabled", "true");
     expect(link).toHaveAttribute("tabindex", "-1");
     expect(link).not.toHaveAttribute("disabled");
+  });
+
+  it("renders prefix before and suffix after the label", () => {
+    render(
+      <Button prefix={<span data-testid="prefix">P</span>} suffix={<span data-testid="suffix">S</span>}>
+        Continue
+      </Button>
+    );
+    const button = screen.getByRole("button", { name: "P Continue S" });
+    const prefix = screen.getByTestId("prefix");
+    const suffix = screen.getByTestId("suffix");
+    expect(button.firstChild).toBe(prefix);
+    expect(button.lastChild).toBe(suffix);
+  });
+
+  it("replaces prefix with the spinner while loading, and hides suffix", () => {
+    render(
+      <Button loading prefix={<span data-testid="prefix">P</span>} suffix={<span data-testid="suffix">S</span>}>
+        Continue
+      </Button>
+    );
+    expect(screen.queryByTestId("prefix")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("suffix")).not.toBeInTheDocument();
+  });
+
+  it("renders icon-only with the label as its accessible name", () => {
+    render(
+      <Button iconOnly label="Search" data-testid="glyph">
+        <svg aria-hidden="true" />
+      </Button>
+    );
+    const button = screen.getByRole("button", { name: "Search" });
+    expect(button).toHaveAttribute("data-icon-only", "true");
+  });
+
+  it("acts as an uncontrolled-free toggle when pressed is provided", async () => {
+    const onPressedChange = vi.fn();
+    render(
+      <Button pressed={false} onPressedChange={onPressedChange}>
+        Favorite
+      </Button>
+    );
+    const button = screen.getByRole("button", { name: "Favorite" });
+    expect(button).toHaveAttribute("aria-pressed", "false");
+    expect(button).not.toHaveAttribute("data-pressed");
+    await userEvent.click(button);
+    expect(onPressedChange).toHaveBeenCalledWith(true);
+  });
+
+  it("reflects pressed=true via aria-pressed and data-pressed", () => {
+    render(
+      <Button pressed onPressedChange={() => {}}>
+        Favorite
+      </Button>
+    );
+    const button = screen.getByRole("button", { name: "Favorite" });
+    expect(button).toHaveAttribute("aria-pressed", "true");
+    expect(button).toHaveAttribute("data-pressed", "true");
+  });
+
+  it("does not expose aria-pressed when pressed is never passed", () => {
+    render(<Button>Save</Button>);
+    expect(screen.getByRole("button", { name: "Save" })).not.toHaveAttribute("aria-pressed");
+  });
+
+  it("reflects the floating (FAB) treatment via data-floating", () => {
+    render(
+      <Button floating iconOnly label="New project">
+        <svg aria-hidden="true" />
+      </Button>
+    );
+    expect(screen.getByRole("button", { name: "New project" })).toHaveAttribute("data-floating", "true");
   });
 });

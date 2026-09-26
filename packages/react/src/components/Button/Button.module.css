@@ -6,7 +6,7 @@
   font-family: var(--font-body);
   font-weight: 500;
   font-size: var(--type-body-size);
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-pill);
   border: 1px solid transparent;
   cursor: pointer;
   min-height: var(--interaction-minTarget);
@@ -14,6 +14,8 @@
   transition:
     filter var(--motion-fast) var(--motion-easing),
     background var(--motion-fast) var(--motion-easing),
+    border-color var(--motion-fast) var(--motion-easing),
+    box-shadow var(--motion-fast) var(--motion-easing),
     transform var(--motion-fast) var(--motion-easing);
 }
 
@@ -34,40 +36,168 @@
 
 .root[data-size="sm"] {
   min-height: 36px;
-  padding: 0 var(--space-compact);
+  padding: 0 var(--space-tight);
   font-size: var(--type-caption-size);
 }
 
+.root[data-size="lg"] {
+  min-height: 52px;
+  padding: 0 var(--space-default);
+  font-size: var(--type-h3-size);
+}
+
+/* desktop: precise-pointer contexts don't need the mobile touch-target floor —
+   shrink by 4px per size, matching HeroUI's own responsive pattern exactly.
+   Mobile stays untouched — min-height there is the real WCAG 2.5.5 floor. */
+@media (min-width: 768px) {
+  .root {
+    min-height: 40px;
+  }
+  .root[data-size="sm"] {
+    min-height: 32px;
+  }
+  .root[data-size="lg"] {
+    min-height: 48px;
+  }
+}
+
+/* emphasis tiers — same accent-derived hierarchy, decreasing weight */
 .root[data-variant="primary"] {
   background: var(--color-bg-accent);
   color: var(--color-text-onAccent);
+  box-shadow: var(--elevation-raised);
 }
 .root[data-variant="primary"]:hover:not(:disabled):not([aria-disabled="true"]) {
   filter: brightness(0.92);
+  box-shadow: var(--elevation-overlay);
 }
 
 .root[data-variant="secondary"] {
+  background: var(--color-bg-accentSubtle);
+  color: var(--color-text-accent);
+}
+.root[data-variant="secondary"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  filter: brightness(0.93);
+}
+
+.root[data-variant="tertiary"] {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+.root[data-variant="tertiary"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--color-border-strong);
+}
+
+/* bordered / textual tiers — no fill of their own */
+.root[data-variant="outline"] {
   background: transparent;
   border-color: var(--color-border-strong);
   color: var(--color-text-primary);
 }
-.root[data-variant="secondary"]:hover:not(:disabled):not([aria-disabled="true"]) {
+.root[data-variant="outline"]:hover:not(:disabled):not([aria-disabled="true"]) {
   background: var(--color-bg-surface);
 }
 
-.root[data-variant="ghost"] {
+.root[data-variant="text"] {
   background: transparent;
   color: var(--color-text-primary);
 }
-.root[data-variant="ghost"]:hover:not(:disabled):not([aria-disabled="true"]) {
+.root[data-variant="text"]:hover:not(:disabled):not([aria-disabled="true"]) {
   background: var(--color-bg-surface);
 }
 
+.root[data-variant="link"] {
+  background: transparent;
+  color: var(--color-text-accent);
+  min-height: 0;
+  padding: 0;
+  border-radius: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.root[data-variant="link"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  filter: brightness(0.85);
+}
+.root[data-variant="link"]:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: none;
+}
+
+/* danger tiers */
 .root[data-variant="danger"] {
   background: var(--color-bg-danger);
   color: var(--color-text-onDanger);
+  box-shadow: var(--elevation-raised);
 }
 .root[data-variant="danger"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  filter: brightness(0.92);
+  box-shadow: var(--elevation-overlay);
+}
+
+.root[data-variant="danger-soft"] {
+  background: var(--color-bg-dangerSubtle);
+  color: var(--color-text-danger);
+}
+.root[data-variant="danger-soft"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  filter: brightness(0.93);
+}
+
+/* icon-only — square instead of pill-with-text-padding, pill radius makes it a circle */
+.root[data-icon-only] {
+  width: var(--interaction-minTarget);
+  padding: 0;
+  gap: 0;
+}
+.root[data-icon-only][data-size="sm"] {
+  width: 36px;
+}
+.root[data-icon-only][data-size="lg"] {
+  width: 52px;
+}
+@media (min-width: 768px) {
+  .root[data-icon-only] {
+    width: 40px;
+  }
+  .root[data-icon-only][data-size="sm"] {
+    width: 32px;
+  }
+  .root[data-icon-only][data-size="lg"] {
+    width: 48px;
+  }
+}
+.root[data-icon-only] svg {
+  width: var(--icon-control);
+  height: var(--icon-control);
+}
+.root[data-icon-only][data-size="sm"] svg {
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+}
+
+/* floating — FAB treatment: bigger, elevated, circular or a wide pill */
+.root[data-floating] {
+  box-shadow: var(--elevation-overlay);
+}
+.root[data-floating][data-icon-only] {
+  width: 56px;
+  min-height: 56px;
+}
+.root[data-floating][data-icon-only] svg {
+  width: var(--icon-control);
+  height: var(--icon-control);
+}
+.root[data-floating]:not([data-icon-only]) {
+  min-height: 48px;
+  padding: 0 var(--space-section);
+}
+
+/* pressed — toggle "on" state, overrides variant with a filled-accent treatment */
+.root[data-pressed] {
+  background: var(--color-bg-accent);
+  border-color: var(--color-bg-accent);
+  color: var(--color-text-onAccent);
+  box-shadow: var(--elevation-raised);
+}
+.root[data-pressed]:hover:not(:disabled):not([aria-disabled="true"]) {
   filter: brightness(0.92);
 }
 
@@ -88,6 +218,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .root:active:not(:disabled):not([aria-disabled="true"]) {
+    transform: none;
+  }
   .spinner {
     animation-duration: 1.4s;
   }

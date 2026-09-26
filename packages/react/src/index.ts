@@ -3,8 +3,20 @@ import "./tooltip.css";
 export { Button } from "./components/Button/Button";
 export type { ButtonProps, ButtonOwnProps, ButtonVariant, ButtonSize } from "./components/Button/Button";
 
-export { IconButton } from "./components/IconButton/IconButton";
-export type { IconButtonProps, IconButtonOwnProps } from "./components/IconButton/IconButton";
+export { ButtonGroup } from "./components/ButtonGroup/ButtonGroup";
+export type {
+  ButtonGroupProps,
+  ButtonGroupOwnProps,
+  ButtonGroupOrientation,
+} from "./components/ButtonGroup/ButtonGroup";
+
+export { Link } from "./components/Link/Link";
+export type {
+  LinkProps,
+  LinkOwnProps,
+  LinkUnderline,
+  LinkDecorationStyle,
+} from "./components/Link/Link";
 
 export { Badge } from "./components/Badge/Badge";
 export type { BadgeProps, BadgeOwnProps, BadgeVariant } from "./components/Badge/Badge";
@@ -56,9 +68,6 @@ export type { LabelProps, LabelOwnProps } from "./components/Label/Label";
 
 export { Separator } from "./components/Separator/Separator";
 export type { SeparatorProps, SeparatorOwnProps, SeparatorOrientation } from "./components/Separator/Separator";
-
-export { Toggle } from "./components/Toggle/Toggle";
-export type { ToggleProps, ToggleOwnProps } from "./components/Toggle/Toggle";
 
 export { Accordion, AccordionItem } from "./components/Accordion/Accordion";
 export type {

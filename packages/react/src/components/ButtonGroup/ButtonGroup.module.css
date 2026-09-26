@@ -1,0 +1,46 @@
+.root {
+  display: inline-flex;
+}
+
+.root[data-orientation="horizontal"] {
+  flex-direction: row;
+}
+.root[data-orientation="horizontal"] > :global(button) {
+  border-radius: 0;
+}
+.root[data-orientation="horizontal"] > :global(button):not(:first-child) {
+  margin-left: -1px;
+}
+.root[data-orientation="horizontal"] > :global(button):first-child {
+  border-top-left-radius: var(--radius-pill);
+  border-bottom-left-radius: var(--radius-pill);
+}
+.root[data-orientation="horizontal"] > :global(button):last-child {
+  border-top-right-radius: var(--radius-pill);
+  border-bottom-right-radius: var(--radius-pill);
+}
+
+.root[data-orientation="vertical"] {
+  flex-direction: column;
+}
+.root[data-orientation="vertical"] > :global(button) {
+  border-radius: 0;
+}
+.root[data-orientation="vertical"] > :global(button):not(:first-child) {
+  margin-top: -1px;
+}
+.root[data-orientation="vertical"] > :global(button):first-child {
+  border-top-left-radius: var(--radius-pill);
+  border-top-right-radius: var(--radius-pill);
+}
+.root[data-orientation="vertical"] > :global(button):last-child {
+  border-bottom-left-radius: var(--radius-pill);
+  border-bottom-right-radius: var(--radius-pill);
+}
+
+.root > :global(button) {
+  position: relative;
+}
+.root > :global(button):focus-visible {
+  z-index: 1;
+}
