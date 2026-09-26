@@ -22,7 +22,7 @@ Datum ships two themes as a set — **orange** (warm, high-energy) and **navy** 
 
 ## What's in it
 
-- **171 tokens per theme**, identical names in both themes: color roles, 20 type roles, spacing, radius, elevation, and motion
+- **175 tokens per theme**, identical names in both themes: color roles, 20 type roles, spacing, radius, elevation, and motion
 - `base.json` — everything the themes share (fonts, type roles, spacing, radius, motion)
 - `themes/orange.json`, `themes/navy.json` — color and elevation, mapped onto the primitive ramps
 - `primitives.json` and `contract.json` are exported directly, so you can build another theme against the same contract

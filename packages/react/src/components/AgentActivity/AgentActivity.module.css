@@ -8,7 +8,7 @@
 }
 .step {
   border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-card);
   padding: 0 var(--space-default);
 }
 .summary {

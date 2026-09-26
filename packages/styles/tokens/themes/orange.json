@@ -22,6 +22,8 @@
       "success": "{color.emerald.700}",
       "successSubtle": ["{color.emerald.100}","{color.emerald.950}"],
       "info": "{color.azure.700}",
+      "inverse": ["{color.stone.950}","{color.stone.50}"],
+      "inverseHover": ["{color.stone.800}","{color.stone.200}"],
       "infoSubtle": ["{color.azure.100}","{color.azure.950}"]
     },
     "text": {
@@ -38,6 +40,7 @@
       "success": ["{color.emerald.700}","{color.emerald.400}"],
       "onSuccess": "{color.white}",
       "info": ["{color.azure.700}","{color.azure.400}"],
+      "onInverse": ["{color.stone.50}","{color.stone.950}"],
       "onInfo": "{color.white}"
     },
     "border": {

@@ -1,5 +1,5 @@
 {
-  "status": "draft — awaiting review",
+  "status": "approved 2026-09-27",
   "conventions": {
     "props": [
       [
@@ -35,6 +35,7 @@
     ],
     "rules": [
       "Tokens only — no hex values, pixel font sizes, or hardcoded white on accent fills.",
+      "Pill-first: single-line controls use radius.control (full pill); anything tall or multi-line uses radius.card (20px); checkboxes use radius.subtle so they never read as radios.",
       "Every component is verified in four combinations: orange/navy × light/dark, with automated contrast checks.",
       "Native elements where they are fully stylable (button, input, checkbox, radio); React Aria where behavior is hard (select, menus, dialogs, tabs, tooltips, toasts).",
       "Focus is always visible (border.focus ring); nothing is operable by mouse only.",
@@ -254,12 +255,6 @@
               ""
             ],
             [
-              "shape",
-              "pill · rounded",
-              "pill",
-              "Your call — see decisions"
-            ],
-            [
               "prefix / suffix",
               "ReactNode",
               "—",
@@ -294,6 +289,12 @@
               "boolean",
               "false",
               "New"
+            ],
+            [
+              "intent=\"neutral\" + solid",
+              "—",
+              "—",
+              "Ink button, using the new bg.inverse / text.onInverse tokens"
             ],
             [
               "render",
@@ -1078,41 +1079,77 @@
         {
           "n": "Navbar",
           "st": "rework",
-          "why": "Site header: logo, links, actions, mobile menu.",
+          "why": "One site header for every website layout: marketing sites, docs, dashboards, stores.",
           "props": [
             [
-              "sticky",
-              "boolean",
-              "true",
-              ""
+              "layout",
+              "standard · start · centered",
+              "standard",
+              "standard: logo left, links center, actions right · start: logo and links left · centered: logo in the middle"
             ],
             [
               "appearance",
-              "solid · blur · transparent",
+              "solid · blur · transparent · inverse",
               "solid",
-              "transparent sits over a hero"
+              "transparent sits over a hero and turns solid on scroll · inverse is an ink band"
             ],
             [
-              "links",
-              "items, optionally grouped into dropdowns",
-              "—",
+              "position",
+              "static · sticky · fixed",
+              "sticky",
               ""
             ],
             [
-              "actions",
-              "ReactNode",
-              "—",
-              "Buttons at the end"
+              "hideOnScroll",
+              "boolean",
+              "false",
+              "Slides away scrolling down, returns scrolling up"
             ],
             [
-              "mobile",
-              "auto",
+              "size",
+              "compact · default",
+              "default",
+              "56 / 72px tall"
+            ],
+            [
+              "bordered",
+              "boolean",
+              "true",
+              "Hairline under the bar"
+            ],
+            [
+              "links",
+              "items: href, label, icon, badge, active",
               "—",
-              "Collapses into a Sheet below md"
+              "Current page marked automatically from activeHref"
+            ],
+            [
+              "groups",
+              "dropdown · mega",
+              "—",
+              "A link can open a simple menu or a multi-column mega menu with descriptions"
+            ],
+            [
+              "slots",
+              "logo · search · actions · announcement",
+              "—",
+              "announcement = a thin bar above the navbar"
+            ],
+            [
+              "mobileBreakpoint",
+              "sm · md · lg",
+              "md",
+              "Below it, links move into a Sheet with accordion groups"
+            ],
+            [
+              "maxWidth",
+              "Container sizes",
+              "xl",
+              "Keeps the bar aligned with page content"
             ]
           ],
           "beh": "React Aria",
-          "note": "Consolidates today's Header, Nav and NavigationMenu into one website header."
+          "note": "Replaces Header, Nav and NavigationMenu. Built from Container, Stack, Button, DropdownMenu and Sheet, so it inherits their keyboard and focus behavior."
         },
         {
           "n": "Footer",
@@ -1220,23 +1257,23 @@
   "decisions": [
     [
       "Button shape",
-      "Offer shape=\"rounded\" as an option, or keep pill as Datum's fixed identity for every button?"
+      "Pill only. No rounded option — pill is Datum's identity, and the whole library is pill-first."
     ],
     [
-      "Neutral solid button",
-      "intent=\"neutral\" appearance=\"solid\" needs two new tokens (bg.inverse, text.onInverse) — an ink-filled button. Add them?"
+      "Ink button",
+      "Added: bg.inverse, bg.inverseHover, text.onInverse in both themes (all contrast pairs pass)."
     ],
     [
-      "Navbar consolidation",
-      "Merge Header, Nav and NavigationMenu into one Navbar for websites?"
+      "Navbar",
+      "Header, Nav and NavigationMenu merge into one Navbar with layouts, appearances, mega menus and a mobile sheet."
     ],
     [
-      "Pull forward",
-      "Move Table (pricing and comparison tables) and Slider from wave 2 into phase 1?"
+      "Table and Slider",
+      "Stay in wave 2."
     ],
     [
       "Page blocks",
-      "After the components: hero, feature grid, pricing, CTA and FAQ blocks assembled from them?"
+      "Come after the components."
     ]
   ]
 }

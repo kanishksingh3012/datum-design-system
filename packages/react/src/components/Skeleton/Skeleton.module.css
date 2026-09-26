@@ -1,7 +1,7 @@
 .root {
   display: block;
   background: var(--color-bg-surface);
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-card);
   animation: datum-skeleton-pulse 1.6s ease-in-out infinite;
 }
 .root[data-shape="text"] {

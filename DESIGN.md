@@ -29,8 +29,9 @@ typography:
   mono:
     fontFamily: "IBM Plex Mono, SF Mono, Menlo, Consolas, monospace"
 rounded:
-  control: "10px"
-  card: "10px"
+  control: "999px"
+  card: "20px"
+  subtle: "7.5px"
   pill: "999px"
 spacing:
   compact: "8px"
@@ -48,7 +49,7 @@ Datum is a design system and React UI library for building websites. It ships **
 **Key characteristics**
 - One accent per theme carries the whole emphasis ladder: solid fill (primary), tint (secondary), text color (link). No unrelated colors for "less important."
 - State colors (danger, warning, success, info) are held well away from each theme's brand hue, so a status never reads as branding.
-- Pill radius on controls, 10px on cards and surfaces.
+- Pill-first shape language: no sharp corners anywhere. Single-line controls are full pills; surfaces get a generous 20px radius.
 - Shadows only where something is genuinely lifted; most controls are flat.
 - Every text and border pairing is measured against WCAG AA in both themes and both modes before it ships.
 
@@ -59,7 +60,7 @@ primitives.json      raw ramps (orange, stone, navy, slate, crimson, yellow, eme
 base.json            shared: fonts, 20 type roles, spacing, radius, icons, grid, motion
 themes/orange.json   color + elevation for orange
 themes/navy.json     color + elevation for navy
-contract.json        171 required tokens — the build fails if a theme misses one
+contract.json        175 required tokens — the build fails if a theme misses one
 dist/*.css           orange.css, navy.css, themes.css (both)
 ```
 
@@ -77,6 +78,9 @@ Components only ever reference semantic tokens (`--color-bg-accent`, `--type-bod
 - **Brand** — navy ramp, anchored at `#1F2E4A` (navy-900). A fill, with white text (13.57:1). It is nearly the same darkness as body text (1.18:1 against `#343A40`), so links, focus rings and selection use brighter navy-700 / navy-600. Hover goes **lighter** (navy-800) because the brand already sits near the bottom of the ramp. In dark mode the fill becomes navy-300 with navy-950 text.
 - **Neutral** — cool slate ramp (hue 248°), anchored to `#F8F9FA`, `#CED4DA`, `#343A40`.
 - **States** — info is cyan (blue would read as brand), danger crimson, warning golden yellow, success emerald.
+
+### Ink (inverse)
+Each theme also has an ink fill for neutral solid buttons and dark bands: `bg.inverse` (near-black in light mode, near-white in dark), `bg.inverseHover`, and `text.onInverse`. Orange uses the stone ramp, navy the slate ramp.
 
 ### Rules for both
 - A fill (`bg.accent`, `bg.danger`, …) is always paired with its `text.on*` token. **Never hardcode white on an accent** — orange's on-accent is dark.
@@ -111,7 +115,18 @@ Light-mode shadows are tinted with the theme's own neutral (warm brown for orang
 
 ## Shapes & space
 
-Radius is one base (10px) times a ratio: xs ×0.25, sm ×0.5, md ×0.75, lg ×1, xl ×1.5, 2xl ×2, 3xl ×3. Controls use `radius.control`, cards `radius.card`, and pill-shaped controls use the dedicated `radius.pill` — an explicit choice, not incidental geometry. Spacing runs on a 4px grid: compact 8, tight 12, default 16, section 32.
+Datum is **pill-first**: nothing has a sharp corner.
+
+| Token | Value | Use |
+|---|---|---|
+| `radius.control` | 999px (pill) | Every single-line control — buttons, text fields, selects, badges, tabs, pagination, menu and option items |
+| `radius.card` | 20px | Anything that holds content or wraps — cards, alerts, toasts, menus, popovers, dialogs, sheets, textareas |
+| `radius.subtle` | 7.5px | Small square elements that must stay square — checkboxes, code chips |
+| `radius.pill` | 999px | The shape itself, when something must be round regardless of role |
+
+Two rules keep this from breaking: a **checkbox is never round** (a round checkbox reads as a radio button), and a **tall or multi-line box is never a pill** (it becomes a stadium) — those use `radius.card`. Nested corners follow the outer radius minus the padding between them.
+
+Radius is still one base (10px) times a ratio underneath (xs ×0.25 through 3xl ×3), so the whole system can be re-tuned from one value. Spacing runs on a 4px grid: compact 8, tight 12, default 16, section 32.
 
 ## Do's and don'ts
 
@@ -119,6 +134,7 @@ Radius is one base (10px) times a ratio: xs ×0.25, sm ×0.5, md ×0.75, lg ×1,
 - **Do** test every component in all four combinations: orange/navy × light/dark.
 - **Do** reserve shadow for things that are genuinely lifted.
 - **Don't** hardcode a hex value, a pixel font size, or white text on an accent.
+- **Don't** give a checkbox or a multi-line box a pill radius.
 - **Don't** reuse a brand hue for a state color.
 
 ## Decision log
@@ -130,3 +146,6 @@ Radius is one base (10px) times a ratio: xs ×0.25, sm ×0.5, md ×0.75, lg ×1,
 - **2026-09-26** — Orange's warning moved to golden yellow and danger to crimson; navy's info moved to cyan — each to keep states off the brand hue.
 - **2026-09-26** — Subtle tints in the new themes come from ramp steps, not `color-mix()`, so the reference cream `#FFE7D0` can be used exactly.
 - **2026-09-26** — Phase 1 of the component library is ~30 components for website building; the remaining ~30 are wave 2.
+- **2026-09-27** — Pill-first shape language: `radius.control` becomes a full pill, `radius.card` rises to 20px, new `radius.subtle` (7.5px) for checkboxes. Button has no shape option — pill is Datum's identity. Nine containers that used the control radius moved to the card radius.
+- **2026-09-27** — Ink tokens added (`bg.inverse`, `bg.inverseHover`, `text.onInverse`) for neutral solid buttons.
+- **2026-09-27** — Header, Nav and NavigationMenu merge into one versatile Navbar. Table and Slider stay in wave 2; page blocks come after the components. Component plan approved.

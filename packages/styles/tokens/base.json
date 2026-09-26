@@ -16,8 +16,9 @@
   },
   "radius": {
     "base": "{radius.base}",
-    "control": "{radius.lg}",
-    "card": "{radius.lg}",
+    "control": "{radius.pill}",
+    "card": "{radius.2xl}",
+    "subtle": "{radius.md}",
     "pill": "{radius.pill}"
   },
   "icon": {

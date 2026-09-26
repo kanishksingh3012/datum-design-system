@@ -9,7 +9,7 @@
   min-width: 240px;
   padding: var(--space-default);
   border: 1px dashed var(--color-border-strong);
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-card);
   background: var(--color-bg-page);
   color: var(--color-text-secondary);
   font-size: var(--type-body-md-size);

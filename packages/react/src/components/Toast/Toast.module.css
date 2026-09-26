@@ -5,7 +5,7 @@
   background: var(--color-text-primary);
   color: var(--color-bg-page);
   padding: 0.7rem 1rem;
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-card);
   box-shadow: var(--elevation-overlay);
   font-size: var(--type-body-sm-size);
 }

@@ -8,8 +8,9 @@
   --space-default: 16px;
   --space-section: 32px;
   --radius-base: 10px;
-  --radius-control: var(--radius-base);
-  --radius-card: var(--radius-base);
+  --radius-control: 999px;
+  --radius-card: calc(var(--radius-base) * 2);
+  --radius-subtle: calc(var(--radius-base) * 0.75);
   --radius-pill: 999px;
   --icon-inline: 16px;
   --icon-control: 24px;
@@ -142,6 +143,8 @@
   --color-bg-success: #007440;
   --color-bg-successSubtle: light-dark(#DBF4E3, #002913);
   --color-bg-info: #0062AB;
+  --color-bg-inverse: light-dark(#1B1B1B, #FDF9F6);
+  --color-bg-inverseHover: light-dark(#424140, #E7E2DD);
   --color-bg-infoSubtle: light-dark(#E0EFFF, #002140);
   --color-text-primary: light-dark(#1B1B1B, #FDF9F6);
   --color-text-secondary: light-dark(#545250, #D3CECA);
@@ -156,6 +159,7 @@
   --color-text-success: light-dark(#007440, #60C488);
   --color-text-onSuccess: #FFFFFF;
   --color-text-info: light-dark(#0062AB, #68B2FB);
+  --color-text-onInverse: light-dark(#FDF9F6, #1B1B1B);
   --color-text-onInfo: #FFFFFF;
   --color-border-subtle: light-dark(#F6F1EC, #323232);
   --color-border-default: light-dark(#E7E2DD, #424140);
