@@ -130,9 +130,9 @@
   --color-bg-tertiary: light-dark(#CED4DA, #4D555D);
   --color-bg-disabled: light-dark(#E5E8EC, #343A40);
   --color-bg-scrim: light-dark(rgba(28,33,38,0.48), rgba(0,0,0,0.64));
-  --color-bg-accent: light-dark(#1F2E4A, #AAC3F1);
-  --color-bg-accentHover: light-dark(#274172, #C9DAF8);
-  --color-bg-accentActive: light-dark(#131E32, #85A6E2);
+  --color-bg-accent: light-dark(#355695, #AAC3F1);
+  --color-bg-accentHover: light-dark(#486EB6, #C9DAF8);
+  --color-bg-accentActive: light-dark(#274172, #85A6E2);
   --color-bg-accentSubtle: light-dark(#E2ECFD, #131E32);
   --color-bg-accentSubtleHover: light-dark(#C9DAF8, #1F2E4A);
   --color-bg-danger: #D52F4A;

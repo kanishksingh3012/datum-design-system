@@ -9,7 +9,7 @@ colors:
   orange-page: "#FDF9F6"
   orange-ink: "#1B1B1B"
   orange-surface-dark: "#323232"
-  navy-accent: "#1F2E4A"
+  navy-accent: "#355695"
   navy-on-accent: "#FFFFFF"
   navy-accent-subtle: "#E2ECFD"
   navy-accent-text: "#355695"
@@ -75,7 +75,7 @@ Components only ever reference semantic tokens (`--color-bg-accent`, `--type-bod
 - **States** — danger is crimson (not red, too close to orange), warning is golden yellow (not amber, same reason), success emerald, info azure.
 
 ### Navy theme
-- **Brand** — navy ramp, anchored at `#1F2E4A` (navy-900). A fill, with white text (13.57:1). It is nearly the same darkness as body text (1.18:1 against `#343A40`), so links, focus rings and selection use brighter navy-700 / navy-600. Hover goes **lighter** (navy-800) because the brand already sits near the bottom of the ramp. In dark mode the fill becomes navy-300 with navy-950 text.
+- **Brand** — navy ramp. The accent fill is navy-700 `#355695` with white text (7.2:1), so it reads as blue next to the near-black ink button; navy-900 `#1F2E4A` was too close to ink. Hover goes lighter (navy-600, 5.0:1), active darker (navy-800). Links and selection use navy-700 / navy-600. In dark mode the fill is navy-300 with navy-950 text.
 - **Neutral** — cool slate ramp (hue 248°), anchored to `#F8F9FA`, `#CED4DA`, `#343A40`.
 - **States** — info is cyan (blue would read as brand), danger crimson, warning golden yellow, success emerald.
 
@@ -150,3 +150,4 @@ Radius is still one base (10px) times a ratio underneath (xs ×0.25 through 3xl 
 - **2026-09-27** — Ink tokens added (`bg.inverse`, `bg.inverseHover`, `text.onInverse`) for neutral solid buttons.
 - **2026-09-27** — Header, Nav and NavigationMenu merge into one versatile Navbar. Table and Slider stay in wave 2; page blocks come after the components. Component plan approved.
 - **2026-09-27** — Button rebuilt to the plan (intent × appearance × size, pill only, ink for neutral solid). `npm run check` added: every registered component is rendered in all four combinations and fails on contrast or hardcoded colors.
+- **2026-09-27** — Navy accent fill moved from navy-900 to navy-700 (hover navy-600, active navy-800) so it is distinct from the ink button in light mode.

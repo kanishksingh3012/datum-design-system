@@ -4,6 +4,9 @@ All notable changes to this project are recorded here. Format loosely follows [K
 
 ## [Unreleased]
 
+### Changed
+- Navy light-mode accent fill: navy-900 → navy-700 (hover navy-600, active navy-800), so accent and ink buttons are distinct. White on it is 7.2:1.
+
 ## 2026-09-27 — Checkpoint 1: combo checker and Button rebuild
 
 ### Added
