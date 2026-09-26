@@ -21,7 +21,7 @@
   align-items: center;
   text-align: left;
   font-family: var(--font-body);
-  font-size: var(--type-body-size);
+  font-size: var(--type-body-md-size);
   color: var(--color-text-primary);
   background: none;
   border: none;

@@ -19,13 +19,13 @@
   border-left-color: var(--color-text-success);
 }
 .title {
-  font-size: var(--type-body-size);
+  font-size: var(--type-body-md-size);
   font-weight: 600;
   color: var(--color-text-primary);
   margin: 0;
 }
 .body {
-  font-size: var(--type-bodySmall-size);
+  font-size: var(--type-body-sm-size);
   margin: 0;
   color: var(--color-text-secondary);
 }

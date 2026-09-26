@@ -15,14 +15,14 @@ npm install @datum-design/react @datum-design/styles
 ```tsx
 import { Button } from "@datum-design/react";
 import "@datum-design/react/styles.css";
-import "@datum-design/styles/minimal.css";
+import "@datum-design/styles/themes.css";
 
 function App() {
   return <Button variant="primary">Get started</Button>;
 }
 ```
 
-`@datum-design/styles/minimal.css` provides the design tokens (colors, spacing, type scale) as CSS custom properties; `@datum-design/react/styles.css` provides the components' own styles, which reference those tokens.
+`@datum-design/styles/themes.css` provides the design tokens for both themes (orange and navy) as CSS custom properties — pick one with `data-theme="orange"` or `data-theme="navy"` on `<html>`; `@datum-design/react/styles.css` provides the components' own styles, which reference those tokens.
 
 ## What's included
 

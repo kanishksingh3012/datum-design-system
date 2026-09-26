@@ -5,8 +5,8 @@
   width: fit-content;
 }
 .label {
-  font-size: var(--type-label-size);
-  font-weight: var(--type-label-weight);
+  font-size: var(--type-ui-label-size);
+  font-weight: var(--type-ui-label-weight);
   color: var(--color-text-primary);
 }
 .controls {
@@ -15,7 +15,7 @@
 }
 .input {
   font-family: var(--font-body);
-  font-size: var(--type-body-size);
+  font-size: var(--type-body-md-size);
   color: var(--color-text-primary);
   background: var(--color-bg-page);
   border: 1px solid var(--color-border-default);
@@ -26,7 +26,7 @@
 }
 .trigger {
   font-family: var(--font-body);
-  font-size: var(--type-body-size);
+  font-size: var(--type-body-md-size);
   min-height: var(--interaction-minTarget);
   padding: 0 var(--space-default);
   border-radius: var(--radius-control);
@@ -63,7 +63,7 @@
   margin-bottom: var(--space-compact);
 }
 .heading {
-  font-size: var(--type-body-size);
+  font-size: var(--type-body-md-size);
   font-weight: 600;
   margin: 0;
 }
@@ -84,7 +84,7 @@
   border-collapse: collapse;
 }
 .weekday {
-  font-size: var(--type-caption-size);
+  font-size: var(--type-ui-caption-size);
   color: var(--color-text-secondary);
   font-weight: 500;
   padding: 0.2rem;

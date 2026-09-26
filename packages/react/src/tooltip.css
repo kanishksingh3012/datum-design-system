@@ -14,7 +14,7 @@
   transform: translateX(-50%) translateY(4px);
   background: var(--color-text-primary);
   color: var(--color-bg-page);
-  font-size: var(--type-caption-size);
+  font-size: var(--type-ui-caption-size);
   font-weight: 500;
   padding: 0.3rem 0.6rem;
   border-radius: calc(var(--radius-base) * 0.5);

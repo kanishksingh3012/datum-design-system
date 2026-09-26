@@ -9,7 +9,7 @@
 .item,
 .step {
   font-family: var(--font-body);
-  font-size: var(--type-body-size);
+  font-size: var(--type-body-md-size);
   min-width: var(--interaction-minTarget);
   min-height: var(--interaction-minTarget);
   padding: 0 var(--space-compact);

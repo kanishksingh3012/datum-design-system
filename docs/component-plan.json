@@ -1,0 +1,1242 @@
+{
+  "status": "draft — awaiting review",
+  "conventions": {
+    "props": [
+      [
+        "size",
+        "sm · md · lg",
+        "md",
+        "Controls: 32 / 40 / 48px tall on desktop, +4px on touch screens. Same three names on every component that has a size."
+      ],
+      [
+        "intent",
+        "accent · neutral · danger · success · warning · info",
+        "accent or neutral",
+        "What the color means. Components accept the subset that makes sense (Button: accent, neutral, danger)."
+      ],
+      [
+        "appearance",
+        "solid · soft · outline · ghost",
+        "solid (or soft)",
+        "How much fill. Replaces today's mixed \"variant\" names."
+      ],
+      [
+        "disabled / loading / invalid",
+        "boolean",
+        "false",
+        "Exposed as data-disabled, data-loading, data-invalid for styling; ARIA set automatically."
+      ],
+      [
+        "className, ref, …rest",
+        "—",
+        "—",
+        "Every component forwards its ref, merges className, and spreads remaining props onto the root."
+      ]
+    ],
+    "rules": [
+      "Tokens only — no hex values, pixel font sizes, or hardcoded white on accent fills.",
+      "Every component is verified in four combinations: orange/navy × light/dark, with automated contrast checks.",
+      "Native elements where they are fully stylable (button, input, checkbox, radio); React Aria where behavior is hard (select, menus, dialogs, tabs, tooltips, toasts).",
+      "Focus is always visible (border.focus ring); nothing is operable by mouse only.",
+      "Motion respects prefers-reduced-motion.",
+      "Form controls share one Field pattern: label, helpText, errorText, required, disabled, readOnly."
+    ]
+  },
+  "groups": [
+    {
+      "name": "Layout",
+      "items": [
+        {
+          "n": "Container",
+          "st": "new",
+          "why": "Centers content at a readable max width with the page gutter.",
+          "props": [
+            [
+              "size",
+              "sm · md · lg · xl · full",
+              "xl",
+              "640 / 768 / 1024 / 1280px / none"
+            ],
+            [
+              "padded",
+              "boolean",
+              "true",
+              "Applies the responsive gutter token"
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Stack",
+          "st": "new",
+          "why": "Vertical or horizontal list of children with consistent gaps — replaces ad-hoc margins.",
+          "props": [
+            [
+              "direction",
+              "vertical · horizontal",
+              "vertical",
+              ""
+            ],
+            [
+              "gap",
+              "none · xs · sm · md · lg · xl",
+              "md",
+              "0 / 4 / 8 / 16 / 24 / 32px from the space scale"
+            ],
+            [
+              "align",
+              "start · center · end · stretch · baseline",
+              "stretch",
+              ""
+            ],
+            [
+              "justify",
+              "start · center · end · between",
+              "start",
+              ""
+            ],
+            [
+              "wrap",
+              "boolean",
+              "false",
+              ""
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Grid",
+          "st": "new",
+          "why": "Column layouts that collapse on small screens.",
+          "props": [
+            [
+              "columns",
+              "1–12, or { base, md, lg }",
+              "1",
+              "Responsive object switches at the md/lg breakpoints"
+            ],
+            [
+              "minItemWidth",
+              "length",
+              "—",
+              "Auto-fit cards: as many columns as fit"
+            ],
+            [
+              "gap",
+              "none · xs · sm · md · lg · xl",
+              "md",
+              ""
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Section",
+          "st": "new",
+          "why": "A full-width page band with consistent vertical rhythm.",
+          "props": [
+            [
+              "spacing",
+              "sm · md · lg",
+              "md",
+              "32 / 64 / 96px vertical padding"
+            ],
+            [
+              "tone",
+              "default · muted · accent",
+              "default",
+              "page / surface / accent-subtle background"
+            ],
+            [
+              "as",
+              "section · div · header · footer",
+              "section",
+              ""
+            ]
+          ],
+          "beh": "Native"
+        }
+      ]
+    },
+    {
+      "name": "Typography",
+      "items": [
+        {
+          "n": "Heading",
+          "st": "new",
+          "why": "Applies heading type roles; visual size is independent of the HTML level.",
+          "props": [
+            [
+              "level",
+              "1–6",
+              "2",
+              "Semantic tag h1–h6"
+            ],
+            [
+              "size",
+              "display-lg · display-md · display-sm · xl · lg · md · sm",
+              "from level",
+              "Type role, e.g. level 1 can look like display-md"
+            ],
+            [
+              "tone",
+              "primary · secondary · accent",
+              "primary",
+              ""
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Text",
+          "st": "new",
+          "why": "Every non-heading text style, by purpose.",
+          "props": [
+            [
+              "variant",
+              "body-lg · body-md · body-sm · paragraph-lg · paragraph-md · label · caption · overline · numeric-lg · numeric-md · numeric-sm · code",
+              "body-md",
+              "One of the 20 type roles"
+            ],
+            [
+              "tone",
+              "primary · secondary · tertiary · accent · danger · success · warning",
+              "primary",
+              ""
+            ],
+            [
+              "weight",
+              "regular · medium · semibold",
+              "from role",
+              "Override only when needed"
+            ],
+            [
+              "truncate",
+              "boolean or line count",
+              "false",
+              "Ellipsis on one or N lines"
+            ],
+            [
+              "as",
+              "p · span · div · label",
+              "p",
+              ""
+            ]
+          ],
+          "beh": "Native"
+        }
+      ]
+    },
+    {
+      "name": "Actions",
+      "items": [
+        {
+          "n": "Button",
+          "st": "rework",
+          "why": "The core action. Moves from one mixed variant list to intent × appearance.",
+          "props": [
+            [
+              "intent",
+              "accent · neutral · danger",
+              "accent",
+              ""
+            ],
+            [
+              "appearance",
+              "solid · soft · outline · ghost",
+              "solid",
+              ""
+            ],
+            [
+              "size",
+              "sm · md · lg",
+              "md",
+              ""
+            ],
+            [
+              "shape",
+              "pill · rounded",
+              "pill",
+              "Your call — see decisions"
+            ],
+            [
+              "prefix / suffix",
+              "ReactNode",
+              "—",
+              "Icons or text before/after the label"
+            ],
+            [
+              "iconOnly",
+              "boolean",
+              "false",
+              "Square/circle; requires label for screen readers"
+            ],
+            [
+              "loading",
+              "boolean",
+              "false",
+              "Spinner replaces prefix; blocks double submit"
+            ],
+            [
+              "pressed",
+              "boolean",
+              "—",
+              "Toggle mode (aria-pressed)"
+            ],
+            [
+              "floating",
+              "boolean",
+              "false",
+              "FAB treatment, overlay shadow"
+            ],
+            [
+              "fullWidth",
+              "boolean",
+              "false",
+              "New"
+            ],
+            [
+              "render",
+              "function",
+              "—",
+              "Render as a link or router Link"
+            ]
+          ],
+          "beh": "Native",
+          "note": "Today's variants map as: primary → accent/solid, secondary → accent/soft, tertiary → neutral/soft, outline → neutral/outline, text → neutral/ghost, danger → danger/solid, danger-soft → danger/soft. \"link\" is dropped — use Link."
+        },
+        {
+          "n": "ButtonGroup",
+          "st": "rework",
+          "why": "Related actions as one unit.",
+          "props": [
+            [
+              "orientation",
+              "horizontal · vertical",
+              "horizontal",
+              ""
+            ],
+            [
+              "attached",
+              "boolean",
+              "false",
+              "Joined segments with shared borders vs spaced buttons"
+            ],
+            [
+              "size / intent / appearance",
+              "as Button",
+              "—",
+              "Passed down to every child"
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Link",
+          "st": "rework",
+          "why": "Inline and standalone navigation — a real anchor.",
+          "props": [
+            [
+              "tone",
+              "accent · neutral · inherit",
+              "accent",
+              ""
+            ],
+            [
+              "underline",
+              "always · hover · none",
+              "always",
+              "Inline links in prose keep \"always\""
+            ],
+            [
+              "external",
+              "boolean",
+              "false",
+              "Adds an icon, target and rel"
+            ],
+            [
+              "size",
+              "inherit · sm · md",
+              "inherit",
+              ""
+            ]
+          ],
+          "beh": "Native"
+        }
+      ]
+    },
+    {
+      "name": "Content",
+      "items": [
+        {
+          "n": "Card",
+          "st": "rework",
+          "why": "A lifted container for grouped content.",
+          "props": [
+            [
+              "appearance",
+              "elevated · outline · soft",
+              "elevated",
+              "surface shadow / border only / surface fill"
+            ],
+            [
+              "padding",
+              "sm · md · lg",
+              "md",
+              "16 / 24 / 32px"
+            ],
+            [
+              "interactive",
+              "boolean",
+              "false",
+              "Whole card is clickable: hover lift, focus ring"
+            ],
+            [
+              "slots",
+              "CardHeader · CardMedia · CardBody · CardFooter",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Badge",
+          "st": "rework",
+          "why": "Short status or category label.",
+          "props": [
+            [
+              "intent",
+              "accent · neutral · danger · success · warning · info",
+              "neutral",
+              ""
+            ],
+            [
+              "appearance",
+              "solid · soft · outline",
+              "soft",
+              ""
+            ],
+            [
+              "size",
+              "sm · md",
+              "md",
+              ""
+            ],
+            [
+              "dot",
+              "boolean",
+              "false",
+              "Leading status dot"
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Avatar",
+          "st": "rework",
+          "why": "A person or entity, with graceful fallback.",
+          "props": [
+            [
+              "size",
+              "xs · sm · md · lg · xl",
+              "md",
+              "24 / 32 / 40 / 48 / 64px"
+            ],
+            [
+              "shape",
+              "circle · square",
+              "circle",
+              ""
+            ],
+            [
+              "src / name",
+              "string",
+              "—",
+              "Falls back to initials, then an icon"
+            ],
+            [
+              "status",
+              "online · away · busy · offline",
+              "—",
+              "Optional presence dot"
+            ],
+            [
+              "AvatarGroup",
+              "max, size",
+              "—",
+              "Overlapping stack with \"+N\""
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Separator",
+          "st": "keep",
+          "why": "Divides content.",
+          "props": [
+            [
+              "orientation",
+              "horizontal · vertical",
+              "horizontal",
+              ""
+            ],
+            [
+              "tone",
+              "subtle · default",
+              "subtle",
+              ""
+            ],
+            [
+              "label",
+              "string",
+              "—",
+              "Text in the middle, e.g. \"or\""
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Accordion",
+          "st": "rework",
+          "why": "Collapsible sections — FAQs, details.",
+          "props": [
+            [
+              "type",
+              "single · multiple",
+              "single",
+              ""
+            ],
+            [
+              "appearance",
+              "plain · bordered · separated",
+              "bordered",
+              ""
+            ],
+            [
+              "collapsible",
+              "boolean",
+              "true",
+              "Allow closing the open item"
+            ]
+          ],
+          "beh": "React Aria"
+        }
+      ]
+    },
+    {
+      "name": "Feedback",
+      "items": [
+        {
+          "n": "Alert",
+          "st": "rework",
+          "why": "Inline message that stays on the page.",
+          "props": [
+            [
+              "intent",
+              "info · success · warning · danger · neutral",
+              "info",
+              "Icon chosen automatically"
+            ],
+            [
+              "appearance",
+              "soft · outline · solid",
+              "soft",
+              "solid = full-width banner"
+            ],
+            [
+              "title / description",
+              "ReactNode",
+              "—",
+              ""
+            ],
+            [
+              "action",
+              "ReactNode",
+              "—",
+              "A button or link"
+            ],
+            [
+              "dismissible",
+              "boolean",
+              "false",
+              ""
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Toast",
+          "st": "rework",
+          "why": "Brief, non-blocking notification.",
+          "props": [
+            [
+              "intent",
+              "neutral · success · danger · warning · info",
+              "neutral",
+              ""
+            ],
+            [
+              "title / description",
+              "ReactNode",
+              "—",
+              ""
+            ],
+            [
+              "action",
+              "{ label, onAction }",
+              "—",
+              ""
+            ],
+            [
+              "duration",
+              "ms",
+              "5000",
+              "Pauses on hover and focus"
+            ],
+            [
+              "position",
+              "top-center · top-end · bottom-center · bottom-end",
+              "bottom-end",
+              ""
+            ]
+          ],
+          "beh": "React Aria"
+        },
+        {
+          "n": "Spinner",
+          "st": "new",
+          "why": "Indeterminate loading, standalone (today it only exists inside Button).",
+          "props": [
+            [
+              "size",
+              "sm · md · lg",
+              "md",
+              "16 / 20 / 24px"
+            ],
+            [
+              "tone",
+              "current · accent",
+              "current",
+              "current = inherits text color"
+            ],
+            [
+              "label",
+              "string",
+              "\"Loading\"",
+              "Screen-reader text"
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "ProgressBar",
+          "st": "rework",
+          "why": "Determinate or indeterminate progress.",
+          "props": [
+            [
+              "value",
+              "0–100",
+              "—",
+              "Omit for indeterminate"
+            ],
+            [
+              "size",
+              "sm · md",
+              "md",
+              "4 / 8px track"
+            ],
+            [
+              "intent",
+              "accent · success · warning · danger",
+              "accent",
+              ""
+            ],
+            [
+              "label / showValue",
+              "string / boolean",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Skeleton",
+          "st": "keep",
+          "why": "Placeholder while content loads.",
+          "props": [
+            [
+              "shape",
+              "text · rect · circle",
+              "text",
+              ""
+            ],
+            [
+              "lines",
+              "number",
+              "1",
+              "For text"
+            ],
+            [
+              "animated",
+              "boolean",
+              "true",
+              "Off under reduced motion"
+            ]
+          ],
+          "beh": "Native"
+        }
+      ]
+    },
+    {
+      "name": "Forms",
+      "items": [
+        {
+          "n": "Field + Label",
+          "st": "rework",
+          "why": "One shared wrapper that wires label, help and error text to any control.",
+          "props": [
+            [
+              "label",
+              "string (required)",
+              "Visible label — never replaced by placeholder"
+            ],
+            [
+              "helpText",
+              "string",
+              "Shown below; replaced by errorText when present"
+            ],
+            [
+              "errorText",
+              "string",
+              "Sets invalid state + aria-describedby"
+            ],
+            [
+              "required",
+              "boolean",
+              "Adds required indicator"
+            ],
+            [
+              "disabled",
+              "boolean",
+              ""
+            ],
+            [
+              "readOnly",
+              "boolean",
+              "Visibly distinct from disabled"
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "TextField",
+          "st": "rework",
+          "why": "Single-line input.",
+          "props": [
+            [
+              "size",
+              "sm · md · lg",
+              "md",
+              ""
+            ],
+            [
+              "type",
+              "text · email · password · search · url · tel · number",
+              "text",
+              ""
+            ],
+            [
+              "prefix / suffix",
+              "ReactNode",
+              "—",
+              "Icon or text inside the field"
+            ],
+            [
+              "clearable",
+              "boolean",
+              "false",
+              "Clear button when filled"
+            ],
+            [
+              "revealable",
+              "boolean",
+              "false",
+              "Show/hide for passwords"
+            ],
+            [
+              "…Field props",
+              "—",
+              "—",
+              "label, helpText, errorText, required, disabled, readOnly"
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Textarea",
+          "st": "rework",
+          "why": "Multi-line input.",
+          "props": [
+            [
+              "size",
+              "sm · md · lg",
+              "md",
+              ""
+            ],
+            [
+              "rows",
+              "number",
+              "3",
+              ""
+            ],
+            [
+              "autoResize",
+              "boolean",
+              "false",
+              "Grows with content"
+            ],
+            [
+              "maxLength",
+              "number",
+              "—",
+              "Shows a counter"
+            ],
+            [
+              "…Field props",
+              "—",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Checkbox",
+          "st": "rework",
+          "why": "Binary or mixed choice.",
+          "props": [
+            [
+              "size",
+              "sm · md",
+              "md",
+              ""
+            ],
+            [
+              "checked",
+              "true · false · \"indeterminate\"",
+              "false",
+              ""
+            ],
+            [
+              "description",
+              "string",
+              "—",
+              "Second line under the label"
+            ],
+            [
+              "CheckboxGroup",
+              "orientation, errorText",
+              "vertical",
+              ""
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Radio",
+          "st": "rework",
+          "why": "One choice from a small set.",
+          "props": [
+            [
+              "size",
+              "sm · md",
+              "md",
+              ""
+            ],
+            [
+              "orientation",
+              "vertical · horizontal",
+              "vertical",
+              "On RadioGroup"
+            ],
+            [
+              "appearance",
+              "default · card",
+              "default",
+              "card = large selectable tiles (e.g. pricing plans)"
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Switch",
+          "st": "rework",
+          "why": "Instant on/off setting.",
+          "props": [
+            [
+              "size",
+              "sm · md",
+              "md",
+              ""
+            ],
+            [
+              "labelPosition",
+              "start · end",
+              "end",
+              ""
+            ],
+            [
+              "description",
+              "string",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Select",
+          "st": "rework",
+          "why": "Choose one option from a list.",
+          "props": [
+            [
+              "size",
+              "sm · md · lg",
+              "md",
+              ""
+            ],
+            [
+              "options",
+              "items with value, label, description, disabled, group",
+              "—",
+              "Sections and dividers supported"
+            ],
+            [
+              "placeholder",
+              "string",
+              "\"Select…\"",
+              ""
+            ],
+            [
+              "…Field props",
+              "—",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Moves off the native <select> to a styled listbox with full keyboard support and type-ahead."
+        }
+      ]
+    },
+    {
+      "name": "Overlays",
+      "items": [
+        {
+          "n": "Dialog",
+          "st": "rework",
+          "why": "Focused task that blocks the page.",
+          "props": [
+            [
+              "size",
+              "sm · md · lg · full",
+              "md",
+              "400 / 560 / 720px / fullscreen"
+            ],
+            [
+              "role",
+              "dialog · alertdialog",
+              "dialog",
+              "alertdialog for destructive confirmations"
+            ],
+            [
+              "dismissible",
+              "boolean",
+              "true",
+              "Esc and outside click"
+            ],
+            [
+              "slots",
+              "DialogHeader · DialogBody · DialogFooter",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "React Aria"
+        },
+        {
+          "n": "Sheet",
+          "st": "rework",
+          "why": "Panel sliding in from an edge — filters, mobile nav.",
+          "props": [
+            [
+              "side",
+              "top · right · bottom · left",
+              "right",
+              ""
+            ],
+            [
+              "size",
+              "sm · md · lg",
+              "md",
+              "320 / 420 / 560px"
+            ]
+          ],
+          "beh": "React Aria"
+        },
+        {
+          "n": "DropdownMenu",
+          "st": "rework",
+          "why": "Actions behind a trigger.",
+          "props": [
+            [
+              "items",
+              "action · checkbox · radio · separator · section",
+              "—",
+              "Danger items, keyboard shortcuts, icons"
+            ],
+            [
+              "placement",
+              "bottom-start · bottom-end · top-start · top-end",
+              "bottom-start",
+              ""
+            ],
+            [
+              "size",
+              "sm · md",
+              "md",
+              ""
+            ]
+          ],
+          "beh": "React Aria"
+        },
+        {
+          "n": "Tooltip",
+          "st": "new",
+          "why": "Short hint on hover or focus (today only a CSS utility).",
+          "props": [
+            [
+              "placement",
+              "top · right · bottom · left",
+              "top",
+              ""
+            ],
+            [
+              "delay",
+              "ms",
+              "500",
+              ""
+            ],
+            [
+              "content",
+              "string",
+              "—",
+              "Plain text only — never interactive"
+            ]
+          ],
+          "beh": "React Aria"
+        }
+      ]
+    },
+    {
+      "name": "Navigation",
+      "items": [
+        {
+          "n": "Tabs",
+          "st": "rework",
+          "why": "Switch between views in the same place.",
+          "props": [
+            [
+              "appearance",
+              "underline · pill · segmented",
+              "underline",
+              ""
+            ],
+            [
+              "size",
+              "sm · md",
+              "md",
+              ""
+            ],
+            [
+              "orientation",
+              "horizontal · vertical",
+              "horizontal",
+              ""
+            ],
+            [
+              "fullWidth",
+              "boolean",
+              "false",
+              ""
+            ]
+          ],
+          "beh": "React Aria"
+        },
+        {
+          "n": "Navbar",
+          "st": "rework",
+          "why": "Site header: logo, links, actions, mobile menu.",
+          "props": [
+            [
+              "sticky",
+              "boolean",
+              "true",
+              ""
+            ],
+            [
+              "appearance",
+              "solid · blur · transparent",
+              "solid",
+              "transparent sits over a hero"
+            ],
+            [
+              "links",
+              "items, optionally grouped into dropdowns",
+              "—",
+              ""
+            ],
+            [
+              "actions",
+              "ReactNode",
+              "—",
+              "Buttons at the end"
+            ],
+            [
+              "mobile",
+              "auto",
+              "—",
+              "Collapses into a Sheet below md"
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Consolidates today's Header, Nav and NavigationMenu into one website header."
+        },
+        {
+          "n": "Footer",
+          "st": "rework",
+          "why": "Site footer.",
+          "props": [
+            [
+              "columns",
+              "groups of links",
+              "—",
+              ""
+            ],
+            [
+              "bottom",
+              "ReactNode",
+              "—",
+              "Legal, copyright, social"
+            ],
+            [
+              "tone",
+              "default · muted",
+              "muted",
+              ""
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Breadcrumbs",
+          "st": "keep",
+          "why": "Where you are in a hierarchy.",
+          "props": [
+            [
+              "separator",
+              "chevron · slash",
+              "chevron",
+              ""
+            ],
+            [
+              "size",
+              "sm · md",
+              "md",
+              ""
+            ],
+            [
+              "maxItems",
+              "number",
+              "—",
+              "Collapses the middle into \"…\""
+            ]
+          ],
+          "beh": "Native"
+        },
+        {
+          "n": "Pagination",
+          "st": "rework",
+          "why": "Move through pages of results.",
+          "props": [
+            [
+              "size",
+              "sm · md",
+              "md",
+              ""
+            ],
+            [
+              "siblings",
+              "number",
+              "1",
+              "Page numbers either side of the current one"
+            ],
+            [
+              "compact",
+              "boolean",
+              "false",
+              "\"Page 3 of 12\" with arrows only"
+            ]
+          ],
+          "beh": "Native"
+        }
+      ]
+    }
+  ],
+  "wave2": [
+    "Combobox",
+    "DatePicker",
+    "DateRangePicker",
+    "NumberField",
+    "Slider",
+    "TagInput",
+    "InputOTP",
+    "ColorPicker",
+    "FileUpload",
+    "CommandPalette",
+    "ContextMenu",
+    "HoverCard",
+    "Popover",
+    "Table",
+    "DataTable",
+    "Carousel",
+    "ScrollArea",
+    "Sidebar",
+    "Resizable",
+    "AI primitives (12)"
+  ],
+  "decisions": [
+    [
+      "Button shape",
+      "Offer shape=\"rounded\" as an option, or keep pill as Datum's fixed identity for every button?"
+    ],
+    [
+      "Neutral solid button",
+      "intent=\"neutral\" appearance=\"solid\" needs two new tokens (bg.inverse, text.onInverse) — an ink-filled button. Add them?"
+    ],
+    [
+      "Navbar consolidation",
+      "Merge Header, Nav and NavigationMenu into one Navbar for websites?"
+    ],
+    [
+      "Pull forward",
+      "Move Table (pricing and comparison tables) and Slider from wave 2 into phase 1?"
+    ],
+    [
+      "Page blocks",
+      "After the components: hero, feature grid, pricing, CTA and FAQ blocks assembled from them?"
+    ]
+  ]
+}

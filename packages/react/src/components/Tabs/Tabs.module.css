@@ -5,7 +5,7 @@
 }
 .tab {
   font-family: var(--font-body);
-  font-size: var(--type-body-size);
+  font-size: var(--type-body-md-size);
   font-weight: 500;
   padding: 0 0 var(--space-compact);
   background: none;

@@ -3,8 +3,8 @@
   align-items: center;
   gap: 0.3rem;
   font-family: var(--font-body);
-  font-size: var(--type-label-size);
-  font-weight: var(--type-label-weight);
+  font-size: var(--type-ui-label-size);
+  font-weight: var(--type-ui-label-weight);
   padding: 0.15rem 0.55rem;
   border-radius: 999px;
   line-height: 1.5;

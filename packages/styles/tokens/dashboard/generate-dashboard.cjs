@@ -48,13 +48,13 @@ function loadThemes() {
       const raw = JSON.parse(fs.readFileSync(path.join(THEMES_DIR, f), "utf8"));
       return { name, meta: raw._meta || {} };
     })
-    .sort((a, b) => (a.name === "minimal" ? -1 : b.name === "minimal" ? 1 : a.name.localeCompare(b.name)));
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 function loadDistCss() {
   if (!fs.existsSync(DIST_DIR)) return {};
   const out = {};
-  for (const f of fs.readdirSync(DIST_DIR).filter((f) => f.endsWith(".css"))) {
+  for (const f of fs.readdirSync(DIST_DIR).filter((f) => f.endsWith(".css") && f !== "themes.css")) {
     out[path.basename(f, ".css")] = fs.readFileSync(path.join(DIST_DIR, f), "utf8");
   }
   return out;

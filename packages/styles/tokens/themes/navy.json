@@ -1,0 +1,62 @@
+{
+  "_meta": {"label": "Navy", "description": "Restrained, institutional. Deep navy fills carry white text; brighter navy steps handle links and focus; cool slate neutrals; cyan info held away from the brand hue.", "googleFonts": ["Instrument+Sans:wght@400;500;600;700", "Barlow:wght@700;800", "IBM+Plex+Mono:wght@400;500;600"]},
+  "color": {
+    "bg": {
+      "page": ["{color.slate.50}","{color.slate.950}"],
+      "surface": ["{color.slate.100}","{color.slate.800}"],
+      "surfaceRaised": ["{color.white}","{color.slate.900}"],
+      "surfaceSunken": ["{color.slate.100}","{color.slate.975}"],
+      "tertiary": ["{color.slate.200}","{color.slate.700}"],
+      "disabled": ["{color.slate.100}","{color.slate.900}"],
+      "scrim": ["rgba(28,33,38,0.48)","rgba(0,0,0,0.64)"],
+      "accent": ["{color.navy.900}","{color.navy.300}"],
+      "accentHover": ["{color.navy.800}","{color.navy.200}"],
+      "accentActive": ["{color.navy.950}","{color.navy.400}"],
+      "accentSubtle": ["{color.navy.100}","{color.navy.950}"],
+      "accentSubtleHover": ["{color.navy.200}","{color.navy.900}"],
+      "danger": "{color.crimson.600}",
+      "dangerHover": "{color.crimson.700}",
+      "dangerSubtle": ["{color.crimson.100}","{color.crimson.950}"],
+      "warning": "{color.yellow.300}",
+      "warningSubtle": ["{color.yellow.100}","{color.yellow.950}"],
+      "success": "{color.emerald.700}",
+      "successSubtle": ["{color.emerald.100}","{color.emerald.950}"],
+      "info": "{color.cyan.700}",
+      "infoSubtle": ["{color.cyan.100}","{color.cyan.950}"]
+    },
+    "text": {
+      "primary": ["{color.slate.900}","{color.slate.50}"],
+      "secondary": ["{color.slate.700}","{color.slate.300}"],
+      "tertiary": ["{color.slate.600}","{color.slate.400}"],
+      "disabled": ["{color.slate.400}","{color.slate.600}"],
+      "accent": ["{color.navy.700}","{color.navy.300}"],
+      "onAccent": ["{color.white}","{color.navy.950}"],
+      "danger": ["{color.crimson.700}","{color.crimson.400}"],
+      "onDanger": "{color.white}",
+      "warning": ["{color.yellow.700}","{color.yellow.300}"],
+      "onWarning": "{color.slate.950}",
+      "success": ["{color.emerald.700}","{color.emerald.400}"],
+      "onSuccess": "{color.white}",
+      "info": ["{color.cyan.700}","{color.cyan.400}"],
+      "onInfo": "{color.white}"
+    },
+    "border": {
+      "subtle": ["{color.slate.100}","{color.slate.900}"],
+      "default": ["{color.slate.200}","{color.slate.800}"],
+      "strong": "{color.slate.500}",
+      "focus": ["{color.navy.600}","{color.navy.300}"],
+      "accent": ["{color.navy.700}","{color.navy.400}"],
+      "danger": ["{color.crimson.600}","{color.crimson.400}"],
+      "warning": ["{color.yellow.600}","{color.yellow.400}"],
+      "success": ["{color.emerald.600}","{color.emerald.400}"],
+      "info": ["{color.cyan.600}","{color.cyan.400}"],
+      "disabled": ["{color.slate.200}","{color.slate.800}"]
+    }
+  },
+  "elevation": {
+    "field": "{shadow.cool.field}",
+    "surface": "{shadow.cool.surface}",
+    "raised": "{shadow.cool.raised}",
+    "overlay": "{shadow.cool.overlay}"
+  }
+}

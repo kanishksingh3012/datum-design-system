@@ -1,12 +1,12 @@
 .root {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--type-body-size);
+  font-size: var(--type-body-md-size);
 }
 .caption {
   text-align: left;
   color: var(--color-text-secondary);
-  font-size: var(--type-bodySmall-size);
+  font-size: var(--type-body-sm-size);
   padding-bottom: var(--space-compact);
 }
 .row {
@@ -15,7 +15,7 @@
 .head {
   text-align: left;
   color: var(--color-text-secondary);
-  font-weight: var(--type-label-weight);
+  font-weight: var(--type-ui-label-weight);
   padding: var(--space-compact) var(--space-default);
 }
 .cell {

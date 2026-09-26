@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-// Resolves primitives.json + a theme file (deep-merged over the foundation theme) into CSS
-// custom properties, then validates the result against contract.json before writing it out.
+// Resolves primitives.json + base.json (shared type, space, radius, motion) deep-merged with one
+// theme file (color + elevation) into CSS custom properties, validates the result against
+// contract.json, then writes dist/<theme>.css plus dist/themes.css holding every theme.
 // Usage: node build.cjs            -> builds every theme in themes/
-//        node build.cjs bold       -> builds just themes/bold.json
+//        node build.cjs navy       -> builds just themes/navy.json
 
 const fs = require("fs");
 const path = require("path");
@@ -10,11 +11,11 @@ const path = require("path");
 const TOKENS_DIR = __dirname;
 const THEMES_DIR = path.join(TOKENS_DIR, "themes");
 const DIST_DIR = path.join(TOKENS_DIR, "dist");
-const FOUNDATION_THEME = "minimal";
+const BASE_FILE = path.join(TOKENS_DIR, "base.json");
 
 const primitives = JSON.parse(fs.readFileSync(path.join(TOKENS_DIR, "primitives.json"), "utf8"));
 const contract = JSON.parse(fs.readFileSync(path.join(TOKENS_DIR, "contract.json"), "utf8")).required;
-const foundation = JSON.parse(fs.readFileSync(path.join(THEMES_DIR, `${FOUNDATION_THEME}.json`), "utf8"));
+const base = JSON.parse(fs.readFileSync(BASE_FILE, "utf8"));
 
 function isPlainObject(v) {
   return v && typeof v === "object" && !Array.isArray(v);
@@ -41,8 +42,14 @@ function getPath(obj, dotted) {
 
 function resolveRefs(node) {
   if (typeof node === "string") {
-    const match = node.match(/^\{([\w.]+)\}$/);
-    return match ? getPath(primitives, match[1]) : node;
+    const fullMatch = node.match(/^\{([\w.]+)\}$/);
+    if (fullMatch) return getPath(primitives, fullMatch[1]);
+    // A reference embedded inside a larger string (e.g. a color-mix() formula) — replace
+    // every {dotted.path} occurrence in place rather than requiring the whole string to be one.
+    if (/\{[\w.]+\}/.test(node)) {
+      return node.replace(/\{([\w.]+)\}/g, (_, dotted) => getPath(primitives, dotted));
+    }
+    return node;
   }
   // A [light, dark] pair — each side resolved independently, formatted at flatten time via
   // CSS light-dark(), so one token carries both values instead of doubling the contract.
@@ -103,8 +110,7 @@ function validateKnownKeys(themeName, rawTheme) {
   }
 }
 
-// Guards the foundation theme itself from regressing (e.g. a key deleted by accident) —
-// override files can never trip this, since deep-merge always backfills from the foundation.
+// Guards against a theme (or base.json) losing a required key — e.g. a role deleted by accident.
 function validateContractComplete(themeName, vars) {
   const missing = contract.filter((dotted) => !(dottedToVarName(dotted) in vars));
   if (missing.length > 0) {
@@ -116,15 +122,9 @@ function validateContractComplete(themeName, vars) {
 }
 
 function buildTheme(themeName) {
-  let merged;
-  if (themeName === FOUNDATION_THEME) {
-    validateKnownKeys(themeName, foundation);
-    merged = foundation;
-  } else {
-    const override = JSON.parse(fs.readFileSync(path.join(THEMES_DIR, `${themeName}.json`), "utf8"));
-    validateKnownKeys(themeName, override);
-    merged = deepMerge(foundation, override);
-  }
+  const theme = JSON.parse(fs.readFileSync(path.join(THEMES_DIR, `${themeName}.json`), "utf8"));
+  validateKnownKeys(themeName, theme);
+  const merged = deepMerge(base, theme);
 
   const resolved = resolveRefs(merged);
   const vars = flatten(resolved, "", {});
@@ -137,17 +137,18 @@ function buildTheme(themeName) {
   fs.mkdirSync(DIST_DIR, { recursive: true });
   fs.writeFileSync(path.join(DIST_DIR, `${themeName}.css`), css);
   console.log(`built dist/${themeName}.css — ${lines.length} tokens, contract satisfied (${contract.length}/${contract.length})`);
+  return css;
 }
 
 const requested = process.argv[2];
+validateKnownKeys("base", base);
 if (requested) {
   buildTheme(requested);
 } else {
-  buildTheme(FOUNDATION_THEME);
-  for (const file of fs.readdirSync(THEMES_DIR)) {
-    if (file === `${FOUNDATION_THEME}.json`) continue;
-    buildTheme(path.basename(file, ".json"));
-  }
+  const all = fs.readdirSync(THEMES_DIR).filter((f) => f.endsWith(".json")).sort()
+    .map((f) => buildTheme(path.basename(f, ".json")));
+  fs.writeFileSync(path.join(DIST_DIR, "themes.css"), all.join("\n"));
+  console.log(`built dist/themes.css — ${all.length} themes, select with data-theme`);
 }
 
 try {

@@ -8,8 +8,8 @@
   background: var(--color-bg-accent);
   color: var(--color-text-onAccent);
   font-family: var(--font-body);
-  font-size: var(--type-label-size);
-  font-weight: var(--type-label-weight);
+  font-size: var(--type-ui-label-size);
+  font-weight: var(--type-ui-label-weight);
   flex: 0 0 auto;
   object-fit: cover;
 }

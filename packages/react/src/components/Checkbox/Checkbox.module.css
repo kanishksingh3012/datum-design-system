@@ -51,6 +51,6 @@
   opacity: 0.5;
 }
 .label {
-  font-size: var(--type-body-size);
+  font-size: var(--type-body-md-size);
   color: var(--color-text-primary);
 }

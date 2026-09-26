@@ -7,7 +7,7 @@
   padding: 0.7rem 1rem;
   border-radius: var(--radius-control);
   box-shadow: var(--elevation-overlay);
-  font-size: var(--type-bodySmall-size);
+  font-size: var(--type-body-sm-size);
 }
 .dismiss {
   background: none;

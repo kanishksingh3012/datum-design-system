@@ -6,8 +6,8 @@
   width: 100%;
 }
 .label {
-  font-size: var(--type-label-size);
-  font-weight: var(--type-label-weight);
+  font-size: var(--type-ui-label-size);
+  font-weight: var(--type-ui-label-weight);
   color: var(--color-text-primary);
 }
 .wrap {
@@ -16,7 +16,7 @@
 .input {
   width: 100%;
   font-family: var(--font-body);
-  font-size: var(--type-body-size);
+  font-size: var(--type-body-md-size);
   color: var(--color-text-primary);
   background: var(--color-bg-page);
   border: 1px solid var(--color-border-default);
@@ -55,7 +55,7 @@
   display: flex;
   align-items: center;
   border-radius: var(--radius-control);
-  font-size: var(--type-body-size);
+  font-size: var(--type-body-md-size);
   color: var(--color-text-primary);
   cursor: pointer;
 }

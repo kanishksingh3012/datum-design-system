@@ -13,7 +13,7 @@
 }
 .link {
   font-family: var(--font-body);
-  font-size: var(--type-body-size);
+  font-size: var(--type-body-md-size);
   color: var(--color-text-secondary);
   text-decoration: none;
   min-height: var(--interaction-minTarget);

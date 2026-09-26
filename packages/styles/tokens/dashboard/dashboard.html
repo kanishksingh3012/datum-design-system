@@ -1,43 +1,20 @@
 <title>Datum</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>:root[data-theme="minimal"] {
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Barlow:wght@700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>:root[data-theme="navy"] {
   color-scheme: light dark;
-  --color-bg-page: light-dark(#F8F8F7, #282825);
-  --color-bg-surface: light-dark(#EEEEEC, #42423D);
-  --color-bg-accent: #1E69B3;
-  --color-bg-danger: #B02121;
-  --color-bg-dangerSubtle: light-dark(#F9F5F5, #381414);
-  --color-bg-warning: #6B4815;
-  --color-bg-warningSubtle: light-dark(#FAF8F5, #3C2B11);
-  --color-bg-success: #425F21;
-  --color-bg-successSubtle: light-dark(#F7F9F6, #273617);
-  --color-bg-disabled: light-dark(#EEEEEC, #42423D);
-  --color-text-primary: light-dark(#282825, #F8F8F7);
-  --color-text-secondary: light-dark(#585851, #BFBFBA);
-  --color-text-onAccent: #F8F8F7;
-  --color-text-onDanger: #F8F8F7;
-  --color-text-onWarning: #F8F8F7;
-  --color-text-onSuccess: #F8F8F7;
-  --color-text-danger: light-dark(#B02121, #DE9B9B);
-  --color-text-warning: light-dark(#946114, #E5AC57);
-  --color-text-success: light-dark(#425F21, #A2D16B);
-  --color-text-disabled: light-dark(#A2A29A, #85857A);
-  --color-border-default: light-dark(#DADAD7, #585851);
-  --color-border-strong: light-dark(#A2A29A, #85857A);
-  --color-border-focus: light-dark(#1E69B3, #609EDC);
-  --color-border-danger: light-dark(#B02121, #DE9B9B);
-  --color-border-disabled: light-dark(#DADAD7, #585851);
-  --font-display: 'Geist', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-body: 'Geist', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-mono: 'Geist Mono', 'SF Mono', Menlo, Consolas, monospace;
+  --font-display: 'Barlow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: 'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
+  --space-tight: 12px;
   --space-compact: 8px;
   --space-default: 16px;
   --space-section: 32px;
-  --radius-base: 8px;
+  --radius-base: 10px;
   --radius-control: var(--radius-base);
-  --radius-card: calc(var(--radius-base) * 2);
+  --radius-card: var(--radius-base);
+  --radius-pill: 999px;
   --icon-inline: 16px;
   --icon-control: 24px;
   --grid-gutter: clamp(16px, 2vw, 24px);
@@ -45,36 +22,334 @@
   --grid-container: 1280px;
   --interaction-minTarget: 44px;
   --shape-navbar: rectangle;
-  --elevation-raised: 0 1px 2px rgba(0,0,0,0.08);
-  --elevation-overlay: 0 4px 12px rgba(0,0,0,0.12);
   --motion-fast: 120ms;
   --motion-normal: 200ms;
   --motion-slow: 320ms;
   --motion-easing: cubic-bezier(.4,0,.2,1);
-  --type-display-size: 48px;
-  --type-display-weight: 700;
-  --type-display-lineHeight: 1.2;
-  --type-h1-size: 40px;
-  --type-h1-weight: 700;
-  --type-h1-lineHeight: 1.2;
-  --type-h2-size: 32px;
-  --type-h2-weight: 600;
-  --type-h2-lineHeight: 1.3;
-  --type-h3-size: 20px;
-  --type-h3-weight: 600;
-  --type-h3-lineHeight: 1.3;
-  --type-body-size: 16px;
-  --type-body-weight: 400;
-  --type-body-lineHeight: 1.5;
-  --type-bodySmall-size: 14px;
-  --type-bodySmall-weight: 400;
-  --type-bodySmall-lineHeight: 1.5;
-  --type-caption-size: 12px;
-  --type-caption-weight: 400;
-  --type-caption-lineHeight: 1.5;
-  --type-label-size: 12px;
-  --type-label-weight: 500;
-  --type-label-lineHeight: 1.2;
+  --type-display-lg-family: var(--font-display);
+  --type-display-lg-size: 56px;
+  --type-display-lg-weight: 800;
+  --type-display-lg-lineHeight: 1.1;
+  --type-display-lg-tracking: -0.02em;
+  --type-display-md-family: var(--font-display);
+  --type-display-md-size: 48px;
+  --type-display-md-weight: 800;
+  --type-display-md-lineHeight: 1.1;
+  --type-display-md-tracking: -0.02em;
+  --type-display-sm-family: var(--font-display);
+  --type-display-sm-size: 40px;
+  --type-display-sm-weight: 800;
+  --type-display-sm-lineHeight: 1.1;
+  --type-display-sm-tracking: -0.01em;
+  --type-heading-xl-family: var(--font-display);
+  --type-heading-xl-size: 32px;
+  --type-heading-xl-weight: 800;
+  --type-heading-xl-lineHeight: 1.2;
+  --type-heading-xl-tracking: -0.01em;
+  --type-heading-lg-family: var(--font-display);
+  --type-heading-lg-size: 24px;
+  --type-heading-lg-weight: 700;
+  --type-heading-lg-lineHeight: 1.2;
+  --type-heading-lg-tracking: -0.01em;
+  --type-heading-md-family: var(--font-display);
+  --type-heading-md-size: 20px;
+  --type-heading-md-weight: 600;
+  --type-heading-md-lineHeight: 1.3;
+  --type-heading-md-tracking: 0em;
+  --type-heading-sm-family: var(--font-body);
+  --type-heading-sm-size: 18px;
+  --type-heading-sm-weight: 600;
+  --type-heading-sm-lineHeight: 1.3;
+  --type-heading-sm-tracking: 0em;
+  --type-body-lg-family: var(--font-body);
+  --type-body-lg-size: 18px;
+  --type-body-lg-weight: 400;
+  --type-body-lg-lineHeight: 1.5;
+  --type-body-lg-tracking: 0em;
+  --type-body-md-family: var(--font-body);
+  --type-body-md-size: 16px;
+  --type-body-md-weight: 400;
+  --type-body-md-lineHeight: 1.5;
+  --type-body-md-tracking: 0em;
+  --type-body-sm-family: var(--font-body);
+  --type-body-sm-size: 14px;
+  --type-body-sm-weight: 400;
+  --type-body-sm-lineHeight: 1.5;
+  --type-body-sm-tracking: 0em;
+  --type-paragraph-lg-family: var(--font-body);
+  --type-paragraph-lg-size: 18px;
+  --type-paragraph-lg-weight: 400;
+  --type-paragraph-lg-lineHeight: 1.7;
+  --type-paragraph-lg-tracking: 0em;
+  --type-paragraph-md-family: var(--font-body);
+  --type-paragraph-md-size: 16px;
+  --type-paragraph-md-weight: 400;
+  --type-paragraph-md-lineHeight: 1.7;
+  --type-paragraph-md-tracking: 0em;
+  --type-ui-label-family: var(--font-body);
+  --type-ui-label-size: 12px;
+  --type-ui-label-weight: 500;
+  --type-ui-label-lineHeight: 1.2;
+  --type-ui-label-tracking: 0.01em;
+  --type-ui-caption-family: var(--font-body);
+  --type-ui-caption-size: 12px;
+  --type-ui-caption-weight: 400;
+  --type-ui-caption-lineHeight: 1.5;
+  --type-ui-caption-tracking: 0em;
+  --type-ui-overline-family: var(--font-body);
+  --type-ui-overline-size: 12px;
+  --type-ui-overline-weight: 600;
+  --type-ui-overline-lineHeight: 1.2;
+  --type-ui-overline-tracking: 0.06em;
+  --type-numeric-lg-family: var(--font-mono);
+  --type-numeric-lg-size: 32px;
+  --type-numeric-lg-weight: 600;
+  --type-numeric-lg-lineHeight: 1.2;
+  --type-numeric-lg-tracking: -0.01em;
+  --type-numeric-md-family: var(--font-mono);
+  --type-numeric-md-size: 20px;
+  --type-numeric-md-weight: 500;
+  --type-numeric-md-lineHeight: 1.2;
+  --type-numeric-md-tracking: 0em;
+  --type-numeric-sm-family: var(--font-mono);
+  --type-numeric-sm-size: 14px;
+  --type-numeric-sm-weight: 500;
+  --type-numeric-sm-lineHeight: 1.5;
+  --type-numeric-sm-tracking: 0em;
+  --type-code-md-family: var(--font-mono);
+  --type-code-md-size: 14px;
+  --type-code-md-weight: 400;
+  --type-code-md-lineHeight: 1.5;
+  --type-code-md-tracking: 0em;
+  --type-code-sm-family: var(--font-mono);
+  --type-code-sm-size: 12px;
+  --type-code-sm-weight: 400;
+  --type-code-sm-lineHeight: 1.5;
+  --type-code-sm-tracking: 0em;
+  --color-bg-page: light-dark(#F8F9FA, #1C2126);
+  --color-bg-surface: light-dark(#E5E8EC, #3F464D);
+  --color-bg-surfaceRaised: light-dark(#FFFFFF, #343A40);
+  --color-bg-surfaceSunken: light-dark(#E5E8EC, #101419);
+  --color-bg-tertiary: light-dark(#CED4DA, #4D555D);
+  --color-bg-disabled: light-dark(#E5E8EC, #343A40);
+  --color-bg-scrim: light-dark(rgba(28,33,38,0.48), rgba(0,0,0,0.64));
+  --color-bg-accent: light-dark(#1F2E4A, #AAC3F1);
+  --color-bg-accentHover: light-dark(#274172, #C9DAF8);
+  --color-bg-accentActive: light-dark(#131E32, #85A6E2);
+  --color-bg-accentSubtle: light-dark(#E2ECFD, #131E32);
+  --color-bg-accentSubtleHover: light-dark(#C9DAF8, #1F2E4A);
+  --color-bg-danger: #D52F4A;
+  --color-bg-dangerHover: #AF1B37;
+  --color-bg-dangerSubtle: light-dark(#FFE6E6, #400710);
+  --color-bg-warning: #F1C035;
+  --color-bg-warningSubtle: light-dark(#FFEBBC, #2A1F00);
+  --color-bg-success: #007440;
+  --color-bg-successSubtle: light-dark(#DBF4E3, #002913);
+  --color-bg-info: #006C7F;
+  --color-bg-infoSubtle: light-dark(#D9F2F9, #00252D);
+  --color-text-primary: light-dark(#343A40, #F8F9FA);
+  --color-text-secondary: light-dark(#4D555D, #B9C0C7);
+  --color-text-tertiary: light-dark(#666E77, #9FA7B0);
+  --color-text-disabled: light-dark(#9FA7B0, #666E77);
+  --color-text-accent: light-dark(#355695, #AAC3F1);
+  --color-text-onAccent: light-dark(#FFFFFF, #131E32);
+  --color-text-danger: light-dark(#AF1B37, #FD8188);
+  --color-text-onDanger: #FFFFFF;
+  --color-text-warning: light-dark(#785C00, #F1C035);
+  --color-text-onWarning: #1C2126;
+  --color-text-success: light-dark(#007440, #60C488);
+  --color-text-onSuccess: #FFFFFF;
+  --color-text-info: light-dark(#006C7F, #47BED8);
+  --color-text-onInfo: #FFFFFF;
+  --color-border-subtle: light-dark(#E5E8EC, #343A40);
+  --color-border-default: light-dark(#CED4DA, #3F464D);
+  --color-border-strong: #818A93;
+  --color-border-focus: light-dark(#486EB6, #AAC3F1);
+  --color-border-accent: light-dark(#355695, #85A6E2);
+  --color-border-danger: light-dark(#D52F4A, #FD8188);
+  --color-border-warning: light-dark(#967400, #D4A500);
+  --color-border-success: light-dark(#099052, #60C488);
+  --color-border-info: light-dark(#00879E, #47BED8);
+  --color-border-disabled: light-dark(#CED4DA, #3F464D);
+  --elevation-field: 0px 1px 2px light-dark(rgba(22,32,52,0.08), rgba(0,0,0,0.32));
+  --elevation-surface: 0px 1px 2px light-dark(rgba(22,32,52,0.06), rgba(0,0,0,0.28)), 0px 2px 8px light-dark(rgba(22,32,52,0.07), rgba(0,0,0,0.36)), 0px 0px 1px 0px light-dark(transparent, rgba(255,255,255,0.14)) inset;
+  --elevation-raised: 0px 4px 10px light-dark(rgba(22,32,52,0.1), rgba(0,0,0,0.30)), 0px 14px 28px light-dark(rgba(22,32,52,0.12), rgba(0,0,0,0.40)), 0px 0px 1px 0px light-dark(transparent, rgba(255,255,255,0.24)) inset;
+  --elevation-overlay: 0px 8px 20px light-dark(rgba(22,32,52,0.12), rgba(0,0,0,0.36)), 0px 24px 48px light-dark(rgba(22,32,52,0.16), rgba(0,0,0,0.48)), 0px 0px 1px 0px light-dark(transparent, rgba(255,255,255,0.30)) inset;
+}
+
+:root[data-theme="orange"] {
+  color-scheme: light dark;
+  --font-display: 'Barlow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: 'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
+  --space-tight: 12px;
+  --space-compact: 8px;
+  --space-default: 16px;
+  --space-section: 32px;
+  --radius-base: 10px;
+  --radius-control: var(--radius-base);
+  --radius-card: var(--radius-base);
+  --radius-pill: 999px;
+  --icon-inline: 16px;
+  --icon-control: 24px;
+  --grid-gutter: clamp(16px, 2vw, 24px);
+  --grid-margin: clamp(16px, 5vw, 64px);
+  --grid-container: 1280px;
+  --interaction-minTarget: 44px;
+  --shape-navbar: rectangle;
+  --motion-fast: 120ms;
+  --motion-normal: 200ms;
+  --motion-slow: 320ms;
+  --motion-easing: cubic-bezier(.4,0,.2,1);
+  --type-display-lg-family: var(--font-display);
+  --type-display-lg-size: 56px;
+  --type-display-lg-weight: 800;
+  --type-display-lg-lineHeight: 1.1;
+  --type-display-lg-tracking: -0.02em;
+  --type-display-md-family: var(--font-display);
+  --type-display-md-size: 48px;
+  --type-display-md-weight: 800;
+  --type-display-md-lineHeight: 1.1;
+  --type-display-md-tracking: -0.02em;
+  --type-display-sm-family: var(--font-display);
+  --type-display-sm-size: 40px;
+  --type-display-sm-weight: 800;
+  --type-display-sm-lineHeight: 1.1;
+  --type-display-sm-tracking: -0.01em;
+  --type-heading-xl-family: var(--font-display);
+  --type-heading-xl-size: 32px;
+  --type-heading-xl-weight: 800;
+  --type-heading-xl-lineHeight: 1.2;
+  --type-heading-xl-tracking: -0.01em;
+  --type-heading-lg-family: var(--font-display);
+  --type-heading-lg-size: 24px;
+  --type-heading-lg-weight: 700;
+  --type-heading-lg-lineHeight: 1.2;
+  --type-heading-lg-tracking: -0.01em;
+  --type-heading-md-family: var(--font-display);
+  --type-heading-md-size: 20px;
+  --type-heading-md-weight: 600;
+  --type-heading-md-lineHeight: 1.3;
+  --type-heading-md-tracking: 0em;
+  --type-heading-sm-family: var(--font-body);
+  --type-heading-sm-size: 18px;
+  --type-heading-sm-weight: 600;
+  --type-heading-sm-lineHeight: 1.3;
+  --type-heading-sm-tracking: 0em;
+  --type-body-lg-family: var(--font-body);
+  --type-body-lg-size: 18px;
+  --type-body-lg-weight: 400;
+  --type-body-lg-lineHeight: 1.5;
+  --type-body-lg-tracking: 0em;
+  --type-body-md-family: var(--font-body);
+  --type-body-md-size: 16px;
+  --type-body-md-weight: 400;
+  --type-body-md-lineHeight: 1.5;
+  --type-body-md-tracking: 0em;
+  --type-body-sm-family: var(--font-body);
+  --type-body-sm-size: 14px;
+  --type-body-sm-weight: 400;
+  --type-body-sm-lineHeight: 1.5;
+  --type-body-sm-tracking: 0em;
+  --type-paragraph-lg-family: var(--font-body);
+  --type-paragraph-lg-size: 18px;
+  --type-paragraph-lg-weight: 400;
+  --type-paragraph-lg-lineHeight: 1.7;
+  --type-paragraph-lg-tracking: 0em;
+  --type-paragraph-md-family: var(--font-body);
+  --type-paragraph-md-size: 16px;
+  --type-paragraph-md-weight: 400;
+  --type-paragraph-md-lineHeight: 1.7;
+  --type-paragraph-md-tracking: 0em;
+  --type-ui-label-family: var(--font-body);
+  --type-ui-label-size: 12px;
+  --type-ui-label-weight: 500;
+  --type-ui-label-lineHeight: 1.2;
+  --type-ui-label-tracking: 0.01em;
+  --type-ui-caption-family: var(--font-body);
+  --type-ui-caption-size: 12px;
+  --type-ui-caption-weight: 400;
+  --type-ui-caption-lineHeight: 1.5;
+  --type-ui-caption-tracking: 0em;
+  --type-ui-overline-family: var(--font-body);
+  --type-ui-overline-size: 12px;
+  --type-ui-overline-weight: 600;
+  --type-ui-overline-lineHeight: 1.2;
+  --type-ui-overline-tracking: 0.06em;
+  --type-numeric-lg-family: var(--font-mono);
+  --type-numeric-lg-size: 32px;
+  --type-numeric-lg-weight: 600;
+  --type-numeric-lg-lineHeight: 1.2;
+  --type-numeric-lg-tracking: -0.01em;
+  --type-numeric-md-family: var(--font-mono);
+  --type-numeric-md-size: 20px;
+  --type-numeric-md-weight: 500;
+  --type-numeric-md-lineHeight: 1.2;
+  --type-numeric-md-tracking: 0em;
+  --type-numeric-sm-family: var(--font-mono);
+  --type-numeric-sm-size: 14px;
+  --type-numeric-sm-weight: 500;
+  --type-numeric-sm-lineHeight: 1.5;
+  --type-numeric-sm-tracking: 0em;
+  --type-code-md-family: var(--font-mono);
+  --type-code-md-size: 14px;
+  --type-code-md-weight: 400;
+  --type-code-md-lineHeight: 1.5;
+  --type-code-md-tracking: 0em;
+  --type-code-sm-family: var(--font-mono);
+  --type-code-sm-size: 12px;
+  --type-code-sm-weight: 400;
+  --type-code-sm-lineHeight: 1.5;
+  --type-code-sm-tracking: 0em;
+  --color-bg-page: light-dark(#FDF9F6, #1B1B1B);
+  --color-bg-surface: light-dark(#F6F1EC, #424140);
+  --color-bg-surfaceRaised: light-dark(#FFFFFF, #323232);
+  --color-bg-surfaceSunken: light-dark(#F6F1EC, #101010);
+  --color-bg-tertiary: light-dark(#E7E2DD, #545250);
+  --color-bg-disabled: light-dark(#F6F1EC, #323232);
+  --color-bg-scrim: light-dark(rgba(27,27,27,0.48), rgba(0,0,0,0.64));
+  --color-bg-accent: #FC6E20;
+  --color-bg-accentHover: #FF9A64;
+  --color-bg-accentActive: #FFBB8F;
+  --color-bg-accentSubtle: light-dark(#FFE7D0, #44180B);
+  --color-bg-accentSubtleHover: light-dark(color-mix(in oklab, #FFD5B3 32%, #FFE7D0), #662611);
+  --color-bg-danger: #D52F4A;
+  --color-bg-dangerHover: #AF1B37;
+  --color-bg-dangerSubtle: light-dark(#FFE6E6, #400710);
+  --color-bg-warning: #F1C035;
+  --color-bg-warningSubtle: light-dark(#FFEBBC, #2A1F00);
+  --color-bg-success: #007440;
+  --color-bg-successSubtle: light-dark(#DBF4E3, #002913);
+  --color-bg-info: #0062AB;
+  --color-bg-infoSubtle: light-dark(#E0EFFF, #002140);
+  --color-text-primary: light-dark(#1B1B1B, #FDF9F6);
+  --color-text-secondary: light-dark(#545250, #D3CECA);
+  --color-text-tertiary: light-dark(#6E6B69, #AFABA8);
+  --color-text-disabled: light-dark(#AFABA8, #6E6B69);
+  --color-text-accent: light-dark(#B34210, #FF9A64);
+  --color-text-onAccent: #1B1B1B;
+  --color-text-danger: light-dark(#AF1B37, #FD8188);
+  --color-text-onDanger: #FFFFFF;
+  --color-text-warning: light-dark(#785C00, #F1C035);
+  --color-text-onWarning: #1B1B1B;
+  --color-text-success: light-dark(#007440, #60C488);
+  --color-text-onSuccess: #FFFFFF;
+  --color-text-info: light-dark(#0062AB, #68B2FB);
+  --color-text-onInfo: #FFFFFF;
+  --color-border-subtle: light-dark(#F6F1EC, #323232);
+  --color-border-default: light-dark(#E7E2DD, #424140);
+  --color-border-strong: #8C8885;
+  --color-border-focus: light-dark(#DA540A, #FF9A64);
+  --color-border-accent: light-dark(#DA540A, #FC6E20);
+  --color-border-danger: light-dark(#D52F4A, #FD8188);
+  --color-border-warning: light-dark(#967400, #D4A500);
+  --color-border-success: light-dark(#099052, #60C488);
+  --color-border-info: light-dark(#007BD4, #68B2FB);
+  --color-border-disabled: light-dark(#E7E2DD, #424140);
+  --elevation-field: 0px 1px 2px light-dark(rgba(46,32,22,0.08), rgba(0,0,0,0.32));
+  --elevation-surface: 0px 1px 2px light-dark(rgba(46,32,22,0.06), rgba(0,0,0,0.28)), 0px 2px 8px light-dark(rgba(46,32,22,0.07), rgba(0,0,0,0.36)), 0px 0px 1px 0px light-dark(transparent, rgba(255,255,255,0.14)) inset;
+  --elevation-raised: 0px 4px 10px light-dark(rgba(46,32,22,0.1), rgba(0,0,0,0.30)), 0px 14px 28px light-dark(rgba(46,32,22,0.12), rgba(0,0,0,0.40)), 0px 0px 1px 0px light-dark(transparent, rgba(255,255,255,0.24)) inset;
+  --elevation-overlay: 0px 8px 20px light-dark(rgba(46,32,22,0.12), rgba(0,0,0,0.36)), 0px 24px 48px light-dark(rgba(46,32,22,0.16), rgba(0,0,0,0.48)), 0px 0px 1px 0px light-dark(transparent, rgba(255,255,255,0.30)) inset;
 }
 </style>
 <style>
@@ -303,13 +578,16 @@
       <h1>Datum</h1>
       <p class="header__desc">Live, generated reference for every token and component in the system - regenerated from the real files, never hand-typed.</p>
     </div>
-    <span class="timestamp">generated 2026-09-08T14:35:05.837Z</span>
+    <span class="timestamp">generated 2026-09-26T16:17:49.664Z</span>
   </header>
 
   <div class="controls-row">
     <div class="tabs" role="tablist">
-      <button class="tab is-active" data-theme="minimal" data-built="true">
-        Minimal &amp; neutral
+      <button class="tab is-active" data-theme="navy" data-built="true">
+        Navy
+      </button>
+      <button class="tab" data-theme="orange" data-built="true">
+        Orange
       </button></div>
     <div class="mode-toggle" role="group" aria-label="Preview color mode">
       <button data-mode="light dark">Auto</button>
@@ -338,36 +616,44 @@
       <p class="card__sub">Primitives (theme-independent, 10-step)</p>
       <div class="color-scale-list">
         <div class="color-scale__row">
-          <span class="color-scale__label">gray</span>
-          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F8F8F7" title="gray.50 - #F8F8F7"></span><span class="color-scale__chip" style="background:#EEEEEC" title="gray.100 - #EEEEEC"></span><span class="color-scale__chip" style="background:#DADAD7" title="gray.200 - #DADAD7"></span><span class="color-scale__chip" style="background:#BFBFBA" title="gray.300 - #BFBFBA"></span><span class="color-scale__chip" style="background:#A2A29A" title="gray.400 - #A2A29A"></span><span class="color-scale__chip" style="background:#85857A" title="gray.500 - #85857A"></span><span class="color-scale__chip" style="background:#6D6D64" title="gray.600 - #6D6D64"></span><span class="color-scale__chip" style="background:#585851" title="gray.700 - #585851"></span><span class="color-scale__chip" style="background:#42423D" title="gray.800 - #42423D"></span><span class="color-scale__chip" style="background:#282825" title="gray.900 - #282825"></span></div>
+          <span class="color-scale__label">white</span>
+          <div class="color-scale__strip"></div>
         </div>
         <div class="color-scale__row">
-          <span class="color-scale__label">blue</span>
-          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F5F7F9" title="blue.50 - #F5F7F9"></span><span class="color-scale__chip" style="background:#E7EDF3" title="blue.100 - #E7EDF3"></span><span class="color-scale__chip" style="background:#C9D9E9" title="blue.200 - #C9D9E9"></span><span class="color-scale__chip" style="background:#9ABDE0" title="blue.300 - #9ABDE0"></span><span class="color-scale__chip" style="background:#609EDC" title="blue.400 - #609EDC"></span><span class="color-scale__chip" style="background:#207FDF" title="blue.500 - #207FDF"></span><span class="color-scale__chip" style="background:#1E69B3" title="blue.600 - #1E69B3"></span><span class="color-scale__chip" style="background:#1D548C" title="blue.700 - #1D548C"></span><span class="color-scale__chip" style="background:#1A4065" title="blue.800 - #1A4065"></span><span class="color-scale__chip" style="background:#142639" title="blue.900 - #142639"></span></div>
+          <span class="color-scale__label">orange</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#FFF5EA" title="orange.50 - #FFF5EA"></span><span class="color-scale__chip" style="background:#FFE7D0" title="orange.100 - #FFE7D0"></span><span class="color-scale__chip" style="background:#FFD5B3" title="orange.200 - #FFD5B3"></span><span class="color-scale__chip" style="background:#FFBB8F" title="orange.300 - #FFBB8F"></span><span class="color-scale__chip" style="background:#FF9A64" title="orange.400 - #FF9A64"></span><span class="color-scale__chip" style="background:#FC6E20" title="orange.500 - #FC6E20"></span><span class="color-scale__chip" style="background:#DA540A" title="orange.600 - #DA540A"></span><span class="color-scale__chip" style="background:#B34210" title="orange.700 - #B34210"></span><span class="color-scale__chip" style="background:#8C3413" title="orange.800 - #8C3413"></span><span class="color-scale__chip" style="background:#662611" title="orange.900 - #662611"></span></div>
         </div>
         <div class="color-scale__row">
-          <span class="color-scale__label">red</span>
-          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F9F5F5" title="red.50 - #F9F5F5"></span><span class="color-scale__chip" style="background:#F3E7E7" title="red.100 - #F3E7E7"></span><span class="color-scale__chip" style="background:#E8CACA" title="red.200 - #E8CACA"></span><span class="color-scale__chip" style="background:#DE9B9B" title="red.300 - #DE9B9B"></span><span class="color-scale__chip" style="background:#D96363" title="red.400 - #D96363"></span><span class="color-scale__chip" style="background:#DB2424" title="red.500 - #DB2424"></span><span class="color-scale__chip" style="background:#B02121" title="red.600 - #B02121"></span><span class="color-scale__chip" style="background:#891F1F" title="red.700 - #891F1F"></span><span class="color-scale__chip" style="background:#641C1C" title="red.800 - #641C1C"></span><span class="color-scale__chip" style="background:#381414" title="red.900 - #381414"></span></div>
+          <span class="color-scale__label">stone</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#FDF9F6" title="stone.50 - #FDF9F6"></span><span class="color-scale__chip" style="background:#F6F1EC" title="stone.100 - #F6F1EC"></span><span class="color-scale__chip" style="background:#E7E2DD" title="stone.200 - #E7E2DD"></span><span class="color-scale__chip" style="background:#D3CECA" title="stone.300 - #D3CECA"></span><span class="color-scale__chip" style="background:#AFABA8" title="stone.400 - #AFABA8"></span><span class="color-scale__chip" style="background:#8C8885" title="stone.500 - #8C8885"></span><span class="color-scale__chip" style="background:#6E6B69" title="stone.600 - #6E6B69"></span><span class="color-scale__chip" style="background:#545250" title="stone.700 - #545250"></span><span class="color-scale__chip" style="background:#424140" title="stone.800 - #424140"></span><span class="color-scale__chip" style="background:#323232" title="stone.900 - #323232"></span></div>
         </div>
         <div class="color-scale__row">
-          <span class="color-scale__label">amber</span>
-          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#FAF8F5" title="amber.50 - #FAF8F5"></span><span class="color-scale__chip" style="background:#F4EFE6" title="amber.100 - #F4EFE6"></span><span class="color-scale__chip" style="background:#EBDCC7" title="amber.200 - #EBDCC7"></span><span class="color-scale__chip" style="background:#E5C595" title="amber.300 - #E5C595"></span><span class="color-scale__chip" style="background:#E5AC57" title="amber.400 - #E5AC57"></span><span class="color-scale__chip" style="background:#ED9512" title="amber.500 - #ED9512"></span><span class="color-scale__chip" style="background:#BE7A13" title="amber.600 - #BE7A13"></span><span class="color-scale__chip" style="background:#946114" title="amber.700 - #946114"></span><span class="color-scale__chip" style="background:#6B4815" title="amber.800 - #6B4815"></span><span class="color-scale__chip" style="background:#3C2B11" title="amber.900 - #3C2B11"></span></div>
+          <span class="color-scale__label">navy</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F2F7FF" title="navy.50 - #F2F7FF"></span><span class="color-scale__chip" style="background:#E2ECFD" title="navy.100 - #E2ECFD"></span><span class="color-scale__chip" style="background:#C9DAF8" title="navy.200 - #C9DAF8"></span><span class="color-scale__chip" style="background:#AAC3F1" title="navy.300 - #AAC3F1"></span><span class="color-scale__chip" style="background:#85A6E2" title="navy.400 - #85A6E2"></span><span class="color-scale__chip" style="background:#648AD0" title="navy.500 - #648AD0"></span><span class="color-scale__chip" style="background:#486EB6" title="navy.600 - #486EB6"></span><span class="color-scale__chip" style="background:#355695" title="navy.700 - #355695"></span><span class="color-scale__chip" style="background:#274172" title="navy.800 - #274172"></span><span class="color-scale__chip" style="background:#1F2E4A" title="navy.900 - #1F2E4A"></span></div>
         </div>
         <div class="color-scale__row">
-          <span class="color-scale__label">green</span>
-          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F7F9F6" title="green.50 - #F7F9F6"></span><span class="color-scale__chip" style="background:#EDF2E8" title="green.100 - #EDF2E8"></span><span class="color-scale__chip" style="background:#DAE6CC" title="green.200 - #DAE6CC"></span><span class="color-scale__chip" style="background:#BFD9A0" title="green.300 - #BFD9A0"></span><span class="color-scale__chip" style="background:#A2D16B" title="green.400 - #A2D16B"></span><span class="color-scale__chip" style="background:#85CF30" title="green.500 - #85CF30"></span><span class="color-scale__chip" style="background:#6DA62B" title="green.600 - #6DA62B"></span><span class="color-scale__chip" style="background:#578226" title="green.700 - #578226"></span><span class="color-scale__chip" style="background:#425F21" title="green.800 - #425F21"></span><span class="color-scale__chip" style="background:#273617" title="green.900 - #273617"></span></div>
+          <span class="color-scale__label">slate</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F8F9FA" title="slate.50 - #F8F9FA"></span><span class="color-scale__chip" style="background:#E5E8EC" title="slate.100 - #E5E8EC"></span><span class="color-scale__chip" style="background:#CED4DA" title="slate.200 - #CED4DA"></span><span class="color-scale__chip" style="background:#B9C0C7" title="slate.300 - #B9C0C7"></span><span class="color-scale__chip" style="background:#9FA7B0" title="slate.400 - #9FA7B0"></span><span class="color-scale__chip" style="background:#818A93" title="slate.500 - #818A93"></span><span class="color-scale__chip" style="background:#666E77" title="slate.600 - #666E77"></span><span class="color-scale__chip" style="background:#4D555D" title="slate.700 - #4D555D"></span><span class="color-scale__chip" style="background:#3F464D" title="slate.800 - #3F464D"></span><span class="color-scale__chip" style="background:#343A40" title="slate.900 - #343A40"></span></div>
         </div>
         <div class="color-scale__row">
-          <span class="color-scale__label">teal</span>
-          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F6F9F8" title="teal.50 - #F6F9F8"></span><span class="color-scale__chip" style="background:#E8F3EF" title="teal.100 - #E8F3EF"></span><span class="color-scale__chip" style="background:#CAE7DE" title="teal.200 - #CAE7DE"></span><span class="color-scale__chip" style="background:#9DDDC8" title="teal.300 - #9DDDC8"></span><span class="color-scale__chip" style="background:#65D7B3" title="teal.400 - #65D7B3"></span><span class="color-scale__chip" style="background:#28D7A0" title="teal.500 - #28D7A0"></span><span class="color-scale__chip" style="background:#24AD82" title="teal.600 - #24AD82"></span><span class="color-scale__chip" style="background:#218767" title="teal.700 - #218767"></span><span class="color-scale__chip" style="background:#1D624C" title="teal.800 - #1D624C"></span><span class="color-scale__chip" style="background:#15372D" title="teal.900 - #15372D"></span></div>
+          <span class="color-scale__label">crimson</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#FFF4F4" title="crimson.50 - #FFF4F4"></span><span class="color-scale__chip" style="background:#FFE6E6" title="crimson.100 - #FFE6E6"></span><span class="color-scale__chip" style="background:#FFCFCF" title="crimson.200 - #FFCFCF"></span><span class="color-scale__chip" style="background:#FFAFB0" title="crimson.300 - #FFAFB0"></span><span class="color-scale__chip" style="background:#FD8188" title="crimson.400 - #FD8188"></span><span class="color-scale__chip" style="background:#F05465" title="crimson.500 - #F05465"></span><span class="color-scale__chip" style="background:#D52F4A" title="crimson.600 - #D52F4A"></span><span class="color-scale__chip" style="background:#AF1B37" title="crimson.700 - #AF1B37"></span><span class="color-scale__chip" style="background:#871128" title="crimson.800 - #871128"></span><span class="color-scale__chip" style="background:#620E1C" title="crimson.900 - #620E1C"></span></div>
         </div>
         <div class="color-scale__row">
-          <span class="color-scale__label">purple</span>
-          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F7F6F9" title="purple.50 - #F7F6F9"></span><span class="color-scale__chip" style="background:#ECE9F2" title="purple.100 - #ECE9F2"></span><span class="color-scale__chip" style="background:#D7CDE4" title="purple.200 - #D7CDE4"></span><span class="color-scale__chip" style="background:#B8A3D6" title="purple.300 - #B8A3D6"></span><span class="color-scale__chip" style="background:#9771CB" title="purple.400 - #9771CB"></span><span class="color-scale__chip" style="background:#7439C6" title="purple.500 - #7439C6"></span><span class="color-scale__chip" style="background:#5F329F" title="purple.600 - #5F329F"></span><span class="color-scale__chip" style="background:#4D2B7D" title="purple.700 - #4D2B7D"></span><span class="color-scale__chip" style="background:#3B245B" title="purple.800 - #3B245B"></span><span class="color-scale__chip" style="background:#241934" title="purple.900 - #241934"></span></div>
+          <span class="color-scale__label">yellow</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#FFF6E1" title="yellow.50 - #FFF6E1"></span><span class="color-scale__chip" style="background:#FFEBBC" title="yellow.100 - #FFEBBC"></span><span class="color-scale__chip" style="background:#FED87B" title="yellow.200 - #FED87B"></span><span class="color-scale__chip" style="background:#F1C035" title="yellow.300 - #F1C035"></span><span class="color-scale__chip" style="background:#D4A500" title="yellow.400 - #D4A500"></span><span class="color-scale__chip" style="background:#B58C00" title="yellow.500 - #B58C00"></span><span class="color-scale__chip" style="background:#967400" title="yellow.600 - #967400"></span><span class="color-scale__chip" style="background:#785C00" title="yellow.700 - #785C00"></span><span class="color-scale__chip" style="background:#5C4600" title="yellow.800 - #5C4600"></span><span class="color-scale__chip" style="background:#423100" title="yellow.900 - #423100"></span></div>
         </div>
         <div class="color-scale__row">
-          <span class="color-scale__label">pink</span>
-          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F9F6F7" title="pink.50 - #F9F6F7"></span><span class="color-scale__chip" style="background:#F2E8ED" title="pink.100 - #F2E8ED"></span><span class="color-scale__chip" style="background:#E6CBD9" title="pink.200 - #E6CBD9"></span><span class="color-scale__chip" style="background:#DB9FBD" title="pink.300 - #DB9FBD"></span><span class="color-scale__chip" style="background:#D4699E" title="pink.400 - #D4699E"></span><span class="color-scale__chip" style="background:#D22D80" title="pink.500 - #D22D80"></span><span class="color-scale__chip" style="background:#A92869" title="pink.600 - #A92869"></span><span class="color-scale__chip" style="background:#842454" title="pink.700 - #842454"></span><span class="color-scale__chip" style="background:#601F40" title="pink.800 - #601F40"></span><span class="color-scale__chip" style="background:#361626" title="pink.900 - #361626"></span></div>
+          <span class="color-scale__label">emerald</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#EFFAF2" title="emerald.50 - #EFFAF2"></span><span class="color-scale__chip" style="background:#DBF4E3" title="emerald.100 - #DBF4E3"></span><span class="color-scale__chip" style="background:#BBEACA" title="emerald.200 - #BBEACA"></span><span class="color-scale__chip" style="background:#91DBAB" title="emerald.300 - #91DBAB"></span><span class="color-scale__chip" style="background:#60C488" title="emerald.400 - #60C488"></span><span class="color-scale__chip" style="background:#31AB6A" title="emerald.500 - #31AB6A"></span><span class="color-scale__chip" style="background:#099052" title="emerald.600 - #099052"></span><span class="color-scale__chip" style="background:#007440" title="emerald.700 - #007440"></span><span class="color-scale__chip" style="background:#005830" title="emerald.800 - #005830"></span><span class="color-scale__chip" style="background:#004021" title="emerald.900 - #004021"></span></div>
+        </div>
+        <div class="color-scale__row">
+          <span class="color-scale__label">azure</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#F1F8FF" title="azure.50 - #F1F8FF"></span><span class="color-scale__chip" style="background:#E0EFFF" title="azure.100 - #E0EFFF"></span><span class="color-scale__chip" style="background:#C3E0FF" title="azure.200 - #C3E0FF"></span><span class="color-scale__chip" style="background:#9CCCFF" title="azure.300 - #9CCCFF"></span><span class="color-scale__chip" style="background:#68B2FB" title="azure.400 - #68B2FB"></span><span class="color-scale__chip" style="background:#3496EF" title="azure.500 - #3496EF"></span><span class="color-scale__chip" style="background:#007BD4" title="azure.600 - #007BD4"></span><span class="color-scale__chip" style="background:#0062AB" title="azure.700 - #0062AB"></span><span class="color-scale__chip" style="background:#004B84" title="azure.800 - #004B84"></span><span class="color-scale__chip" style="background:#003561" title="azure.900 - #003561"></span></div>
+        </div>
+        <div class="color-scale__row">
+          <span class="color-scale__label">cyan</span>
+          <div class="color-scale__strip"><span class="color-scale__chip" style="background:#EEF9FC" title="cyan.50 - #EEF9FC"></span><span class="color-scale__chip" style="background:#D9F2F9" title="cyan.100 - #D9F2F9"></span><span class="color-scale__chip" style="background:#B4E6F3" title="cyan.200 - #B4E6F3"></span><span class="color-scale__chip" style="background:#83D6EA" title="cyan.300 - #83D6EA"></span><span class="color-scale__chip" style="background:#47BED8" title="cyan.400 - #47BED8"></span><span class="color-scale__chip" style="background:#00A4BF" title="cyan.500 - #00A4BF"></span><span class="color-scale__chip" style="background:#00879E" title="cyan.600 - #00879E"></span><span class="color-scale__chip" style="background:#006C7F" title="cyan.700 - #006C7F"></span><span class="color-scale__chip" style="background:#005261" title="cyan.800 - #005261"></span><span class="color-scale__chip" style="background:#003B46" title="cyan.900 - #003B46"></span></div>
         </div></div>
     </div>
       </div>
@@ -389,10 +675,22 @@
           <span class="swatch__value" data-var="--color-bg-surface">...</span>
         </div>
         <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-tertiary)"></span>
+          <span class="swatch__label">tertiary</span>
+          <code class="swatch__var">--color-bg-tertiary</code>
+          <span class="swatch__value" data-var="--color-bg-tertiary">...</span>
+        </div>
+        <div class="swatch">
           <span class="swatch__color" style="background:var(--color-bg-accent)"></span>
           <span class="swatch__label">accent</span>
           <code class="swatch__var">--color-bg-accent</code>
           <span class="swatch__value" data-var="--color-bg-accent">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-accentSubtle)"></span>
+          <span class="swatch__label">accentSubtle</span>
+          <code class="swatch__var">--color-bg-accentSubtle</code>
+          <span class="swatch__value" data-var="--color-bg-accentSubtle">...</span>
         </div>
         <div class="swatch">
           <span class="swatch__color" style="background:var(--color-bg-danger)"></span>
@@ -435,6 +733,60 @@
           <span class="swatch__label">disabled</span>
           <code class="swatch__var">--color-bg-disabled</code>
           <span class="swatch__value" data-var="--color-bg-disabled">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-surfaceRaised)"></span>
+          <span class="swatch__label">surfaceRaised</span>
+          <code class="swatch__var">--color-bg-surfaceRaised</code>
+          <span class="swatch__value" data-var="--color-bg-surfaceRaised">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-surfaceSunken)"></span>
+          <span class="swatch__label">surfaceSunken</span>
+          <code class="swatch__var">--color-bg-surfaceSunken</code>
+          <span class="swatch__value" data-var="--color-bg-surfaceSunken">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-scrim)"></span>
+          <span class="swatch__label">scrim</span>
+          <code class="swatch__var">--color-bg-scrim</code>
+          <span class="swatch__value" data-var="--color-bg-scrim">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-accentHover)"></span>
+          <span class="swatch__label">accentHover</span>
+          <code class="swatch__var">--color-bg-accentHover</code>
+          <span class="swatch__value" data-var="--color-bg-accentHover">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-accentActive)"></span>
+          <span class="swatch__label">accentActive</span>
+          <code class="swatch__var">--color-bg-accentActive</code>
+          <span class="swatch__value" data-var="--color-bg-accentActive">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-accentSubtleHover)"></span>
+          <span class="swatch__label">accentSubtleHover</span>
+          <code class="swatch__var">--color-bg-accentSubtleHover</code>
+          <span class="swatch__value" data-var="--color-bg-accentSubtleHover">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-dangerHover)"></span>
+          <span class="swatch__label">dangerHover</span>
+          <code class="swatch__var">--color-bg-dangerHover</code>
+          <span class="swatch__value" data-var="--color-bg-dangerHover">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-info)"></span>
+          <span class="swatch__label">info</span>
+          <code class="swatch__var">--color-bg-info</code>
+          <span class="swatch__value" data-var="--color-bg-info">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-bg-infoSubtle)"></span>
+          <span class="swatch__label">infoSubtle</span>
+          <code class="swatch__var">--color-bg-infoSubtle</code>
+          <span class="swatch__value" data-var="--color-bg-infoSubtle">...</span>
         </div></div>
     </div>
         
@@ -458,6 +810,12 @@
           <span class="swatch__label">onAccent</span>
           <code class="swatch__var">--color-text-onAccent</code>
           <span class="swatch__value" data-var="--color-text-onAccent">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-accent)"></span>
+          <span class="swatch__label">accent</span>
+          <code class="swatch__var">--color-text-accent</code>
+          <span class="swatch__value" data-var="--color-text-accent">...</span>
         </div>
         <div class="swatch">
           <span class="swatch__color" style="background:var(--color-text-onDanger)"></span>
@@ -500,6 +858,24 @@
           <span class="swatch__label">disabled</span>
           <code class="swatch__var">--color-text-disabled</code>
           <span class="swatch__value" data-var="--color-text-disabled">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-tertiary)"></span>
+          <span class="swatch__label">tertiary</span>
+          <code class="swatch__var">--color-text-tertiary</code>
+          <span class="swatch__value" data-var="--color-text-tertiary">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-info)"></span>
+          <span class="swatch__label">info</span>
+          <code class="swatch__var">--color-text-info</code>
+          <span class="swatch__value" data-var="--color-text-info">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-text-onInfo)"></span>
+          <span class="swatch__label">onInfo</span>
+          <code class="swatch__var">--color-text-onInfo</code>
+          <span class="swatch__value" data-var="--color-text-onInfo">...</span>
         </div></div>
     </div>
         
@@ -535,6 +911,36 @@
           <span class="swatch__label">disabled</span>
           <code class="swatch__var">--color-border-disabled</code>
           <span class="swatch__value" data-var="--color-border-disabled">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-border-subtle)"></span>
+          <span class="swatch__label">subtle</span>
+          <code class="swatch__var">--color-border-subtle</code>
+          <span class="swatch__value" data-var="--color-border-subtle">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-border-accent)"></span>
+          <span class="swatch__label">accent</span>
+          <code class="swatch__var">--color-border-accent</code>
+          <span class="swatch__value" data-var="--color-border-accent">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-border-warning)"></span>
+          <span class="swatch__label">warning</span>
+          <code class="swatch__var">--color-border-warning</code>
+          <span class="swatch__value" data-var="--color-border-warning">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-border-success)"></span>
+          <span class="swatch__label">success</span>
+          <code class="swatch__var">--color-border-success</code>
+          <span class="swatch__value" data-var="--color-border-success">...</span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__color" style="background:var(--color-border-info)"></span>
+          <span class="swatch__label">info</span>
+          <code class="swatch__var">--color-border-info</code>
+          <span class="swatch__value" data-var="--color-border-info">...</span>
         </div></div>
     </div>
       </div>
@@ -565,74 +971,65 @@
         <div class="card">
         <div class="type-block">
           <span class="type-block__label">display</span>
-          <p class="type-block__sample" style="font-size:var(--type-display-size);font-weight:var(--type-display-weight);line-height:var(--type-display-lineHeight)">Morning pages</p>
+          <p class="type-block__sample" style="font-size:var(undefined);font-weight:var(undefined);line-height:var(undefined)">Morning pages</p>
           <div class="type-block__meta">
-            <span>size <span data-var="--type-display-size">...</span></span>
-            <span>weight <span data-var="--type-display-weight">...</span></span>
-            <span>line-height <span data-var="--type-display-lineHeight">...</span></span>
+            <span>size <span data-var="undefined">...</span></span>
+            <span>weight <span data-var="undefined">...</span></span>
+            <span>line-height <span data-var="undefined">...</span></span>
           </div>
         </div>
         <div class="type-block">
-          <span class="type-block__label">h1</span>
-          <p class="type-block__sample" style="font-size:var(--type-h1-size);font-weight:var(--type-h1-weight);line-height:var(--type-h1-lineHeight)">Track every streak</p>
+          <span class="type-block__label">heading</span>
+          <p class="type-block__sample" style="font-size:var(undefined);font-weight:var(undefined);line-height:var(undefined)">heading</p>
           <div class="type-block__meta">
-            <span>size <span data-var="--type-h1-size">...</span></span>
-            <span>weight <span data-var="--type-h1-weight">...</span></span>
-            <span>line-height <span data-var="--type-h1-lineHeight">...</span></span>
-          </div>
-        </div>
-        <div class="type-block">
-          <span class="type-block__label">h2</span>
-          <p class="type-block__sample" style="font-size:var(--type-h2-size);font-weight:var(--type-h2-weight);line-height:var(--type-h2-lineHeight)">Weekly reflection</p>
-          <div class="type-block__meta">
-            <span>size <span data-var="--type-h2-size">...</span></span>
-            <span>weight <span data-var="--type-h2-weight">...</span></span>
-            <span>line-height <span data-var="--type-h2-lineHeight">...</span></span>
-          </div>
-        </div>
-        <div class="type-block">
-          <span class="type-block__label">h3</span>
-          <p class="type-block__sample" style="font-size:var(--type-h3-size);font-weight:var(--type-h3-weight);line-height:var(--type-h3-lineHeight)">Today's entry</p>
-          <div class="type-block__meta">
-            <span>size <span data-var="--type-h3-size">...</span></span>
-            <span>weight <span data-var="--type-h3-weight">...</span></span>
-            <span>line-height <span data-var="--type-h3-lineHeight">...</span></span>
+            <span>size <span data-var="undefined">...</span></span>
+            <span>weight <span data-var="undefined">...</span></span>
+            <span>line-height <span data-var="undefined">...</span></span>
           </div>
         </div>
         <div class="type-block">
           <span class="type-block__label">body</span>
-          <p class="type-block__sample" style="font-size:var(--type-body-size);font-weight:var(--type-body-weight);line-height:var(--type-body-lineHeight)">The quick brown fox jumps over the lazy dog.</p>
+          <p class="type-block__sample" style="font-size:var(undefined);font-weight:var(undefined);line-height:var(undefined)">The quick brown fox jumps over the lazy dog.</p>
           <div class="type-block__meta">
-            <span>size <span data-var="--type-body-size">...</span></span>
-            <span>weight <span data-var="--type-body-weight">...</span></span>
-            <span>line-height <span data-var="--type-body-lineHeight">...</span></span>
+            <span>size <span data-var="undefined">...</span></span>
+            <span>weight <span data-var="undefined">...</span></span>
+            <span>line-height <span data-var="undefined">...</span></span>
           </div>
         </div>
         <div class="type-block">
-          <span class="type-block__label">bodySmall</span>
-          <p class="type-block__sample" style="font-size:var(--type-bodySmall-size);font-weight:var(--type-bodySmall-weight);line-height:var(--type-bodySmall-lineHeight)">Synced 2 minutes ago.</p>
+          <span class="type-block__label">paragraph</span>
+          <p class="type-block__sample" style="font-size:var(undefined);font-weight:var(undefined);line-height:var(undefined)">paragraph</p>
           <div class="type-block__meta">
-            <span>size <span data-var="--type-bodySmall-size">...</span></span>
-            <span>weight <span data-var="--type-bodySmall-weight">...</span></span>
-            <span>line-height <span data-var="--type-bodySmall-lineHeight">...</span></span>
+            <span>size <span data-var="undefined">...</span></span>
+            <span>weight <span data-var="undefined">...</span></span>
+            <span>line-height <span data-var="undefined">...</span></span>
           </div>
         </div>
         <div class="type-block">
-          <span class="type-block__label">caption</span>
-          <p class="type-block__sample" style="font-size:var(--type-caption-size);font-weight:var(--type-caption-weight);line-height:var(--type-caption-lineHeight)">10 min - day 12 streak</p>
+          <span class="type-block__label">ui</span>
+          <p class="type-block__sample" style="font-size:var(undefined);font-weight:var(undefined);line-height:var(undefined)">ui</p>
           <div class="type-block__meta">
-            <span>size <span data-var="--type-caption-size">...</span></span>
-            <span>weight <span data-var="--type-caption-weight">...</span></span>
-            <span>line-height <span data-var="--type-caption-lineHeight">...</span></span>
+            <span>size <span data-var="undefined">...</span></span>
+            <span>weight <span data-var="undefined">...</span></span>
+            <span>line-height <span data-var="undefined">...</span></span>
           </div>
         </div>
         <div class="type-block">
-          <span class="type-block__label">label</span>
-          <p class="type-block__sample" style="font-size:var(--type-label-size);font-weight:var(--type-label-weight);line-height:var(--type-label-lineHeight)">STATUS</p>
+          <span class="type-block__label">numeric</span>
+          <p class="type-block__sample" style="font-size:var(undefined);font-weight:var(undefined);line-height:var(undefined)">numeric</p>
           <div class="type-block__meta">
-            <span>size <span data-var="--type-label-size">...</span></span>
-            <span>weight <span data-var="--type-label-weight">...</span></span>
-            <span>line-height <span data-var="--type-label-lineHeight">...</span></span>
+            <span>size <span data-var="undefined">...</span></span>
+            <span>weight <span data-var="undefined">...</span></span>
+            <span>line-height <span data-var="undefined">...</span></span>
+          </div>
+        </div>
+        <div class="type-block">
+          <span class="type-block__label">code</span>
+          <p class="type-block__sample" style="font-size:var(undefined);font-weight:var(undefined);line-height:var(undefined)">code</p>
+          <div class="type-block__meta">
+            <span>size <span data-var="undefined">...</span></span>
+            <span>weight <span data-var="undefined">...</span></span>
+            <span>line-height <span data-var="undefined">...</span></span>
           </div>
         </div></div>
       </div>
@@ -702,6 +1099,11 @@
       <p class="card__sub">Semantic (active theme)</p>
       <div class="kv-list">
         <div class="kv-row">
+          <code>--space-tight</code>
+          <span class="kv-row__label">tight</span>
+          <span class="swatch__value" data-var="--space-tight">...</span>
+        </div>
+        <div class="kv-row">
           <code>--space-compact</code>
           <span class="kv-row__label">compact</span>
           <span class="swatch__value" data-var="--space-compact">...</span>
@@ -723,24 +1125,40 @@
       <p class="card__sub">Scale (theme-independent)</p>
       <div class="radius-list">
         <div class="radius-item">
-          <span class="radius-item__box" style="border-radius:8px"></span>
-          <span class="radius-item__label">radius.base - 8px</span>
+          <span class="radius-item__box" style="border-radius:10px"></span>
+          <span class="radius-item__label">radius.base - 10px</span>
         </div>
         <div class="radius-item">
           <span class="radius-item__box" style="border-radius:0px"></span>
           <span class="radius-item__label">radius.none - 0px</span>
         </div>
         <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:calc(var(--radius-base) * 0.25)"></span>
+          <span class="radius-item__label">radius.xs - calc(var(--radius-base) * 0.25)</span>
+        </div>
+        <div class="radius-item">
           <span class="radius-item__box" style="border-radius:calc(var(--radius-base) * 0.5)"></span>
           <span class="radius-item__label">radius.sm - calc(var(--radius-base) * 0.5)</span>
         </div>
         <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:calc(var(--radius-base) * 0.75)"></span>
+          <span class="radius-item__label">radius.md - calc(var(--radius-base) * 0.75)</span>
+        </div>
+        <div class="radius-item">
           <span class="radius-item__box" style="border-radius:var(--radius-base)"></span>
-          <span class="radius-item__label">radius.md - var(--radius-base)</span>
+          <span class="radius-item__label">radius.lg - var(--radius-base)</span>
+        </div>
+        <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:calc(var(--radius-base) * 1.5)"></span>
+          <span class="radius-item__label">radius.xl - calc(var(--radius-base) * 1.5)</span>
         </div>
         <div class="radius-item">
           <span class="radius-item__box" style="border-radius:calc(var(--radius-base) * 2)"></span>
-          <span class="radius-item__label">radius.lg - calc(var(--radius-base) * 2)</span>
+          <span class="radius-item__label">radius.2xl - calc(var(--radius-base) * 2)</span>
+        </div>
+        <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:calc(var(--radius-base) * 3)"></span>
+          <span class="radius-item__label">radius.3xl - calc(var(--radius-base) * 3)</span>
         </div>
         <div class="radius-item">
           <span class="radius-item__box" style="border-radius:999px"></span>
@@ -759,6 +1177,10 @@
         <div class="radius-item">
           <span class="radius-item__box" style="border-radius:var(--radius-card)"></span>
           <span class="radius-item__label">card - <span data-var="--radius-card">...</span></span>
+        </div>
+        <div class="radius-item">
+          <span class="radius-item__box" style="border-radius:var(--radius-pill)"></span>
+          <span class="radius-item__label">pill - <span data-var="--radius-pill">...</span></span>
         </div></div>
     </div>
         
@@ -851,6 +1273,18 @@
       <h2 class="section-label">Depth &amp; motion</h2>
       <div class="grid">
         <div class="card"><h3>Elevation</h3><div class="elevation-list">
+        <div class="elevation-item">
+          <span class="elevation-item__box" style="box-shadow:var(--elevation-field)"></span>
+          <span class="elevation-item__label">field</span>
+          <code class="swatch__var">--elevation-field</code>
+          <span class="swatch__value" data-var="--elevation-field">...</span>
+        </div>
+        <div class="elevation-item">
+          <span class="elevation-item__box" style="box-shadow:var(--elevation-surface)"></span>
+          <span class="elevation-item__label">surface</span>
+          <code class="swatch__var">--elevation-surface</code>
+          <span class="swatch__value" data-var="--elevation-surface">...</span>
+        </div>
         <div class="elevation-item">
           <span class="elevation-item__box" style="box-shadow:var(--elevation-raised)"></span>
           <span class="elevation-item__label">raised</span>
@@ -1374,7 +1808,7 @@
 
 <script>
 (function(){
-  var CONTRACT = ["color.bg.page","color.bg.surface","color.bg.accent","color.bg.danger","color.bg.dangerSubtle","color.bg.warning","color.bg.warningSubtle","color.bg.success","color.bg.successSubtle","color.bg.disabled","color.text.primary","color.text.secondary","color.text.onAccent","color.text.onDanger","color.text.onWarning","color.text.onSuccess","color.text.danger","color.text.warning","color.text.success","color.text.disabled","color.border.default","color.border.strong","color.border.focus","color.border.danger","color.border.disabled","font.display","font.body","font.mono","space.compact","space.default","space.section","radius.base","radius.control","radius.card","icon.inline","icon.control","grid.gutter","grid.margin","grid.container","interaction.minTarget","shape.navbar","elevation.raised","elevation.overlay","motion.fast","motion.normal","motion.slow","motion.easing","type.display.size","type.display.weight","type.display.lineHeight","type.h1.size","type.h1.weight","type.h1.lineHeight","type.h2.size","type.h2.weight","type.h2.lineHeight","type.h3.size","type.h3.weight","type.h3.lineHeight","type.body.size","type.body.weight","type.body.lineHeight","type.bodySmall.size","type.bodySmall.weight","type.bodySmall.lineHeight","type.caption.size","type.caption.weight","type.caption.lineHeight","type.label.size","type.label.weight","type.label.lineHeight"];
+  var CONTRACT = ["color.bg.page","color.bg.surface","color.bg.tertiary","color.bg.accent","color.bg.accentSubtle","color.bg.danger","color.bg.dangerSubtle","color.bg.warning","color.bg.warningSubtle","color.bg.success","color.bg.successSubtle","color.bg.disabled","color.bg.surfaceRaised","color.bg.surfaceSunken","color.bg.scrim","color.bg.accentHover","color.bg.accentActive","color.bg.accentSubtleHover","color.bg.dangerHover","color.bg.info","color.bg.infoSubtle","color.text.primary","color.text.secondary","color.text.onAccent","color.text.accent","color.text.onDanger","color.text.onWarning","color.text.onSuccess","color.text.danger","color.text.warning","color.text.success","color.text.disabled","color.text.tertiary","color.text.info","color.text.onInfo","color.border.default","color.border.strong","color.border.focus","color.border.danger","color.border.disabled","color.border.subtle","color.border.accent","color.border.warning","color.border.success","color.border.info","font.display","font.body","font.mono","space.tight","space.compact","space.default","space.section","radius.base","radius.control","radius.card","radius.pill","icon.inline","icon.control","grid.gutter","grid.margin","grid.container","interaction.minTarget","shape.navbar","elevation.field","elevation.surface","elevation.raised","elevation.overlay","motion.fast","motion.normal","motion.slow","motion.easing","type.display.lg.family","type.display.lg.size","type.display.lg.weight","type.display.lg.lineHeight","type.display.lg.tracking","type.display.md.family","type.display.md.size","type.display.md.weight","type.display.md.lineHeight","type.display.md.tracking","type.display.sm.family","type.display.sm.size","type.display.sm.weight","type.display.sm.lineHeight","type.display.sm.tracking","type.heading.xl.family","type.heading.xl.size","type.heading.xl.weight","type.heading.xl.lineHeight","type.heading.xl.tracking","type.heading.lg.family","type.heading.lg.size","type.heading.lg.weight","type.heading.lg.lineHeight","type.heading.lg.tracking","type.heading.md.family","type.heading.md.size","type.heading.md.weight","type.heading.md.lineHeight","type.heading.md.tracking","type.heading.sm.family","type.heading.sm.size","type.heading.sm.weight","type.heading.sm.lineHeight","type.heading.sm.tracking","type.body.lg.family","type.body.lg.size","type.body.lg.weight","type.body.lg.lineHeight","type.body.lg.tracking","type.body.md.family","type.body.md.size","type.body.md.weight","type.body.md.lineHeight","type.body.md.tracking","type.body.sm.family","type.body.sm.size","type.body.sm.weight","type.body.sm.lineHeight","type.body.sm.tracking","type.paragraph.lg.family","type.paragraph.lg.size","type.paragraph.lg.weight","type.paragraph.lg.lineHeight","type.paragraph.lg.tracking","type.paragraph.md.family","type.paragraph.md.size","type.paragraph.md.weight","type.paragraph.md.lineHeight","type.paragraph.md.tracking","type.ui.label.family","type.ui.label.size","type.ui.label.weight","type.ui.label.lineHeight","type.ui.label.tracking","type.ui.caption.family","type.ui.caption.size","type.ui.caption.weight","type.ui.caption.lineHeight","type.ui.caption.tracking","type.ui.overline.family","type.ui.overline.size","type.ui.overline.weight","type.ui.overline.lineHeight","type.ui.overline.tracking","type.numeric.lg.family","type.numeric.lg.size","type.numeric.lg.weight","type.numeric.lg.lineHeight","type.numeric.lg.tracking","type.numeric.md.family","type.numeric.md.size","type.numeric.md.weight","type.numeric.md.lineHeight","type.numeric.md.tracking","type.numeric.sm.family","type.numeric.sm.size","type.numeric.sm.weight","type.numeric.sm.lineHeight","type.numeric.sm.tracking","type.code.md.family","type.code.md.size","type.code.md.weight","type.code.md.lineHeight","type.code.md.tracking","type.code.sm.family","type.code.sm.size","type.code.sm.weight","type.code.sm.lineHeight","type.code.sm.tracking"];
 
   var pageButtons = Array.prototype.slice.call(document.querySelectorAll(".page-switcher__btn"));
   var pages = { tokens: document.getElementById("page-tokens"), components: document.getElementById("page-components") };

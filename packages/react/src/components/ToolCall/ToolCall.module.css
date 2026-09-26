@@ -17,11 +17,11 @@
 }
 .name {
   font-family: var(--font-mono);
-  font-size: var(--type-bodySmall-size);
+  font-size: var(--type-body-sm-size);
   color: var(--color-text-primary);
 }
 .status {
-  font-size: var(--type-caption-size);
+  font-size: var(--type-ui-caption-size);
   font-weight: 600;
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
@@ -42,6 +42,6 @@
 }
 .content {
   padding: 0 0 var(--space-default);
-  font-size: var(--type-bodySmall-size);
+  font-size: var(--type-body-sm-size);
   color: var(--color-text-secondary);
 }

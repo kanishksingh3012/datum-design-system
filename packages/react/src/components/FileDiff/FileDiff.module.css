@@ -18,14 +18,14 @@
 }
 .path {
   font-family: var(--font-mono);
-  font-size: var(--type-bodySmall-size);
+  font-size: var(--type-body-sm-size);
   color: var(--color-text-primary);
 }
 .counts {
   display: flex;
   gap: 0.4rem;
   font-family: var(--font-mono);
-  font-size: var(--type-caption-size);
+  font-size: var(--type-ui-caption-size);
   font-weight: 600;
 }
 .added {
@@ -38,7 +38,7 @@
   width: calc(100% + 2 * var(--space-default));
   border-collapse: collapse;
   font-family: var(--font-mono);
-  font-size: var(--type-bodySmall-size);
+  font-size: var(--type-body-sm-size);
   margin: 0 calc(-1 * var(--space-default)) var(--space-default);
 }
 .caption {

@@ -6,8 +6,8 @@
   width: 100%;
 }
 .label {
-  font-size: var(--type-label-size);
-  font-weight: var(--type-label-weight);
+  font-size: var(--type-ui-label-size);
+  font-weight: var(--type-ui-label-weight);
   color: var(--color-text-primary);
 }
 .input {

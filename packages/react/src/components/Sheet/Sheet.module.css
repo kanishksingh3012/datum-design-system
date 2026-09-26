@@ -53,14 +53,14 @@
   padding: 0 var(--space-section) var(--space-compact);
 }
 .title {
-  font-size: var(--type-h3-size);
-  font-weight: var(--type-h3-weight);
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
   color: var(--color-text-primary);
   margin: 0;
 }
 .close {
   font-family: var(--font-body);
-  font-size: var(--type-bodySmall-size);
+  font-size: var(--type-body-sm-size);
   min-height: var(--interaction-minTarget);
   padding: 0 var(--space-compact);
   border-radius: var(--radius-control);

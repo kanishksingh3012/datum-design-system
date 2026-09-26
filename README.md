@@ -9,7 +9,7 @@ A personal design system built from first principles: a validated token pipeline
 - **71 validated design tokens** — color (8 families, 10-step scales, real light/dark via CSS `light-dark()`), typography (8 semantic roles), spacing, a proportional radius scale, an original icon construction system, a fluid grid, elevation, and motion.
 - **19 documented component contracts** (`design-system/components/README.md`), each researched against Material Design 3, IBM Carbon, and Atlassian's real published guidance, WCAG-contrast-verified, and specified as `Problem / API / States / Tokens used / Accessibility`. Most still exist as static HTML/CSS reference demos in the Datum dashboard.
 - **`@datum-design/react`** — a real npm workspace package, built with Vite library mode, tested with Vitest + React Testing Library. `Button` is the first component actually converted from spec to real, installable code (props, types, tests, a built `dist/` that's been verified to work when imported externally) — every other component follows the same pattern next.
-- **One theme so far** (`minimal`), inspired by — not copied from — Vercel's Geist. More theme packs (bold/colorful, dark-first/technical, warm/editorial) are designed for structurally but not built yet.
+- **Two themes as a set** — orange (warm, high-energy) and navy (restrained, institutional) — sharing one base of type, spacing, radius, and motion. Pick with `data-theme`.
 
 ## Structure
 

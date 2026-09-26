@@ -8,8 +8,8 @@
   align-items: center;
   gap: 0.5rem;
   min-height: var(--interaction-minTarget);
-  font-size: var(--type-bodySmall-size);
-  font-weight: var(--type-label-weight);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-ui-label-weight);
   color: var(--color-text-secondary);
   cursor: pointer;
 }
@@ -36,6 +36,6 @@
 }
 .content {
   padding: 0 0 var(--space-default);
-  font-size: var(--type-bodySmall-size);
+  font-size: var(--type-body-sm-size);
   color: var(--color-text-secondary);
 }
