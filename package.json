@@ -12,6 +12,10 @@
     "build:react": "npm run build --workspace=@datum-design/react",
     "build": "npm run build:styles && npm run build:react",
     "test": "npm run test --workspace=@datum-design/react",
-    "dev:gallery": "npm run dev --workspace=@datum-design/gallery"
+    "dev:gallery": "npm run dev --workspace=@datum-design/gallery",
+    "check": "npm run build && node scripts/check-combos.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
   }
 }

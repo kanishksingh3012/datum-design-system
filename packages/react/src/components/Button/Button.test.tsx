@@ -9,32 +9,40 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Save" }).tagName).toBe("BUTTON");
   });
 
-  it("defaults to variant=primary and size=md", () => {
+  it("defaults to intent=accent, appearance=solid and size=md", () => {
     render(<Button>Save</Button>);
     const button = screen.getByRole("button", { name: "Save" });
-    expect(button).toHaveAttribute("data-variant", "primary");
+    expect(button).toHaveAttribute("data-intent", "accent");
+    expect(button).toHaveAttribute("data-appearance", "solid");
     expect(button).toHaveAttribute("data-size", "md");
   });
 
-  it("reflects every documented variant via data-variant", () => {
-    const variants = ["primary", "secondary", "tertiary", "outline", "text", "link", "danger", "danger-soft"] as const;
-    for (const variant of variants) {
-      render(<Button variant={variant}>Action</Button>);
-    }
-    for (const variant of variants) {
-      expect(screen.getAllByRole("button").some((b) => b.getAttribute("data-variant") === variant)).toBe(true);
+  it("reflects every intent × appearance combination via data attributes", () => {
+    const intents = ["accent", "neutral", "danger"] as const;
+    const appearances = ["solid", "soft", "outline", "ghost"] as const;
+    for (const intent of intents) {
+      for (const appearance of appearances) {
+        render(
+          <Button intent={intent} appearance={appearance}>
+            {`${intent}-${appearance}`}
+          </Button>
+        );
+        const button = screen.getByRole("button", { name: `${intent}-${appearance}` });
+        expect(button).toHaveAttribute("data-intent", intent);
+        expect(button).toHaveAttribute("data-appearance", appearance);
+      }
     }
   });
 
-  it("reflects variant and size props via data attributes", () => {
+  it("reflects size and fullWidth via data attributes", () => {
     render(
-      <Button variant="danger" size="sm">
+      <Button size="sm" fullWidth>
         Delete
       </Button>
     );
     const button = screen.getByRole("button", { name: "Delete" });
-    expect(button).toHaveAttribute("data-variant", "danger");
     expect(button).toHaveAttribute("data-size", "sm");
+    expect(button).toHaveAttribute("data-full-width", "true");
   });
 
   it("disables the button and blocks clicks when disabled", async () => {
@@ -46,11 +54,12 @@ describe("Button", () => {
     );
     const button = screen.getByRole("button", { name: "Save" });
     expect(button).toBeDisabled();
+    expect(button).toHaveAttribute("data-disabled", "true");
     await userEvent.click(button);
     expect(onClick).not.toHaveBeenCalled();
   });
 
-  it("treats loading as implicitly disabled and exposes aria-busy", async () => {
+  it("blocks clicks while loading but keeps the button focusable", async () => {
     const onClick = vi.fn();
     render(
       <Button loading onClick={onClick}>
@@ -58,9 +67,12 @@ describe("Button", () => {
       </Button>
     );
     const button = screen.getByRole("button", { name: "Save" });
-    expect(button).toBeDisabled();
+    expect(button).not.toBeDisabled();
+    expect(button).toHaveAttribute("aria-disabled", "true");
     expect(button).toHaveAttribute("aria-busy", "true");
     expect(button).toHaveAttribute("data-loading", "true");
+    button.focus();
+    expect(button).toHaveFocus();
     await userEvent.click(button);
     expect(onClick).not.toHaveBeenCalled();
   });
@@ -141,6 +153,17 @@ describe("Button", () => {
     const button = screen.getByRole("button", { name: "Favorite" });
     expect(button).toHaveAttribute("aria-pressed", "true");
     expect(button).toHaveAttribute("data-pressed", "true");
+  });
+
+  it("does not toggle while loading", async () => {
+    const onPressedChange = vi.fn();
+    render(
+      <Button pressed={false} onPressedChange={onPressedChange} loading>
+        Favorite
+      </Button>
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Favorite" }));
+    expect(onPressedChange).not.toHaveBeenCalled();
   });
 
   it("does not expose aria-pressed when pressed is never passed", () => {

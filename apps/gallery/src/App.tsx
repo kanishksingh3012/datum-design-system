@@ -1,24 +1,55 @@
 import { useState } from "react";
 import { Button, ButtonGroup, Link } from "@datum-design/react";
-import { Search, Plus, Star, MoreHorizontal, ArrowRight, X } from "lucide-react";
+import { Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2 } from "lucide-react";
+
+const intents = ["accent", "neutral", "danger"] as const;
+const appearances = ["solid", "soft", "outline", "ghost"] as const;
+
+const legacy: [string, string][] = [
+  ["primary", "accent · solid"],
+  ["secondary", "accent · soft"],
+  ["tertiary", "neutral · soft"],
+  ["outline", "neutral · outline"],
+  ["text", "neutral · ghost"],
+  ["danger", "danger · solid"],
+  ["danger-soft", "danger · soft"],
+  ["link", "dropped — use Link"],
+];
 
 export function App() {
   const [pressed, setPressed] = useState(false);
   const [theme, setTheme] = useState(() => document.documentElement.dataset.theme ?? "orange");
+  const [mode, setMode] = useState(() =>
+    matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+  );
 
   function switchTheme(next: string) {
     document.documentElement.dataset.theme = next;
     setTheme(next);
   }
 
+  function switchMode(next: string) {
+    document.documentElement.style.colorScheme = next;
+    setMode(next);
+  }
+
   return (
     <div className="doc">
-      <div className="theme-switch" role="group" aria-label="Theme">
-        {["orange", "navy"].map((t) => (
-          <button key={t} type="button" aria-pressed={theme === t} onClick={() => switchTheme(t)}>
-            {t}
-          </button>
-        ))}
+      <div className="switches">
+        <div className="theme-switch" role="group" aria-label="Theme">
+          {["orange", "navy"].map((t) => (
+            <button key={t} type="button" aria-pressed={theme === t} onClick={() => switchTheme(t)}>
+              {t}
+            </button>
+          ))}
+        </div>
+        <div className="theme-switch" role="group" aria-label="Mode">
+          {["light", "dark"].map((m) => (
+            <button key={m} type="button" aria-pressed={mode === m} onClick={() => switchMode(m)}>
+              {m}
+            </button>
+          ))}
+        </div>
       </div>
       <nav className="doc-nav">
         <a href="#button">Button</a>
@@ -32,31 +63,48 @@ export function App() {
       {/* ============ BUTTON ============ */}
       <section className="component-doc" id="button">
         <h1>Button</h1>
-        <p className="dek">A single, unified button component — icon-only, toggle, and floating (FAB) are all modes of the same component, not separate ones. Eight variants, full keyboard/loading/disabled support.</p>
+        <p className="dek">
+          The core action. Three props decide how it looks: <span className="prop-values">intent</span> is what the color
+          means, <span className="prop-values">appearance</span> is how much fill, and <span className="prop-values">size</span>{" "}
+          is how tall. Always a pill. Icon-only, toggle and floating are modes of the same component.
+        </p>
 
         <div className="example-box">
-          <Button variant="primary">Save changes</Button>
+          <Button>Get started</Button>
+          <Button intent="neutral" appearance="outline">Learn more</Button>
         </div>
 
         <div className="doc-section">
-          <h2>Composition</h2>
-          <p className="lead">A Button consists of:</p>
-          <ul>
-            <li><b>Label</b> — the action text, passed as children. The only content when <span className="prop-values">iconOnly</span> is not set.</li>
-            <li><b>Prefix</b> — optional, icon or element displayed before the label.</li>
-            <li><b>Suffix</b> — optional, icon or element displayed after the label.</li>
-          </ul>
-          <p className="lead">Prefix and suffix together:</p>
-          <div className="sample-box">
-            <Button prefix={<Search style={{ width: 16, height: 16 }} />}>Search</Button>
-            <Button suffix={<ArrowRight style={{ width: 16, height: 16 }} />}>Continue</Button>
-            <Button prefix={<Search style={{ width: 16, height: 16 }} />} suffix={<ArrowRight style={{ width: 16, height: 16 }} />}>Both</Button>
+          <h2>Intent × appearance</h2>
+          <p className="lead">
+            Twelve combinations, all checked for contrast in orange and navy, light and dark. Neutral + solid is the{" "}
+            <b>ink</b> button (<b>bg.inverse</b> / <b>text.onInverse</b>).
+          </p>
+          <div className="matrix" role="table" aria-label="Intent by appearance">
+            <div role="row" className="matrix-row">
+              <span role="columnheader" />
+              {appearances.map((a) => (
+                <span role="columnheader" key={a} className="matrix-head">{a}</span>
+              ))}
+            </div>
+            {intents.map((intent) => (
+              <div role="row" className="matrix-row" key={intent}>
+                <span role="rowheader" className="matrix-head">{intent}</span>
+                {appearances.map((appearance) => (
+                  <span role="cell" key={appearance}>
+                    <Button intent={intent} appearance={appearance}>
+                      {intent === "danger" ? "Delete" : "Button"}
+                    </Button>
+                  </span>
+                ))}
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="doc-section">
           <h2>Sizes</h2>
-          <p className="lead">Buttons are available in three sizes. Size controls height, padding, and text size while preserving the same structure.</p>
+          <p className="lead">32, 40 and 48px tall with a mouse or trackpad; each grows by 4px on touch screens, so md meets the 44px target.</p>
           <div className="sample-box">
             <Button size="sm">Small</Button>
             <Button size="md">Medium</Button>
@@ -65,103 +113,94 @@ export function App() {
         </div>
 
         <div className="doc-section">
-          <h2>Properties</h2>
-          <p className="lead">Button exposes the following properties:</p>
-          <ul>
-            <li><b>variant</b><span className="prop-values">primary | secondary | tertiary | outline | text | link | danger | danger-soft</span></li>
-            <li><b>size</b><span className="prop-values">sm | md | lg</span></li>
-            <li><b>loading</b><span className="prop-values">boolean — implies disabled, replaces prefix with a spinner, hides suffix, sets aria-busy</span></li>
-            <li><b>prefix</b> / <b>suffix</b><span className="prop-values">ReactNode — icon or element before/after the label</span></li>
-            <li><b>disabled</b><span className="prop-values">boolean</span></li>
-            <li><b>iconOnly</b><span className="prop-values">boolean — circular, icon-only. Requires label.</span></li>
-            <li><b>label</b><span className="prop-values">string — accessible name, required when iconOnly</span></li>
-            <li><b>pressed</b> / <b>onPressedChange</b><span className="prop-values">makes this a toggle button, exposed via aria-pressed</span></li>
-            <li><b>floating</b><span className="prop-values">boolean — FAB treatment: bigger, elevated, circular or wide pill</span></li>
-            <li><b>render</b><span className="prop-values">(props) =&gt; ReactElement — renders a different element (e.g. an anchor) in Button's place</span></li>
-          </ul>
+          <h2>Prefix and suffix</h2>
+          <div className="sample-box">
+            <Button intent="neutral" appearance="soft" prefix={<Search />}>Search</Button>
+            <Button suffix={<ArrowRight />}>Continue</Button>
+            <Button intent="danger" appearance="outline" prefix={<Trash2 />}>Delete</Button>
+          </div>
         </div>
 
         <div className="doc-section">
           <h2>States</h2>
-          <ul>
-            <li>Default</li>
-            <li>Hover</li>
-            <li>Focus</li>
-            <li>Pressed (toggle mode)</li>
-            <li>Disabled</li>
-            <li>Loading</li>
-          </ul>
-          <p className="lead">Focus state includes a visible focus ring for accessibility.</p>
+          <p className="lead">
+            Hover changes the fill token; focus shows a <b>border.focus</b> ring. Loading swaps the
+            prefix for a spinner and blocks clicks but keeps focus, so a submit button doesn't drop the keyboard user.
+          </p>
           <div className="sample-box">
             <Button disabled>Disabled</Button>
-            <Button loading>Loading</Button>
+            <Button intent="neutral" appearance="outline" disabled>Disabled</Button>
+            <Button loading>Saving</Button>
+            <Button intent="neutral" appearance="soft" loading>Loading</Button>
           </div>
         </div>
 
         <div className="doc-section">
-          <h2>Variants</h2>
-          <div className="sample-box column" style={{ padding: 0, border: "none", background: "none", gap: 0 }}>
-            <div className="variant-row">
-              <span className="name">Primary</span>
-              <span className="desc">The main call to action. Use for the most important action in a view.</span>
-              <span className="sample"><Button variant="primary" size="sm">Primary</Button></span>
-            </div>
-            <div className="variant-row">
-              <span className="name">Secondary</span>
-              <span className="desc">A medium-emphasis alternative to the primary action — a soft tint of the accent color, not a competing fill.</span>
-              <span className="sample"><Button variant="secondary" size="sm">Secondary</Button></span>
-            </div>
-            <div className="variant-row">
-              <span className="name">Tertiary</span>
-              <span className="desc">Minimal-emphasis filled button, typically used alongside primary or secondary actions.</span>
-              <span className="sample"><Button variant="tertiary" size="sm">Tertiary</Button></span>
-            </div>
-            <div className="variant-row">
-              <span className="name">Outline</span>
-              <span className="desc">A bordered button used when you need emphasis without a filled background.</span>
-              <span className="sample"><Button variant="outline" size="sm">Outline</Button></span>
-            </div>
-            <div className="variant-row">
-              <span className="name">Text</span>
-              <span className="desc">No background or border, for the most subtle actions.</span>
-              <span className="sample"><Button variant="text" size="sm">Text</Button></span>
-            </div>
-            <div className="variant-row">
-              <span className="name">Link</span>
-              <span className="desc">Underlined, accent-colored — styled like an inline hyperlink rather than a button.</span>
-              <span className="sample"><Button variant="link" size="sm">Link</Button></span>
-            </div>
-            <div className="variant-row">
-              <span className="name">Danger</span>
-              <span className="desc">Used for destructive or irreversible actions.</span>
-              <span className="sample"><Button variant="danger" size="sm">Danger</Button></span>
-            </div>
-            <div className="variant-row">
-              <span className="name">Danger soft</span>
-              <span className="desc">A lower-emphasis destructive action, used when caution is required but urgency is lower.</span>
-              <span className="sample"><Button variant="danger-soft" size="sm">Danger soft</Button></span>
-            </div>
+          <h2>Full width</h2>
+          <div className="sample-box stack">
+            <Button fullWidth size="lg">Create account</Button>
+            <Button fullWidth intent="neutral" appearance="outline" size="lg">Sign in</Button>
           </div>
         </div>
 
         <div className="doc-section">
-          <h2>Usage Guidelines</h2>
+          <h2>Render as a link</h2>
+          <p className="lead">Use <b>render</b> when the action navigates, so it is a real anchor (or your router's Link).</p>
+          <div className="sample-box">
+            <Button appearance="soft" suffix={<ArrowRight />} render={(props) => <a href="#link" {...props} />}>
+              Read the docs
+            </Button>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <ul>
+            <li><b>intent</b><span className="prop-values">accent | neutral | danger — default accent</span></li>
+            <li><b>appearance</b><span className="prop-values">solid | soft | outline | ghost — default solid</span></li>
+            <li><b>size</b><span className="prop-values">sm | md | lg — default md</span></li>
+            <li><b>prefix</b> / <b>suffix</b><span className="prop-values">ReactNode — icon or element before/after the label</span></li>
+            <li><b>loading</b><span className="prop-values">boolean — spinner replaces prefix, blocks clicks, keeps focus, sets aria-busy</span></li>
+            <li><b>disabled</b><span className="prop-values">boolean</span></li>
+            <li><b>iconOnly</b> + <b>label</b><span className="prop-values">boolean + string — circular; label becomes the accessible name</span></li>
+            <li><b>pressed</b> / <b>onPressedChange</b><span className="prop-values">toggle mode via aria-pressed; on = the solid of its intent</span></li>
+            <li><b>floating</b><span className="prop-values">boolean — FAB treatment with overlay shadow</span></li>
+            <li><b>fullWidth</b><span className="prop-values">boolean — stretches to its container</span></li>
+            <li><b>render</b><span className="prop-values">(props) =&gt; ReactElement — render as an anchor or router Link</span></li>
+          </ul>
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
           <div className="usage-grid">
             <div>
               <h3>Do</h3>
               <ul>
-                <li>Use one primary or danger button per view region.</li>
+                <li>Use one solid accent (or danger) button per view region.</li>
+                <li>Pair a solid with a soft, outline or ghost button for secondary actions.</li>
                 <li>Keep size consistent within a region.</li>
-                <li>Treat loading as implicitly disabled.</li>
               </ul>
             </div>
             <div>
               <h3>Don't</h3>
               <ul>
-                <li>Use multiple primary buttons in one region.</li>
-                <li>Rely on color alone for danger — label the action too.</li>
+                <li>Put two solid accent buttons side by side.</li>
+                <li>Rely on color alone for danger — say what gets deleted.</li>
+                <li>Use Button for navigation without <span className="prop-values">render</span>; use Link in running text.</li>
               </ul>
             </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Migrating from variant</h2>
+          <div className="sample-box column" style={{ padding: 0, border: "none", background: "none", gap: 0 }}>
+            {legacy.map(([from, to]) => (
+              <div className="variant-row" key={from}>
+                <span className="name">{from}</span>
+                <span className="desc">{to}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -172,23 +211,24 @@ export function App() {
         <p className="dek">Same Button, <span className="prop-values">iconOnly</span> set — no separate Icon Button component. Always requires <span className="prop-values">label</span>, since there's no visible text to fall back on.</p>
 
         <div className="example-box">
-          <Button iconOnly label="Search" variant="text"><Search /></Button>
+          <Button iconOnly label="Search" intent="neutral" appearance="ghost"><Search /></Button>
         </div>
 
         <div className="doc-section">
-          <h2>Variants &amp; sizes</h2>
+          <h2>Appearances &amp; sizes</h2>
           <div className="sample-box">
-            <Button iconOnly label="More" variant="text" size="sm"><MoreHorizontal /></Button>
-            <Button iconOnly label="More" variant="outline"><MoreHorizontal /></Button>
-            <Button iconOnly label="Next" variant="primary" size="lg"><ArrowRight /></Button>
+            <Button iconOnly label="More" intent="neutral" appearance="ghost" size="sm"><MoreHorizontal /></Button>
+            <Button iconOnly label="More" intent="neutral" appearance="outline"><MoreHorizontal /></Button>
+            <Button iconOnly label="Add" intent="neutral"><Plus /></Button>
+            <Button iconOnly label="Next" size="lg"><ArrowRight /></Button>
           </div>
         </div>
 
         <div className="doc-section">
           <h2>Common use: dismiss controls</h2>
-          <p className="lead">A text-variant, sm, icon-only Button with an X glyph covers toasts, modals, and dialogs.</p>
+          <p className="lead">A neutral, ghost, sm, icon-only Button with an X glyph covers toasts, modals, and dialogs.</p>
           <div className="sample-box">
-            <Button iconOnly label="Close" variant="text" size="sm"><X /></Button>
+            <Button iconOnly label="Close" intent="neutral" appearance="ghost" size="sm"><X /></Button>
           </div>
         </div>
       </section>
@@ -196,10 +236,10 @@ export function App() {
       {/* ============ TOGGLE ============ */}
       <section className="component-doc" id="toggle">
         <h1>Toggle</h1>
-        <p className="dek">Same Button, with <span className="prop-values">pressed</span> + <span className="prop-values">onPressedChange</span> — a persistent on/off state exposed via aria-pressed. Pressed always renders filled-accent, regardless of variant.</p>
+        <p className="dek">Same Button, with <span className="prop-values">pressed</span> + <span className="prop-values">onPressedChange</span> — a persistent on/off state exposed via aria-pressed. When on, it takes the solid treatment of its own intent: neutral turns ink, accent turns accent.</p>
 
         <div className="example-box">
-          <Button pressed={pressed} onPressedChange={setPressed} variant="outline" prefix={<Star style={{ width: 16, height: 16 }} />}>
+          <Button pressed={pressed} onPressedChange={setPressed} intent="neutral" appearance="outline" prefix={<Star />}>
             Favorite
           </Button>
         </div>
@@ -207,10 +247,10 @@ export function App() {
         <div className="doc-section">
           <h2>Off / on</h2>
           <div className="sample-box">
-            <Button variant="outline" pressed={false} onPressedChange={() => {}}>Off</Button>
-            <Button variant="outline" pressed onPressedChange={() => {}}>On</Button>
-            <Button variant="outline" pressed={false} onPressedChange={() => {}} size="sm">Small</Button>
-            <Button variant="outline" pressed={false} onPressedChange={() => {}} size="lg">Large</Button>
+            <Button intent="neutral" appearance="outline" pressed={false} onPressedChange={() => {}}>Off</Button>
+            <Button intent="neutral" appearance="outline" pressed onPressedChange={() => {}}>On</Button>
+            <Button appearance="soft" pressed={false} onPressedChange={() => {}}>Off</Button>
+            <Button appearance="soft" pressed onPressedChange={() => {}}>On</Button>
           </div>
         </div>
       </section>
@@ -228,7 +268,8 @@ export function App() {
           <h2>Icon-only vs. extended</h2>
           <div className="sample-box">
             <Button floating iconOnly label="New project"><Plus /></Button>
-            <Button floating label="New project" prefix={<Plus style={{ width: 20, height: 20 }} />}>New project</Button>
+            <Button floating prefix={<Plus />}>New project</Button>
+            <Button floating intent="neutral" prefix={<Plus />}>New project</Button>
           </div>
         </div>
       </section>
@@ -240,9 +281,9 @@ export function App() {
 
         <div className="example-box">
           <ButtonGroup>
-            <Button variant="outline">Day</Button>
-            <Button variant="primary">Week</Button>
-            <Button variant="outline">Month</Button>
+            <Button intent="neutral" appearance="outline">Day</Button>
+            <Button intent="neutral">Week</Button>
+            <Button intent="neutral" appearance="outline">Month</Button>
           </ButtonGroup>
         </div>
 
@@ -257,9 +298,9 @@ export function App() {
           <h2>Vertical</h2>
           <div className="sample-box">
             <ButtonGroup orientation="vertical">
-              <Button variant="outline">Day</Button>
-              <Button variant="primary">Week</Button>
-              <Button variant="outline">Month</Button>
+              <Button intent="neutral" appearance="outline">Day</Button>
+              <Button intent="neutral">Week</Button>
+              <Button intent="neutral" appearance="outline">Month</Button>
             </ButtonGroup>
           </div>
         </div>

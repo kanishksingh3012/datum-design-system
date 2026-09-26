@@ -18,7 +18,7 @@ import "@datum-design/react/styles.css";
 import "@datum-design/styles/themes.css";
 
 function App() {
-  return <Button variant="primary">Get started</Button>;
+  return <Button intent="accent" appearance="solid">Get started</Button>;
 }
 ```
 

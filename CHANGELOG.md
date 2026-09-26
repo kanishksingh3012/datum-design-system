@@ -4,6 +4,20 @@ All notable changes to this project are recorded here. Format loosely follows [K
 
 ## [Unreleased]
 
+## 2026-09-27 — Checkpoint 1: combo checker and Button rebuild
+
+### Added
+- `npm run check`: builds, then runs `scripts/check-combos.mjs`. It fails on hardcoded colors in a component's CSS/TSX, and renders each component's fixture (`apps/gallery/check.html`) in orange/navy × light/dark in Chrome. It fails on WCAG contrast (text 4.5:1 or 3:1 large; control borders and focus rings 3:1), at rest and on hover.
+- Button `fullWidth`.
+- Gallery light/dark switch.
+
+### Changed
+- **Breaking:** Button `variant` is replaced by `intent` (accent · neutral · danger) × `appearance` (solid · soft · outline · ghost). Mapping: primary → accent/solid, secondary → accent/soft, tertiary → neutral/soft, outline → neutral/outline, text → neutral/ghost, danger → danger/solid, danger-soft → danger/soft. `link` is dropped; use Link. The `ButtonVariant` type is replaced by `ButtonIntent` and `ButtonAppearance`.
+- Neutral + solid is the ink button (`bg.inverse` / `text.onInverse`). Solid hover now swaps to the `*Hover` fill token instead of a brightness filter.
+- Button sizes are 32/40/48px with a precise pointer and +4px under `pointer: coarse`. This replaces the 768px width breakpoint.
+- `pressed` now takes the solid treatment of its own intent, instead of always the accent fill.
+- `loading` blocks clicks via `aria-disabled` but stays focusable. It adds `data-disabled` / `data-loading` hooks.
+
 ## 2026-09-07 — Renamed: Atlas → Datum
 
 ### Changed

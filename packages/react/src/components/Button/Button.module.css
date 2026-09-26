@@ -1,22 +1,42 @@
+/* Each intent × appearance block only sets the local --_* variables;
+   the base rule is the single place they are consumed. */
 .root {
+  --_bg: transparent;
+  --_bg-hover: var(--_bg);
+  --_fg: var(--color-text-primary);
+  --_border: transparent;
+  --_shadow: none;
+  --_height: 40px;
+  --_pad: var(--space-default);
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  font-family: var(--font-body);
-  font-weight: 500;
+  gap: var(--space-compact);
+  box-sizing: border-box;
+  min-height: var(--_height);
+  padding: 0 var(--_pad);
+  font-family: var(--type-body-md-family);
+  font-weight: var(--type-ui-label-weight);
   font-size: var(--type-body-md-size);
-  border-radius: var(--radius-pill);
-  border: 1px solid transparent;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--_fg);
+  background: var(--_bg);
+  border: 1px solid var(--_border);
+  border-radius: var(--radius-control);
+  box-shadow: var(--_shadow);
   cursor: pointer;
-  min-height: var(--interaction-minTarget);
-  padding: 0 var(--space-default);
   transition:
-    filter var(--motion-fast) var(--motion-easing),
     background var(--motion-fast) var(--motion-easing),
     border-color var(--motion-fast) var(--motion-easing),
     box-shadow var(--motion-fast) var(--motion-easing),
     transform var(--motion-fast) var(--motion-easing);
+}
+
+.root:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--_bg-hover);
 }
 
 .root:focus-visible {
@@ -29,185 +49,167 @@
 }
 
 .root:disabled,
-.root[aria-disabled="true"] {
+.root[data-disabled] {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
+.root[data-loading] {
+  cursor: progress;
+}
+
+/* ---------- sizes: 32 / 40 / 48, +4px on touch ---------- */
 .root[data-size="sm"] {
-  min-height: 36px;
-  padding: 0 var(--space-tight);
-  font-size: var(--type-ui-caption-size);
+  --_height: 32px;
+  --_pad: var(--space-tight);
+  font-size: var(--type-body-sm-size);
 }
-
 .root[data-size="lg"] {
-  min-height: 52px;
-  padding: 0 var(--space-default);
-  font-size: var(--type-heading-md-size);
+  --_height: 48px;
+  --_pad: calc(var(--space-default) + var(--space-compact) / 2);
+  font-size: var(--type-body-lg-size);
 }
 
-/* desktop: precise-pointer contexts don't need the mobile touch-target floor —
-   shrink by 4px per size, matching HeroUI's own responsive pattern exactly.
-   Mobile stays untouched — min-height there is the real WCAG 2.5.5 floor. */
-@media (min-width: 768px) {
+@media (pointer: coarse) {
   .root {
-    min-height: 40px;
+    --_height: var(--interaction-minTarget);
   }
   .root[data-size="sm"] {
-    min-height: 32px;
+    --_height: 36px;
   }
   .root[data-size="lg"] {
-    min-height: 48px;
+    --_height: 52px;
   }
 }
 
-/* emphasis tiers — same accent-derived hierarchy, decreasing weight */
-.root[data-variant="primary"] {
-  background: var(--color-bg-accent);
-  color: var(--color-text-onAccent);
-  box-shadow: var(--elevation-raised);
-}
-.root[data-variant="primary"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  filter: brightness(0.92);
-  box-shadow: var(--elevation-overlay);
+.root[data-full-width] {
+  display: flex;
+  width: 100%;
 }
 
-.root[data-variant="secondary"] {
-  background: var(--color-bg-accentSubtle);
-  color: var(--color-text-accent);
+/* ---------- accent ---------- */
+.root[data-intent="accent"][data-appearance="solid"] {
+  --_bg: var(--color-bg-accent);
+  --_bg-hover: var(--color-bg-accentHover);
+  --_fg: var(--color-text-onAccent);
+  --_shadow: var(--elevation-raised);
 }
-.root[data-variant="secondary"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  filter: brightness(0.93);
+.root[data-intent="accent"][data-appearance="soft"] {
+  --_bg: var(--color-bg-accentSubtle);
+  --_bg-hover: var(--color-bg-accentSubtleHover);
+  --_fg: var(--color-text-accent);
 }
-
-.root[data-variant="tertiary"] {
-  background: var(--color-bg-tertiary);
-  color: var(--color-text-primary);
+.root[data-intent="accent"][data-appearance="outline"] {
+  --_border: var(--color-border-accent);
+  --_bg-hover: var(--color-bg-accentSubtle);
+  --_fg: var(--color-text-accent);
 }
-.root[data-variant="tertiary"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  background: var(--color-border-strong);
-}
-
-/* bordered / textual tiers — no fill of their own */
-.root[data-variant="outline"] {
-  background: transparent;
-  border-color: var(--color-border-strong);
-  color: var(--color-text-primary);
-}
-.root[data-variant="outline"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  background: var(--color-bg-surface);
+.root[data-intent="accent"][data-appearance="ghost"] {
+  --_bg-hover: var(--color-bg-accentSubtle);
+  --_fg: var(--color-text-accent);
 }
 
-.root[data-variant="text"] {
-  background: transparent;
-  color: var(--color-text-primary);
+/* ---------- neutral (solid = ink) ---------- */
+.root[data-intent="neutral"][data-appearance="solid"] {
+  --_bg: var(--color-bg-inverse);
+  --_bg-hover: var(--color-bg-inverseHover);
+  --_fg: var(--color-text-onInverse);
+  --_shadow: var(--elevation-raised);
 }
-.root[data-variant="text"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  background: var(--color-bg-surface);
+.root[data-intent="neutral"][data-appearance="soft"] {
+  --_bg: var(--color-bg-tertiary);
+  --_bg-hover: color-mix(in oklab, var(--color-bg-tertiary), var(--color-text-primary) 8%);
+  --_fg: var(--color-text-primary);
 }
-
-.root[data-variant="link"] {
-  background: transparent;
-  color: var(--color-text-accent);
-  min-height: 0;
-  padding: 0;
-  border-radius: 0;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+.root[data-intent="neutral"][data-appearance="outline"] {
+  --_border: var(--color-border-strong);
+  --_bg-hover: var(--color-bg-surface);
+  --_fg: var(--color-text-primary);
 }
-.root[data-variant="link"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  filter: brightness(0.85);
-}
-.root[data-variant="link"]:active:not(:disabled):not([aria-disabled="true"]) {
-  transform: none;
+.root[data-intent="neutral"][data-appearance="ghost"] {
+  --_bg-hover: var(--color-bg-surface);
+  --_fg: var(--color-text-primary);
 }
 
-/* danger tiers */
-.root[data-variant="danger"] {
-  background: var(--color-bg-danger);
-  color: var(--color-text-onDanger);
-  box-shadow: var(--elevation-raised);
+/* ---------- danger ---------- */
+.root[data-intent="danger"][data-appearance="solid"] {
+  --_bg: var(--color-bg-danger);
+  --_bg-hover: var(--color-bg-dangerHover);
+  --_fg: var(--color-text-onDanger);
+  --_shadow: var(--elevation-raised);
 }
-.root[data-variant="danger"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  filter: brightness(0.92);
-  box-shadow: var(--elevation-overlay);
+.root[data-intent="danger"][data-appearance="soft"] {
+  --_bg: var(--color-bg-dangerSubtle);
+  --_bg-hover: color-mix(in oklab, var(--color-bg-dangerSubtle), var(--color-text-danger) 10%);
+  --_fg: var(--color-text-danger);
+}
+.root[data-intent="danger"][data-appearance="outline"] {
+  --_border: var(--color-border-danger);
+  --_bg-hover: var(--color-bg-dangerSubtle);
+  --_fg: var(--color-text-danger);
+}
+.root[data-intent="danger"][data-appearance="ghost"] {
+  --_bg-hover: var(--color-bg-dangerSubtle);
+  --_fg: var(--color-text-danger);
 }
 
-.root[data-variant="danger-soft"] {
-  background: var(--color-bg-dangerSubtle);
-  color: var(--color-text-danger);
+/* ---------- pressed: the solid treatment of its own intent ---------- */
+.root[data-pressed][data-appearance] {
+  --_border: transparent;
+  --_shadow: var(--elevation-raised);
 }
-.root[data-variant="danger-soft"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  filter: brightness(0.93);
+.root[data-pressed][data-intent="accent"] {
+  --_bg: var(--color-bg-accent);
+  --_bg-hover: var(--color-bg-accentHover);
+  --_fg: var(--color-text-onAccent);
+}
+.root[data-pressed][data-intent="neutral"] {
+  --_bg: var(--color-bg-inverse);
+  --_bg-hover: var(--color-bg-inverseHover);
+  --_fg: var(--color-text-onInverse);
+}
+.root[data-pressed][data-intent="danger"] {
+  --_bg: var(--color-bg-danger);
+  --_bg-hover: var(--color-bg-dangerHover);
+  --_fg: var(--color-text-onDanger);
 }
 
-/* icon-only — square instead of pill-with-text-padding, pill radius makes it a circle */
+/* ---------- icon-only: square, which the pill radius makes a circle ---------- */
 .root[data-icon-only] {
-  width: var(--interaction-minTarget);
+  width: var(--_height);
   padding: 0;
   gap: 0;
 }
-.root[data-icon-only][data-size="sm"] {
-  width: 36px;
-}
-.root[data-icon-only][data-size="lg"] {
-  width: 52px;
-}
-@media (min-width: 768px) {
-  .root[data-icon-only] {
-    width: 40px;
-  }
-  .root[data-icon-only][data-size="sm"] {
-    width: 32px;
-  }
-  .root[data-icon-only][data-size="lg"] {
-    width: 48px;
-  }
-}
-.root[data-icon-only] svg {
-  width: var(--icon-control);
-  height: var(--icon-control);
-}
-.root[data-icon-only][data-size="sm"] svg {
+.root svg {
+  flex-shrink: 0;
   width: var(--icon-inline);
   height: var(--icon-inline);
 }
-
-/* floating — FAB treatment: bigger, elevated, circular or a wide pill */
-.root[data-floating] {
-  box-shadow: var(--elevation-overlay);
-}
-.root[data-floating][data-icon-only] {
-  width: 56px;
-  min-height: 56px;
-}
-.root[data-floating][data-icon-only] svg {
+.root[data-icon-only]:not([data-size="sm"]) svg {
   width: var(--icon-control);
   height: var(--icon-control);
 }
-.root[data-floating]:not([data-icon-only]) {
-  min-height: 48px;
-  padding: 0 var(--space-section);
-}
 
-/* pressed — toggle "on" state, overrides variant with a filled-accent treatment */
-.root[data-pressed] {
-  background: var(--color-bg-accent);
-  border-color: var(--color-bg-accent);
-  color: var(--color-text-onAccent);
-  box-shadow: var(--elevation-raised);
+/* ---------- floating (FAB): lifted, circular or a wide pill ---------- */
+.root[data-floating][data-appearance] {
+  --_shadow: var(--elevation-overlay);
 }
-.root[data-pressed]:hover:not(:disabled):not([aria-disabled="true"]) {
-  filter: brightness(0.92);
+.root[data-floating][data-icon-only] {
+  --_height: 56px;
+}
+.root[data-floating]:not([data-icon-only]) {
+  --_height: 48px;
+  --_pad: var(--space-section);
 }
 
 .spinner {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+  border-radius: var(--radius-pill);
   border: 2px solid currentColor;
   border-top-color: transparent;
-  display: inline-block;
   animation: datum-button-spin var(--motion-slow) linear infinite;
 }
 

@@ -1,23 +1,18 @@
 import { forwardRef, type ButtonHTMLAttributes, type MouseEvent, type ReactElement, type ReactNode } from "react";
 import styles from "./Button.module.css";
 
-export type ButtonVariant =
-  | "primary"
-  | "secondary"
-  | "tertiary"
-  | "outline"
-  | "text"
-  | "link"
-  | "danger"
-  | "danger-soft";
+export type ButtonIntent = "accent" | "neutral" | "danger";
+export type ButtonAppearance = "solid" | "soft" | "outline" | "ghost";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonOwnProps {
-  /** Visual weight and semantic color. @default "primary" */
-  variant?: ButtonVariant;
-  /** `md` meets the 44px WCAG 2.5.5 target; `sm` is 36px (dense contexts only), `lg` is 52px. @default "md" */
+  /** What the color means. `neutral` + `solid` is the ink button. @default "accent" */
+  intent?: ButtonIntent;
+  /** How much fill. @default "solid" */
+  appearance?: ButtonAppearance;
+  /** 32 / 40 / 48px tall with a precise pointer, +4px on touch screens (md becomes 44px). @default "md" */
   size?: ButtonSize;
-  /** Implies `disabled` and shows the inline spinner in the prefix slot. @default false */
+  /** Blocks clicks, shows a spinner in the prefix slot and sets aria-busy. Keeps focus. @default false */
   loading?: boolean;
   /** Icon or element shown before the label. */
   prefix?: ReactNode;
@@ -38,8 +33,7 @@ export interface ButtonOwnProps {
   /**
    * Toggle mode: passing `pressed` (paired with `onPressedChange`) turns
    * this into a persistent on/off toggle button, exposed via aria-pressed.
-   * Pressed styling overrides `variant` with a filled-accent treatment,
-   * regardless of which variant is set.
+   * When on, the button takes the solid treatment of its own intent.
    */
   pressed?: boolean;
   onPressedChange?: (pressed: boolean) => void;
@@ -49,6 +43,8 @@ export interface ButtonOwnProps {
    * to the consumer. @default false
    */
   floating?: boolean;
+  /** Stretches to the width of its container. @default false */
+  fullWidth?: boolean;
   /**
    * Renders as a different element (e.g. an anchor) instead of a native
    * `<button>`, while keeping Button's styling and disabled semantics.
@@ -60,14 +56,15 @@ export interface ButtonOwnProps {
   render?: (props: Record<string, unknown>) => ReactElement;
 }
 
-export type ButtonProps = ButtonOwnProps & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children" | "onClick"> & {
-  children?: React.ReactNode;
+export type ButtonProps = ButtonOwnProps & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children" | "onClick" | "prefix"> & {
+  children?: ReactNode;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
-    variant = "primary",
+    intent = "accent",
+    appearance = "solid",
     size = "md",
     loading = false,
     prefix,
@@ -78,6 +75,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     pressed,
     onPressedChange,
     floating = false,
+    fullWidth = false,
     render,
     className,
     children,
@@ -87,7 +85,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   },
   ref
 ) {
-  const isDisabled = disabled || loading;
+  const isBlocked = disabled || loading;
   const isToggle = pressed !== undefined;
 
   const content = (
@@ -99,22 +97,29 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   );
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    if (isBlocked) {
+      event.preventDefault();
+      return;
+    }
     onClick?.(event);
     if (isToggle) onPressedChange?.(!pressed);
   };
 
   const sharedProps = {
     className: [styles.root, className].filter(Boolean).join(" "),
-    "data-variant": variant,
+    "data-intent": intent,
+    "data-appearance": appearance,
     "data-size": size,
+    "data-disabled": disabled || undefined,
     "data-loading": loading || undefined,
     "data-icon-only": iconOnly || undefined,
     "data-floating": floating || undefined,
+    "data-full-width": fullWidth || undefined,
     "data-pressed": isToggle && pressed ? true : undefined,
     "aria-busy": loading || undefined,
     "aria-pressed": isToggle ? pressed : undefined,
     "aria-label": label,
-    onClick: isDisabled ? undefined : handleClick,
+    onClick: handleClick,
     children: content,
     ...rest,
   };
@@ -122,12 +127,22 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   if (render) {
     return render({
       ...sharedProps,
-      "aria-disabled": isDisabled || undefined,
-      tabIndex: isDisabled ? -1 : undefined,
+      "aria-disabled": isBlocked || undefined,
+      tabIndex: disabled ? -1 : undefined,
     });
   }
 
-  return <button ref={ref} type={type} disabled={isDisabled} {...sharedProps} />;
+  // Loading stays focusable (aria-disabled, not disabled) so a submit
+  // button doesn't drop keyboard focus mid-request.
+  return (
+    <button
+      ref={ref}
+      type={type}
+      disabled={disabled}
+      aria-disabled={loading || undefined}
+      {...sharedProps}
+    />
+  );
 });
 
 Button.displayName = "Button";

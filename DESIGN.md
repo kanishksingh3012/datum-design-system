@@ -149,3 +149,4 @@ Radius is still one base (10px) times a ratio underneath (xs ×0.25 through 3xl 
 - **2026-09-27** — Pill-first shape language: `radius.control` becomes a full pill, `radius.card` rises to 20px, new `radius.subtle` (7.5px) for checkboxes. Button has no shape option — pill is Datum's identity. Nine containers that used the control radius moved to the card radius.
 - **2026-09-27** — Ink tokens added (`bg.inverse`, `bg.inverseHover`, `text.onInverse`) for neutral solid buttons.
 - **2026-09-27** — Header, Nav and NavigationMenu merge into one versatile Navbar. Table and Slider stay in wave 2; page blocks come after the components. Component plan approved.
+- **2026-09-27** — Button rebuilt to the plan (intent × appearance × size, pill only, ink for neutral solid). `npm run check` added: every registered component is rendered in all four combinations and fails on contrast or hardcoded colors.

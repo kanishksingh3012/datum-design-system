@@ -1,7 +1,7 @@
 import "./tooltip.css";
 
 export { Button } from "./components/Button/Button";
-export type { ButtonProps, ButtonOwnProps, ButtonVariant, ButtonSize } from "./components/Button/Button";
+export type { ButtonProps, ButtonOwnProps, ButtonIntent, ButtonAppearance, ButtonSize } from "./components/Button/Button";
 
 export { ButtonGroup } from "./components/ButtonGroup/ButtonGroup";
 export type {

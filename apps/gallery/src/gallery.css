@@ -141,3 +141,8 @@ body {
   color: var(--color-text-secondary);
 }
 .usage-grid ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; }
+
+.switches { display: flex; flex-wrap: wrap; gap: 16px; }
+.matrix { display: grid; gap: 12px; overflow-x: auto; }
+.matrix-row { display: grid; grid-template-columns: 72px repeat(4, minmax(104px, 1fr)); align-items: center; gap: 12px; }
+.matrix-head { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-secondary); }
