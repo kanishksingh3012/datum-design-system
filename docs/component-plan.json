@@ -56,10 +56,39 @@
       "Touch: under pointer: coarse every control's hit area is at least 44 × 44 (interaction.minTarget), using an invisible ::after where the control looks smaller; links in running text are exempt. Checked."
     ],
     "api": [
-      "Values: a component that holds a value takes value (controlled), defaultValue (uncontrolled) and onValueChange(value).",
-      "Open state: a component that opens (menus, dialogs, popovers, sheets, tooltips) takes open, defaultOpen and onOpenChange(open).",
-      "Behavior: interactive behavior uses the react-aria + react-stately hooks, as Accordion does (useDisclosureGroupState + useDisclosure) — never react-aria-components. Markup, class names and data attributes stay Datum's own.",
+      "State comes as a trio: current value (controlled), default value (uncontrolled), change callback with the new value. The callback fires either way.",
+      "Behavior: interactive behavior and state use the react-aria + react-stately hooks, as Accordion (useDisclosureGroupState + useDisclosure) and Button's toggle (useToggleState) do — never react-aria-components. Markup, class names and data attributes stay Datum's own.",
       "Breaking changes: a removed or renamed prop is recorded in the decision log (DESIGN.md and decisions below), with what replaces it."
+    ],
+    "state": [
+      [
+        "Pressed (toggle)",
+        "pressed",
+        "defaultPressed",
+        "onPressedChange(pressed)",
+        "Button in toggle mode"
+      ],
+      [
+        "Checked",
+        "checked",
+        "defaultChecked",
+        "onCheckedChange(checked)",
+        "Checkbox, Switch"
+      ],
+      [
+        "Value",
+        "value",
+        "defaultValue",
+        "onValueChange(value)",
+        "Accordion, and anything else that holds a value (fields, selects, tabs, radio groups, sliders)"
+      ],
+      [
+        "Open",
+        "open",
+        "defaultOpen",
+        "onOpenChange(open)",
+        "Anything that opens: menus, dialogs, popovers, sheets, tooltips"
+      ]
     ]
   },
   "groups": [
@@ -298,7 +327,7 @@
               "Spinner over the label with no size change; blocks clicks via aria-disabled but keeps focus; aria-busy"
             ],
             [
-              "pressed / onPressedChange",
+              "pressed / defaultPressed / onPressedChange",
               "boolean",
               "—",
               "Toggle mode (aria-pressed). On = the solid treatment of its own intent"
@@ -872,7 +901,7 @@
               ""
             ],
             [
-              "checked",
+              "checked / defaultChecked / onCheckedChange",
               "true · false · \"indeterminate\"",
               "false",
               ""
@@ -1369,6 +1398,10 @@
     [
       "Content props removed or renamed",
       "Card variant → appearance (flat was a surface fill plus a border: use outline for the border or soft for the fill). Badge variant → intent, appearance added (old accent, success, warning and danger fills are now solid; default soft). Avatar initials removed (derived from name), size default → md. AccordionItem defaultOpen → Accordion defaultValue with a value per item."
+    ],
+    [
+      "State trios",
+      "Every piece of component state is current / default / on-change. Booleans keep their names: pressed / defaultPressed / onPressedChange (toggle Button), checked / defaultChecked / onCheckedChange (Checkbox, Switch); otherwise value / defaultValue / onValueChange or open / defaultOpen / onOpenChange. Button gains defaultPressed."
     ]
   ]
 }

@@ -3,7 +3,7 @@ import {
   Accordion, AccordionItem, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CardMedia,
   Container, Grid, Heading, Link, Section, Separator, Stack, Text,
 } from "@datum-design/react";
-import { Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
+import { Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
 const appearances = ["solid", "soft", "outline", "ghost"] as const;
@@ -21,7 +21,7 @@ const buttonProps: [string, string, string, string][] = [
   ["label", "string", "—", "Accessible name; required with iconOnly."],
   ["loading", "boolean", "false", "Spinner over the label, no size change; blocks clicks, keeps focus, sets aria-busy."],
   ["disabled", "boolean", "false", "Native disabled."],
-  ["pressed / onPressedChange", "boolean / (pressed) => void", "—", "Toggle mode via aria-pressed; on = the solid of its intent."],
+  ["pressed / defaultPressed / onPressedChange", "boolean / boolean / (pressed) => void", "—", "Toggle mode via aria-pressed; on = the solid of its intent. pressed is controlled, defaultPressed uncontrolled."],
   ["floating", "boolean", "false", "FAB treatment with overlay shadow."],
   ["fullWidth", "boolean", "false", "Stretches to its container."],
   ["render", "(props) => ReactElement", "—", "Render as an anchor or router Link."],
@@ -409,7 +409,7 @@ export function App() {
       {/* ============ TOGGLE ============ */}
       <section className="component-doc" id="toggle">
         <h1>Toggle</h1>
-        <p className="dek">Same Button, with <span className="prop-values">pressed</span> + <span className="prop-values">onPressedChange</span> — a persistent on/off state exposed via aria-pressed. When on, it takes the solid treatment of its own intent: neutral turns ink, accent turns accent.</p>
+        <p className="dek">Same Button, with <span className="prop-values">pressed</span> or <span className="prop-values">defaultPressed</span> — a persistent on/off state exposed via aria-pressed. When on, it takes the solid treatment of its own intent: neutral turns ink, accent turns accent.</p>
 
         <div className="example-box">
           <Button pressed={pressed} onPressedChange={setPressed} intent="neutral" appearance="outline" prefix={<Star />}>
@@ -424,6 +424,16 @@ export function App() {
             <Button intent="neutral" appearance="outline" pressed onPressedChange={() => {}}>On</Button>
             <Button appearance="soft" pressed={false} onPressedChange={() => {}}>Off</Button>
             <Button appearance="soft" pressed onPressedChange={() => {}}>On</Button>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Controlled or uncontrolled</h2>
+          <p className="lead">Like every piece of state in Datum, it comes as a trio. <b>pressed</b> + <b>onPressedChange</b>: you hold the state (the Favorite button above). <b>defaultPressed</b>: the button holds it and starts where you say; <b>onPressedChange</b> still reports each change. These formatting toggles are uncontrolled — Bold starts on.</p>
+          <div className="sample-box">
+            <Button iconOnly label="Bold" intent="neutral" appearance="ghost" defaultPressed><Bold /></Button>
+            <Button iconOnly label="Italic" intent="neutral" appearance="ghost" defaultPressed={false}><Italic /></Button>
+            <Button iconOnly label="Underline" intent="neutral" appearance="ghost" defaultPressed={false}><Underline /></Button>
           </div>
         </div>
       </section>

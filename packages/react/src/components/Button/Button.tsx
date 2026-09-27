@@ -1,4 +1,5 @@
 import { forwardRef, useContext, type ButtonHTMLAttributes, type MouseEvent, type ReactElement, type ReactNode } from "react";
+import { useToggleState } from "react-stately";
 import { ButtonGroupContext } from "../../lib/buttonGroupContext";
 import styles from "./Button.module.css";
 
@@ -32,11 +33,15 @@ export interface ButtonOwnProps {
    */
   label?: string;
   /**
-   * Toggle mode: passing `pressed` (paired with `onPressedChange`) turns
-   * this into a persistent on/off toggle button, exposed via aria-pressed.
-   * When on, the button takes the solid treatment of its own intent.
+   * Toggle mode: passing `pressed` (controlled, with `onPressedChange`) or
+   * `defaultPressed` (uncontrolled) turns this into a persistent on/off
+   * toggle button, exposed via aria-pressed. When on, the button takes the
+   * solid treatment of its own intent.
    */
   pressed?: boolean;
+  /** Toggle mode, uncontrolled: whether the toggle starts on. */
+  defaultPressed?: boolean;
+  /** Called with the new state whenever a toggle button is pressed. */
   onPressedChange?: (pressed: boolean) => void;
   /**
    * Floating Action Button treatment: larger, elevated, and circular when
@@ -73,7 +78,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     disabled = false,
     iconOnly = false,
     label,
-    pressed,
+    pressed: pressedProp,
+    defaultPressed,
     onPressedChange,
     floating = false,
     fullWidth = false,
@@ -91,7 +97,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   const appearance = appearanceProp ?? group?.appearance ?? "solid";
   const size = sizeProp ?? group?.size ?? "md";
   const isBlocked = disabled || loading;
-  const isToggle = pressed !== undefined;
+  const isToggle = pressedProp !== undefined || defaultPressed !== undefined;
+  const toggle = useToggleState({ isSelected: pressedProp, defaultSelected: defaultPressed, onChange: onPressedChange });
+  const pressed = toggle.isSelected;
 
   // While loading, the content stays in place (hidden by CSS) and the
   // spinner sits on top of it, so the button never changes size.
@@ -110,7 +118,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       return;
     }
     onClick?.(event);
-    if (isToggle) onPressedChange?.(!pressed);
+    if (isToggle) toggle.toggle();
   };
 
   const sharedProps = {

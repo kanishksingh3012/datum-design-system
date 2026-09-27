@@ -132,7 +132,7 @@ describe("Button", () => {
     expect(button).toHaveAttribute("data-icon-only", "true");
   });
 
-  it("acts as an uncontrolled-free toggle when pressed is provided", async () => {
+  it("acts as a controlled toggle when pressed is provided: it reports, the parent decides", async () => {
     const onPressedChange = vi.fn();
     render(
       <Button pressed={false} onPressedChange={onPressedChange}>
@@ -144,6 +144,46 @@ describe("Button", () => {
     expect(button).not.toHaveAttribute("data-pressed");
     await userEvent.click(button);
     expect(onPressedChange).toHaveBeenCalledWith(true);
+    expect(button).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("acts as an uncontrolled toggle with defaultPressed, keeping its own state", async () => {
+    const onPressedChange = vi.fn();
+    render(
+      <Button defaultPressed onPressedChange={onPressedChange}>
+        Bold
+      </Button>
+    );
+    const button = screen.getByRole("button", { name: "Bold" });
+    expect(button).toHaveAttribute("aria-pressed", "true");
+    expect(button).toHaveAttribute("data-pressed", "true");
+    await userEvent.click(button);
+    expect(button).toHaveAttribute("aria-pressed", "false");
+    expect(button).not.toHaveAttribute("data-pressed");
+    expect(onPressedChange).toHaveBeenLastCalledWith(false);
+    await userEvent.click(button);
+    expect(button).toHaveAttribute("aria-pressed", "true");
+    expect(onPressedChange).toHaveBeenLastCalledWith(true);
+  });
+
+  it("enters toggle mode with defaultPressed={false} and no callback", async () => {
+    render(<Button defaultPressed={false}>Italic</Button>);
+    const button = screen.getByRole("button", { name: "Italic" });
+    expect(button).toHaveAttribute("aria-pressed", "false");
+    await userEvent.click(button);
+    expect(button).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("lets pressed win over defaultPressed", async () => {
+    render(
+      <Button pressed={false} defaultPressed onPressedChange={() => {}}>
+        Pin
+      </Button>
+    );
+    const button = screen.getByRole("button", { name: "Pin" });
+    expect(button).toHaveAttribute("aria-pressed", "false");
+    await userEvent.click(button);
+    expect(button).toHaveAttribute("aria-pressed", "false");
   });
 
   it("reflects pressed=true via aria-pressed and data-pressed", () => {
@@ -168,7 +208,20 @@ describe("Button", () => {
     expect(onPressedChange).not.toHaveBeenCalled();
   });
 
-  it("does not expose aria-pressed when pressed is never passed", () => {
+  it("does not toggle an uncontrolled button while loading or disabled", async () => {
+    render(
+      <>
+        <Button defaultPressed={false} loading>Loading</Button>
+        <Button defaultPressed={false} disabled>Disabled</Button>
+      </>
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Loading" }));
+    await userEvent.click(screen.getByRole("button", { name: "Disabled" }));
+    expect(screen.getByRole("button", { name: "Loading" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("button", { name: "Disabled" })).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("does not expose aria-pressed when neither pressed nor defaultPressed is passed", () => {
     render(<Button>Save</Button>);
     expect(screen.getByRole("button", { name: "Save" })).not.toHaveAttribute("aria-pressed");
   });

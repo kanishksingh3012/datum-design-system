@@ -150,11 +150,18 @@ These come from Button and apply to **every** component. `npm run check` enforce
 
 These apply to every component, alongside the Interaction rules.
 
+**State comes as a trio**: the current value (controlled), a default value (uncontrolled), and a change callback that receives the new value. Pass the first to own the state; pass the second to let the component hold it. The callback fires either way. Boolean state keeps its own name rather than a generic `value`:
+
+| State | Current | Default | On change | Used by |
+|---|---|---|---|---|
+| Pressed (toggle) | `pressed` | `defaultPressed` | `onPressedChange(pressed)` | Button in toggle mode |
+| Checked | `checked` | `defaultChecked` | `onCheckedChange(checked)` | Checkbox, Switch |
+| Value | `value` | `defaultValue` | `onValueChange(value)` | Accordion, and anything else that holds a value (fields, selects, tabs, radio groups, sliders) |
+| Open | `open` | `defaultOpen` | `onOpenChange(open)` | Anything that opens: menus, dialogs, popovers, sheets, tooltips |
+
 | Rule | How |
 |---|---|
-| **Values** | A component that holds a value takes `value` (controlled), `defaultValue` (uncontrolled) and `onValueChange(value)`. |
-| **Open state** | A component that opens (menus, dialogs, popovers, sheets, tooltips) takes `open`, `defaultOpen` and `onOpenChange(open)`. |
-| **Behavior** | Interactive behavior uses the `react-aria` and `react-stately` hooks, as Accordion does (`useDisclosureGroupState` + `useDisclosure`) — never `react-aria-components`. The markup, class names and data attributes stay Datum's own. |
+| **Behavior** | Interactive behavior and state use the `react-aria` and `react-stately` hooks, as Accordion does (`useDisclosureGroupState` + `useDisclosure`) and Button's toggle does (`useToggleState`) — never `react-aria-components`. The markup, class names and data attributes stay Datum's own. |
 | **Breaking changes** | A removed or renamed prop is recorded in the decision log below, with what replaces it. |
 
 ## Do's and don'ts
@@ -193,3 +200,4 @@ These apply to every component, alongside the Interaction rules.
 - **2026-09-27** — Component API conventions written: `value` / `defaultValue` / `onValueChange` for values, `open` / `defaultOpen` / `onOpenChange` for things that open, `react-aria` + `react-stately` hooks (never `react-aria-components`), and removed or renamed props recorded here.
 - **2026-09-27** — Props removed or renamed in the Content rebuild: Card `variant` (flat · elevated) → `appearance` (elevated · outline · soft; flat was a surface fill plus a border: use `outline` for the border or `soft` for the fill). Badge `variant` → `intent`, with `appearance` added (the old accent, success, warning and danger fills are now `solid`; the default is `soft`). Avatar `initials` removed (derived from `name`); `name` is now optional; size `default` → `md`. Accordion: AccordionItem `defaultOpen` → `defaultValue` on Accordion (with `value` on each item); items are no longer `<details>`.
 - **2026-09-27** — Plain Accordion drops its dividers: they ran into the rounded hover fill. Panel content gets `space.tight` above it.
+- **2026-09-27** — Every piece of component state comes as a trio: current, default, on-change. Boolean state keeps its own name — `pressed` / `defaultPressed` / `onPressedChange` for toggle Buttons, `checked` / `defaultChecked` / `onCheckedChange` for Checkbox and Switch — and the rest use `value` / `defaultValue` / `onValueChange` or `open` / `defaultOpen` / `onOpenChange`. Button gains `defaultPressed` (uncontrolled toggle, via `useToggleState`).
