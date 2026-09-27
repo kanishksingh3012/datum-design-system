@@ -32,6 +32,13 @@ describe("Alert", () => {
     }
   });
 
+  it("keeps rounded ends unless fullBleed", () => {
+    const { rerender } = render(<Alert appearance="solid" title="Banner" />);
+    expect(screen.getByRole("status")).not.toHaveAttribute("data-full-bleed");
+    rerender(<Alert appearance="solid" title="Banner" fullBleed />);
+    expect(screen.getByRole("status")).toHaveAttribute("data-full-bleed", "true");
+  });
+
   it("renders the description and the action", () => {
     render(<Alert title="Saved" description="Your changes were saved." action={<button>Undo</button>} />);
     expect(screen.getByText("Your changes were saved.")).toBeInTheDocument();

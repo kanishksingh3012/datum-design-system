@@ -151,15 +151,22 @@
   --_border: var(--color-border-strong);
 }
 
-/* ---------- solid: a full-width banner in the intent's fill (neutral is ink) ---------- */
+/* ---------- full bleed: edge to edge of the viewport, so its corners are the viewport's ---------- */
+.root[data-full-bleed] {
+  border-inline-width: 0;
+  border-radius: 0;
+}
+
+/* ---------- solid: one row in the intent's fill (neutral is ink) ---------- */
 .root[data-appearance="solid"] {
+  /* on a fill, every focus ring inside uses the fill's on-color */
+  --color-border-focus: var(--_fg);
+
   grid-template-columns: auto 1fr auto auto;
   grid-template-areas: "icon content action dismiss";
   align-items: center;
   padding: var(--space-compact) var(--space-default);
   border-width: 0;
-  /* a banner runs edge to edge, so its corners are the viewport's */
-  border-radius: 0;
 }
 .root[data-appearance="solid"] .icon {
   align-self: start;
@@ -169,10 +176,6 @@
 }
 .root[data-appearance="solid"] .dismiss {
   margin: 0 calc(var(--space-compact) * -0.5) 0 0;
-}
-/* the theme's focus color can't be relied on against a state fill; the text color can */
-.root[data-appearance="solid"] :focus-visible {
-  outline-color: currentColor;
 }
 .root[data-appearance="solid"][data-intent="info"] {
   --_bg: var(--color-bg-info);

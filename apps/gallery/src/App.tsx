@@ -131,7 +131,8 @@ const accordionProps: PropRow[] = [
 const alertIntents = ["info", "success", "warning", "danger", "neutral"] as const;
 const alertProps: PropRow[] = [
   ["intent", "info | success | warning | danger | neutral", "info", "Picks the icon. danger is role=alert (interrupts); the rest are role=status."],
-  ["appearance", "soft | outline | solid", "soft", "Tint / border only / full-width banner in the intent's fill (neutral is ink)."],
+  ["appearance", "soft | outline | solid", "soft", "Tint / border only / one row in the intent's fill (neutral is ink)."],
+  ["fullBleed", "boolean", "false", "Square ends, no side borders — only when it touches both edges of the viewport."],
   ["title / description", "ReactNode", "—", "Title in the label weight, description a step down (body-sm). Both text.primary."],
   ["action", "ReactNode", "—", "A Button or Link. Under the text; at the end of the row in a banner."],
   ["dismissible", "boolean", "false", "Adds a Dismiss button."],
@@ -1374,14 +1375,30 @@ export function App() {
 
         <div className="doc-section">
           <h2>Solid banner</h2>
-          <p className="lead"><b>solid</b> is a full-width banner for the top of a page: the intent's fill with its <b>text.on*</b> color, one row, square ends because it runs edge to edge. Neutral solid is ink. Inside it, focus rings switch to the text color, which is the one color guaranteed to reach 3:1 on the fill; use <b>Link tone="inherit"</b> for the action.</p>
+          <p className="lead"><b>solid</b> is the intent's fill with its <b>text.on*</b> color, in one row. Neutral solid is ink. Across the top of a page it is a banner: <b>fullBleed</b> squares its ends, because it touches both edges of the viewport and its corners are the viewport's. Inside it, every focus ring uses the fill's on-color instead of <b>border.focus</b>; use <b>Link tone="inherit"</b> for the action.</p>
           <div className="sample-box stack">
             {alertIntents.map((intent) => (
               <div key={intent} style={{ borderRadius: "var(--radius-card)", overflow: "hidden", border: "1px solid var(--color-border-subtle)" }}>
-                <Alert intent={intent} appearance="solid" title={`Scheduled maintenance on Sunday, 02:00–04:00 UTC (${intent})`} action={<Link href="#alert" tone="inherit">Details</Link>} dismissible />
+                <Alert intent={intent} appearance="solid" fullBleed title={`Scheduled maintenance on Sunday, 02:00–04:00 UTC (${intent})`} action={<Link href="#alert" tone="inherit">Details</Link>} dismissible />
                 <div style={{ height: 48, background: "var(--color-bg-page)" }} />
               </div>
             ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Solid, not full bleed</h2>
+          <p className="lead">Anywhere that isn't edge to edge — in a card, a column, a dialog — a solid alert keeps <b>radius.card</b>, like everything else in Datum. Only <b>fullBleed</b> takes the corners off.</p>
+          <div className="sample-box demo-on-page">
+            <Card style={{ width: "100%", maxWidth: 480 }}>
+              <CardHeader><Heading level={3} size="sm">Billing</Heading></CardHeader>
+              <CardBody>
+                <Stack gap="md">
+                  <Alert intent="danger" appearance="solid" title="Your last payment failed" action={<Link href="#alert" tone="inherit">Update card</Link>} />
+                  <Text variant="body-sm" tone="secondary">Pro plan · renews on 1 October</Text>
+                </Stack>
+              </CardBody>
+            </Card>
           </div>
         </div>
 

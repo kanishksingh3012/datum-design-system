@@ -9,7 +9,9 @@
 // 2. Render: loads each component's fixture (apps/gallery/check.html) in
 //    orange/navy × light/dark and fails on WCAG contrast failures —
 //    text 4.5:1 (3:1 large), control borders and focus rings 3:1 —
-//    at rest and on hover. Also fails any control whose touch hit area is
+//    at rest and on hover. Rings are measured against everything painted
+//    behind the control, so a control on a colored fill (a solid Alert, an
+//    ink band) fails unless the fill re-points --color-border-focus. Also fails any control whose touch hit area is
 //    under 44 × 44px (links in running text, underline="always", are exempt).
 //    Static text a fixture marks with data-check-text (type tones, text on
 //    section backgrounds) is measured too, at rest: 4.5:1, or 3:1 when large.

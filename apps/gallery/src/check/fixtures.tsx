@@ -349,6 +349,18 @@ export const fixtures: Record<string, () => ReactNode> = {
           />
         ))
       )}
+      {/* focus rings of nested controls on a fill take the fill's on-color */}
+      {feedbackIntents.map((intent) => (
+        <Alert
+          key={`bleed-${intent}`}
+          intent={intent}
+          appearance="solid"
+          fullBleed
+          title={`${intent} full bleed`}
+          action={<Link href="#" tone="inherit">Retry</Link>}
+          data-check-text
+        />
+      ))}
     </>
   ),
   Toast: () => {

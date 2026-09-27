@@ -9,7 +9,7 @@ export type AlertAppearance = "soft" | "outline" | "solid";
 export interface AlertOwnProps {
   /** What the message means; picks the icon. `danger` interrupts screen readers (role="alert"), the rest are polite. @default "info" */
   intent?: AlertIntent;
-  /** Tint / border only / full-width banner in the solid fill of the intent. @default "soft" */
+  /** Tint / border only / the solid fill of the intent, for banners. @default "soft" */
   appearance?: AlertAppearance;
   /** The message in a few words. */
   title?: ReactNode;
@@ -17,6 +17,12 @@ export interface AlertOwnProps {
   description?: ReactNode;
   /** A Button or Link. Sits under the text, or at the end of the row in a solid banner. */
   action?: ReactNode;
+  /**
+   * Square ends and no side borders, for an alert that runs edge to edge of
+   * the viewport (a page banner). Only when it genuinely touches both edges —
+   * anywhere else it keeps radius.card. @default false
+   */
+  fullBleed?: boolean;
   /** Shows a close button that hides the alert. @default false */
   dismissible?: boolean;
   /** Whether the alert is shown (controlled). */
@@ -36,6 +42,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     title,
     description,
     action,
+    fullBleed = false,
     dismissible = false,
     open,
     defaultOpen = true,
@@ -55,6 +62,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
       role={intent === "danger" ? "alert" : "status"}
       data-intent={intent}
       data-appearance={appearance}
+      data-full-bleed={fullBleed || undefined}
       className={[styles.root, className].filter(Boolean).join(" ")}
       {...rest}
     >

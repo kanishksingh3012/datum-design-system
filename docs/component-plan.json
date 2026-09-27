@@ -619,7 +619,7 @@
               "appearance",
               "soft · outline · solid",
               "soft",
-              "solid = full-width banner; focus rings inside it use the text color"
+              "solid = the intent’s fill; rounded unless fullBleed"
             ],
             [
               "title / description",
@@ -632,6 +632,12 @@
               "ReactNode",
               "—",
               "A button or link"
+            ],
+            [
+              "fullBleed",
+              "boolean",
+              "false",
+              "Square ends only when edge to edge of the viewport"
             ],
             [
               "dismissible",
