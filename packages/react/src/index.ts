@@ -45,13 +45,30 @@ export type {
 } from "./components/Link/Link";
 
 export { Badge } from "./components/Badge/Badge";
-export type { BadgeProps, BadgeOwnProps, BadgeVariant } from "./components/Badge/Badge";
+export type { BadgeProps, BadgeOwnProps, BadgeIntent, BadgeAppearance, BadgeSize } from "./components/Badge/Badge";
 
-export { Avatar } from "./components/Avatar/Avatar";
-export type { AvatarProps, AvatarOwnProps, AvatarSize } from "./components/Avatar/Avatar";
+export { Avatar, AvatarGroup } from "./components/Avatar/Avatar";
+export type {
+  AvatarProps,
+  AvatarOwnProps,
+  AvatarSize,
+  AvatarShape,
+  AvatarStatus,
+  AvatarGroupProps,
+  AvatarGroupOwnProps,
+} from "./components/Avatar/Avatar";
 
-export { Card } from "./components/Card/Card";
-export type { CardProps, CardOwnProps, CardVariant } from "./components/Card/Card";
+export { Card, CardHeader, CardMedia, CardBody, CardFooter } from "./components/Card/Card";
+export type {
+  CardProps,
+  CardOwnProps,
+  CardAppearance,
+  CardPadding,
+  CardHeaderProps,
+  CardMediaProps,
+  CardBodyProps,
+  CardFooterProps,
+} from "./components/Card/Card";
 
 export { Skeleton } from "./components/Skeleton/Skeleton";
 export type { SkeletonProps, SkeletonOwnProps, SkeletonShape } from "./components/Skeleton/Skeleton";
@@ -93,7 +110,7 @@ export { Label } from "./components/Label/Label";
 export type { LabelProps, LabelOwnProps } from "./components/Label/Label";
 
 export { Separator } from "./components/Separator/Separator";
-export type { SeparatorProps, SeparatorOwnProps, SeparatorOrientation } from "./components/Separator/Separator";
+export type { SeparatorProps, SeparatorOwnProps, SeparatorOrientation, SeparatorTone } from "./components/Separator/Separator";
 
 export { Accordion, AccordionItem } from "./components/Accordion/Accordion";
 export type {
@@ -101,6 +118,8 @@ export type {
   AccordionOwnProps,
   AccordionItemProps,
   AccordionItemOwnProps,
+  AccordionType,
+  AccordionAppearance,
 } from "./components/Accordion/Accordion";
 
 export { Header } from "./components/Header/Header";

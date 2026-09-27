@@ -1,10 +1,114 @@
+/* Each appearance only sets the local --_* variables; the base rule consumes them. */
 .root {
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border-default);
+  --_bg: var(--color-bg-surface);
+  --_border: transparent;
+  --_shadow: none;
+  --_shadow-hover: var(--elevation-raised);
+  --_pad: calc(var(--space-default) + var(--space-compact));
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-default);
+  box-sizing: border-box;
+  padding: var(--_pad);
+  font-family: var(--type-body-md-family);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-lineHeight);
+  color: var(--color-text-primary);
+  text-align: start;
+  text-decoration: none;
+  background: var(--_bg);
+  border: 1px solid var(--_border);
   border-radius: var(--radius-card);
-  padding: var(--space-section);
+  box-shadow: var(--_shadow);
+  overflow: hidden;
 }
-.root[data-variant="elevated"] {
-  border: none;
-  box-shadow: var(--elevation-raised);
+
+.root[data-padding="sm"] {
+  --_pad: var(--space-default);
+}
+.root[data-padding="lg"] {
+  --_pad: var(--space-section);
+}
+
+/* ---------- appearances ---------- */
+.root[data-appearance="elevated"] {
+  --_shadow: var(--elevation-surface);
+}
+.root[data-appearance="outline"] {
+  --_bg: transparent;
+  --_border: var(--color-border-default);
+  --_shadow-hover: var(--elevation-surface);
+}
+/* soft: the surface fill alone */
+
+/* ---------- interactive: the whole card is the target ---------- */
+.root[data-interactive] {
+  width: 100%;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    box-shadow var(--motion-fast) var(--motion-easing),
+    border-color var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+/* the border of a clickable outline card is a control boundary, so it must reach 3:1 */
+.root[data-interactive][data-appearance="outline"] {
+  --_border: var(--color-border-strong);
+}
+.root[data-interactive]:hover {
+  box-shadow: var(--_shadow-hover);
+  transform: translateY(-2px);
+}
+.root[data-interactive]:active {
+  transform: scale(0.98);
+}
+.root[data-interactive]:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* ---------- slots ---------- */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-tight);
+}
+.body {
+  flex: 1 1 auto;
+}
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-compact);
+  margin-top: auto;
+}
+
+/* media bleeds to the card's edges; the card's radius clips it */
+.media {
+  margin-inline: calc(var(--_pad) * -1);
+}
+.media:first-child {
+  margin-top: calc(var(--_pad) * -1);
+}
+.media:last-child {
+  margin-bottom: calc(var(--_pad) * -1);
+}
+.media > img,
+.media > video {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root[data-interactive]:hover,
+  .root[data-interactive]:active {
+    transform: none;
+  }
 }

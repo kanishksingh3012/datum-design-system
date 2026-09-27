@@ -4,8 +4,12 @@
     {
       "name": "gallery",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev:gallery"],
-      "port": 5183
+      "runtimeArgs": [
+        "run",
+        "dev:gallery"
+      ],
+      "port": 5183,
+      "autoPort": true
     }
   ]
 }

@@ -1,32 +1,118 @@
+/* Each intent × appearance block only sets the local --_* variables;
+   the base rule is the single place they are consumed. */
 .root {
+  --_bg: transparent;
+  --_fg: var(--color-text-primary);
+  --_border: transparent;
+  --_height: 24px;
+  --_pad: var(--space-compact);
+
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  font-family: var(--font-body);
-  font-size: var(--type-ui-label-size);
+  gap: calc(var(--space-compact) * 0.75);
+  box-sizing: border-box;
+  height: var(--_height);
+  padding: 0 var(--_pad);
+  font-family: var(--type-body-sm-family);
+  font-size: var(--type-body-sm-size);
   font-weight: var(--type-ui-label-weight);
-  padding: 0.15rem 0.55rem;
-  border-radius: 999px;
-  line-height: 1.5;
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+  color: var(--_fg);
+  background: var(--_bg);
+  border: 1px solid var(--_border);
+  border-radius: var(--radius-control);
 }
 
-.root[data-variant="neutral"] {
-  background: var(--color-bg-surface);
-  color: var(--color-text-secondary);
+.root[data-size="sm"] {
+  --_height: 20px;
+  --_pad: calc(var(--space-compact) * 0.75);
+  font-size: var(--type-ui-label-size);
 }
-.root[data-variant="accent"] {
-  background: var(--color-bg-accent);
-  color: var(--color-text-onAccent);
+
+.dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: currentColor;
 }
-.root[data-variant="success"] {
-  background: var(--color-bg-success);
-  color: var(--color-text-onSuccess);
+
+/* ---------- solid ---------- */
+.root[data-appearance="solid"][data-intent="accent"] {
+  --_bg: var(--color-bg-accent);
+  --_fg: var(--color-text-onAccent);
 }
-.root[data-variant="warning"] {
-  background: var(--color-bg-warning);
-  color: var(--color-text-onWarning);
+.root[data-appearance="solid"][data-intent="neutral"] {
+  --_bg: var(--color-bg-inverse);
+  --_fg: var(--color-text-onInverse);
 }
-.root[data-variant="danger"] {
-  background: var(--color-bg-danger);
-  color: var(--color-text-onDanger);
+.root[data-appearance="solid"][data-intent="danger"] {
+  --_bg: var(--color-bg-danger);
+  --_fg: var(--color-text-onDanger);
+}
+.root[data-appearance="solid"][data-intent="success"] {
+  --_bg: var(--color-bg-success);
+  --_fg: var(--color-text-onSuccess);
+}
+.root[data-appearance="solid"][data-intent="warning"] {
+  --_bg: var(--color-bg-warning);
+  --_fg: var(--color-text-onWarning);
+}
+.root[data-appearance="solid"][data-intent="info"] {
+  --_bg: var(--color-bg-info);
+  --_fg: var(--color-text-onInfo);
+}
+
+/* ---------- soft ---------- */
+.root[data-appearance="soft"][data-intent="accent"] {
+  --_bg: var(--color-bg-accentSubtle);
+  --_fg: var(--color-text-accent);
+}
+.root[data-appearance="soft"][data-intent="neutral"] {
+  --_bg: var(--color-bg-tertiary);
+  --_fg: var(--color-text-primary);
+}
+.root[data-appearance="soft"][data-intent="danger"] {
+  --_bg: var(--color-bg-dangerSubtle);
+  --_fg: var(--color-text-danger);
+}
+.root[data-appearance="soft"][data-intent="success"] {
+  --_bg: var(--color-bg-successSubtle);
+  --_fg: var(--color-text-success);
+}
+.root[data-appearance="soft"][data-intent="warning"] {
+  --_bg: var(--color-bg-warningSubtle);
+  --_fg: var(--color-text-warning);
+}
+.root[data-appearance="soft"][data-intent="info"] {
+  --_bg: var(--color-bg-infoSubtle);
+  --_fg: var(--color-text-info);
+}
+
+/* ---------- outline ---------- */
+.root[data-appearance="outline"][data-intent="accent"] {
+  --_border: var(--color-border-accent);
+  --_fg: var(--color-text-accent);
+}
+.root[data-appearance="outline"][data-intent="neutral"] {
+  --_border: var(--color-border-strong);
+  --_fg: var(--color-text-primary);
+}
+.root[data-appearance="outline"][data-intent="danger"] {
+  --_border: var(--color-border-danger);
+  --_fg: var(--color-text-danger);
+}
+.root[data-appearance="outline"][data-intent="success"] {
+  --_border: var(--color-border-success);
+  --_fg: var(--color-text-success);
+}
+.root[data-appearance="outline"][data-intent="warning"] {
+  --_border: var(--color-border-warning);
+  --_fg: var(--color-text-warning);
+}
+.root[data-appearance="outline"][data-intent="info"] {
+  --_border: var(--color-border-info);
+  --_fg: var(--color-text-info);
 }

@@ -1,14 +1,53 @@
 .root {
-  border: none;
-  background: var(--color-border-default);
+  --_line: var(--color-border-subtle);
+
+  flex-shrink: 0;
   margin: 0;
+  border: none;
 }
-.root[data-orientation="horizontal"] {
+.root[data-tone="default"] {
+  --_line: var(--color-border-default);
+}
+
+/* ---------- a plain line ---------- */
+.root:not([data-labelled]) {
+  background: var(--_line);
+}
+.root:not([data-labelled])[data-orientation="horizontal"] {
   width: 100%;
   height: 1px;
 }
-.root[data-orientation="vertical"] {
+.root:not([data-labelled])[data-orientation="vertical"] {
   width: 1px;
-  height: 100%;
+  height: auto;
+  min-height: 1em;
   align-self: stretch;
+}
+
+/* ---------- a line with a label in the middle ---------- */
+.root[data-labelled] {
+  display: flex;
+  align-items: center;
+  gap: var(--space-tight);
+  color: var(--color-text-secondary);
+}
+.root[data-labelled][data-orientation="vertical"] {
+  flex-direction: column;
+  align-self: stretch;
+}
+.line {
+  flex: 1 1 0;
+  background: var(--_line);
+}
+.root[data-orientation="horizontal"] .line {
+  height: 1px;
+}
+.root[data-orientation="vertical"] .line {
+  width: 1px;
+}
+.label {
+  font-family: var(--type-body-sm-family);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+  white-space: nowrap;
 }

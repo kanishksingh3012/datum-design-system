@@ -26,7 +26,7 @@ export default defineConfig({
       fileName: (format) => (format === "es" ? "index.js" : "index.cjs"),
     },
     rollupOptions: {
-      external: ["react", "react-dom", "react/jsx-runtime"],
+      external: ["react", "react-dom", "react/jsx-runtime", /^react-aria(\/|$)/, /^react-stately(\/|$)/],
       output: {
         assetFileNames: (assetInfo) =>
           assetInfo.name?.endsWith(".css") ? "datum.css" : (assetInfo.name ?? "[name][extname]"),

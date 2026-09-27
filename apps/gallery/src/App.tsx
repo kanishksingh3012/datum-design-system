@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { Button, ButtonGroup, Container, Grid, Heading, Link, Section, Stack, Text } from "@datum-design/react";
+import {
+  Accordion, AccordionItem, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CardMedia,
+  Container, Grid, Heading, Link, Section, Separator, Stack, Text,
+} from "@datum-design/react";
 import { Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
@@ -87,6 +90,49 @@ const textVariants = [
   ["code", "npm install @datum-design/react"],
 ] as const;
 const textTones = ["primary", "secondary", "accent", "danger", "success", "warning"] as const;
+
+const cardProps: PropRow[] = [
+  ["appearance", "elevated | outline | soft", "elevated", "Surface shadow / border only / surface fill."],
+  ["padding", "sm | md | lg", "md", "16 / 24 / 32px."],
+  ["interactive", "boolean", "false", "Whole card is clickable: an <a> with href, a <button> without. Hover lift, press, focus ring."],
+  ["href", "string", "—", "With interactive, makes the card a link."],
+  ["render", "(props) => ReactElement", "—", "With interactive, render as a router Link."],
+  ["slots", "CardMedia · CardHeader · CardBody · CardFooter", "—", "Media bleeds to the edges; the body grows; the footer sits at the bottom."],
+];
+const badgeIntents = ["accent", "neutral", "danger", "success", "warning", "info"] as const;
+const badgeProps: PropRow[] = [
+  ["intent", "accent | neutral | danger | success | warning | info", "neutral", "What the color means. neutral + solid is ink."],
+  ["appearance", "solid | soft | outline", "soft", "How much fill."],
+  ["size", "sm | md", "md", "20 / 24px tall."],
+  ["dot", "boolean", "false", "Leading status dot in the text color; decorative."],
+];
+const avatarProps: PropRow[] = [
+  ["size", "xs | sm | md | lg | xl", "md", "24 / 32 / 40 / 48 / 64px."],
+  ["shape", "circle | square", "circle", "Square uses radius.subtle."],
+  ["src / name", "string", "—", "Falls back to initials from name, then an icon. name is the accessible name."],
+  ["status", "online | away | busy | offline", "—", "Presence dot; added to the accessible name."],
+  ["AvatarGroup", "max, size, shape", "—", "Overlapping stack with \"+N\"."],
+];
+const separatorProps: PropRow[] = [
+  ["orientation", "horizontal | vertical", "horizontal", "Vertical stretches to its row."],
+  ["tone", "subtle | default", "subtle", "border.subtle / border.default."],
+  ["label", "string", "—", "Text in the middle, e.g. \"or\"; also the accessible name."],
+];
+const accordionProps: PropRow[] = [
+  ["type", "single | multiple", "single", "One item open at a time, or any number."],
+  ["appearance", "plain | bordered | separated", "bordered", "Dividers / one box / a card per item."],
+  ["collapsible", "boolean", "true", "With single: allow closing the open item."],
+  ["value / defaultValue / onValueChange", "string | string[]", "—", "Open items by their AccordionItem value."],
+  ["disabled", "boolean", "false", "On Accordion or on one AccordionItem."],
+  ["headingLevel", "2–6", "3", "The heading that wraps each trigger."],
+  ["AccordionItem", "title, value, disabled", "—", "title is the trigger label."],
+];
+const people = ["Ada Lovelace", "Grace Hopper", "Alan Turing", "Katherine Johnson", "Edsger Dijkstra", "Barbara Liskov"];
+const faq = [
+  ["refund", "Can I get a refund?", "Yes, within 30 days of purchase, no questions asked."],
+  ["seats", "How do seats work?", "Each person who signs in uses one seat. Remove someone and their seat frees up the same day."],
+  ["cancel", "What happens when I cancel?", "Your workspace stays readable for 90 days, so you can export everything."],
+] as const;
 
 function PropsTable({ rows }: { rows: PropRow[] }) {
   return (
@@ -176,6 +222,11 @@ export function App() {
         <a href="#section">Section</a>
         <a href="#heading">Heading</a>
         <a href="#text">Text</a>
+        <a href="#card">Card</a>
+        <a href="#badge">Badge</a>
+        <a href="#avatar">Avatar</a>
+        <a href="#separator">Separator</a>
+        <a href="#accordion">Accordion</a>
       </nav>
 
       {/* ============ BUTTON ============ */}
@@ -915,6 +966,315 @@ export function App() {
           <Usage
             dos={["Pick the variant by purpose: figures use numeric, reading uses paragraph.", "Use as=\"span\" inside other text, as=\"label\" with htmlFor for a form label."]}
             donts={["Pick a variant for its size — use the one that matches the job.", "Use tone alone to say something went wrong — say it in words too."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ CARD ============ */}
+      <section className="component-doc" id="card">
+        <h1>Card</h1>
+        <p className="dek">A container for one piece of grouped content: a plan, an article, a person. Compose it from four optional slots — <span className="prop-values">CardMedia</span>, <span className="prop-values">CardHeader</span>, <span className="prop-values">CardBody</span>, <span className="prop-values">CardFooter</span>.</p>
+
+        <div className="example-box">
+          <Card style={{ width: 300 }}>
+            <CardMedia><div className="demo-media" /></CardMedia>
+            <CardHeader>
+              <Heading level={3} size="sm">Team plan</Heading>
+              <Badge intent="accent">Popular</Badge>
+            </CardHeader>
+            <CardBody>
+              <Text tone="secondary">Shared workspaces, roles and an audit log for up to 50 people.</Text>
+            </CardBody>
+            <CardFooter>
+              <Button size="sm">Start trial</Button>
+              <Button size="sm" intent="neutral" appearance="ghost">Compare</Button>
+            </CardFooter>
+          </Card>
+        </div>
+
+        <div className="doc-section">
+          <h2>Appearance</h2>
+          <p className="lead"><b>elevated</b> lifts off the page with the surface shadow. <b>outline</b> is a border and no fill, for dense grids. <b>soft</b> is the surface fill alone, for cards on a busy page. All use <b>radius.card</b> (20px).</p>
+          <div className="sample-box demo-on-page">
+            {(["elevated", "outline", "soft"] as const).map((appearance) => (
+              <Card key={appearance} appearance={appearance} style={{ width: 200 }}>
+                <Heading level={3} size="sm">{appearance}</Heading>
+                <Text variant="body-sm" tone="secondary">Card content</Text>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Padding</h2>
+          <p className="lead"><b>sm</b> 16, <b>md</b> 24, <b>lg</b> 32px. Media in the first or last slot bleeds to the edges whatever the padding.</p>
+          <div className="sample-box">
+            {(["sm", "md", "lg"] as const).map((padding) => (
+              <Card key={padding} appearance="outline" padding={padding}>
+                <Text variant="code" tone="secondary">{padding}</Text>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Interactive</h2>
+          <p className="lead">The whole card is one target: an <b>&lt;a&gt;</b> with <b>href</b>, a <b>&lt;button&gt;</b> without, or your router link via <b>render</b>. It lifts 2px and takes the raised shadow on hover, scales to 0.98 on press, and shows the focus ring from the keyboard. A clickable outline card uses <b>border.strong</b> so its edge reaches 3:1. Put no other controls inside.</p>
+          <div className="sample-box demo-on-page">
+            {(["elevated", "outline", "soft"] as const).map((appearance) => (
+              <Card key={appearance} appearance={appearance} interactive href="#card" style={{ width: 200 }}>
+                <Heading level={3} size="sm">Read the guide</Heading>
+                <Text variant="body-sm" tone="secondary">{`${appearance}, links to #card`}</Text>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={cardProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Give each card a heading in CardHeader, at the right level for the page.", "Make the whole card interactive when it leads to one place."]}
+            donts={["Nest cards inside cards.", "Put buttons or links inside an interactive card — use a static card with a footer instead."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ BADGE ============ */}
+      <section className="component-doc" id="badge">
+        <h1>Badge</h1>
+        <p className="dek">A short, non-interactive label for a status or a category. Same intent and appearance vocabulary as Button, always a pill.</p>
+
+        <div className="example-box">
+          <Badge intent="success" dot>Live</Badge>
+          <Badge intent="warning">Beta</Badge>
+          <Badge intent="accent" appearance="solid">New</Badge>
+          <Badge appearance="outline">v2.4.0</Badge>
+        </div>
+
+        <div className="doc-section">
+          <h2>Intent × appearance</h2>
+          <p className="lead"><b>soft</b> is the default: a tint of the intent with its text color. <b>solid</b> is for the one badge that must stand out; neutral solid is ink. <b>outline</b> is the quietest. Every combination passes 4.5:1 in all four theme and mode combinations.</p>
+          <div className="sample-box stack">
+            {(["soft", "solid", "outline"] as const).map((appearance) => (
+              <Stack key={appearance} direction="horizontal" gap="sm" align="center" wrap>
+                <Text variant="code" tone="secondary" className="demo-label">{appearance}</Text>
+                {badgeIntents.map((intent) => (
+                  <Badge key={intent} intent={intent} appearance={appearance}>{intent}</Badge>
+                ))}
+              </Stack>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Size and dot</h2>
+          <p className="lead"><b>md</b> is 24px tall, <b>sm</b> 20px. <b>dot</b> adds a leading dot in the text color; it is decorative, so the words still say the status.</p>
+          <div className="sample-box">
+            <Badge intent="success" dot>Operational</Badge>
+            <Badge intent="danger" dot>Outage</Badge>
+            <Badge intent="success" dot size="sm">Operational</Badge>
+            <Badge intent="danger" dot size="sm">Outage</Badge>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={badgeProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Keep it to one or two words.", "Use the state intents for states and accent for brand highlights like \"New\"."]}
+            donts={["Make a badge clickable — use a Button or a Link.", "Rely on color alone: \"Failed\" says what red means."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ AVATAR ============ */}
+      <section className="component-doc" id="avatar">
+        <h1>Avatar</h1>
+        <p className="dek">A person or an entity. Shows the image, falls back to initials from <span className="prop-values">name</span> when the image is missing or fails, then to an icon.</p>
+
+        <div className="example-box">
+          <Stack direction="horizontal" gap="md" align="center">
+            <Avatar size="xl" name="Ada Lovelace" status="online" />
+            <AvatarGroup max={3} aria-label="Project members">
+              {people.map((name) => <Avatar key={name} name={name} />)}
+            </AvatarGroup>
+          </Stack>
+        </div>
+
+        <div className="doc-section">
+          <h2>Sizes</h2>
+          <p className="lead"><b>xs</b> 24, <b>sm</b> 32, <b>md</b> 40, <b>lg</b> 48, <b>xl</b> 64px. The initials step up a type role with each size.</p>
+          <div className="sample-box">
+            {(["xs", "sm", "md", "lg", "xl"] as const).map((size) => <Avatar key={size} size={size} name="Grace Hopper" />)}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Shape and fallback</h2>
+          <p className="lead"><b>circle</b> for people, <b>square</b> (<b>radius.subtle</b>) for teams, companies and projects. Initials use the accent tint; with no name the avatar shows an icon and is hidden from screen readers.</p>
+          <div className="sample-box">
+            <Avatar size="lg" name="Ada Lovelace" />
+            <Avatar size="lg" shape="square" name="Datum" />
+            <Avatar size="lg" name="Broken image" src="/missing.jpg" />
+            <Avatar size="lg" />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Status</h2>
+          <p className="lead">A presence dot, ringed in the page color. The status is added to the accessible name, e.g. "Ada Lovelace, busy".</p>
+          <div className="sample-box">
+            {(["online", "away", "busy", "offline"] as const).map((status) => (
+              <Stack key={status} gap="xs" align="center">
+                <Avatar size="lg" name="Ada Lovelace" status={status} />
+                <Text variant="caption" tone="secondary">{status}</Text>
+              </Stack>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>AvatarGroup</h2>
+          <p className="lead">An overlapping stack. <b>max</b> collapses the rest into a neutral "+N" (read as "N more"); <b>size</b> and <b>shape</b> pass down to every avatar. Give the group an <b>aria-label</b>.</p>
+          <div className="sample-box stack">
+            {(["sm", "md", "lg"] as const).map((size) => (
+              <AvatarGroup key={size} size={size} max={4} aria-label="Reviewers">
+                {people.map((name) => <Avatar key={name} name={name} />)}
+              </AvatarGroup>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={avatarProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Always pass the real name, even with an image — it is the accessible name and the fallback.", "Use square for anything that isn't a person."]}
+            donts={["Use a generic name like \"avatar\" or \"user\".", "Show status without a way to read it elsewhere when it matters."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ SEPARATOR ============ */}
+      <section className="component-doc" id="separator">
+        <h1>Separator</h1>
+        <p className="dek">A thin line between groups of content. Decorative weight: prefer space, and reach for a line only when space alone doesn't separate.</p>
+
+        <div className="example-box">
+          <Stack gap="md" style={{ width: 320 }}>
+            <Button intent="neutral" appearance="outline" fullWidth>Continue with Google</Button>
+            <Separator label="or" />
+            <Button fullWidth>Continue with email</Button>
+          </Stack>
+        </div>
+
+        <div className="doc-section">
+          <h2>Tone</h2>
+          <p className="lead"><b>subtle</b> (<b>border.subtle</b>) is the default; <b>default</b> (<b>border.default</b>) is for lines that must hold up on a surface. Neither is a control boundary, so neither has a contrast minimum.</p>
+          <div className="sample-box stack">
+            <Separator />
+            <Separator tone="default" />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Orientation and label</h2>
+          <p className="lead"><b>vertical</b> stretches to the height of its row. A <b>label</b> sits in the middle in <b>body-sm</b>, secondary, and becomes the separator's accessible name.</p>
+          <div className="sample-box">
+            <Stack direction="horizontal" gap="md" align="center" style={{ height: 32 }}>
+              <Text as="span">Docs</Text>
+              <Separator orientation="vertical" />
+              <Text as="span">Pricing</Text>
+              <Separator orientation="vertical" />
+              <Text as="span">Blog</Text>
+            </Stack>
+            <Separator label="Continue with" style={{ flex: 1 }} />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={separatorProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Use it between groups, not between every item.", "Keep labels to a word or two."]}
+            donts={["Use it as a page-section border — use Section tones.", "Stack a separator against a card or box edge."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ ACCORDION ============ */}
+      <section className="component-doc" id="accordion">
+        <h1>Accordion</h1>
+        <p className="dek">Collapsible sections for FAQs and details. Behaviour comes from React Aria: each trigger is a button inside a heading, linked to its panel, and closed panels are still found by the browser's find-in-page.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Accordion defaultValue="refund" style={{ maxWidth: 560, margin: "0 auto" }}>
+            {faq.map(([value, q, a]) => <AccordionItem key={value} value={value} title={q}>{a}</AccordionItem>)}
+          </Accordion>
+        </div>
+
+        <div className="doc-section">
+          <h2>Appearance</h2>
+          <p className="lead"><b>plain</b> is dividers between items. <b>bordered</b> is one box with <b>radius.card</b>, only its outer corners rounded. <b>separated</b> is a surface card per item. Hover tints the trigger toward the text color; the chevron turns in <b>motion.normal</b>. The panel height is not animated, so the page below never slides.</p>
+          <div className="sample-box demo-on-page stack">
+            {(["plain", "bordered", "separated"] as const).map((appearance) => (
+              <Stack key={appearance} gap="xs" style={{ width: "100%", maxWidth: 560 }}>
+                <Text variant="code" tone="secondary">{appearance}</Text>
+                <Accordion appearance={appearance}>
+                  {faq.map(([value, q, a]) => <AccordionItem key={value} value={value} title={q}>{a}</AccordionItem>)}
+                </Accordion>
+              </Stack>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Type and collapsible</h2>
+          <p className="lead"><b>single</b> keeps one item open. With <b>collapsible</b> false the open item can't be closed, only replaced — its trigger stays focusable and is marked <b>aria-disabled</b>. <b>multiple</b> lets any number stay open.</p>
+          <div className="sample-box demo-on-page stack">
+            <Stack gap="xs" style={{ width: "100%", maxWidth: 560 }}>
+              <Text variant="code" tone="secondary">single, collapsible=false</Text>
+              <Accordion collapsible={false} defaultValue="refund">
+                {faq.map(([value, q, a]) => <AccordionItem key={value} value={value} title={q}>{a}</AccordionItem>)}
+              </Accordion>
+            </Stack>
+            <Stack gap="xs" style={{ width: "100%", maxWidth: 560 }}>
+              <Text variant="code" tone="secondary">multiple</Text>
+              <Accordion type="multiple" appearance="separated" defaultValue={["refund", "seats"]}>
+                {faq.map(([value, q, a]) => <AccordionItem key={value} value={value} title={q}>{a}</AccordionItem>)}
+                <AccordionItem value="sso" title="Is SSO available? (disabled)" disabled>On the Enterprise plan.</AccordionItem>
+              </Accordion>
+            </Stack>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={accordionProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Set headingLevel so triggers fit the page outline.", "Write titles as the question or topic, so they scan."]}
+            donts={["Hide content everyone needs — critical information belongs on the page.", "Nest accordions."]}
           />
         </div>
       </section>

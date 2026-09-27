@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
-import { Button, ButtonGroup, Container, Grid, Heading, Link, Section, Stack, Text } from "@datum-design/react";
+import {
+  Accordion, AccordionItem, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader,
+  Container, Grid, Heading, Link, Section, Separator, Stack, Text,
+} from "@datum-design/react";
 import { AlignCenter, AlignLeft, AlignRight, Plus } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
@@ -223,6 +226,102 @@ export const fixtures: Record<string, () => ReactNode> = {
             Standalone
           </Link>
         </div>
+      ))}
+    </>
+  ),
+  Card: () => (
+    <>
+      <div className="row">
+        {(["elevated", "outline", "soft"] as const).map((appearance) => (
+          <Card key={appearance} appearance={appearance} style={{ width: 240 }}>
+            <CardHeader>
+              <Heading level={3} size="sm" data-check-text>{`Static ${appearance}`}</Heading>
+              <Badge intent="accent">New</Badge>
+            </CardHeader>
+            <CardBody>
+              <Text tone="secondary" data-check-text>Secondary text on the card.</Text>
+            </CardBody>
+            <CardFooter>
+              <Button size="sm">Action</Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+      <div className="row">
+        {(["elevated", "outline", "soft"] as const).map((appearance) => (
+          <Card key={appearance} appearance={appearance} padding="sm" interactive href="#card" style={{ width: 240 }}>
+            {`Link ${appearance}`}
+          </Card>
+        ))}
+        {(["elevated", "outline", "soft"] as const).map((appearance) => (
+          <Card key={appearance} appearance={appearance} padding="lg" interactive style={{ width: 240 }}>
+            {`Button ${appearance}`}
+          </Card>
+        ))}
+      </div>
+    </>
+  ),
+  Badge: () => (
+    <>
+      {(["solid", "soft", "outline"] as const).map((appearance) =>
+        (["md", "sm"] as const).map((size) => (
+          <div key={appearance + size} className="row">
+            {(["accent", "neutral", "danger", "success", "warning", "info"] as const).map((intent) => (
+              <Badge key={intent} intent={intent} appearance={appearance} size={size} dot={size === "md"} data-check-text>
+                {`${intent} ${appearance}`}
+              </Badge>
+            ))}
+          </div>
+        ))
+      )}
+    </>
+  ),
+  Avatar: () => (
+    <>
+      <div className="row">
+        {(["xs", "sm", "md", "lg", "xl"] as const).map((size) => (
+          <Avatar key={size} size={size} name="Ada Lovelace" data-check-text />
+        ))}
+        {(["online", "away", "busy", "offline"] as const).map((status) => (
+          <Avatar key={status} size="lg" shape="square" name="Grace Hopper" status={status} data-check-text />
+        ))}
+        <Avatar size="lg" />
+      </div>
+      <AvatarGroup max={3} size="md" aria-label="Members">
+        {["Ada Lovelace", "Grace Hopper", "Alan Turing", "Katherine Johnson", "Edsger Dijkstra"].map((name) => (
+          <Avatar key={name} name={name} data-check-text />
+        ))}
+      </AvatarGroup>
+      <AvatarGroup max={2} size="xs">
+        {["Ada Lovelace", "Grace Hopper", "Alan Turing"].map((name) => <Avatar key={name} name={name} />)}
+      </AvatarGroup>
+    </>
+  ),
+  Separator: () => (
+    <>
+      <Separator />
+      <Separator tone="default" />
+      <Separator label="or" data-check-text />
+      <Separator tone="default" label="Continue with" data-check-text />
+      <div className="row" style={{ height: 80 }}>
+        <Text data-check-text>Left</Text>
+        <Separator orientation="vertical" />
+        <Text>Middle</Text>
+        <Separator orientation="vertical" label="or" data-check-text />
+        <Text>Right</Text>
+      </div>
+    </>
+  ),
+  Accordion: () => (
+    <>
+      {(["plain", "bordered", "separated"] as const).map((appearance) => (
+        <Accordion key={appearance} appearance={appearance} defaultValue="one" style={{ maxWidth: 560 }}>
+          <AccordionItem value="one" title={`What is ${appearance}?`}>
+            <span data-check-text>The answer sits in the panel, in the secondary text color.</span>
+          </AccordionItem>
+          <AccordionItem value="two" title="Can I close every item?">Yes, unless collapsible is false.</AccordionItem>
+          <AccordionItem value="three" title="Disabled item" disabled>Hidden.</AccordionItem>
+        </Accordion>
       ))}
     </>
   ),

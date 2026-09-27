@@ -1,28 +1,136 @@
+/* Each appearance only sets the local --_* variables on items; the base rules consume them. */
 .root {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--color-border-default);
 }
+
 .item {
-  border-bottom: 1px solid var(--color-border-default);
+  --_pad-x: var(--space-compact);
+  --_radius-top: var(--radius-card);
+  --_radius-bottom: var(--radius-card);
+  --_hover: color-mix(in oklab, var(--color-text-primary) 6%, transparent);
 }
-.summary {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: var(--type-ui-label-weight);
-  color: var(--color-text-primary);
-  padding: var(--space-default) 0;
-  min-height: var(--interaction-minTarget);
+
+.heading {
+  margin: 0;
+  font: inherit;
+}
+
+.trigger {
+  position: relative;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--space-default);
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 56px;
+  margin: 0;
+  padding: var(--space-default) var(--_pad-x);
+  font-family: var(--type-body-md-family);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-ui-label-weight);
+  line-height: var(--type-body-md-lineHeight);
+  text-align: start;
+  color: var(--color-text-primary);
+  background: transparent;
+  border: none;
+  border-radius: var(--_radius-top) var(--_radius-top) var(--_radius-bottom) var(--_radius-bottom);
   cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
 }
-.summary:focus-visible {
+
+.trigger:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--_hover);
+}
+
+.trigger:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.98);
+}
+
+.trigger:focus-visible {
+  z-index: 1;
   outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
 }
-.content {
-  padding: 0 0 var(--space-default);
+
+/* the open item of a non-collapsible accordion: focusable, but it can't close */
+.trigger[aria-disabled="true"] {
+  cursor: default;
+}
+
+.trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chevron {
+  flex-shrink: 0;
+  width: var(--icon-control);
+  height: var(--icon-control);
   color: var(--color-text-secondary);
+  transition: transform var(--motion-normal) var(--motion-easing);
+}
+.item[data-expanded] .chevron {
+  transform: rotate(180deg);
+}
+
+/* Shown and hidden by React Aria (hidden="until-found", so find-in-page opens it).
+   The height is never animated — that would move the content below. */
+.content {
+  padding: 0 var(--_pad-x) var(--space-default);
+  font-family: var(--type-body-md-family);
   font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-lineHeight);
+  color: var(--color-text-secondary);
+}
+
+/* ---------- plain: dividers between items ---------- */
+.root[data-appearance="plain"] > .item + .item {
+  border-top: 1px solid var(--color-border-default);
+}
+
+/* ---------- bordered: one box with dividers; only its outer corners round ---------- */
+.root[data-appearance="bordered"] {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+}
+.root[data-appearance="bordered"] > .item {
+  --_pad-x: calc(var(--space-default) + var(--space-compact) / 2);
+  --_radius-top: 0px;
+  --_radius-bottom: 0px;
+}
+.root[data-appearance="bordered"] > .item + .item {
+  border-top: 1px solid var(--color-border-default);
+}
+.root[data-appearance="bordered"] > .item:first-child {
+  --_radius-top: calc(var(--radius-card) - 1px);
+}
+.root[data-appearance="bordered"] > .item:last-child:not([data-expanded]) {
+  --_radius-bottom: calc(var(--radius-card) - 1px);
+}
+
+/* ---------- separated: a surface card per item ---------- */
+.root[data-appearance="separated"] {
+  gap: var(--space-compact);
+}
+.root[data-appearance="separated"] > .item {
+  --_pad-x: calc(var(--space-default) + var(--space-compact) / 2);
+  --_hover: color-mix(in oklab, var(--color-bg-surface), var(--color-text-primary) 6%);
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-card);
+}
+.root[data-appearance="separated"] > .item[data-expanded] {
+  --_radius-bottom: 0px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger:active:not(:disabled):not([aria-disabled="true"]) {
+    transform: none;
+  }
+  .chevron {
+    transition: none;
+  }
 }

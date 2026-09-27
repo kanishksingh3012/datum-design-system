@@ -412,13 +412,13 @@
               "interactive",
               "boolean",
               "false",
-              "Whole card is clickable: hover lift, focus ring"
+              "Whole card is clickable (<a> with href, <button> without, or render): hover lift, press, focus ring; outline uses border.strong"
             ],
             [
               "slots",
               "CardHeader · CardMedia · CardBody · CardFooter",
               "—",
-              ""
+              "Media bleeds to the edges when first or last; the footer sits at the bottom"
             ]
           ],
           "beh": "Native"
@@ -450,7 +450,7 @@
               "dot",
               "boolean",
               "false",
-              "Leading status dot"
+              "Leading status dot in the text color; decorative"
             ]
           ],
           "beh": "Native"
@@ -470,7 +470,7 @@
               "shape",
               "circle · square",
               "circle",
-              ""
+              "Square uses radius.subtle"
             ],
             [
               "src / name",
@@ -482,7 +482,7 @@
               "status",
               "online · away · busy · offline",
               "—",
-              "Optional presence dot"
+              "Optional presence dot; added to the accessible name"
             ],
             [
               "AvatarGroup",
@@ -514,7 +514,7 @@
               "label",
               "string",
               "—",
-              "Text in the middle, e.g. \"or\""
+              "Text in the middle, e.g. \"or\"; also the accessible name"
             ]
           ],
           "beh": "Native"
@@ -540,7 +540,25 @@
               "collapsible",
               "boolean",
               "true",
-              "Allow closing the open item"
+              "With single: allow closing the open item (else it stays open, aria-disabled)"
+            ],
+            [
+              "value / defaultValue / onValueChange",
+              "string | string[]",
+              "—",
+              "Open items by AccordionItem value"
+            ],
+            [
+              "disabled",
+              "boolean",
+              "false",
+              "On Accordion or one AccordionItem"
+            ],
+            [
+              "headingLevel",
+              "2–6",
+              "3",
+              "The heading that wraps each trigger"
             ]
           ],
           "beh": "React Aria"
@@ -1328,6 +1346,14 @@
     [
       "text.tertiary removed",
       "Datum has two text colors (primary, secondary) plus disabled. Hierarchy comes from type roles (size, weight, case), never a third gray. Text's tone drops tertiary."
+    ],
+    [
+      "React Aria",
+      "Added as a dependency (react-aria, react-stately; external in the build). Accordion is the first component on it: useDisclosureGroupState + useDisclosure, hidden=\"until-found\" panels."
+    ],
+    [
+      "Accordion motion",
+      "The chevron turns (motion.normal); the panel height is not animated, since that would move the content below."
     ]
   ]
 }

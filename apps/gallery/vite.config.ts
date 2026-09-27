@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 
 export default defineConfig({
   plugins: [react()],
-  server: { port: 5183 },
+  server: { port: Number(process.env.PORT) || 5183 },
   build: {
     rollupOptions: {
       input: {
