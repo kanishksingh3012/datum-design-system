@@ -29,7 +29,6 @@
     "text": {
       "primary": ["{color.slate.900}","{color.slate.50}"],
       "secondary": ["{color.slate.700}","{color.slate.300}"],
-      "tertiary": ["{color.slate.700}","{color.slate.300}"],
       "disabled": ["{color.slate.400}","{color.slate.600}"],
       "accent": ["{color.navy.700}","{color.navy.300}"],
       "onAccent": ["{color.white}","{color.navy.950}"],

@@ -14,7 +14,7 @@ export type TextVariant =
   | "numeric-md"
   | "numeric-sm"
   | "code";
-export type TextTone = "primary" | "secondary" | "tertiary" | "accent" | "danger" | "success" | "warning";
+export type TextTone = "primary" | "secondary" | "accent" | "danger" | "success" | "warning";
 export type TextWeight = "regular" | "medium" | "semibold";
 export type TextElement = "p" | "span" | "div" | "label";
 

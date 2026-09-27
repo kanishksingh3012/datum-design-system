@@ -213,7 +213,7 @@
             ],
             [
               "tone",
-              "primary · secondary · tertiary · accent · danger · success · warning",
+              "primary · secondary · accent · danger · success · warning",
               "primary",
               ""
             ],
@@ -1324,6 +1324,10 @@
     [
       "Layout spacing",
       "Stack and Grid gaps and Section padding are derived from the space tokens (compact, default, section); Container uses grid.container and grid.margin."
+    ],
+    [
+      "text.tertiary removed",
+      "Datum has two text colors (primary, secondary) plus disabled. Hierarchy comes from type roles (size, weight, case), never a third gray. Text's tone drops tertiary."
     ]
   ]
 }

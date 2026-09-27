@@ -104,7 +104,6 @@
 
 /* ---------- tone ---------- */
 .root[data-tone="secondary"] { color: var(--color-text-secondary); }
-.root[data-tone="tertiary"] { color: var(--color-text-tertiary); }
 .root[data-tone="accent"] { color: var(--color-text-accent); }
 .root[data-tone="danger"] { color: var(--color-text-danger); }
 .root[data-tone="success"] { color: var(--color-text-success); }

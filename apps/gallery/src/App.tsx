@@ -65,7 +65,7 @@ const headingProps: PropRow[] = [
 ];
 const textProps: PropRow[] = [
   ["variant", "body-lg | body-md | body-sm | paragraph-lg | paragraph-md | label | caption | overline | numeric-lg | numeric-md | numeric-sm | code", "body-md", "One of the type roles. Numeric uses tabular figures; overline is uppercase."],
-  ["tone", "primary | secondary | tertiary | accent | danger | success | warning", "primary", ""],
+  ["tone", "primary | secondary | accent | danger | success | warning", "primary", "Two text colors; build hierarchy with the variant, not a third gray."],
   ["weight", "regular | medium | semibold", "from role", "Override only when the role's weight doesn't fit."],
   ["truncate", "boolean | number", "false", "true: one line with an ellipsis. A number: clamp to that many lines."],
   ["as", "p | span | div | label", "p", "htmlFor passes through for label."],
@@ -86,7 +86,7 @@ const textVariants = [
   ["numeric-sm", "08:45:12"],
   ["code", "npm install @datum-design/react"],
 ] as const;
-const textTones = ["primary", "secondary", "tertiary", "accent", "danger", "success", "warning"] as const;
+const textTones = ["primary", "secondary", "accent", "danger", "success", "warning"] as const;
 
 function PropsTable({ rows }: { rows: PropRow[] }) {
   return (
@@ -878,7 +878,7 @@ export function App() {
 
         <div className="doc-section">
           <h2>Tone</h2>
-          <p className="lead">All seven tones pass 4.5:1 on <b>bg.page</b> and <b>bg.surface</b> in every theme and mode. State tones say what happened; don't use them for decoration.</p>
+          <p className="lead">Two text colors, <b>primary</b> and <b>secondary</b>, plus accent and the state tones. All pass 4.5:1 on <b>bg.page</b> and <b>bg.surface</b> in every theme and mode. There is no third gray: for less important text, step down the variant (body-sm, caption, overline) instead. State tones say what happened; don't use them for decoration.</p>
           <div className="sample-box">
             {textTones.map((tone) => <Text key={tone} as="span" tone={tone}>{tone}</Text>)}
           </div>

@@ -86,6 +86,7 @@ Each theme also has an ink fill for neutral solid buttons and dark bands: `bg.in
 ### Rules for both
 - A fill (`bg.accent`, `bg.danger`, …) is always paired with its `text.on*` token. **Never hardcode white on an accent** — use `text.onAccent`; its value is set per theme and mode for contrast.
 - Colored text on the page uses `text.*` roles, which are chosen per mode for contrast.
+- **Hierarchy comes from type roles (size, weight, case) and two text colors — never a third gray.** Text is `text.primary` or `text.secondary` (plus `text.disabled`); less important text steps down a role (`body-sm`, `ui.caption`, `ui.label`, `ui.overline`) rather than getting lighter.
 - Borders on interactive controls (`border.strong`, `border.focus`) meet 3:1 against both the page and `bg.surface`; `border.subtle` and `border.default` are decorative and have no minimum.
 
 ## Typography
@@ -153,6 +154,7 @@ These come from Button and apply to **every** component. `npm run check` enforce
 - **Don't** hardcode a hex value, a pixel font size, or white text on an accent.
 - **Don't** give a checkbox or a multi-line box a pill radius.
 - **Don't** reuse a brand hue for a state color.
+- **Don't** add a third text gray — step down the type role instead.
 
 ## Decision log
 
@@ -175,3 +177,4 @@ These come from Button and apply to **every** component. `npm run check` enforce
 - **2026-09-27** — Interaction rules written from Button and enforced by `npm run check` where they can be (filters, raw timings, `:focus`, spinner contrast, 44px touch targets). Button loading now overlays the spinner without changing size; small controls get a 44px touch hit area.
 - **2026-09-27** — Layout and Typography built: Container, Stack, Grid, Section, Heading, Text. Gaps (0/4/8/16/24/32) and Section padding (32/64/96) are derived from the space tokens; Container uses `grid.container` and `grid.margin`. Heading size follows level unless overridden (1 xl, 2 lg, 3 md, 4–6 sm).
 - **2026-09-27** — `npm run check` now also measures static text marked `data-check-text`. It found: orange light `border.strong` failing 3:1 on `bg.accentSubtle` (moved stone-500 → stone-600); dark `text.danger` and `text.success` failing 4.5:1 on `bg.surface` (400 → 300); `text.tertiary` failing on `bg.surface` in orange dark and both navy modes — it now shares `text.secondary`'s step there rather than adding off-ramp colors.
+- **2026-09-27** — `text.tertiary` removed from both themes and the contract (it had become a copy of secondary). Datum uses two text colors, `text.primary` and `text.secondary`, plus `text.disabled`; hierarchy comes from type roles (size, weight, case), never a third gray. Text's `tone` drops `tertiary`.

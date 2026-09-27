@@ -11,7 +11,7 @@ const textVariants = [
   "body-lg", "body-md", "body-sm", "paragraph-lg", "paragraph-md", "label",
   "caption", "overline", "numeric-lg", "numeric-md", "numeric-sm", "code",
 ] as const;
-const textTones = ["primary", "secondary", "tertiary", "accent", "danger", "success", "warning"] as const;
+const textTones = ["primary", "secondary", "accent", "danger", "success", "warning"] as const;
 const box = { background: "var(--color-bg-surface)", padding: "var(--space-compact)" };
 
 /** Every state the combo checker renders, keyed by component name. */
