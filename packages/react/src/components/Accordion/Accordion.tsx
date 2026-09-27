@@ -17,7 +17,7 @@ const AccordionContext = createContext<AccordionContextValue | null>(null);
 export interface AccordionOwnProps {
   /** One item open at a time, or any number. @default "single" */
   type?: AccordionType;
-  /** Dividers between items / one bordered box / a card per item. @default "bordered" */
+  /** Rows with no lines / one bordered box / a card per item. @default "bordered" */
   appearance?: AccordionAppearance;
   /** With `type="single"`: whether the open item can be closed again, leaving none open. @default true */
   collapsible?: boolean;

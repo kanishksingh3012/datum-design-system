@@ -534,7 +534,7 @@
               "appearance",
               "plain · bordered · separated",
               "bordered",
-              ""
+              "No lines / one bordered box / a card per item"
             ],
             [
               "collapsible",

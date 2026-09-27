@@ -120,7 +120,7 @@ const separatorProps: PropRow[] = [
 ];
 const accordionProps: PropRow[] = [
   ["type", "single | multiple", "single", "One item open at a time, or any number."],
-  ["appearance", "plain | bordered | separated", "bordered", "Dividers / one box / a card per item."],
+  ["appearance", "plain | bordered | separated", "bordered", "No lines / one box / a card per item."],
   ["collapsible", "boolean", "true", "With single: allow closing the open item."],
   ["value / defaultValue / onValueChange", "string | string[]", "—", "Open items by their AccordionItem value."],
   ["disabled", "boolean", "false", "On Accordion or on one AccordionItem."],
@@ -1232,7 +1232,7 @@ export function App() {
 
         <div className="doc-section">
           <h2>Appearance</h2>
-          <p className="lead"><b>plain</b> is dividers between items. <b>bordered</b> is one box with <b>radius.card</b>, only its outer corners rounded. <b>separated</b> is a surface card per item. Hover tints the trigger toward the text color; the chevron turns in <b>motion.normal</b>. The panel height is not animated, so the page below never slides.</p>
+          <p className="lead"><b>plain</b> is rows with no lines — only the rounded hover fill. <b>bordered</b> is one box with <b>radius.card</b>, only its outer corners rounded. <b>separated</b> is a surface card per item. Hover tints the trigger toward the text color; the chevron turns in <b>motion.normal</b>. The panel height is not animated, so the page below never slides.</p>
           <div className="sample-box demo-on-page stack">
             {(["plain", "bordered", "separated"] as const).map((appearance) => (
               <Stack key={appearance} gap="xs" style={{ width: "100%", maxWidth: 560 }}>
