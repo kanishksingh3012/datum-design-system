@@ -870,7 +870,6 @@ function renderPage({ themes, distCss, contract, primitives, icons }) {
     )
     .join("");
 
-  const generatedAt = new Date().toISOString();
 
   return `<title>Datum</title>
 ${googleFonts}
@@ -890,7 +889,6 @@ ${googleFonts}
   .eyebrow{ font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.09em; color:var(--dash-accent); margin:0 0 .5rem; }
   h1{ font-size:28px; font-weight:600; letter-spacing:-.015em; margin:0 0 .6rem; }
   .header__desc{ font-size:13.5px; line-height:1.6; color:var(--dash-text-muted); max-width:46ch; margin:0; }
-  .timestamp{ font-size:11px; color:var(--dash-text-muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
   .controls-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.8rem; margin-bottom:1.4rem; }
   .page-switcher{ display:flex; gap:1.6rem; margin-bottom:2rem; border-bottom:1px solid var(--dash-border); }
   .page-switcher__btn{ font:inherit; font-size:14px; font-weight:500; padding:0 0 .8rem; background:none; border:none; border-bottom:2px solid transparent; color:var(--dash-text-muted); cursor:pointer; margin-bottom:-1px; }
@@ -1101,7 +1099,6 @@ ${googleFonts}
       <h1>Datum</h1>
       <p class="header__desc">Live, generated reference for every token and component in the system - regenerated from the real files, never hand-typed.</p>
     </div>
-    <span class="timestamp">generated ${generatedAt}</span>
   </header>
 
   <div class="controls-row">

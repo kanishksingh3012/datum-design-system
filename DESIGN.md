@@ -146,6 +146,17 @@ These come from Button and apply to **every** component. `npm run check` enforce
 | **Disabled** | Native `disabled` (so it leaves the tab order), opacity 0.5, `cursor: not-allowed`, no hover or press. Exempt from contrast, as in WCAG. When a control renders as an anchor it uses `aria-disabled="true"` and `tabindex="-1"` instead. |
 | **44px touch targets** ✓ | Under `pointer: coarse`, every control's hit area is at least 44 × 44 (`interaction.minTarget`). md grows to 44; smaller controls keep their look and extend an invisible `::after` hit area. Links in running text (`underline="always"`) are exempt, as in WCAG 2.5.8. |
 
+## Component API conventions
+
+These apply to every component, alongside the Interaction rules.
+
+| Rule | How |
+|---|---|
+| **Values** | A component that holds a value takes `value` (controlled), `defaultValue` (uncontrolled) and `onValueChange(value)`. |
+| **Open state** | A component that opens (menus, dialogs, popovers, sheets, tooltips) takes `open`, `defaultOpen` and `onOpenChange(open)`. |
+| **Behavior** | Interactive behavior uses the `react-aria` and `react-stately` hooks, as Accordion does (`useDisclosureGroupState` + `useDisclosure`) — never `react-aria-components`. The markup, class names and data attributes stay Datum's own. |
+| **Breaking changes** | A removed or renamed prop is recorded in the decision log below, with what replaces it. |
+
 ## Do's and don'ts
 
 - **Do** pick a type role by purpose, not by the size you want.
@@ -179,3 +190,6 @@ These come from Button and apply to **every** component. `npm run check` enforce
 - **2026-09-27** — `npm run check` now also measures static text marked `data-check-text`. It found: orange light `border.strong` failing 3:1 on `bg.accentSubtle` (moved stone-500 → stone-600); dark `text.danger` and `text.success` failing 4.5:1 on `bg.surface` (400 → 300); `text.tertiary` failing on `bg.surface` in orange dark and both navy modes — it now shares `text.secondary`'s step there rather than adding off-ramp colors.
 - **2026-09-27** — `text.tertiary` removed from both themes and the contract (it had become a copy of secondary). Datum uses two text colors, `text.primary` and `text.secondary`, plus `text.disabled`; hierarchy comes from type roles (size, weight, case), never a third gray. Text's `tone` drops `tertiary`.
 - **2026-09-27** — Content built: Card, Badge, Avatar (+ AvatarGroup), Separator, Accordion. An interactive Card is an `<a>` or `<button>` that lifts 2px on hover; a clickable outline card uses `border.strong` so its edge reaches 3:1. Badge shares Button's intent and appearance vocabulary (neutral solid is ink). Square avatars use `radius.subtle`. React Aria enters as a dependency with Accordion (disclosure hooks); the panel height is not animated, only the chevron turns.
+- **2026-09-27** — Component API conventions written: `value` / `defaultValue` / `onValueChange` for values, `open` / `defaultOpen` / `onOpenChange` for things that open, `react-aria` + `react-stately` hooks (never `react-aria-components`), and removed or renamed props recorded here.
+- **2026-09-27** — Props removed or renamed in the Content rebuild: Card `variant` (flat · elevated) → `appearance` (elevated · outline · soft; flat was a surface fill plus a border: use `outline` for the border or `soft` for the fill). Badge `variant` → `intent`, with `appearance` added (the old accent, success, warning and danger fills are now `solid`; the default is `soft`). Avatar `initials` removed (derived from `name`); `name` is now optional; size `default` → `md`. Accordion: AccordionItem `defaultOpen` → `defaultValue` on Accordion (with `value` on each item); items are no longer `<details>`.
+- **2026-09-27** — Plain Accordion drops its dividers: they ran into the rounded hover fill. Panel content gets `space.tight` above it.

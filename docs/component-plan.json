@@ -41,7 +41,8 @@
       "Focus is always visible (border.focus ring); nothing is operable by mouse only.",
       "Motion respects prefers-reduced-motion.",
       "Form controls share one Field pattern: label, helpText, errorText, required, disabled, readOnly.",
-      "Every component follows the interaction rules in DESIGN.md → Interaction rules (conventions.interaction)."
+      "Every component follows the interaction rules in DESIGN.md → Interaction rules (conventions.interaction).",
+      "Every component follows the API conventions in DESIGN.md → Component API conventions (conventions.api)."
     ],
     "interaction": [
       "Hover swaps to a real hover token (or a color-mix toward text.primary where none exists); never filter or opacity tricks. Checked.",
@@ -53,6 +54,12 @@
       "Loading: content keeps its space and accessible name (transparent text) with a spinner on top at 3:1 (checked); aria-busy; clicks blocked via aria-disabled; focus kept.",
       "Disabled: native disabled, opacity 0.5, cursor not-allowed, no hover or press, exempt from contrast; anchors use aria-disabled and tabindex -1.",
       "Touch: under pointer: coarse every control's hit area is at least 44 × 44 (interaction.minTarget), using an invisible ::after where the control looks smaller; links in running text are exempt. Checked."
+    ],
+    "api": [
+      "Values: a component that holds a value takes value (controlled), defaultValue (uncontrolled) and onValueChange(value).",
+      "Open state: a component that opens (menus, dialogs, popovers, sheets, tooltips) takes open, defaultOpen and onOpenChange(open).",
+      "Behavior: interactive behavior uses the react-aria + react-stately hooks, as Accordion does (useDisclosureGroupState + useDisclosure) — never react-aria-components. Markup, class names and data attributes stay Datum's own.",
+      "Breaking changes: a removed or renamed prop is recorded in the decision log (DESIGN.md and decisions below), with what replaces it."
     ]
   },
   "groups": [
@@ -1354,6 +1361,14 @@
     [
       "Accordion motion",
       "The chevron turns (motion.normal); the panel height is not animated, since that would move the content below."
+    ],
+    [
+      "API conventions",
+      "value / defaultValue / onValueChange for values; open / defaultOpen / onOpenChange for things that open; react-aria + react-stately hooks, never react-aria-components; removed or renamed props are recorded here."
+    ],
+    [
+      "Content props removed or renamed",
+      "Card variant → appearance (flat was a surface fill plus a border: use outline for the border or soft for the fill). Badge variant → intent, appearance added (old accent, success, warning and danger fills are now solid; default soft). Avatar initials removed (derived from name), size default → md. AccordionItem defaultOpen → Accordion defaultValue with a value per item."
     ]
   ]
 }
