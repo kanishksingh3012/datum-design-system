@@ -1,18 +1,19 @@
 .root {
   composes: choice from "../Field/choice.module.css";
+}
+.root.root {
   --_track-w: 40px;
   --_box: 24px;
   --_thumb: 18px;
   --_inset: 2px;
 }
-.root[data-size="sm"] {
+.root.root[data-size="sm"] {
   --_track-w: 32px;
   --_box: 20px;
   --_thumb: 14px;
 }
 .input {
   composes: input from "../Field/choice.module.css";
-  width: var(--_track-w);
 }
 .text {
   composes: text from "../Field/choice.module.css";
@@ -34,13 +35,26 @@
   flex: 1;
 }
 
-/* off: an outlined track with the thumb in text.secondary; on: the accent fill, thumb in its on-color */
+/* A filled track: ink when off, accent when on; the thumb is the fill's on-color and slides.
+   Doubled selectors beat the composed indicator, whatever order the CSS loads in. */
 .track {
   composes: indicator from "../Field/choice.module.css";
+}
+.track.track {
   justify-content: flex-start;
   width: var(--_track-w);
   padding: var(--_inset);
   border-radius: var(--radius-pill);
+  background: var(--color-bg-inverse);
+  border-color: var(--color-bg-inverse);
+  box-shadow: none;
+}
+.root[data-state="checked"] .track.track {
+  background: var(--color-bg-accent);
+  border-color: var(--color-border-accent);
+}
+.input.input {
+  width: var(--_track-w);
 }
 
 .thumb {
@@ -48,7 +62,7 @@
   width: var(--_thumb);
   height: var(--_thumb);
   border-radius: var(--radius-pill);
-  background: var(--color-text-secondary);
+  background: var(--color-text-onInverse);
   box-shadow: var(--elevation-field);
   transition:
     transform var(--motion-normal) var(--motion-easing),
@@ -57,6 +71,16 @@
 .root[data-state="checked"] .thumb {
   background: var(--color-text-onAccent);
   transform: translateX(calc(var(--_track-w) - var(--_thumb) - 2 * var(--_inset) - 2px));
+}
+
+/* hover: the track steps to its own hover token */
+.root:hover:not([data-disabled]) .track.track {
+  background: var(--color-bg-inverseHover);
+  border-color: var(--color-bg-inverseHover);
+}
+.root[data-state="checked"]:hover:not([data-disabled]) .track.track {
+  background: var(--color-bg-accentHover);
+  border-color: var(--color-border-accent);
 }
 
 @media (prefers-reduced-motion: reduce) {

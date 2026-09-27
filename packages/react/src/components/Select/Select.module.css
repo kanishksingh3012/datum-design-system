@@ -1,6 +1,8 @@
 /* ---------- trigger: the field box, as a button ---------- */
 .trigger {
   composes: control from "../Field/control.module.css";
+}
+.trigger.trigger {
   justify-content: space-between;
   text-align: start;
   cursor: pointer;

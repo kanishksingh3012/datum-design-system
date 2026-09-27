@@ -1,6 +1,9 @@
 /* The field box, but multi-line: radius.card, never a pill. */
 .textarea {
   composes: control from "../Field/control.module.css";
+}
+/* doubled so these beat the composed control box, whatever order the CSS loads in */
+.textarea.textarea {
   --_pad-block: calc(var(--space-compact) + var(--space-compact) / 4);
 
   display: block;
@@ -13,18 +16,18 @@
   color: var(--color-text-secondary);
   opacity: 1;
 }
-.textarea[data-size="sm"] {
+.textarea.textarea[data-size="sm"] {
   --_pad-block: calc(var(--space-compact) * 0.75);
 }
-.textarea[data-size="lg"] {
+.textarea.textarea[data-size="lg"] {
   --_pad-block: var(--space-tight);
 }
-.textarea[data-auto-resize] {
+.textarea.textarea[data-auto-resize] {
   resize: none;
   overflow: hidden;
 }
-.textarea[data-disabled],
-.textarea[data-readonly] {
+.textarea.textarea[data-disabled],
+.textarea.textarea[data-readonly] {
   resize: none;
 }
 

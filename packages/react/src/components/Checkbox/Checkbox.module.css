@@ -17,9 +17,11 @@
 /* never round: radius.subtle, scaled down with the small box */
 .box {
   composes: indicator from "../Field/choice.module.css";
+}
+.box.box {
   border-radius: var(--radius-subtle);
 }
-.root[data-size="sm"] .box {
+.root[data-size="sm"] .box.box {
   border-radius: calc(var(--radius-subtle) * 0.8);
 }
 

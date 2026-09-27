@@ -295,6 +295,7 @@ const Cell = ({ children }: { children: string }) => <div className="demo-cell">
 export function App() {
   const [pressed, setPressed] = useState(false);
   const [range, setRange] = useState("Week");
+  const [period, setPeriod] = useState("Monthly");
   const [align, setAlign] = useState("Left");
   const [section, setSection] = useState("Overview");
   const [toastPosition, setToastPosition] = useState<ToastPosition>("bottom-end");
@@ -1700,9 +1701,10 @@ export function App() {
         <div className="example-box" style={{ display: "block" }}>
           <Field label="Billing period" helpText="You can change it at any time." required style={{ maxWidth: 360, margin: "0 auto" }}>
             {(control) => (
-              <ButtonGroup attached aria-labelledby={control["aria-labelledby"]} aria-describedby={control["aria-describedby"]}>
-                <Button defaultPressed>Monthly</Button>
-                <Button defaultPressed={false}>Yearly</Button>
+              <ButtonGroup attached aria-labelledby={control["aria-labelledby"]} aria-describedby={control["aria-describedby"]} style={{ alignSelf: "flex-start" }}>
+                {["Monthly", "Yearly"].map((p) => (
+                  <Button key={p} pressed={period === p} onPressedChange={() => setPeriod(p)}>{p}</Button>
+                ))}
               </ButtonGroup>
             )}
           </Field>
@@ -1998,7 +2000,7 @@ export function App() {
 
         <div className="doc-section">
           <h2>States and sizes</h2>
-          <p className="lead">Off is an outlined track with the thumb in <b>text.secondary</b>; on is the accent fill with the thumb in <b>text.onAccent</b>. sm is a 32 × 20 track.</p>
+          <p className="lead">A filled track with a white thumb that slides across: ink (<b>bg.inverse</b>) when off, the accent fill when on. Hover steps each to its own hover token. sm is a 32 × 20 track.</p>
           <div className="sample-box demo-on-page column">
             {(["md", "sm"] as const).map((size) => (
               <div key={size} style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>

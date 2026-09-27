@@ -17,6 +17,8 @@
 /* on: the accent fill with a dot in its on-color */
 .circle {
   composes: indicator from "../Field/choice.module.css";
+}
+.circle.circle {
   border-radius: var(--radius-pill);
 }
 .circle::after {
