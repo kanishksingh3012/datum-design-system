@@ -1,0 +1,16 @@
+/* Ink, like the neutral solid button. radius.card becomes a full pill on
+   one line and stays a rounded box when the text wraps. */
+.root {
+  box-sizing: border-box;
+  max-width: 240px;
+  padding: calc(var(--space-compact) / 2 + 2px) var(--space-tight);
+  font-family: var(--type-body-sm-family);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-ui-label-weight);
+  line-height: var(--type-body-sm-lineHeight);
+  color: var(--color-text-onInverse);
+  background: var(--color-bg-inverse);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-overlay);
+  pointer-events: none;
+}

@@ -124,8 +124,18 @@ export type { TabsProps, TabsOwnProps, TabItem } from "./components/Tabs/Tabs";
 export { Toaster, toast, toastQueue } from "./components/Toast/Toast";
 export type { ToasterProps, ToastOptions, ToastContent, ToastIntent, ToastPosition } from "./components/Toast/Toast";
 
-export { Dialog } from "./components/Dialog/Dialog";
-export type { DialogProps, DialogOwnProps } from "./components/Dialog/Dialog";
+export { Dialog, DialogHeader, DialogBody, DialogFooter } from "./components/Dialog/Dialog";
+export type {
+  DialogProps,
+  DialogOwnProps,
+  DialogSize,
+  DialogRole,
+  DialogChildren,
+  DialogHeaderProps,
+  DialogHeaderOwnProps,
+  DialogBodyProps,
+  DialogFooterProps,
+} from "./components/Dialog/Dialog";
 
 export { Label } from "./components/Label/Label";
 export type { LabelProps, LabelOwnProps } from "./components/Label/Label";
@@ -225,7 +235,19 @@ export { ColorPicker } from "./components/ColorPicker/ColorPicker";
 export type { ColorPickerProps, ColorPickerOwnProps } from "./components/ColorPicker/ColorPicker";
 
 export { DropdownMenu } from "./components/DropdownMenu/DropdownMenu";
-export type { DropdownMenuOwnProps, MenuItemDef } from "./components/DropdownMenu/DropdownMenu";
+export type {
+  DropdownMenuProps,
+  DropdownMenuOwnProps,
+  DropdownMenuItem,
+  DropdownMenuLeafItem,
+  DropdownMenuActionItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparatorItem,
+  DropdownMenuSectionItem,
+  DropdownMenuPlacement,
+  DropdownMenuSize,
+} from "./components/DropdownMenu/DropdownMenu";
 
 export { ContextMenu } from "./components/ContextMenu/ContextMenu";
 export type { ContextMenuOwnProps, ContextMenuItemDef } from "./components/ContextMenu/ContextMenu";
@@ -249,7 +271,10 @@ export { DataTable } from "./components/DataTable/DataTable";
 export type { DataTableOwnProps, DataTableColumn } from "./components/DataTable/DataTable";
 
 export { Sheet } from "./components/Sheet/Sheet";
-export type { SheetOwnProps, SheetSide } from "./components/Sheet/Sheet";
+export type { SheetProps, SheetOwnProps, SheetSide, SheetSize } from "./components/Sheet/Sheet";
+
+export { Tooltip } from "./components/Tooltip/Tooltip";
+export type { TooltipProps, TooltipOwnProps, TooltipPlacement } from "./components/Tooltip/Tooltip";
 
 export {
   NavigationMenu,

@@ -1,54 +1,117 @@
+import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { DropdownMenu } from "./DropdownMenu";
+import { Button } from "../Button/Button";
+import { DropdownMenu, type DropdownMenuItem } from "./DropdownMenu";
 
-const items = [
-  { label: "Edit", onSelect: vi.fn() },
-  { label: "Duplicate", onSelect: vi.fn() },
-  { label: "Delete", onSelect: vi.fn(), disabled: true },
-];
+function Menu({ onEdit = () => {}, onDelete = () => {}, ...props }: { onEdit?: () => void; onDelete?: () => void } & Partial<Parameters<typeof DropdownMenu>[0]>) {
+  const [grid, setGrid] = useState(true);
+  const [sort, setSort] = useState("name");
+  const items: DropdownMenuItem[] = [
+    { label: "Edit", shortcut: "⌘E", onSelect: onEdit },
+    { label: "Archive", disabled: true },
+    { type: "separator" },
+    { type: "checkbox", label: "Show grid", checked: grid, onCheckedChange: setGrid },
+    {
+      type: "section",
+      label: "Sort by",
+      items: [
+        { type: "radio", id: "name", label: "Name", checked: sort === "name", onSelect: () => setSort("name") },
+        { type: "radio", id: "date", label: "Date", checked: sort === "date", onSelect: () => setSort("date") },
+      ],
+    },
+    { type: "separator" },
+    { label: "Delete", intent: "danger", onSelect: onDelete },
+  ];
+  return <DropdownMenu trigger={<Button>Options</Button>} items={items} {...props} />;
+}
+
+const open = async () => userEvent.click(screen.getByRole("button", { name: "Options" }));
 
 describe("DropdownMenu", () => {
-  it("is closed until the trigger opens it, then shows real menuitems", async () => {
-    const user = userEvent.setup();
-    render(<DropdownMenu trigger={<button>Actions</button>} items={items} />);
-    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Actions" }));
-    expect(screen.getByRole("menu")).toBeInTheDocument();
-    expect(screen.getByRole("menuitem", { name: "Edit" })).toBeInTheDocument();
+  it("wires the trigger and opens a labelled menu", async () => {
+    render(<Menu />);
+    const trigger = screen.getByRole("button", { name: "Options" });
+    expect(trigger).toHaveAttribute("aria-haspopup", "true");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await open();
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("menu", { name: "Options" })).toBeInTheDocument();
   });
 
-  it("focuses the first item on open and moves with ArrowDown/ArrowUp", async () => {
-    const user = userEvent.setup();
-    render(<DropdownMenu trigger={<button>Actions</button>} items={items} />);
-    await user.click(screen.getByRole("button", { name: "Actions" }));
-    expect(screen.getByRole("menuitem", { name: "Edit" })).toHaveFocus();
-    await user.keyboard("{ArrowDown}");
-    expect(screen.getByRole("menuitem", { name: "Duplicate" })).toHaveFocus();
-    await user.keyboard("{ArrowUp}");
-    expect(screen.getByRole("menuitem", { name: "Edit" })).toHaveFocus();
+  it("defaults to size=md", async () => {
+    render(<Menu />);
+    await open();
+    expect(screen.getByRole("menu")).toHaveAttribute("data-size", "md");
   });
 
-  it("calls onSelect and closes, returning focus to the trigger, on Enter", async () => {
-    const user = userEvent.setup();
-    const onSelect = vi.fn();
-    render(<DropdownMenu trigger={<button>Actions</button>} items={[{ label: "Edit", onSelect }]} />);
-    const trigger = screen.getByRole("button", { name: "Actions" });
-    await user.click(trigger);
-    await user.keyboard("{Enter}");
-    expect(onSelect).toHaveBeenCalledTimes(1);
+  it("fires an action, closes and returns focus to the trigger", async () => {
+    const onEdit = vi.fn();
+    render(<Menu onEdit={onEdit} />);
+    await open();
+    await userEvent.click(screen.getByRole("menuitem", { name: /Edit/ }));
+    expect(onEdit).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
-    expect(trigger).toHaveFocus();
+    await waitFor(() => expect(screen.getByRole("button", { name: "Options" })).toHaveFocus());
   });
 
-  it("closes on Escape and returns focus to the trigger", async () => {
-    const user = userEvent.setup();
-    render(<DropdownMenu trigger={<button>Actions</button>} items={items} />);
-    const trigger = screen.getByRole("button", { name: "Actions" });
-    await user.click(trigger);
-    await user.keyboard("{Escape}");
+  it("opens from the keyboard and moves with the arrow keys", async () => {
+    const onEdit = vi.fn();
+    render(<Menu onEdit={onEdit} />);
+    screen.getByRole("button", { name: "Options" }).focus();
+    await userEvent.keyboard("{ArrowDown}");
+    expect(screen.getByRole("menuitem", { name: /Edit/ })).toHaveFocus();
+    // Archive is disabled and skipped
+    await userEvent.keyboard("{ArrowDown}");
+    expect(screen.getByRole("menuitemcheckbox", { name: "Show grid" })).toHaveFocus();
+    await userEvent.keyboard("{Escape}");
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
-    expect(trigger).toHaveFocus();
+  });
+
+  it("does not fire disabled items", async () => {
+    render(<Menu />);
+    await open();
+    expect(screen.getByRole("menuitem", { name: "Archive" })).toHaveAttribute("aria-disabled", "true");
+  });
+
+  it("toggles checkbox items and keeps the menu open", async () => {
+    render(<Menu />);
+    await open();
+    const grid = screen.getByRole("menuitemcheckbox", { name: "Show grid" });
+    expect(grid).toHaveAttribute("aria-checked", "true");
+    await userEvent.click(grid);
+    expect(screen.getByRole("menuitemcheckbox", { name: "Show grid" })).toHaveAttribute("aria-checked", "false");
+  });
+
+  it("groups radio items so exactly one is checked", async () => {
+    render(<Menu />);
+    await open();
+    const section = screen.getByRole("group", { name: "Sort by" });
+    const [name, date] = within(section).getAllByRole("menuitemradio");
+    expect(name).toHaveAttribute("aria-checked", "true");
+    await userEvent.click(date);
+    await open();
+    expect(screen.getByRole("menuitemradio", { name: "Date" })).toHaveAttribute("aria-checked", "true");
+    expect(screen.getByRole("menuitemradio", { name: "Name" })).toHaveAttribute("aria-checked", "false");
+  });
+
+  it("marks danger items and shows shortcuts", async () => {
+    render(<Menu />);
+    await open();
+    expect(screen.getByRole("menuitem", { name: "Delete" })).toHaveAttribute("data-intent", "danger");
+    expect(screen.getByText("⌘E").tagName).toBe("KBD");
+    expect(screen.getAllByRole("separator")).toHaveLength(2);
+  });
+
+  it("forwards ref, merges className and reflects size", () => {
+    const ref = { current: null as HTMLDivElement | null };
+    render(
+      <DropdownMenu open ref={ref} className="custom" size="sm" trigger={<Button>Options</Button>} items={[{ label: "Edit" }]} />
+    );
+    const menu = screen.getByRole("menu");
+    expect(ref.current).toBe(menu);
+    expect(menu.className).toContain("custom");
+    expect(menu).toHaveAttribute("data-size", "sm");
   });
 });

@@ -1,83 +1,117 @@
 import { useState } from "react";
-import { beforeAll, describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Dialog } from "./Dialog";
+import { Button } from "../Button/Button";
+import { Dialog, DialogBody, DialogFooter, DialogHeader } from "./Dialog";
 
-/**
- * jsdom 25 renders a real <dialog> element but doesn't implement
- * .showModal()/.close() (confirmed: HTMLDialogElement.prototype.showModal
- * is undefined) or the native focus trap / :modal state that come with it.
- * This polyfills just enough of the open/close contract - toggling the
- * `open` attribute and firing the `close` event - to exercise our own
- * open/close/focus-restore wiring, which is real app code either way.
- * The native focus trap and Escape-to-close themselves are browser
- * behavior we rely on rather than reimplement, so they aren't (and can't
- * be) asserted here.
- */
-beforeAll(() => {
-  if (!HTMLDialogElement.prototype.showModal) {
-    HTMLDialogElement.prototype.showModal = function (this: HTMLDialogElement) {
-      this.setAttribute("open", "");
-    };
-  }
-  if (!HTMLDialogElement.prototype.close) {
-    HTMLDialogElement.prototype.close = function (this: HTMLDialogElement) {
-      if (!this.open) return;
-      this.removeAttribute("open");
-      this.dispatchEvent(new Event("close"));
-    };
-  }
-});
+function Controlled(props: Partial<Parameters<typeof Dialog>[0]>) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Open</Button>
+      <Dialog open={open} onOpenChange={setOpen} {...props}>
+        <DialogHeader description="This can't be undone.">Delete project?</DialogHeader>
+        <DialogBody>All files will be removed.</DialogBody>
+        <DialogFooter>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
+        </DialogFooter>
+      </Dialog>
+    </>
+  );
+}
 
 describe("Dialog", () => {
-  it("is closed until open=true", () => {
-    render(<Dialog open={false} title="Delete this item?" onClose={() => {}} />);
-    expect(screen.getByText("Delete this item?").closest("dialog")).not.toHaveAttribute("open");
+  it("renders nothing until open", () => {
+    render(<Controlled />);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("calls showModal (native focus trap + Escape-to-close) when open becomes true", () => {
-    const { rerender } = render(<Dialog open={false} title="Delete this item?" onClose={() => {}} />);
-    rerender(<Dialog open title="Delete this item?" onClose={() => {}} />);
-    expect(screen.getByText("Delete this item?").closest("dialog")).toHaveAttribute("open");
+  it("is named by DialogHeader and described by its description", async () => {
+    render(<Controlled />);
+    await userEvent.click(screen.getByRole("button", { name: "Open" }));
+    const dialog = screen.getByRole("dialog", { name: "Delete project?" });
+    expect(dialog).toHaveAccessibleDescription("This can't be undone.");
   });
 
-  it("does not close on a click on the dialog element itself (safe default, no backdrop-dismiss)", async () => {
-    const user = userEvent.setup();
-    const onClose = vi.fn();
-    render(<Dialog open title="Delete this item?" onClose={onClose} />);
-    const dialog = screen.getByText("Delete this item?").closest("dialog")!;
-    await user.click(dialog);
-    expect(onClose).not.toHaveBeenCalled();
+  it("defaults to size=md and role=dialog, and supports alertdialog", async () => {
+    const { unmount } = render(<Controlled />);
+    await userEvent.click(screen.getByRole("button", { name: "Open" }));
+    expect(screen.getByRole("dialog")).toHaveAttribute("data-size", "md");
+    unmount();
+    render(<Controlled role="alertdialog" size="sm" />);
+    await userEvent.click(screen.getByRole("button", { name: "Open" }));
+    expect(screen.getByRole("alertdialog")).toHaveAttribute("data-size", "sm");
   });
 
-  it("fires onClose and restores focus to the trigger when the dialog's close event fires", async () => {
-    function Harness() {
-      const [open, setOpen] = useState(false);
-      return (
-        <>
-          <button onClick={() => setOpen(true)}>Open dialog</button>
-          <Dialog open={open} title="Delete this item?" onClose={() => setOpen(false)}>
-            <button
-              onClick={(e) => {
-                e.currentTarget.closest("dialog")?.close();
-              }}
-            >
-              Cancel
-            </button>
-          </Dialog>
-        </>
-      );
-    }
-    const user = userEvent.setup();
-    render(<Harness />);
-    const trigger = screen.getByRole("button", { name: "Open dialog" });
-    trigger.focus();
-    await user.click(trigger);
-    expect(screen.getByText("Delete this item?").closest("dialog")).toHaveAttribute("open");
+  it("closes on Escape and returns focus to the trigger", async () => {
+    render(<Controlled />);
+    const trigger = screen.getByRole("button", { name: "Open" });
+    await userEvent.click(trigger);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    await userEvent.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    await waitFor(() => expect(trigger).toHaveFocus());
+  });
 
-    await user.click(screen.getByRole("button", { name: "Cancel" }));
-    expect(screen.getByText("Delete this item?").closest("dialog")).not.toHaveAttribute("open");
-    expect(document.activeElement).toBe(trigger);
+  it("closes from the header's close button", async () => {
+    render(<Controlled />);
+    await userEvent.click(screen.getByRole("button", { name: "Open" }));
+    await userEvent.click(screen.getByRole("button", { name: "Close" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("ignores Escape and hides the close button when dismissible=false", async () => {
+    render(<Controlled dismissible={false} />);
+    await userEvent.click(screen.getByRole("button", { name: "Open" }));
+    expect(screen.queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
+    await userEvent.keyboard("{Escape}");
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("moves focus inside and keeps Tab there", async () => {
+    render(<Controlled />);
+    await userEvent.click(screen.getByRole("button", { name: "Open" }));
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.contains(document.activeElement)).toBe(true);
+    await userEvent.tab();
+    await userEvent.tab();
+    await userEvent.tab();
+    expect(dialog.contains(document.activeElement)).toBe(true);
+  });
+
+  it("opens from a trigger and passes close to function children", async () => {
+    const onOpenChange = vi.fn();
+    render(
+      <Dialog trigger={<Button>Edit</Button>} onOpenChange={onOpenChange}>
+        {(close) => (
+          <>
+            <DialogHeader>Edit name</DialogHeader>
+            <DialogFooter>
+              <Button onClick={close}>Done</Button>
+            </DialogFooter>
+          </>
+        )}
+      </Dialog>
+    );
+    const trigger = screen.getByRole("button", { name: "Edit" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await userEvent.click(trigger);
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
+    await userEvent.click(screen.getByRole("button", { name: "Done" }));
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("forwards ref, merges className and spreads props onto the dialog", () => {
+    const ref = { current: null as HTMLElement | null };
+    render(
+      <Dialog open ref={ref} className="custom" data-testid="d">
+        <DialogHeader>Title</DialogHeader>
+      </Dialog>
+    );
+    const dialog = screen.getByTestId("d");
+    expect(ref.current).toBe(dialog);
+    expect(dialog.className).toContain("custom");
   });
 });
