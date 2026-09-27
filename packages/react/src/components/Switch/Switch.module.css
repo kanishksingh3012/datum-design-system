@@ -1,56 +1,66 @@
 .root {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  cursor: pointer;
-  min-height: var(--interaction-minTarget);
+  composes: choice from "../Field/choice.module.css";
+  --_track-w: 40px;
+  --_box: 24px;
+  --_thumb: 18px;
+  --_inset: 2px;
 }
-.root input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+.root[data-size="sm"] {
+  --_track-w: 32px;
+  --_box: 20px;
+  --_thumb: 14px;
 }
+.input {
+  composes: input from "../Field/choice.module.css";
+  width: var(--_track-w);
+}
+.text {
+  composes: text from "../Field/choice.module.css";
+}
+.description {
+  composes: description from "../Field/choice.module.css";
+}
+
+/* label first, switch pushed to the end of the row */
+.root[data-label-position="start"] {
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+.root[data-label-position="start"] .input {
+  left: auto;
+  right: 0;
+}
+.root[data-label-position="start"] .text {
+  flex: 1;
+}
+
+/* off: an outlined track with the thumb in text.secondary; on: the accent fill, thumb in its on-color */
 .track {
-  width: 38px;
-  height: 22px;
-  flex: 0 0 auto;
-  border-radius: 999px;
-  background: var(--color-border-strong);
-  position: relative;
-  transition: background var(--motion-fast) var(--motion-easing);
-  display: inline-block;
+  composes: indicator from "../Field/choice.module.css";
+  justify-content: flex-start;
+  width: var(--_track-w);
+  padding: var(--_inset);
+  border-radius: var(--radius-pill);
 }
+
 .thumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--color-bg-page);
-  transition: transform var(--motion-normal) var(--motion-easing);
+  flex-shrink: 0;
+  width: var(--_thumb);
+  height: var(--_thumb);
+  border-radius: var(--radius-pill);
+  background: var(--color-text-secondary);
+  box-shadow: var(--elevation-field);
+  transition:
+    transform var(--motion-normal) var(--motion-easing),
+    background var(--motion-fast) var(--motion-easing);
 }
-.root input:checked ~ .track {
-  background: var(--color-bg-accent);
+.root[data-state="checked"] .thumb {
+  background: var(--color-text-onAccent);
+  transform: translateX(calc(var(--_track-w) - var(--_thumb) - 2 * var(--_inset) - 2px));
 }
-.root input:checked ~ .track .thumb {
-  transform: translateX(16px);
-}
-.root input:focus-visible ~ .track {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
-}
-.root input:disabled ~ .track {
-  opacity: 0.5;
-}
-.label {
-  font-size: var(--type-body-md-size);
-  color: var(--color-text-primary);
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb {
+    transition: background var(--motion-fast) var(--motion-easing);
+  }
 }

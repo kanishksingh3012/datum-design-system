@@ -1,63 +1,144 @@
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  max-width: 280px;
-  width: 100%;
-}
-.label {
-  font-size: var(--type-ui-label-size);
-  font-weight: var(--type-ui-label-weight);
-  color: var(--color-text-primary);
-}
-.wrap {
-  position: relative;
-}
-.input {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 100%;
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  color: var(--color-text-primary);
-  background: var(--color-bg-page);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-control);
-  padding: 0 calc(var(--space-default) + 20px) 0 var(--space-default);
-  min-height: var(--interaction-minTarget);
+/* ---------- trigger: the field box, as a button ---------- */
+.trigger {
+  composes: control from "../Field/control.module.css";
+  justify-content: space-between;
+  text-align: start;
   cursor: pointer;
-  transition: border-color var(--motion-fast) var(--motion-easing);
 }
-.input:hover:not(:disabled) {
-  border-color: var(--color-border-strong);
+.trigger[data-disabled] {
+  cursor: not-allowed;
 }
-.input:focus-visible {
+.trigger[data-readonly] {
+  cursor: default;
+}
+
+.value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.value[data-placeholder] {
+  color: var(--color-text-secondary);
+}
+
+.chevron {
+  flex-shrink: 0;
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+  color: var(--color-text-secondary);
+  transition: transform var(--motion-normal) var(--motion-easing);
+}
+.trigger[data-open] .chevron {
+  transform: rotate(180deg);
+}
+
+/* ---------- the list: an overlay surface with pill options ---------- */
+.popover {
+  --_inset: calc(var(--space-compact) / 2);
+  box-sizing: border-box;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: var(--_inset);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-overlay);
+}
+
+.listbox,
+.group {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  outline: none;
+}
+
+.heading {
+  display: block;
+  padding: var(--space-compact) var(--space-tight) calc(var(--space-compact) / 2);
+  font-family: var(--type-ui-overline-family);
+  font-size: var(--type-ui-overline-size);
+  font-weight: var(--type-ui-overline-weight);
+  line-height: var(--type-ui-overline-lineHeight);
+  letter-spacing: var(--type-ui-overline-tracking);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.divider {
+  height: 1px;
+  margin: var(--_inset) calc(var(--_inset) * -1);
+  background: var(--color-border-default);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-compact);
+  min-height: 36px;
+  padding: calc(var(--space-compact) * 0.75) var(--space-tight);
+  box-sizing: border-box;
+  font-family: var(--type-body-md-family);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-lineHeight);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  outline: none;
+  transition: background var(--motion-fast) var(--motion-easing);
+}
+.listbox[data-size="sm"] .option {
+  min-height: 32px;
+  font-size: var(--type-body-sm-size);
+}
+.listbox[data-size="lg"] .option {
+  min-height: 44px;
+  font-size: var(--type-body-lg-size);
+}
+/* two lines are never a pill: the card radius, minus the popover's inset */
+.option[data-description] {
+  border-radius: calc(var(--radius-card) - var(--_inset));
+}
+.option[data-focused] {
+  background: color-mix(in oklab, var(--color-bg-surfaceRaised), var(--color-text-primary) 8%);
+}
+/* keyboard focus (React Aria's modality-aware focus-visible) also gets the ring, inset so the popover never clips it */
+.option[data-focus-visible] {
   outline: 2px solid var(--color-border-focus);
-  outline-offset: 1px;
-  border-color: var(--color-border-focus);
+  outline-offset: -2px;
 }
-.input:disabled {
+.option[data-disabled] {
   opacity: 0.5;
   cursor: not-allowed;
 }
-.chevron {
-  position: absolute;
-  right: var(--space-default);
-  top: 50%;
-  transform: translateY(-50%) rotate(90deg);
-  width: 12px;
-  height: 12px;
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.optionDescription {
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
   color: var(--color-text-secondary);
-  pointer-events: none;
 }
-.help {
-  font-size: var(--type-ui-caption-size);
-  color: var(--color-text-secondary);
-  margin: 0;
+
+.check {
+  flex-shrink: 0;
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+  color: var(--color-text-accent);
 }
-.error .input {
-  border-color: var(--color-border-danger);
+
+@media (pointer: coarse) {
+  .option {
+    min-height: var(--interaction-minTarget);
+  }
 }
-.error .help {
-  color: var(--color-text-danger);
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
 }

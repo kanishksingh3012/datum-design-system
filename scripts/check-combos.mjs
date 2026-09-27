@@ -14,7 +14,12 @@
 //    ink band) fails unless the fill re-points --color-border-focus. Also fails any control whose touch hit area is
 //    under 44 × 44px (links in running text, underline="always", are exempt).
 //    Static text a fixture marks with data-check-text (type tones, text on
-//    section backgrounds) is measured too, at rest: 4.5:1, or 3:1 when large.
+//    section backgrounds) is measured too, at rest: 4.5:1, or 3:1 when large;
+//    data-check-text="deep" also measures every element inside it that holds text.
+//    Form controls count as controls too: text inputs and textareas are measured
+//    on the box that draws them ([data-control]); a checkbox, radio or switch
+//    on its drawn indicator, whose edge or fill must reach 3:1 against what is
+//    behind it. A border is measured whenever the fill alone doesn't reach 3:1.
 //
 // Needs a built @datum-design/react (the gallery imports dist); `npm run check` builds first.
 // The gallery is built into a temp folder and served statically.
@@ -28,6 +33,10 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const GALLERY = join(ROOT, "apps/gallery");
 const COMPONENTS = join(ROOT, "packages/react/src/components");
 const THEMES = ["orange", "navy"];
+// Everything the checker treats as a control (hidden inputs such as React Aria's HiddenSelect are skipped).
+const CONTROLS = ["button", "a", 'input:not([type=hidden]):not([tabindex="-1"])', 'textarea:not([tabindex="-1"])']
+  .map((s) => `#fixture ${s}`)
+  .join(", ");
 const MODES = ["light", "dark"];
 
 const registered = [...readFileSync(join(GALLERY, "src/check/fixtures.tsx"), "utf8").matchAll(/^  (\w+): \(\) =>/gm)].map((m) => m[1]);
@@ -134,33 +143,49 @@ function measure({ id, focus }) {
   };
   const hex = (c) => "#" + c.slice(0, 3).map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
 
+  // A form input is drawn by another element: the box around it, or the indicator beside it.
+  const isField = el.matches("input, textarea");
+  const isChoice = el.matches("input[type=checkbox], input[type=radio]");
+  const vis = isField ? (el.closest("[data-control]") ?? el.parentElement.querySelector(":scope > [data-control]") ?? el) : el;
   if (focus) el.focus();
   const cs = getComputedStyle(el);
-  const outer = backdrop(el.parentElement);
+  const vcs = getComputedStyle(vis);
+  const outer = backdrop(vis.parentElement);
   const own = backdrop(el);
   const text = over(rgba(cs.color), own);
   const size = parseFloat(cs.fontSize);
   const large = size >= 24 || (size >= 18.66 && Number(cs.fontWeight) >= 700);
   const spinner = el.getAttribute("aria-busy") === "true" && el.querySelector("[data-spinner]");
-  const out = { label: el.getAttribute("aria-label") || el.textContent.trim(), checks: [] };
-  if (spinner) {
+  const name = el.getAttribute("aria-label") || el.labels?.[0]?.textContent.trim() || el.textContent.trim();
+  const out = { label: name, checks: [] };
+  if (isChoice) {
+    // no text of its own: the label is measured as text
+  } else if (spinner) {
     // Loading hides the label (it keeps its space); the spinner is the visible graphic: 3:1.
     const sc = over(rgba(getComputedStyle(spinner).borderRightColor), own);
     out.checks.push({ kind: "spinner", ratio: ratio(sc, own), min: 3, fg: hex(sc), bg: hex(own) });
   } else {
     out.checks.push({ kind: "text", ratio: ratio(text, own), min: large ? 3 : 4.5, fg: hex(text), bg: hex(own) });
   }
-  const ownFill = rgba(cs.backgroundColor)[3];
-  const border = rgba(cs.borderTopColor);
-  if (parseFloat(cs.borderTopWidth) > 0 && border[3] > 0 && ownFill === 0) {
-    const b = over(border, outer);
+  const fillColor = rgba(vcs.backgroundColor);
+  const fill = over(fillColor, outer);
+  const fillRatio = fillColor[3] > 0 ? ratio(fill, outer) : 1;
+  const border = rgba(vcs.borderTopColor);
+  const hasBorder = parseFloat(vcs.borderTopWidth) > 0 && border[3] > 0;
+  const b = over(border, outer);
+  if (isChoice) {
+    // the indicator carries the state: its edge or its fill must stand out at 3:1
+    const edge = hasBorder ? ratio(b, outer) : 1;
+    const best = edge >= fillRatio ? { r: edge, c: b } : { r: fillRatio, c: fill };
+    out.checks.push({ kind: "boundary", ratio: best.r, min: 3, fg: hex(best.c), bg: hex(outer) });
+  } else if (hasBorder && fillRatio < 3) {
     out.checks.push({ kind: "border", ratio: ratio(b, outer), min: 3, fg: hex(b), bg: hex(outer) });
   }
   if (focus) {
-    if (cs.outlineStyle === "none" || parseFloat(cs.outlineWidth) === 0) {
+    if (vcs.outlineStyle === "none" || parseFloat(vcs.outlineWidth) === 0) {
       out.checks.push({ kind: "focus", ratio: 0, min: 3, fg: "none", bg: hex(outer) });
     } else {
-      const o = over(rgba(cs.outlineColor), outer);
+      const o = over(rgba(vcs.outlineColor), outer);
       out.checks.push({ kind: "focus", ratio: ratio(o, outer), min: 3, fg: hex(o), bg: hex(outer) });
     }
     el.blur();
@@ -205,13 +230,18 @@ try {
         await page.waitForSelector("body[data-fixture=ready] #fixture > *");
         await page.evaluate(() => document.fonts.ready);
         await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; }" });
-        const count = await page.evaluate(() => {
-          const els = [...document.querySelectorAll("#fixture button, #fixture a")].filter(
-            (el) => !el.matches(":disabled, [data-disabled]")
+        const count = await page.evaluate((selector) => {
+          const els = [...document.querySelectorAll(selector)].filter(
+            (el) => !el.matches(":disabled, [data-disabled]") && !el.closest('[aria-hidden="true"]')
           );
-          els.forEach((el, i) => el.setAttribute("data-check-id", String(i)));
+          els.forEach((el, i) => {
+            el.setAttribute("data-check-id", String(i));
+            // a form input is hovered where it is drawn (a checkbox input can't be pointed at)
+            const target = el.matches("input, textarea") ? (el.closest("label, [data-control]") ?? el) : el;
+            target.setAttribute("data-check-hover", String(i));
+          });
           return els.length;
-        });
+        }, CONTROLS);
         const before = failures;
         const report = (state, res) => {
           for (const c of res.checks) {
@@ -223,12 +253,17 @@ try {
         // Rest + focus ring (no pointer has touched the page, so focus() shows :focus-visible).
         for (let i = 0; i < count; i++) report("rest", await page.evaluate(measure, { id: i, focus: true }));
         for (let i = 0; i < count; i++) {
-          await page.hover(`[data-check-id="${i}"]`);
+          await page.hover(`[data-check-hover="${i}"]`);
           report("hover", await page.evaluate(measure, { id: i, focus: false }));
         }
         await page.mouse.move(0, 0);
         const texts = await page.evaluate(() => {
-          const els = [...document.querySelectorAll("#fixture [data-check-text]")];
+          const hasText = (el) => [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+          const els = [...document.querySelectorAll("#fixture [data-check-text]")].flatMap((el) =>
+            el.dataset.checkText === "deep"
+              ? [el, ...[...el.querySelectorAll("*")].filter((d) => hasText(d) && !d.closest('button, a, option, [aria-hidden="true"]'))]
+              : [el]
+          );
           els.forEach((el, i) => el.setAttribute("data-check-id", `text-${i}`));
           return els.length;
         });
@@ -243,22 +278,24 @@ try {
     const tp = await touch.newPage();
     await tp.goto(`${base}check.html?component=${name}&theme=orange&mode=light`);
     await tp.waitForSelector("body[data-fixture=ready] #fixture > *");
-    const touchResult = await tp.evaluate(() => {
+    const touchResult = await tp.evaluate((selector) => {
       if (!matchMedia("(pointer: coarse)").matches) return { coarse: false, small: [], count: 0 };
-      const els = [...document.querySelectorAll("#fixture button, #fixture a")].filter(
+      const els = [...document.querySelectorAll(selector)].filter(
         // Links in running text (underline="always") are exempt, as in WCAG 2.5.8.
-        (el) => !el.matches(':disabled, [data-disabled], [data-underline="always"]')
+        (el) => !el.matches(':disabled, [data-disabled], [data-underline="always"]') && !el.closest('[aria-hidden="true"]')
       );
       const small = [];
-      for (const el of els) {
+      for (const control of els) {
+        // a form input's hit area is its label row or the box that draws it
+        const el = control.matches("input, textarea") ? (control.closest("label, [data-control]") ?? control) : control;
         const r = el.getBoundingClientRect();
         const after = getComputedStyle(el, "::after");
         const w = Math.max(r.width, after.position === "absolute" ? parseFloat(after.width) || 0 : 0);
         const h = Math.max(r.height, after.position === "absolute" ? parseFloat(after.height) || 0 : 0);
-        if (w < 43.5 || h < 43.5) small.push(`"${el.getAttribute("aria-label") || el.textContent.trim()}" ${Math.round(w)}×${Math.round(h)}`);
+        if (w < 43.5 || h < 43.5) small.push(`"${control.getAttribute("aria-label") || el.textContent.trim()}" ${Math.round(w)}×${Math.round(h)}`);
       }
       return { coarse: true, small, count: els.length };
-    });
+    }, CONTROLS);
     await touch.close();
     if (!touchResult.coarse) fail(`${name}: could not emulate a touch screen (pointer: coarse)`);
     touchResult.small.forEach((m) => fail(`touch target under 44×44: ${m}`));

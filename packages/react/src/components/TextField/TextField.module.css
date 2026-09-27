@@ -1,49 +1,98 @@
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  max-width: 280px;
-  width: 100%;
+.box {
+  composes: control from "../Field/control.module.css";
+  cursor: text;
 }
-.label {
-  font-size: var(--type-ui-label-size);
-  font-weight: var(--type-ui-label-weight);
-  color: var(--color-text-primary);
-}
+
 .input {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  color: var(--color-text-primary);
-  background: var(--color-bg-page);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-control);
-  padding: 0 var(--space-default);
-  min-height: var(--interaction-minTarget);
-  transition: border-color var(--motion-fast) var(--motion-easing);
+  flex: 1;
+  min-width: 0;
+  height: calc(var(--_height) - 2px);
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  outline: none;
 }
 .input::placeholder {
-  color: var(--color-text-disabled);
-}
-.input:hover:not(:disabled) {
-  border-color: var(--color-border-strong);
-}
-.input:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 1px;
-  border-color: var(--color-border-focus);
+  color: var(--color-text-secondary);
+  opacity: 1;
 }
 .input:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
 }
-.help {
-  font-size: var(--type-ui-caption-size);
+/* Clear replaces the browser's own search cancel button */
+.input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.affix {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
   color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+.affix svg {
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+}
+
+/* Clear and Show password: small round buttons at the end of the box */
+.action {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--icon-control);
+  height: var(--icon-control);
   margin: 0;
+  padding: 0;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    color var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
 }
-.error .input {
-  border-color: var(--color-border-danger);
+.action:hover:not(:disabled) {
+  color: var(--color-text-primary);
+  background: color-mix(in oklab, var(--color-text-primary) 8%, transparent);
 }
-.error .help {
-  color: var(--color-text-danger);
+.action:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.action:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.action:disabled {
+  cursor: not-allowed;
+}
+.action svg {
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+}
+
+@media (pointer: coarse) {
+  .action::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--interaction-minTarget);
+    height: var(--interaction-minTarget);
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action:active:not(:disabled) {
+    transform: none;
+  }
 }

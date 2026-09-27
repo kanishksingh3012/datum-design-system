@@ -1,10 +1,11 @@
 import { useState } from "react";
 import {
   Accordion, AccordionItem, Alert, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CardMedia,
-  Container, Grid, Heading, Link, ProgressBar, Section, Separator, Skeleton, Spinner, Stack, Text, Toaster, toast,
-  type ToastIntent, type ToastPosition,
+  Checkbox, CheckboxGroup, Container, Field, Grid, Heading, Label, Link, ProgressBar, Radio, RadioGroup, Section, Select, Separator,
+  Skeleton, Spinner, Stack, Switch, Text, TextField, Textarea, Toaster, toast,
+  type CheckedState, type SelectOption, type ToastIntent, type ToastPosition,
 } from "@datum-design/react";
-import { Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline } from "lucide-react";
+import { Mail, Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
 const appearances = ["solid", "soft", "outline", "ghost"] as const;
@@ -178,6 +179,82 @@ const faq = [
   ["cancel", "What happens when I cancel?", "Your workspace stays readable for 90 days, so you can export everything."],
 ] as const;
 
+const fieldProps: PropRow[] = [
+  ["label", "string", "— (required)", "Always visible — never replaced by a placeholder."],
+  ["helpText", "string", "—", "Under the control, ui.caption in text.secondary. Replaced by errorText."],
+  ["errorText", "string", "—", "Sets aria-invalid and data-invalid, draws border.danger, and describes the control."],
+  ["required", "boolean", "false", "A * after the label (hidden from screen readers) and required on the control."],
+  ["disabled", "boolean", "false", "Dims the whole field to 0.5 and disables the control."],
+  ["readOnly", "boolean", "false", "Focusable and full contrast, but a dashed edge and no fill — never dimmed."],
+  ["children", "element | (control) => ReactNode", "—", "Field only: the control. A function receives id and aria props to spread."],
+];
+const labelProps: PropRow[] = [
+  ["required", "boolean", "false", "Adds the * marker."],
+  ["as", "label | span", "label", "span names a group or widget through aria-labelledby."],
+];
+const textFieldProps: PropRow[] = [
+  ["size", "sm | md | lg", "md", "32 / 40 / 48px; +4px on touch screens."],
+  ["type", "text | email | password | search | url | tel | number", "text", "The native input type."],
+  ["prefix / suffix", "ReactNode", "—", "Icon or text inside the box, in text.secondary."],
+  ["clearable", "boolean", "false", "A Clear button while there is a value; focus returns to the input."],
+  ["revealable", "boolean", "false", "Show / hide for type=password (aria-pressed)."],
+  ["value / defaultValue / onValueChange", "string / string / (value) => void", "— / \"\" / —", "Controlled or uncontrolled; Clear calls onValueChange(\"\")."],
+  ["…Field props", "—", "—", "label, helpText, errorText, required, disabled, readOnly."],
+];
+const textareaProps: PropRow[] = [
+  ["size", "sm | md | lg", "md", "Type size and padding, matching TextField."],
+  ["rows", "number", "3", "Visible lines (the starting height with autoResize)."],
+  ["autoResize", "boolean", "false", "Grows with its content; no resize handle."],
+  ["maxLength", "number", "—", "Caps the length and shows n/max under the field, read with the description."],
+  ["value / defaultValue / onValueChange", "string / string / (value) => void", "— / \"\" / —", "Controlled or uncontrolled."],
+  ["…Field props", "—", "—", "label, helpText, errorText, required, disabled, readOnly."],
+];
+const checkboxProps: PropRow[] = [
+  ["size", "sm | md", "md", "16 / 20px box; the label steps body-sm / body-md."],
+  ["checked / defaultChecked / onCheckedChange", "true | false | \"indeterminate\"", "— / false / —", "A press always lands on true or false."],
+  ["label / description", "ReactNode", "—", "The description is a second line in text.secondary, read as the description, not the name."],
+  ["invalid / required / disabled", "boolean", "false", "Standalone checkbox states."],
+  ["CheckboxGroup", "orientation, size, value / defaultValue / onValueChange (string[]), …Field props", "vertical", "A labelled group; each Checkbox needs a value."],
+];
+const radioProps: PropRow[] = [
+  ["size", "sm | md", "md", "On RadioGroup (or one Radio)."],
+  ["orientation", "vertical | horizontal", "vertical", "On RadioGroup. Arrow keys move the selection either way."],
+  ["appearance", "default | card", "default", "card = large selectable tiles (e.g. pricing plans); children add content under the description."],
+  ["value / defaultValue / onValueChange", "string", "—", "On RadioGroup."],
+  ["…Field props", "—", "—", "On RadioGroup: label, helpText, errorText, required, disabled, readOnly."],
+  ["Radio", "value, label, description, disabled", "—", "Must be inside a RadioGroup."],
+];
+const switchProps: PropRow[] = [
+  ["size", "sm | md", "md", "32 × 20 / 40 × 24px track."],
+  ["labelPosition", "start | end", "end", "start puts the label first and the switch at the end of the row."],
+  ["description", "ReactNode", "—", "A second line under the label."],
+  ["checked / defaultChecked / onCheckedChange", "boolean", "— / false / —", "Applies at once — no Save step."],
+  ["disabled", "boolean", "false", ""],
+];
+const selectProps: PropRow[] = [
+  ["size", "sm | md | lg", "md", "32 / 40 / 48px trigger; +4px on touch screens."],
+  ["options", "{ value, label, description?, disabled?, group? }[]", "—", "Options sharing a group are listed under its heading, with a divider between groups."],
+  ["placeholder", "string", "\"Select…\"", "Shown in text.secondary while nothing is selected."],
+  ["value / defaultValue / onValueChange", "string | null", "— / null / —", "The selected option's value."],
+  ["open / defaultOpen / onOpenChange", "boolean", "— / false / —", "Whether the list is open."],
+  ["name", "string", "—", "Submitted through a hidden native select."],
+  ["…Field props", "—", "—", "label, helpText, errorText, required, disabled, readOnly (never opens)."],
+];
+const countries: SelectOption[] = [
+  { value: "us", label: "United States", group: "Americas" },
+  { value: "ca", label: "Canada", group: "Americas" },
+  { value: "br", label: "Brazil", group: "Americas" },
+  { value: "fr", label: "France", group: "Europe" },
+  { value: "de", label: "Germany", group: "Europe" },
+  { value: "ru", label: "Russia", group: "Europe", disabled: true },
+];
+const roles: SelectOption[] = [
+  { value: "viewer", label: "Viewer", description: "Can read and comment" },
+  { value: "editor", label: "Editor", description: "Can change content" },
+  { value: "admin", label: "Admin", description: "Can manage members and billing" },
+];
+const toppingOptions = [["cheese", "Cheese"], ["olives", "Olives"], ["basil", "Basil"]] as const;
+
 function PropsTable({ rows }: { rows: PropRow[] }) {
   return (
     <table className="props-table">
@@ -223,6 +300,8 @@ export function App() {
   const [toastPosition, setToastPosition] = useState<ToastPosition>("bottom-end");
   const [bannerOpen, setBannerOpen] = useState(true);
   const [progress, setProgress] = useState(40);
+  const [toppings, setToppings] = useState<string[]>(["cheese"]);
+  const allToppings: CheckedState = toppings.length === toppingOptions.length ? true : toppings.length ? "indeterminate" : false;
   const [theme, setTheme] = useState(() => document.documentElement.dataset.theme ?? "orange");
   const [mode, setMode] = useState(() =>
     matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
@@ -279,6 +358,13 @@ export function App() {
         <a href="#spinner">Spinner</a>
         <a href="#progress-bar">Progress Bar</a>
         <a href="#skeleton">Skeleton</a>
+        <a href="#field">Field + Label</a>
+        <a href="#text-field">Text Field</a>
+        <a href="#textarea">Textarea</a>
+        <a href="#checkbox">Checkbox</a>
+        <a href="#radio">Radio</a>
+        <a href="#switch">Switch</a>
+        <a href="#select">Select</a>
       </nav>
       <Toaster position={toastPosition} />
 
@@ -1603,6 +1689,392 @@ export function App() {
           <Usage
             dos={["Match the real layout closely, so nothing moves when content arrives.", "Set aria-busy on the region that is loading."]}
             donts={["Use a skeleton for a wait under a few hundred milliseconds.", "Mix skeletons and spinners for the same content."]}
+          />
+        </div>
+      </section>
+      {/* ============ FIELD + LABEL ============ */}
+      <section className="component-doc" id="field">
+        <h1>Field + Label</h1>
+        <p className="dek">One wrapper that wires a <span className="prop-values">label</span>, help text and error text to any control, so every form field reads and behaves the same. TextField, Textarea and Select are built on it and take the same props; wrap your own control in <span className="prop-values">Field</span> to get them too.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Field label="Billing period" helpText="You can change it at any time." required style={{ maxWidth: 360, margin: "0 auto" }}>
+            {(control) => (
+              <ButtonGroup attached aria-labelledby={control["aria-labelledby"]} aria-describedby={control["aria-describedby"]}>
+                <Button defaultPressed>Monthly</Button>
+                <Button defaultPressed={false}>Yearly</Button>
+              </ButtonGroup>
+            )}
+          </Field>
+        </div>
+
+        <div className="doc-section">
+          <h2>Anatomy</h2>
+          <p className="lead">The label is <b>ui.label</b> in <b>text.primary</b>, 8px above the control. Help text steps down to <b>ui.caption</b> in <b>text.secondary</b> — hierarchy from the type role, not a third gray. <b>errorText</b> takes the help text's place in <b>text.danger</b> with an icon, so the state never rests on color alone, and the control is marked <b>aria-invalid</b> and described by it. The * of <b>required</b> is hidden from screen readers; the control's own <b>required</b> is what they announce.</p>
+          <div className="sample-box demo-on-page">
+            <div className="form-grid">
+              <TextField label="Help text" helpText="Shown under the control." />
+              <TextField label="Error text" helpText="Replaced by the error." errorText="Enter a valid email." defaultValue="ada@" />
+              <TextField label="Required" required helpText="The * is not read aloud." />
+            </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Disabled and read-only</h2>
+          <p className="lead"><b>disabled</b> dims the whole field and takes the control out of the tab order. <b>readOnly</b> is for values people need to read or copy but not change: it stays at full contrast and focusable, and swaps the fill and lift for a dashed edge so it never looks disabled.</p>
+          <div className="sample-box demo-on-page">
+            <div className="form-grid">
+              <TextField label="Editable" defaultValue="acct_4417" />
+              <TextField label="Read-only" readOnly defaultValue="acct_4417" helpText="Select and copy it." />
+              <TextField label="Disabled" disabled defaultValue="acct_4417" />
+            </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Label on its own</h2>
+          <p className="lead">When you lay a form out yourself, <b>Label</b> is the same label: <b>required</b> adds the marker, <b>as="span"</b> names a group through <b>aria-labelledby</b>.</p>
+          <div className="sample-box demo-on-page">
+            <Label>Plain label</Label>
+            <Label required>Required label</Label>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={fieldProps} />
+          <h3>Label</h3>
+          <PropsTable rows={labelProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Keep every label visible and short — a noun, not a sentence.", "Say how to fix an error, not just that something is wrong.", "Use readOnly for values people may copy; disabled for ones that don't apply right now."]}
+            donts={["Use a placeholder as the label — it disappears as soon as someone types.", "Show help and error text at the same time; the error replaces the help."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ TEXT FIELD ============ */}
+      <section className="component-doc" id="text-field">
+        <h1>Text Field</h1>
+        <p className="dek">A single-line input. A pill like every other single-line control, on <span className="prop-values">bg.surfaceRaised</span> with a <span className="prop-values">border.strong</span> edge that reaches 3:1 on the page and on surfaces.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <TextField label="Work email" type="email" prefix={<Mail />} placeholder="you@company.com" helpText="We'll send the invite here." className="demo-center" />
+        </div>
+
+        <div className="doc-section">
+          <h2>Sizes</h2>
+          <p className="lead">32, 40 and 48px, like Button, so a field and its submit button line up. Each grows by 4px on touch screens, and sm keeps a 44px hit area.</p>
+          <div className="sample-box demo-on-page" style={{ alignItems: "flex-end" }}>
+            {(["sm", "md", "lg"] as const).map((size) => (
+              <div key={size} style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
+                <TextField size={size} label={`Size ${size}`} placeholder="Email address" className="demo-w200" />
+                <Button size={size}>Join</Button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Prefix, suffix, clear and reveal</h2>
+          <p className="lead"><b>prefix</b> and <b>suffix</b> hold an icon or text inside the box; pressing them puts the caret in the input. <b>clearable</b> shows a Clear button once there is a value. <b>revealable</b> adds Show password (a toggle, <b>aria-pressed</b>). Both are real buttons in the tab order, with a 44px hit area on touch.</p>
+          <div className="sample-box demo-on-page">
+            <div className="form-grid">
+              <TextField label="Search" type="search" prefix={<Search />} placeholder="Search products" clearable defaultValue="Wool hats" />
+              <TextField label="Price" type="number" prefix="$" suffix="USD" defaultValue="49" />
+              <TextField label="Password" type="password" revealable defaultValue="correct horse" />
+            </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>States</h2>
+          <p className="lead">Hover steps the edge 40% toward the text color. Keyboard focus puts the 2px <b>border.focus</b> ring round the whole box, prefix and all. Invalid uses <b>border.danger</b>.</p>
+          <div className="sample-box demo-on-page">
+            <div className="form-grid">
+              <TextField label="Default" placeholder="Placeholder" />
+              <TextField label="Filled" defaultValue="Ada Lovelace" />
+              <TextField label="Invalid" defaultValue="ada@" errorText="Enter a valid email." />
+              <TextField label="Read-only" readOnly defaultValue="Ada Lovelace" />
+              <TextField label="Disabled" disabled defaultValue="Ada Lovelace" />
+            </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={textFieldProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Pick the type that matches the data, so phones show the right keyboard.", "Size the field to the length of the answer you expect.", "Make search fields clearable."]}
+            donts={["Put the label inside as a prefix.", "Use a TextField for more than one line — that's a Textarea."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ TEXTAREA ============ */}
+      <section className="component-doc" id="textarea">
+        <h1>Textarea</h1>
+        <p className="dek">Multi-line input. The same box as TextField, but with <span className="prop-values">radius.card</span> — a tall box is never a pill.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Textarea label="Message" placeholder="How can we help?" helpText="Plain text; links are fine." maxLength={280} className="demo-center" />
+        </div>
+
+        <div className="doc-section">
+          <h2>Length and growth</h2>
+          <p className="lead"><b>maxLength</b> caps the input and shows a count under the field, in tabular figures so it doesn't jitter; the count is part of the description. <b>autoResize</b> grows the box with its content instead of scrolling — its height isn't animated, so the page below doesn't slide.</p>
+          <div className="sample-box demo-on-page">
+            <div className="form-grid">
+              <Textarea label="Bio" maxLength={160} defaultValue="Designer and occasional typesetter." helpText="Shown on your profile." />
+              <Textarea label="Notes" autoResize rows={2} placeholder="Keep typing — I grow." />
+            </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Sizes and states</h2>
+          <p className="lead">sm, md and lg match TextField's type size and padding. Invalid, read-only and disabled look the same as every other field.</p>
+          <div className="sample-box demo-on-page">
+            <div className="form-grid">
+              {(["sm", "md", "lg"] as const).map((size) => <Textarea key={size} size={size} label={`Size ${size}`} rows={2} placeholder="Placeholder" />)}
+              <Textarea label="Invalid" rows={2} errorText="Tell us a little more." />
+              <Textarea label="Read-only" rows={2} readOnly defaultValue="Signed off by legal." />
+              <Textarea label="Disabled" rows={2} disabled defaultValue="Locked" />
+            </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={textareaProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Set rows to the length of answer you expect.", "Show the count when there's a hard limit."]}
+            donts={["Use autoResize in a layout with a fixed height.", "Cut text off silently — use maxLength so the limit is visible."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ CHECKBOX ============ */}
+      <section className="component-doc" id="checkbox">
+        <h1>Checkbox</h1>
+        <p className="dek">A binary choice, or a mixed one for a parent of partly checked children. A native checkbox under a drawn box with <span className="prop-values">radius.subtle</span> — never round, so it never reads as a radio.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Stack gap="xs" style={{ maxWidth: 320, margin: "0 auto" }}>
+            <Checkbox label="All toppings" checked={allToppings} onCheckedChange={(on) => setToppings(on ? toppingOptions.map(([v]) => v) : [])} />
+            <CheckboxGroup label="Toppings" value={toppings} onValueChange={setToppings} style={{ paddingInlineStart: 28 }}>
+              {toppingOptions.map(([value, label]) => <Checkbox key={value} value={value} label={label} />)}
+            </CheckboxGroup>
+          </Stack>
+        </div>
+
+        <div className="doc-section">
+          <h2>States</h2>
+          <p className="lead">On is the <b>bg.accent</b> fill with a <b>text.onAccent</b> mark and a <b>border.accent</b> edge — the fill alone falls under 3:1 on a surface in orange dark, the edge doesn't. Hover adds a soft halo in the text color; keyboard focus rings the box. <b>"indeterminate"</b> shows a dash and is announced as mixed; pressing it checks it.</p>
+          <div className="sample-box demo-on-page column">
+            {(["md", "sm"] as const).map((size) => (
+              <div key={size} style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
+                <Checkbox size={size} label={`Unchecked (${size})`} />
+                <Checkbox size={size} label="Checked" defaultChecked />
+                <Checkbox size={size} label="Indeterminate" defaultChecked="indeterminate" />
+                <Checkbox size={size} label="Invalid" invalid />
+                <Checkbox size={size} label="Disabled" disabled defaultChecked />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Description and groups</h2>
+          <p className="lead"><b>description</b> is a second line, one type step down in <b>text.secondary</b>; it describes the checkbox without becoming part of its name. <b>CheckboxGroup</b> takes the Field props and an array value; <b>errorText</b> marks every box in it.</p>
+          <div className="sample-box demo-on-page" style={{ alignItems: "flex-start", gap: 48 }}>
+            <CheckboxGroup label="Email me about" helpText="You can unsubscribe from any email." defaultValue={["mentions"]}>
+              <Checkbox value="mentions" label="Mentions" description="When someone @mentions you" />
+              <Checkbox value="replies" label="Replies" description="On threads you started" />
+              <Checkbox value="digest" label="Weekly digest" />
+            </CheckboxGroup>
+            <CheckboxGroup label="Agreements" required errorText="Accept the terms to continue." orientation="horizontal">
+              <Checkbox value="terms" label="Terms" />
+              <Checkbox value="privacy" label="Privacy policy" />
+            </CheckboxGroup>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={checkboxProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Use for choices that are applied later, with a Save or Submit.", "Write labels as the positive statement: “Email me”, not “Don't email me”."]}
+            donts={["Use a checkbox for a setting that applies at once — that's a Switch.", "Use checkboxes for one choice out of several — that's a RadioGroup."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ RADIO ============ */}
+      <section className="component-doc" id="radio">
+        <h1>Radio</h1>
+        <p className="dek">One choice from a small set. <span className="prop-values">RadioGroup</span> holds the value and the Field props; each <span className="prop-values">Radio</span> is a native radio, so Tab enters and leaves the group and the arrow keys move the selection.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <RadioGroup label="Delivery" defaultValue="standard" style={{ maxWidth: 320, margin: "0 auto" }}>
+            <Radio value="standard" label="Standard" description="3–5 working days · Free" />
+            <Radio value="express" label="Express" description="Next working day · $9" />
+            <Radio value="pickup" label="Pick up in store" disabled />
+          </RadioGroup>
+        </div>
+
+        <div className="doc-section">
+          <h2>Card</h2>
+          <p className="lead"><b>appearance="card"</b> turns each option into a tile for choices that need room, like pricing plans. The tile's edge is <b>border.strong</b> (it's a control, so it reaches 3:1); selected takes the <b>border.accent</b> edge on the <b>bg.accentSubtle</b> tint, and the focus ring goes round the whole tile. Children add content under the description.</p>
+          <div className="sample-box demo-on-page">
+            <RadioGroup label="Plan" appearance="card" orientation="horizontal" defaultValue="pro" style={{ width: "100%" }}>
+              <Radio value="free" label="Free" description="For personal projects"><Text variant="numeric-md" style={{ marginTop: 8 }}>$0</Text></Radio>
+              <Radio value="pro" label="Pro" description="For growing teams"><Text variant="numeric-md" style={{ marginTop: 8 }}>$12</Text></Radio>
+              <Radio value="enterprise" label="Enterprise" description="SSO and audit logs"><Text variant="numeric-md" style={{ marginTop: 8 }}>Custom</Text></Radio>
+            </RadioGroup>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Orientation, size and states</h2>
+          <p className="lead">Horizontal groups wrap. sm steps the circle to 16px and the label to <b>body-sm</b>. <b>errorText</b> marks every circle with <b>border.danger</b>.</p>
+          <div className="sample-box demo-on-page column">
+            <RadioGroup label="Size" orientation="horizontal" size="sm" defaultValue="m">
+              {["XS", "S", "M", "L", "XL"].map((s) => <Radio key={s} value={s.toLowerCase()} label={s} />)}
+            </RadioGroup>
+            <RadioGroup label="Contact method" orientation="horizontal" required errorText="Choose how we should reach you.">
+              <Radio value="email" label="Email" />
+              <Radio value="phone" label="Phone" />
+            </RadioGroup>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={radioProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Use for 2–6 options that people should see side by side.", "Preselect the safest or most common option when there is one."]}
+            donts={["Use a radio group for more than about six options — use a Select.", "Use a single radio on its own; it can't be unchecked."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ SWITCH ============ */}
+      <section className="component-doc" id="switch">
+        <h1>Switch</h1>
+        <p className="dek">An on/off setting that applies at once. A native checkbox with <span className="prop-values">role="switch"</span>; the thumb slides in <span className="prop-values">motion.normal</span> and simply jumps under reduced motion.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Card style={{ maxWidth: 420, margin: "0 auto" }}>
+            <CardBody>
+              <Stack gap="sm">
+                <Switch label="Email notifications" description="A summary of activity each morning." labelPosition="start" defaultChecked style={{ display: "flex" }} />
+                <Separator />
+                <Switch label="Show my status" labelPosition="start" style={{ display: "flex" }} />
+              </Stack>
+            </CardBody>
+          </Card>
+        </div>
+
+        <div className="doc-section">
+          <h2>States and sizes</h2>
+          <p className="lead">Off is an outlined track with the thumb in <b>text.secondary</b>; on is the accent fill with the thumb in <b>text.onAccent</b>. sm is a 32 × 20 track.</p>
+          <div className="sample-box demo-on-page column">
+            {(["md", "sm"] as const).map((size) => (
+              <div key={size} style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
+                <Switch size={size} label={`Off (${size})`} />
+                <Switch size={size} label="On" defaultChecked />
+                <Switch size={size} label="Disabled" disabled />
+                <Switch size={size} label="Disabled on" disabled defaultChecked />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Label position</h2>
+          <p className="lead"><b>end</b> (the default) reads like a checkbox. <b>start</b> puts the label first and pushes the switch to the end of the row — the settings-list layout.</p>
+          <div className="sample-box demo-on-page column">
+            <Switch label="Label at the end" defaultChecked />
+            <Switch label="Label at the start" labelPosition="start" defaultChecked style={{ display: "flex", width: 320 }} />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={switchProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Use for settings that take effect immediately.", "Label the setting, not the state: “Notifications”, not “On”."]}
+            donts={["Put a switch in a form that needs a Submit — use a Checkbox.", "Change other parts of the form when it flips, without saying so."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ SELECT ============ */}
+      <section className="component-doc" id="select">
+        <h1>Select</h1>
+        <p className="dek">Choose one option from a list. The trigger is the field box as a button; the list is a React Aria listbox on an overlay surface, with arrow keys, Home/End, type-ahead and Escape. A hidden native select submits the value with a form.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Select label="Country" options={countries} helpText="Where your business is registered." style={{ maxWidth: 320, margin: "0 auto" }} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Groups and descriptions</h2>
+          <p className="lead">Options that share a <b>group</b> are listed under its heading (<b>ui.overline</b>), with a divider between groups. A <b>description</b> is a second line in <b>text.secondary</b>; two-line options take the card radius instead of a pill. The selected option has an accent check; keyboard focus adds an inset ring.</p>
+          <div className="sample-box demo-on-page" style={{ alignItems: "flex-start" }}>
+            <Select label="Country" options={countries} defaultValue="fr" style={{ width: 260 }} />
+            <Select label="Role" options={roles} defaultValue="editor" style={{ width: 260 }} />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Sizes and states</h2>
+          <p className="lead">The same 32 / 40 / 48px as TextField and Button. <b>readOnly</b> keeps the trigger focusable but never opens it.</p>
+          <div className="sample-box demo-on-page">
+            <div className="form-grid">
+              {(["sm", "md", "lg"] as const).map((size) => <Select key={size} size={size} label={`Size ${size}`} options={roles} />)}
+              <Select label="Invalid" options={roles} required errorText="Choose a role." />
+              <Select label="Read-only" options={roles} readOnly defaultValue="admin" />
+              <Select label="Disabled" options={roles} disabled defaultValue="viewer" />
+            </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={selectProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Use for 7 or more options, or when space is tight.", "Order options in a way people expect — alphabetical, or most used first."]}
+            donts={["Use a Select for 2–5 options people should compare — use a RadioGroup.", "Make people scroll a long list to find one item — a searchable list is a Combobox."]}
           />
         </div>
       </section>

@@ -78,26 +78,45 @@ export type { SpinnerProps, SpinnerOwnProps, SpinnerSize, SpinnerTone } from "./
 export { ProgressBar } from "./components/ProgressBar/ProgressBar";
 export type { ProgressBarProps, ProgressBarOwnProps, ProgressBarSize, ProgressBarIntent } from "./components/ProgressBar/ProgressBar";
 
-export { Checkbox } from "./components/Checkbox/Checkbox";
-export type { CheckboxProps, CheckboxOwnProps } from "./components/Checkbox/Checkbox";
+export { Field } from "./components/Field/Field";
+export type { FieldComponentProps, FieldOwnProps, FieldProps, FieldControlProps } from "./components/Field/Field";
+
+export { Checkbox, CheckboxGroup } from "./components/Checkbox/Checkbox";
+export type {
+  CheckboxProps,
+  CheckboxOwnProps,
+  CheckboxSize,
+  CheckedState,
+  CheckboxGroupProps,
+  CheckboxGroupOwnProps,
+  CheckboxGroupOrientation,
+} from "./components/Checkbox/Checkbox";
 
 export { Switch } from "./components/Switch/Switch";
-export type { SwitchProps, SwitchOwnProps } from "./components/Switch/Switch";
+export type { SwitchProps, SwitchOwnProps, SwitchSize, SwitchLabelPosition } from "./components/Switch/Switch";
 
-export { Radio } from "./components/Radio/Radio";
-export type { RadioProps, RadioOwnProps } from "./components/Radio/Radio";
+export { Radio, RadioGroup } from "./components/Radio/Radio";
+export type {
+  RadioProps,
+  RadioOwnProps,
+  RadioSize,
+  RadioGroupProps,
+  RadioGroupOwnProps,
+  RadioGroupOrientation,
+  RadioGroupAppearance,
+} from "./components/Radio/Radio";
 
 export { TextField } from "./components/TextField/TextField";
-export type { TextFieldProps, TextFieldOwnProps } from "./components/TextField/TextField";
+export type { TextFieldProps, TextFieldOwnProps, TextFieldSize, TextFieldType } from "./components/TextField/TextField";
 
 export { Textarea } from "./components/Textarea/Textarea";
-export type { TextareaProps, TextareaOwnProps } from "./components/Textarea/Textarea";
+export type { TextareaProps, TextareaOwnProps, TextareaSize } from "./components/Textarea/Textarea";
 
 export { Alert } from "./components/Alert/Alert";
 export type { AlertProps, AlertOwnProps, AlertIntent, AlertAppearance } from "./components/Alert/Alert";
 
 export { Select } from "./components/Select/Select";
-export type { SelectProps, SelectOwnProps } from "./components/Select/Select";
+export type { SelectProps, SelectOwnProps, SelectOption, SelectSize } from "./components/Select/Select";
 
 export { Tabs } from "./components/Tabs/Tabs";
 export type { TabsProps, TabsOwnProps, TabItem } from "./components/Tabs/Tabs";

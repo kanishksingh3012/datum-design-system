@@ -1,0 +1,41 @@
+/* label → control → help or error text; the control fills the width it is given */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+  min-width: 0;
+}
+
+.root[data-disabled] {
+  opacity: 0.5;
+}
+
+.messages {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-tight);
+  margin-top: calc(var(--space-compact) / -2);
+}
+
+.help,
+.error {
+  margin: 0;
+  font-family: var(--type-ui-caption-family);
+  font-size: var(--type-ui-caption-size);
+  line-height: var(--type-ui-caption-lineHeight);
+  color: var(--color-text-secondary);
+}
+
+.error {
+  display: flex;
+  gap: calc(var(--space-compact) / 2);
+  color: var(--color-text-danger);
+}
+
+.errorIcon {
+  flex-shrink: 0;
+  width: 1.25em;
+  height: 1.25em;
+  margin-top: 0.125em;
+}

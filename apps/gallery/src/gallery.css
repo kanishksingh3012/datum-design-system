@@ -173,3 +173,8 @@ body {
 .demo-zoom .demo-outline { padding: 16px 24px; }
 .demo-media { height: 120px; background: var(--color-bg-accentSubtle); }
 .demo-on-page { background: var(--color-bg-page); border: 1px solid var(--color-border-subtle); }
+
+/* forms: a responsive grid of fields, and fixed widths for inline demos */
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; width: 100%; align-items: start; }
+.demo-center { max-width: 360px; margin: 0 auto; }
+.demo-w200 { width: 200px; }

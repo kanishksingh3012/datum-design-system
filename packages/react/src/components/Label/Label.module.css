@@ -1,6 +1,14 @@
 .root {
-  font-family: var(--font-body);
+  display: inline-flex;
+  gap: calc(var(--space-compact) / 2);
+  font-family: var(--type-ui-label-family);
   font-size: var(--type-ui-label-size);
   font-weight: var(--type-ui-label-weight);
+  line-height: var(--type-ui-label-lineHeight);
+  letter-spacing: var(--type-ui-label-tracking);
   color: var(--color-text-primary);
+}
+
+.required {
+  color: var(--color-text-danger);
 }

@@ -1,0 +1,137 @@
+/* Shared by Checkbox, Radio and Switch: a <label> row with a hidden native
+   input, a drawn indicator ([data-control]) and the label text. Composed in
+   with `composes: … from "../Field/choice.module.css"`. */
+.choice {
+  --_box: 20px;
+  --_pad-y: 0px;
+
+  position: relative;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-compact);
+  box-sizing: border-box;
+  padding-block: var(--_pad-y);
+  font-family: var(--type-body-md-family);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-lineHeight);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.choice[data-size="sm"] {
+  --_box: 16px;
+  font-size: var(--type-body-sm-size);
+}
+.choice[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* inside a disabled group, the group is already dimmed */
+[data-disabled] .choice[data-disabled] {
+  opacity: 1;
+}
+
+/* The native input stays in the page (and in the tab order) on top of the
+   indicator, invisible and untouchable: presses land on the label. */
+.input {
+  position: absolute;
+  top: calc(var(--_pad-y) + (1lh - var(--_box)) / 2);
+  left: 0;
+  width: var(--_box);
+  height: var(--_box);
+  margin: 0;
+  font: inherit;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.indicator {
+  position: relative;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--_box);
+  height: var(--_box);
+  margin-top: calc((1lh - var(--_box)) / 2);
+  color: var(--color-text-onAccent);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: var(--elevation-field);
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    border-color var(--motion-fast) var(--motion-easing),
+    box-shadow var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+
+/* hover: a soft halo in the text color; an empty indicator's edge also steps toward it */
+.choice:hover:not([data-disabled]):not([data-readonly]) .indicator {
+  box-shadow: var(--elevation-field), 0 0 0 calc(var(--_box) / 4) color-mix(in oklab, var(--color-text-primary) 8%, transparent);
+}
+.choice:hover:not([data-disabled]):not([data-readonly]):not([data-state="checked"]):not([data-state="indeterminate"]) .indicator {
+  border-color: color-mix(in oklab, var(--color-border-strong), var(--color-text-primary) 40%);
+}
+.choice:active:not([data-disabled]):not([data-readonly]) .indicator {
+  transform: scale(0.98);
+}
+
+.choice[data-invalid]:not([data-state="checked"]):not([data-state="indeterminate"]) .indicator {
+  border-color: var(--color-border-danger);
+}
+
+/* on: the accent fill with its on-color mark. The edge is border.accent, not the
+   fill color: bg.accent alone falls under 3:1 on bg.surface in orange dark. */
+.choice[data-state="checked"] .indicator,
+.choice[data-state="indeterminate"] .indicator {
+  background: var(--color-bg-accent);
+  border-color: var(--color-border-accent);
+}
+
+.input:focus-visible + .indicator {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.description {
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+  color: var(--color-text-secondary);
+}
+.choice[data-size="sm"] .description {
+  font-size: var(--type-ui-caption-size);
+  line-height: var(--type-ui-caption-lineHeight);
+}
+
+/* a group's options: stacked, or wrapping in a row */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+}
+.options[data-orientation="horizontal"] {
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: var(--space-default);
+}
+
+@media (pointer: coarse) {
+  /* every row is at least 44px tall, with the text centred in it */
+  .choice {
+    --_pad-y: max(0px, calc((var(--interaction-minTarget) - 1lh) / 2));
+  }
+  .options {
+    gap: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .choice:active:not([data-disabled]):not([data-readonly]) .indicator {
+    transform: none;
+  }
+}

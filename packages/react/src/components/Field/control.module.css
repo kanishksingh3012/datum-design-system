@@ -1,0 +1,93 @@
+/* The box every single-line field draws: TextField's input box, Select's
+   trigger, and (with overrides) Textarea. Composed into each with
+   `composes: control from "../Field/control.module.css"`. */
+.control {
+  --_height: 40px;
+  --_pad: var(--space-default);
+  --_edge: var(--color-border-strong);
+
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-compact);
+  width: 100%;
+  min-height: var(--_height);
+  margin: 0;
+  padding: 0 var(--_pad);
+  font-family: var(--type-body-md-family);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-lineHeight);
+  color: var(--color-text-primary);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid var(--_edge);
+  border-radius: var(--radius-control);
+  box-shadow: var(--elevation-field);
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    border-color var(--motion-fast) var(--motion-easing),
+    box-shadow var(--motion-fast) var(--motion-easing);
+}
+
+.control[data-invalid] {
+  --_edge: var(--color-border-danger);
+}
+
+/* hover steps the edge toward the text color (there is no border hover token) */
+.control:hover:not([data-disabled]):not([data-readonly]) {
+  border-color: color-mix(in oklab, var(--_edge), var(--color-text-primary) 40%);
+}
+
+/* the ring goes on the box, whether the box is the control or wraps an <input> */
+.control:focus-visible,
+.control:has(> input:focus-visible) {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* read-only: full contrast, but a dashed edge and no fill or lift */
+.control[data-readonly] {
+  border-style: dashed;
+  background: transparent;
+  box-shadow: none;
+}
+
+.control[data-disabled] {
+  cursor: not-allowed;
+}
+
+/* ---------- sizes: 32 / 40 / 48, +4px on touch ---------- */
+.control[data-size="sm"] {
+  --_height: 32px;
+  --_pad: var(--space-tight);
+  font-size: var(--type-body-sm-size);
+}
+.control[data-size="lg"] {
+  --_height: 48px;
+  --_pad: calc(var(--space-default) + var(--space-compact) / 2);
+  font-size: var(--type-body-lg-size);
+}
+
+@media (pointer: coarse) {
+  .control {
+    --_height: var(--interaction-minTarget);
+  }
+  .control[data-size="sm"] {
+    --_height: 36px;
+  }
+  .control[data-size="lg"] {
+    --_height: 52px;
+  }
+  /* the hit area is never under 44px tall; it sits under the input, so presses on it land on the box */
+  .control::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: max(100%, var(--interaction-minTarget));
+    transform: translateY(-50%);
+  }
+}

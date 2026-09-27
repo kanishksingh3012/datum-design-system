@@ -1,32 +1,71 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Radio } from "./Radio";
+import { Radio, RadioGroup, type RadioGroupProps } from "./Radio";
 
-describe("Radio", () => {
-  it("renders a real radio input with the label as its accessible name", () => {
-    render(<Radio name="plan" value="basic" label="Basic" />);
-    expect(screen.getByRole("radio", { name: "Basic" })).toBeInTheDocument();
+const Plans = (props: Partial<RadioGroupProps>) => (
+  <RadioGroup label="Plan" {...props}>
+    <Radio value="free" label="Free" description="For personal projects" />
+    <Radio value="pro" label="Pro" />
+    <Radio value="team" label="Team" disabled />
+  </RadioGroup>
+);
+const row = (el: HTMLElement) => el.closest("label")!;
+
+describe("RadioGroup", () => {
+  it("is a labelled radiogroup of native radios sharing one name", () => {
+    render(<Plans />);
+    const group = screen.getByRole("radiogroup", { name: "Plan" });
+    const radios = screen.getAllByRole("radio");
+    expect(group).toHaveAttribute("aria-orientation", "vertical");
+    expect(radios[0].tagName).toBe("INPUT");
+    expect(radios[0].getAttribute("name")).toBe(radios[1].getAttribute("name"));
   });
 
-  it("only allows one option checked per shared name group", async () => {
-    const user = userEvent.setup();
-    render(
-      <>
-        <Radio name="plan" value="basic" label="Basic" defaultChecked />
-        <Radio name="plan" value="pro" label="Pro" />
-      </>
-    );
-    const basic = screen.getByRole("radio", { name: "Basic" });
-    const pro = screen.getByRole("radio", { name: "Pro" });
-    expect(basic).toBeChecked();
-    await user.click(pro);
-    expect(pro).toBeChecked();
-    expect(basic).not.toBeChecked();
+  it("selects on click and reports the value", async () => {
+    const onValueChange = vi.fn();
+    render(<Plans onValueChange={onValueChange} />);
+    await userEvent.click(screen.getByText("Pro"));
+    expect(screen.getByRole("radio", { name: "Pro" })).toBeChecked();
+    expect(onValueChange).toHaveBeenCalledWith("pro");
+    expect(row(screen.getByRole("radio", { name: "Pro" }))).toHaveAttribute("data-state", "checked");
   });
 
-  it("respects the disabled prop", () => {
-    render(<Radio name="plan" value="team" label="Team" disabled />);
-    expect(screen.getByRole("radio", { name: "Team" })).toBeDisabled();
+  it("moves the selection with arrow keys, skipping disabled options", async () => {
+    render(<Plans defaultValue="free" />);
+    await userEvent.tab();
+    expect(screen.getByRole("radio", { name: "Free" })).toHaveFocus();
+    await userEvent.keyboard("{ArrowDown}");
+    expect(screen.getByRole("radio", { name: "Pro" })).toBeChecked();
+    await userEvent.keyboard("{ArrowDown}");
+    expect(screen.getByRole("radio", { name: "Free" })).toBeChecked();
+  });
+
+  it("follows value when controlled", async () => {
+    render(<Plans value="free" />);
+    await userEvent.click(screen.getByText("Pro"));
+    expect(screen.getByRole("radio", { name: "Free" })).toBeChecked();
+  });
+
+  it("passes size, appearance and orientation down", () => {
+    render(<Plans size="sm" appearance="card" orientation="horizontal" />);
+    const pro = row(screen.getByRole("radio", { name: "Pro" }));
+    expect(pro).toHaveAttribute("data-size", "sm");
+    expect(pro).toHaveAttribute("data-appearance", "card");
+    expect(pro).toHaveAttribute("data-control");
+    expect(screen.getByRole("radiogroup")).toHaveAttribute("aria-orientation", "horizontal");
+  });
+
+  it("describes an option with its description and the group with error text", () => {
+    render(<Plans helpText="Change any time" errorText="Choose a plan" required />);
+    expect(screen.getByRole("radio", { name: "Free" })).toHaveAccessibleDescription(/For personal projects/);
+    expect(screen.getByRole("radiogroup")).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByRole("radiogroup")).toHaveAccessibleDescription("Choose a plan");
+    expect(screen.getByRole("radiogroup")).toHaveAttribute("aria-required", "true");
+  });
+
+  it("throws outside a RadioGroup", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(() => render(<Radio value="x" label="X" />)).toThrow(/inside a RadioGroup/);
   });
 });

@@ -809,9 +809,14 @@
               "readOnly",
               "boolean",
               "Visibly distinct from disabled"
+            ],
+            [
+              "children",
+              "element · (control) => ReactNode",
+              "Field only: the control; a function receives id + aria props"
             ]
           ],
-          "beh": "Native"
+          "beh": "React Aria (useField)"
         },
         {
           "n": "TextField",
@@ -847,6 +852,12 @@
               "boolean",
               "false",
               "Show/hide for passwords"
+            ],
+            [
+              "value / defaultValue / onValueChange",
+              "string",
+              "\"\"",
+              ""
             ],
             [
               "…Field props",
@@ -887,6 +898,12 @@
               "Shows a counter"
             ],
             [
+              "value / defaultValue / onValueChange",
+              "string",
+              "\"\"",
+              ""
+            ],
+            [
               "…Field props",
               "—",
               "—",
@@ -910,7 +927,7 @@
               "checked / defaultChecked / onCheckedChange",
               "true · false · \"indeterminate\"",
               "false",
-              ""
+              "A press lands on true or false; the checked edge is border.accent"
             ],
             [
               "description",
@@ -920,12 +937,12 @@
             ],
             [
               "CheckboxGroup",
-              "orientation, errorText",
+              "orientation, size, value / defaultValue / onValueChange (string[]), …Field props",
               "vertical",
               ""
             ]
           ],
-          "beh": "Native"
+          "beh": "Native input + React Aria (useCheckbox)"
         },
         {
           "n": "Radio",
@@ -949,9 +966,15 @@
               "default · card",
               "default",
               "card = large selectable tiles (e.g. pricing plans)"
+            ],
+            [
+              "value / defaultValue / onValueChange",
+              "string",
+              "—",
+              "On RadioGroup, with …Field props"
             ]
           ],
-          "beh": "Native"
+          "beh": "Native input + React Aria (useRadio)"
         },
         {
           "n": "Switch",
@@ -975,9 +998,15 @@
               "string",
               "—",
               ""
+            ],
+            [
+              "checked / defaultChecked / onCheckedChange",
+              "boolean",
+              "false",
+              ""
             ]
           ],
-          "beh": "Native"
+          "beh": "Native input + React Aria (useSwitch)"
         },
         {
           "n": "Select",
@@ -1000,6 +1029,18 @@
               "placeholder",
               "string",
               "\"Select…\"",
+              ""
+            ],
+            [
+              "value / defaultValue / onValueChange",
+              "string | null",
+              "null",
+              ""
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "false",
               ""
             ],
             [

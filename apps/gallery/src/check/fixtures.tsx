@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
 import {
   Accordion, AccordionItem, Alert, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader,
-  Container, Grid, Heading, Link, ProgressBar, Section, Separator, Skeleton, Spinner, Stack, Text, Toaster, toast,
+  Checkbox, CheckboxGroup, Container, Field, Grid, Heading, Label, Link, ProgressBar, Radio, RadioGroup, Section, Select, Separator,
+  Skeleton, Spinner, Stack, Switch, Text, TextField, Textarea, Toaster, toast, type SelectOption,
 } from "@datum-design/react";
-import { AlignCenter, AlignLeft, AlignRight, Plus } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, Mail, Plus, Search } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
 const appearances = ["solid", "soft", "outline", "ghost"] as const;
@@ -18,6 +19,14 @@ const textTones = ["primary", "secondary", "accent", "danger", "success", "warni
 const feedbackIntents = ["info", "success", "warning", "danger", "neutral"] as const;
 let toastsSeeded = false;
 const box = { background: "var(--color-bg-surface)", padding: "var(--space-compact)" };
+const narrow = { maxWidth: 360 };
+/** Measures every piece of text inside (label, value, help, error, counter). */
+const Deep = ({ children }: { children: ReactNode }) => <div data-check-text="deep" style={narrow}>{children}</div>;
+const countries: SelectOption[] = [
+  { value: "us", label: "United States", group: "Americas" },
+  { value: "ca", label: "Canada", group: "Americas" },
+  { value: "fr", label: "France", group: "Europe" },
+];
 
 /** Every state the combo checker renders, keyed by component name. */
 export const fixtures: Record<string, () => ReactNode> = {
@@ -414,6 +423,132 @@ export const fixtures: Record<string, () => ReactNode> = {
       <div className="row">
         <Skeleton shape="circle" />
         <Skeleton shape="rect" width={240} height={96} animated={false} />
+      </div>
+    </>
+  ),
+  Label: () => (
+    <div className="row">
+      <Label htmlFor="check-label-a" data-check-text="deep">Plain label</Label>
+      <Label htmlFor="check-label-b" required data-check-text="deep">Required label</Label>
+    </div>
+  ),
+  Field: () => (
+    <>
+      <Field label="Billing period" helpText="Change it any time." required data-check-text="deep" style={narrow}>
+        {(control) => (
+          <ButtonGroup attached aria-labelledby={control["aria-labelledby"]} aria-describedby={control["aria-describedby"]}>
+            <Button pressed>Monthly</Button>
+            <Button pressed={false}>Yearly</Button>
+          </ButtonGroup>
+        )}
+      </Field>
+      <Field label="Seats" errorText="Choose at least one seat." data-check-text="deep" style={narrow}>
+        {(control) => (
+          <ButtonGroup attached aria-labelledby={control["aria-labelledby"]}>
+            <Button pressed={false}>1</Button>
+            <Button pressed={false}>5</Button>
+          </ButtonGroup>
+        )}
+      </Field>
+    </>
+  ),
+  TextField: () => (
+    <>
+      {sizes.map((size) => (
+        <Deep key={size}><TextField size={size} label={`Name ${size}`} defaultValue="Ada Lovelace" helpText="As it appears on your card." /></Deep>
+      ))}
+      <Deep><TextField label="Search" placeholder="Search products" prefix={<Search />} clearable defaultValue="hats" /></Deep>
+      <Deep><TextField label="Email" type="email" prefix={<Mail />} suffix="@datum.dev" required defaultValue="ada" /></Deep>
+      <Deep><TextField label="Password" type="password" revealable defaultValue="hunter22" errorText="Use at least 12 characters." /></Deep>
+      <Deep><TextField label="Account ID" readOnly defaultValue="acct_4417" /></Deep>
+      <Deep><TextField label="Disabled" disabled defaultValue="Can't edit" /></Deep>
+      <div style={box}>
+        <Deep><TextField label="On a surface" defaultValue="Value" /></Deep>
+      </div>
+    </>
+  ),
+  Textarea: () => (
+    <>
+      {sizes.map((size) => (
+        <Deep key={size}><Textarea size={size} label={`Message ${size}`} defaultValue="Hello there" helpText="Plain text only." maxLength={200} /></Deep>
+      ))}
+      <Deep><Textarea label="Bio" errorText="Tell us a little more." autoResize /></Deep>
+      <Deep><Textarea label="Notes" readOnly defaultValue="Read-only notes" /></Deep>
+      <div style={box}>
+        <Deep><Textarea label="On a surface" rows={2} /></Deep>
+      </div>
+    </>
+  ),
+  Checkbox: () => (
+    <>
+      {(["md", "sm"] as const).map((size) => (
+        <div key={size} className="row">
+          <Checkbox size={size} label={`Unchecked ${size}`} description="A second line of detail." />
+          <Checkbox size={size} label={`Checked ${size}`} defaultChecked />
+          <Checkbox size={size} label={`Mixed ${size}`} defaultChecked="indeterminate" />
+          <Checkbox size={size} label={`Invalid ${size}`} invalid />
+        </div>
+      ))}
+      <CheckboxGroup label="Notify me about" helpText="Pick any." defaultValue={["mentions"]} orientation="horizontal" data-check-text="deep">
+        <Checkbox value="mentions" label="Mentions" description="When someone @s you" />
+        <Checkbox value="replies" label="Replies" />
+        <Checkbox value="digest" label="Weekly digest" disabled />
+      </CheckboxGroup>
+      <CheckboxGroup label="Required" errorText="Pick at least one." data-check-text="deep">
+        <Checkbox value="a" label="Option A" />
+      </CheckboxGroup>
+      <div className="row" style={box}>
+        <Checkbox label="On a surface" />
+        <Checkbox label="Checked on a surface" defaultChecked />
+      </div>
+    </>
+  ),
+  Radio: () => (
+    <>
+      {(["md", "sm"] as const).map((size) => (
+        <RadioGroup key={size} size={size} label={`Delivery ${size}`} defaultValue="standard" orientation="horizontal" helpText="Arrives in 3–5 days." data-check-text="deep">
+          <Radio value="standard" label="Standard" />
+          <Radio value="express" label="Express" description="Next day" />
+          <Radio value="pickup" label="Pickup" disabled />
+        </RadioGroup>
+      ))}
+      <RadioGroup label="Plan" appearance="card" orientation="horizontal" defaultValue="pro" errorText="Plans change next cycle." data-check-text="deep">
+        <Radio value="free" label="Free" description="For personal projects" />
+        <Radio value="pro" label="Pro" description="For growing teams" />
+      </RadioGroup>
+      <div style={box}>
+        <RadioGroup label="On a surface" defaultValue="a" orientation="horizontal">
+          <Radio value="a" label="Selected" />
+          <Radio value="b" label="Not selected" />
+        </RadioGroup>
+      </div>
+    </>
+  ),
+  Switch: () => (
+    <>
+      {(["md", "sm"] as const).map((size) => (
+        <div key={size} className="row">
+          <Deep><Switch size={size} label={`Off ${size}`} description="Applies at once." /></Deep>
+          <Switch size={size} label={`On ${size}`} defaultChecked />
+        </div>
+      ))}
+      <Deep><Switch label="Label at the start" labelPosition="start" defaultChecked style={{ display: "flex" }} /></Deep>
+      <div className="row" style={box}>
+        <Switch label="Off on a surface" />
+        <Switch label="On on a surface" defaultChecked />
+      </div>
+    </>
+  ),
+  Select: () => (
+    <>
+      {sizes.map((size) => (
+        <Select key={size} size={size} label={`Country ${size}`} options={countries} defaultValue="fr" helpText="Where you're based." data-check-text="deep" style={narrow} />
+      ))}
+      <Select label="Placeholder" options={countries} required style={narrow} />
+      <Select label="Invalid" options={countries} errorText="Choose a country." data-check-text="deep" style={narrow} />
+      <Select label="Read-only" options={countries} defaultValue="ca" readOnly style={narrow} />
+      <div style={box}>
+        <Select label="On a surface" options={countries} style={narrow} />
       </div>
     </>
   ),

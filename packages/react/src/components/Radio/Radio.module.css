@@ -1,55 +1,81 @@
 .root {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  cursor: pointer;
-  min-height: var(--interaction-minTarget);
+  composes: choice from "../Field/choice.module.css";
 }
-.root input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+.input {
+  composes: input from "../Field/choice.module.css";
 }
+.text {
+  composes: text from "../Field/choice.module.css";
+}
+.description {
+  composes: description from "../Field/choice.module.css";
+}
+.options {
+  composes: options from "../Field/choice.module.css";
+}
+
+/* on: the accent fill with a dot in its on-color */
 .circle {
-  width: 18px;
-  height: 18px;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  border: 1.5px solid var(--color-border-strong);
-  background: var(--color-bg-page);
-  position: relative;
-  transition: border-color var(--motion-fast) var(--motion-easing);
+  composes: indicator from "../Field/choice.module.css";
+  border-radius: var(--radius-pill);
 }
 .circle::after {
   content: "";
-  position: absolute;
-  inset: 4px;
-  border-radius: 50%;
-  background: var(--color-bg-accent);
-  opacity: 0;
-  transition: opacity var(--motion-fast) var(--motion-easing);
+  width: 40%;
+  height: 40%;
+  border-radius: var(--radius-pill);
+  background: transparent;
 }
-.root input:checked ~ .circle {
-  border-color: var(--color-bg-accent);
+.root[data-state="checked"] .circle::after {
+  background: var(--color-text-onAccent);
 }
-.root input:checked ~ .circle::after {
-  opacity: 1;
+
+/* ---------- card: the whole option is a tile ---------- */
+.options[data-appearance="card"] {
+  gap: var(--space-tight);
 }
-.root input:focus-visible ~ .circle {
+.options[data-appearance="card"][data-orientation="horizontal"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.root[data-appearance="card"] {
+  --_pad-y: var(--space-default);
+  display: flex;
+  gap: var(--space-tight);
+  padding-inline: var(--space-default);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-field);
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    border-color var(--motion-fast) var(--motion-easing),
+    box-shadow var(--motion-fast) var(--motion-easing);
+}
+.root[data-appearance="card"] .input {
+  left: var(--space-default);
+}
+.root[data-appearance="card"]:hover:not([data-disabled]):not([data-readonly]) {
+  background: color-mix(in oklab, var(--color-bg-surfaceRaised), var(--color-text-primary) 4%);
+}
+/* the ring goes round the tile, not the circle */
+.root[data-appearance="card"] .input:focus-visible + .circle {
+  outline: none;
+}
+.root[data-appearance="card"]:has(.input:focus-visible) {
   outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
 }
-.root input:disabled ~ .circle {
-  opacity: 0.5;
+/* selected: the accent edge (an inset ring adds a second pixel without moving anything) on the accent tint */
+.root[data-appearance="card"][data-state="checked"] {
+  background: var(--color-bg-accentSubtle);
+  border-color: var(--color-border-accent);
+  box-shadow: inset 0 0 0 1px var(--color-border-accent);
 }
-.label {
-  font-size: var(--type-body-md-size);
-  color: var(--color-text-primary);
+.root[data-appearance="card"][data-state="checked"]:hover:not([data-disabled]):not([data-readonly]) {
+  background: var(--color-bg-accentSubtleHover);
+}
+.root[data-appearance="card"] .label {
+  font-weight: var(--type-ui-label-weight);
 }

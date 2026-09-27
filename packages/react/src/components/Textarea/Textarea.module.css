@@ -1,50 +1,39 @@
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  max-width: 280px;
-  width: 100%;
-}
-.label {
-  font-size: var(--type-ui-label-size);
-  font-weight: var(--type-ui-label-weight);
-  color: var(--color-text-primary);
-}
-.input {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  color: var(--color-text-primary);
-  background: var(--color-bg-page);
-  border: 1px solid var(--color-border-default);
+/* The field box, but multi-line: radius.card, never a pill. */
+.textarea {
+  composes: control from "../Field/control.module.css";
+  --_pad-block: calc(var(--space-compact) + var(--space-compact) / 4);
+
+  display: block;
+  min-height: 0;
+  padding: var(--_pad-block) var(--_pad);
   border-radius: var(--radius-card);
-  padding: var(--space-compact) var(--space-default);
-  min-height: 96px;
   resize: vertical;
-  transition: border-color var(--motion-fast) var(--motion-easing);
 }
-.input::placeholder {
-  color: var(--color-text-disabled);
-}
-.input:hover:not(:disabled) {
-  border-color: var(--color-border-strong);
-}
-.input:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 1px;
-  border-color: var(--color-border-focus);
-}
-.input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.help {
-  font-size: var(--type-ui-caption-size);
+.textarea::placeholder {
   color: var(--color-text-secondary);
-  margin: 0;
+  opacity: 1;
 }
-.error .input {
-  border-color: var(--color-border-danger);
+.textarea[data-size="sm"] {
+  --_pad-block: calc(var(--space-compact) * 0.75);
 }
-.error .help {
-  color: var(--color-text-danger);
+.textarea[data-size="lg"] {
+  --_pad-block: var(--space-tight);
+}
+.textarea[data-auto-resize] {
+  resize: none;
+  overflow: hidden;
+}
+.textarea[data-disabled],
+.textarea[data-readonly] {
+  resize: none;
+}
+
+.counter {
+  margin-left: auto;
+  font-family: var(--type-ui-caption-family);
+  font-size: var(--type-ui-caption-size);
+  line-height: var(--type-ui-caption-lineHeight);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
 }
