@@ -5,11 +5,13 @@ All notable changes to this project are recorded here. Format loosely follows [K
 ## [Unreleased]
 
 ### Added
+- Attached ButtonGroup: the thumb slides between segments (200ms, `motion.normal`). It is re-measured on resize and whenever `aria-pressed` changes, and it doesn't animate when reduced motion is set.
 - ButtonGroup `attached`: one track with no lines between segments; the pressed segment is a raised thumb. The track is a tint of the text color, so it shows on the page and on surfaces in both modes.
 - ButtonGroup `size`, `intent`, `appearance` pass down to every child Button through context. A Button's own prop wins.
 - A ButtonGroup fixture for the combo checker, including groups placed on `bg.surface`.
 
 ### Changed
+- Orange primary buttons use **white** text, like navy. `bg.accent` moves from orange-500 to orange-700 `#B34210` (white 5.67:1), hover orange-800, active orange-900. `text.onAccent` is now white.
 - ButtonGroup hugs its content. Vertical items share the widest item's width, and a vertical track's segments use `radius.card` minus the inset, so their corners are concentric with the track. The old version used hard straight joins, and its vertical form had pill corners.
 - `border.strong` is now mode-aware: navy slate-600 / slate-400, orange stone-500 / stone-400. It previously failed 3:1 on `bg.surface` in orange dark and in navy light and dark.
 - Navy light-mode accent fill: navy-900 → navy-700 (hover navy-600, active navy-800), so accent and ink buttons are distinct. White on it is 7.2:1.

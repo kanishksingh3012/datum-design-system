@@ -97,4 +97,28 @@ describe("ButtonGroup", () => {
     expect(outside).toHaveAttribute("data-size", "md");
     expect(outside).not.toHaveAttribute("data-group");
   });
+
+  it("draws one sliding thumb only when attached and a segment is pressed", () => {
+    const { container, rerender } = render(
+      <ButtonGroup attached>
+        <Button pressed onPressedChange={() => {}}>
+          Day
+        </Button>
+        <Button pressed={false} onPressedChange={() => {}}>
+          Week
+        </Button>
+      </ButtonGroup>
+    );
+    const thumbs = () => container.querySelectorAll('[role="group"] > span[aria-hidden="true"]');
+    expect(thumbs()).toHaveLength(1);
+
+    rerender(
+      <ButtonGroup>
+        <Button pressed onPressedChange={() => {}}>
+          Day
+        </Button>
+      </ButtonGroup>
+    );
+    expect(thumbs()).toHaveLength(0);
+  });
 });

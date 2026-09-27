@@ -174,7 +174,7 @@
   --_fg: var(--color-text-onDanger);
 }
 
-/* ---------- attached ButtonGroup: segments of one track; pressed = raised thumb ---------- */
+/* ---------- attached ButtonGroup: segments of one track; the group draws the sliding thumb ---------- */
 .root[data-group="attached"][data-intent][data-appearance] {
   --_bg: transparent;
   --_bg-hover: color-mix(in oklab, var(--color-text-primary) 8%, transparent);
@@ -183,11 +183,9 @@
   --_shadow: none;
 }
 .root[data-group="attached"][data-pressed][data-intent][data-appearance] {
-  /* raised: white in light mode; in dark a stronger tint, so it is lighter than the track on any surface */
-  --_bg: light-dark(var(--color-bg-surfaceRaised), color-mix(in oklab, var(--color-text-primary) 16%, transparent));
-  --_bg-hover: var(--_bg);
+  /* the group paints the thumb underneath and slides it here */
+  --_bg-hover: transparent;
   --_fg: var(--color-text-primary);
-  --_shadow: var(--elevation-field);
 }
 
 /* ---------- icon-only: square, which the pill radius makes a circle ---------- */

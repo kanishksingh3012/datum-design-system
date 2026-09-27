@@ -2,8 +2,9 @@
 name: Datum
 description: A React component library for building websites — two themes (orange, navy) on one token pipeline, accessibility verified in light and dark
 colors:
-  orange-accent: "#FC6E20"
-  orange-on-accent: "#1B1B1B"
+  orange-brand: "#FC6E20"
+  orange-accent: "#B34210"
+  orange-on-accent: "#FFFFFF"
   orange-accent-subtle: "#FFE7D0"
   orange-accent-text: "#B34210"
   orange-page: "#FDF9F6"
@@ -69,7 +70,7 @@ Components only ever reference semantic tokens (`--color-bg-accent`, `--type-bod
 ## Colors
 
 ### Orange theme
-- **Brand** — orange ramp, anchored at `#FC6E20` (orange-500). White text on it is only 2.84:1, so the primary fill always carries **dark** text (`#1B1B1B`, 6.06:1). Hover lightens to orange-400 so the label gains contrast.
+- **Brand** — orange ramp, anchored at `#FC6E20` (orange-500). Primary buttons carry **white** text in both themes, and white on orange-500 is only 2.84:1. So the accent fill is orange-700 `#B34210` (white 5.67:1) in light and dark mode. Hover and active go darker (orange-800, orange-900) so the label keeps its contrast. Bright orange-500 remains the brand color for tints, focus and illustration.
 - **Accent subtle** — `#FFE7D0` (orange-100). It shares the brand's hue family, so it is a tint of the brand, not a neutral: secondary buttons, selected rows, soft highlights.
 - **Neutral** — warm stone ramp (hue 66°), anchored to `#323232` and `#1B1B1B`, which are also the dark-mode surface and page.
 - **States** — danger is crimson (not red, too close to orange), warning is golden yellow (not amber, same reason), success emerald, info azure.
@@ -83,7 +84,7 @@ Components only ever reference semantic tokens (`--color-bg-accent`, `--type-bod
 Each theme also has an ink fill for neutral solid buttons and dark bands: `bg.inverse` (near-black in light mode, near-white in dark), `bg.inverseHover`, and `text.onInverse`. Orange uses the stone ramp, navy the slate ramp.
 
 ### Rules for both
-- A fill (`bg.accent`, `bg.danger`, …) is always paired with its `text.on*` token. **Never hardcode white on an accent** — orange's on-accent is dark.
+- A fill (`bg.accent`, `bg.danger`, …) is always paired with its `text.on*` token. **Never hardcode white on an accent** — use `text.onAccent`; its value is set per theme and mode for contrast.
 - Colored text on the page uses `text.*` roles, which are chosen per mode for contrast.
 - Borders on interactive controls (`border.strong`, `border.focus`) meet 3:1 against both the page and `bg.surface`; `border.subtle` and `border.default` are decorative and have no minimum.
 
@@ -153,3 +154,4 @@ Radius is still one base (10px) times a ratio underneath (xs ×0.25 through 3xl 
 - **2026-09-27** — Navy accent fill moved from navy-900 to navy-700 (hover navy-600, active navy-800) so it is distinct from the ink button in light mode.
 - **2026-09-27** — ButtonGroup rebuilt: spaced by default; `attached` is one tinted track with a raised thumb for the pressed segment (chosen over a split-pill design). Vertical tracks use `radius.card`, and their segments use `radius.card` minus the track inset so the corners stay concentric. `size`, `intent` and `appearance` pass down to child Buttons.
 - **2026-09-27** — `border.strong` becomes mode-aware (navy: slate-600 / slate-400; orange: stone-500 / stone-400). It failed 3:1 on `bg.surface` in three of the four combinations.
+- **2026-09-27** — Orange primary buttons use white text, like navy. The accent fill moves from orange-500 to orange-700 (hover orange-800, active orange-900) so white passes AA (5.67:1).

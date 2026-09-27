@@ -309,9 +309,9 @@
   --color-bg-tertiary: light-dark(#E7E2DD, #545250);
   --color-bg-disabled: light-dark(#F6F1EC, #323232);
   --color-bg-scrim: light-dark(rgba(27,27,27,0.48), rgba(0,0,0,0.64));
-  --color-bg-accent: #FC6E20;
-  --color-bg-accentHover: #FF9A64;
-  --color-bg-accentActive: #FFBB8F;
+  --color-bg-accent: #B34210;
+  --color-bg-accentHover: #8C3413;
+  --color-bg-accentActive: #662611;
   --color-bg-accentSubtle: light-dark(#FFE7D0, #44180B);
   --color-bg-accentSubtleHover: light-dark(color-mix(in oklab, #FFD5B3 32%, #FFE7D0), #662611);
   --color-bg-danger: #D52F4A;
@@ -330,7 +330,7 @@
   --color-text-tertiary: light-dark(#6E6B69, #AFABA8);
   --color-text-disabled: light-dark(#AFABA8, #6E6B69);
   --color-text-accent: light-dark(#B34210, #FF9A64);
-  --color-text-onAccent: #1B1B1B;
+  --color-text-onAccent: #FFFFFF;
   --color-text-danger: light-dark(#AF1B37, #FD8188);
   --color-text-onDanger: #FFFFFF;
   --color-text-warning: light-dark(#785C00, #F1C035);
