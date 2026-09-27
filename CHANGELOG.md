@@ -5,12 +5,16 @@ All notable changes to this project are recorded here. Format loosely follows [K
 ## [Unreleased]
 
 ### Added
+- Link `tone` (accent · neutral · inherit), `external` (new tab, `rel="noopener noreferrer"`, arrow icon, "opens in a new tab" for screen readers; an explicit `target`/`rel` wins) and `size` (inherit · sm · md). Hover thickens the underline instead of dimming the text.
+- A Link fixture for the combo checker, covering every tone × underline in running text, on the page, `bg.surface` and `bg.accentSubtle`.
 - Attached ButtonGroup: the thumb slides between segments (200ms, `motion.normal`). It is re-measured on resize and whenever `aria-pressed` changes, and it doesn't animate when reduced motion is set.
 - ButtonGroup `attached`: one track with no lines between segments; the pressed segment is a raised thumb. The track is a tint of the text color, so it shows on the page and on surfaces in both modes.
 - ButtonGroup `size`, `intent`, `appearance` pass down to every child Button through context. A Button's own prop wins.
 - A ButtonGroup fixture for the combo checker, including groups placed on `bg.surface`.
 
 ### Changed
+- **Breaking:** Link `decorationStyle` is removed (not in the approved plan).
+- The combo checker now builds the gallery into a temp folder and serves it statically. The Vite dev server could reload the page mid-run when it discovered a dependency, which crashed the check.
 - Orange primary buttons use **white** text, like navy. `bg.accent` moves from orange-500 to orange-700 `#B34210` (white 5.67:1), hover orange-800, active orange-900. `text.onAccent` is now white.
 - ButtonGroup hugs its content. Vertical items share the widest item's width, and a vertical track's segments use `radius.card` minus the inset, so their corners are concentric with the track. The old version used hard straight joins, and its vertical form had pill corners.
 - `border.strong` is now mode-aware: navy slate-600 / slate-400, orange stone-500 / stone-400. It previously failed 3:1 on `bg.surface` in orange dark and in navy light and dark.

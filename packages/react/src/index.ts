@@ -14,8 +14,9 @@ export { Link } from "./components/Link/Link";
 export type {
   LinkProps,
   LinkOwnProps,
+  LinkTone,
   LinkUnderline,
-  LinkDecorationStyle,
+  LinkSize,
 } from "./components/Link/Link";
 
 export { Badge } from "./components/Badge/Badge";

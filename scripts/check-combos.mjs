@@ -10,9 +10,11 @@
 //    at rest and on hover.
 //
 // Needs a built @datum-design/react (the gallery imports dist); `npm run check` builds first.
+// The gallery is built into a temp folder and served statically.
 
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, relative, dirname } from "node:path";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -144,20 +146,19 @@ function measure({ id, focus }) {
 }
 
 // ---------------------------------------------------------------- run
-const { createServer } = await import("vite");
+const { build, preview } = await import("vite");
 const { chromium } = await import("playwright");
 
 console.log(`\nDatum combo check — ${targets.join(", ") || "(nothing registered)"}\n`);
 console.log("Static scan");
 targets.forEach(scanComponent);
 
-const server = await createServer({
-  root: GALLERY,
-  configFile: join(GALLERY, "vite.config.ts"),
-  logLevel: "error",
-  server: { port: 5199, strictPort: false },
-});
-await server.listen();
+// A static build, not the dev server: the dev server can reload the page
+// mid-run when it discovers a dependency, which destroys the measurement.
+const outDir = join(tmpdir(), "datum-combo-check");
+const viteConfig = { root: GALLERY, configFile: join(GALLERY, "vite.config.ts"), logLevel: "error" };
+await build({ ...viteConfig, build: { outDir, emptyOutDir: true } });
+const server = await preview({ ...viteConfig, build: { outDir }, preview: { port: 5199, strictPort: false } });
 const base = server.resolvedUrls.local[0];
 
 let browser;
@@ -210,7 +211,7 @@ try {
   }
 } finally {
   await browser.close();
-  await server.close();
+  await new Promise((resolve) => server.httpServer.close(resolve));
 }
 
 console.log(failures ? `\n${failures} failure(s).` : "\nAll checks passed.");

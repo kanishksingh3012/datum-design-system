@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Button, ButtonGroup } from "@datum-design/react";
+import { Button, ButtonGroup, Link } from "@datum-design/react";
 import { AlignCenter, AlignLeft, AlignRight, Plus } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
@@ -93,6 +93,33 @@ export const fixtures: Record<string, () => ReactNode> = {
         </div>
         );
       })}
+    </>
+  ),
+  Link: () => (
+    <>
+      {([undefined, "var(--color-bg-surface)", "var(--color-bg-accentSubtle)"] as const).map((background) => (
+        <div className="row" key={background ?? "page"} style={background ? { background } : undefined}>
+          {(["accent", "neutral", "inherit"] as const).map((tone) =>
+            (["always", "hover", "none"] as const).map((underline) => (
+              <p key={`${tone}-${underline}`} style={{ margin: 0, color: "var(--color-text-secondary)" }}>
+                Text with a{" "}
+                <Link href="#check" tone={tone} underline={underline}>
+                  {`${tone} ${underline}`}
+                </Link>
+              </p>
+            ))
+          )}
+          <Link href="#check" size="sm">
+            Small
+          </Link>
+          <Link href="#check" size="md" tone="neutral">
+            Medium
+          </Link>
+          <Link href="https://example.com" external>
+            External
+          </Link>
+        </div>
+      ))}
     </>
   ),
 };

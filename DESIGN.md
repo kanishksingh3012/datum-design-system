@@ -155,3 +155,4 @@ Radius is still one base (10px) times a ratio underneath (xs ×0.25 through 3xl 
 - **2026-09-27** — ButtonGroup rebuilt: spaced by default; `attached` is one tinted track with a raised thumb for the pressed segment (chosen over a split-pill design). Vertical tracks use `radius.card`, and their segments use `radius.card` minus the track inset so the corners stay concentric. `size`, `intent` and `appearance` pass down to child Buttons.
 - **2026-09-27** — `border.strong` becomes mode-aware (navy: slate-600 / slate-400; orange: stone-500 / stone-400). It failed 3:1 on `bg.surface` in three of the four combinations.
 - **2026-09-27** — Orange primary buttons use white text, like navy. The accent fill moves from orange-500 to orange-700 (hover orange-800, active orange-900) so white passes AA (5.67:1).
+- **2026-09-27** — Link rebuilt to the plan: tone, underline, external, size. Links in running text keep the underline (WCAG 1.4.1); `decorationStyle` dropped.

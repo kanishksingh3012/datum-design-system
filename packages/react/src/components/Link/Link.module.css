@@ -1,13 +1,25 @@
 .root {
-  color: var(--color-text-accent);
-  font-family: var(--font-body);
+  --_fg: var(--color-text-accent);
+  --_fg-hover: var(--_fg);
+
+  color: var(--_fg);
+  font: inherit;
   text-decoration-line: underline;
-  text-underline-offset: 2px;
-  border-radius: 2px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in oklab, currentColor 45%, transparent);
+  text-underline-offset: 0.2em;
+  border-radius: var(--radius-subtle);
+  cursor: pointer;
+  transition:
+    color var(--motion-fast) var(--motion-easing),
+    text-decoration-color var(--motion-fast) var(--motion-easing);
 }
 
+/* hover strengthens the underline instead of dimming the text */
 .root:hover {
-  filter: brightness(0.85);
+  color: var(--_fg-hover);
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 2px;
 }
 
 .root:focus-visible {
@@ -15,13 +27,59 @@
   outline-offset: 2px;
 }
 
-.root[data-underline="hover"] {
+/* ---------- tone ---------- */
+.root[data-tone="neutral"] {
+  --_fg: var(--color-text-primary);
+  --_fg-hover: var(--color-text-accent);
+}
+.root[data-tone="inherit"] {
+  --_fg: currentColor;
+}
+
+/* ---------- underline ---------- */
+.root[data-underline="hover"],
+.root[data-underline="none"] {
   text-decoration-line: none;
 }
 .root[data-underline="hover"]:hover {
   text-decoration-line: underline;
 }
 
-.root[data-underline="none"] {
-  text-decoration-line: none;
+/* ---------- size ---------- */
+.root[data-size="sm"] {
+  font-family: var(--type-body-sm-family);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+}
+.root[data-size="md"] {
+  font-family: var(--type-body-md-family);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-lineHeight);
+}
+
+/* ---------- external ---------- */
+.icon {
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  margin-inline-start: 0.2em;
+  vertical-align: baseline;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
 }
