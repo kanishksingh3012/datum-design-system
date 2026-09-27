@@ -1,0 +1,50 @@
+.root {
+  --_size: 20px;
+
+  display: inline-flex;
+  flex-shrink: 0;
+  vertical-align: middle;
+  color: inherit;
+}
+.root[data-size="sm"] {
+  --_size: 16px;
+}
+.root[data-size="lg"] {
+  --_size: 24px;
+}
+.root[data-tone="accent"] {
+  color: var(--color-text-accent);
+}
+
+/* the ring is drawn in the text color, so it meets 3:1 wherever that text meets 4.5:1 */
+.ring {
+  box-sizing: border-box;
+  width: var(--_size);
+  height: var(--_size);
+  border-radius: var(--radius-pill);
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: datum-spinner-spin var(--motion-slow) linear infinite;
+}
+
+.label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes datum-spinner-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* it keeps turning (it is the only sign of progress), just slower */
+  .ring {
+    animation-duration: calc(var(--motion-slow) * 4);
+  }
+}

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import {
-  Accordion, AccordionItem, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader,
-  Container, Grid, Heading, Link, Section, Separator, Stack, Text,
+  Accordion, AccordionItem, Alert, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader,
+  Container, Grid, Heading, Link, ProgressBar, Section, Separator, Skeleton, Spinner, Stack, Text, Toaster, toast,
 } from "@datum-design/react";
 import { AlignCenter, AlignLeft, AlignRight, Plus } from "lucide-react";
 
@@ -15,6 +15,8 @@ const textVariants = [
   "caption", "overline", "numeric-lg", "numeric-md", "numeric-sm", "code",
 ] as const;
 const textTones = ["primary", "secondary", "accent", "danger", "success", "warning"] as const;
+const feedbackIntents = ["info", "success", "warning", "danger", "neutral"] as const;
+let toastsSeeded = false;
 const box = { background: "var(--color-bg-surface)", padding: "var(--space-compact)" };
 
 /** Every state the combo checker renders, keyed by component name. */
@@ -323,6 +325,84 @@ export const fixtures: Record<string, () => ReactNode> = {
           <AccordionItem value="three" title="Disabled item" disabled>Hidden.</AccordionItem>
         </Accordion>
       ))}
+    </>
+  ),
+  Alert: () => (
+    <>
+      {(["soft", "outline", "solid"] as const).map((appearance) =>
+        feedbackIntents.map((intent) => (
+          <Alert
+            key={appearance + intent}
+            intent={intent}
+            appearance={appearance}
+            title={`${intent} ${appearance}`}
+            description="Detail under the title, in the same text color."
+            dismissible
+            action={
+              appearance === "solid" ? (
+                <Link href="#" tone="inherit">Review</Link>
+              ) : (
+                <Button size="sm" intent="neutral" appearance="outline">Review</Button>
+              )
+            }
+            data-check-text
+          />
+        ))
+      )}
+    </>
+  ),
+  Toast: () => {
+    // Seeded before the Toaster first renders, so the toasts are there when measuring starts.
+    if (!toastsSeeded) {
+      toastsSeeded = true;
+      (["neutral", "success", "danger", "warning", "info"] as const).forEach((intent) =>
+        toast({ intent, title: `${intent} toast`, description: "Detail text.", action: { label: "Undo", onAction: noop }, duration: null })
+      );
+    }
+    return (
+      <>
+        <Text data-check-text>Toasts sit in the bottom-end corner.</Text>
+        <Toaster />
+      </>
+    );
+  },
+  Spinner: () => (
+    <>
+      <div className="row">
+        {sizes.map((size) => (
+          <Spinner key={size} size={size} data-check-text />
+        ))}
+        {sizes.map((size) => (
+          <Spinner key={size} size={size} tone="accent" data-check-text />
+        ))}
+      </div>
+      <div className="row" style={box}>
+        <Spinner data-check-text />
+        <Spinner tone="accent" data-check-text />
+      </div>
+    </>
+  ),
+  ProgressBar: () => (
+    <>
+      {(["accent", "success", "warning", "danger"] as const).map((intent) =>
+        (["md", "sm"] as const).map((size) => (
+          <ProgressBar key={intent + size} intent={intent} size={size} value={60} label={`${intent} ${size}`} showValue data-check-text />
+        ))
+      )}
+      <ProgressBar label="Indeterminate" data-check-text />
+      <div style={box}>
+        <ProgressBar value={30} label="On a surface" showValue data-check-text />
+      </div>
+    </>
+  ),
+  Skeleton: () => (
+    <>
+      <Skeleton />
+      <Skeleton lines={3} />
+      <div className="row">
+        <Skeleton shape="circle" />
+        <Skeleton shape="rect" width={240} height={96} animated={false} />
+      </div>
     </>
   ),
 };

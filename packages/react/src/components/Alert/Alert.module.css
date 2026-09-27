@@ -1,31 +1,198 @@
+/* Each intent × appearance block only sets the local --_* variables;
+   the base rule is the single place they are consumed. */
 .root {
+  --_bg: transparent;
+  --_fg: var(--color-text-primary);
+  --_icon: var(--_fg);
+  --_border: transparent;
+  --_dismiss-hover: color-mix(in oklab, currentColor 10%, transparent);
+
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    "icon content dismiss"
+    ". action .";
+  column-gap: var(--space-tight);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--space-default);
+  font-family: var(--type-body-md-family);
+  color: var(--_fg);
+  background: var(--_bg);
+  border: 1px solid var(--_border);
+  border-radius: var(--radius-card);
+}
+
+.icon {
+  grid-area: icon;
+  /* as tall as the title's line, so the glyph centres on it */
+  width: var(--icon-control);
+  height: calc(var(--type-body-md-size) * var(--type-body-md-lineHeight));
+  color: var(--_icon);
+}
+
+.content {
+  grid-area: content;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  padding: var(--space-default);
-  border-radius: 0;
-  border-left: 3px solid;
-}
-.root[data-variant="danger"] {
-  background: var(--color-bg-dangerSubtle);
-  border-left-color: var(--color-border-danger);
-}
-.root[data-variant="warning"] {
-  background: var(--color-bg-warningSubtle);
-  border-left-color: var(--color-text-warning);
-}
-.root[data-variant="success"] {
-  background: var(--color-bg-successSubtle);
-  border-left-color: var(--color-text-success);
+  gap: calc(var(--space-compact) / 2);
+  min-width: 0;
 }
 .title {
   font-size: var(--type-body-md-size);
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin: 0;
+  font-weight: var(--type-ui-label-weight);
+  line-height: var(--type-body-md-lineHeight);
 }
-.body {
+.description {
   font-size: var(--type-body-sm-size);
-  margin: 0;
-  color: var(--color-text-secondary);
+  line-height: var(--type-body-sm-lineHeight);
+}
+
+.action {
+  grid-area: action;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-compact);
+  margin-top: var(--space-tight);
+}
+
+.dismiss {
+  grid-area: dismiss;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  margin: calc(var(--space-compact) * -0.5) calc(var(--space-compact) * -0.5) 0 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+.dismiss svg {
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+}
+.dismiss:hover {
+  background: var(--_dismiss-hover);
+}
+.dismiss:active {
+  transform: scale(0.98);
+}
+.dismiss:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .dismiss::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--interaction-minTarget);
+    height: var(--interaction-minTarget);
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dismiss:active {
+    transform: none;
+  }
+}
+
+/* ---------- soft (default): a tint of the intent, icon in its text color ---------- */
+.root[data-appearance="soft"][data-intent="info"] {
+  --_bg: var(--color-bg-infoSubtle);
+  --_icon: var(--color-text-info);
+}
+.root[data-appearance="soft"][data-intent="success"] {
+  --_bg: var(--color-bg-successSubtle);
+  --_icon: var(--color-text-success);
+}
+.root[data-appearance="soft"][data-intent="warning"] {
+  --_bg: var(--color-bg-warningSubtle);
+  --_icon: var(--color-text-warning);
+}
+.root[data-appearance="soft"][data-intent="danger"] {
+  --_bg: var(--color-bg-dangerSubtle);
+  --_icon: var(--color-text-danger);
+}
+.root[data-appearance="soft"][data-intent="neutral"] {
+  --_bg: var(--color-bg-tertiary);
+}
+
+/* ---------- outline: the intent's border on whatever is behind ---------- */
+.root[data-appearance="outline"][data-intent="info"] {
+  --_border: var(--color-border-info);
+  --_icon: var(--color-text-info);
+}
+.root[data-appearance="outline"][data-intent="success"] {
+  --_border: var(--color-border-success);
+  --_icon: var(--color-text-success);
+}
+.root[data-appearance="outline"][data-intent="warning"] {
+  --_border: var(--color-border-warning);
+  --_icon: var(--color-text-warning);
+}
+.root[data-appearance="outline"][data-intent="danger"] {
+  --_border: var(--color-border-danger);
+  --_icon: var(--color-text-danger);
+}
+.root[data-appearance="outline"][data-intent="neutral"] {
+  --_border: var(--color-border-strong);
+}
+
+/* ---------- solid: a full-width banner in the intent's fill (neutral is ink) ---------- */
+.root[data-appearance="solid"] {
+  grid-template-columns: auto 1fr auto auto;
+  grid-template-areas: "icon content action dismiss";
+  align-items: center;
+  padding: var(--space-compact) var(--space-default);
+  border-width: 0;
+  /* a banner runs edge to edge, so its corners are the viewport's */
+  border-radius: 0;
+}
+.root[data-appearance="solid"] .icon {
+  align-self: start;
+}
+.root[data-appearance="solid"] .action {
+  margin-top: 0;
+}
+.root[data-appearance="solid"] .dismiss {
+  margin: 0 calc(var(--space-compact) * -0.5) 0 0;
+}
+/* the theme's focus color can't be relied on against a state fill; the text color can */
+.root[data-appearance="solid"] :focus-visible {
+  outline-color: currentColor;
+}
+.root[data-appearance="solid"][data-intent="info"] {
+  --_bg: var(--color-bg-info);
+  --_fg: var(--color-text-onInfo);
+}
+.root[data-appearance="solid"][data-intent="success"] {
+  --_bg: var(--color-bg-success);
+  --_fg: var(--color-text-onSuccess);
+}
+.root[data-appearance="solid"][data-intent="warning"] {
+  --_bg: var(--color-bg-warning);
+  --_fg: var(--color-text-onWarning);
+}
+.root[data-appearance="solid"][data-intent="danger"] {
+  --_bg: var(--color-bg-danger);
+  --_fg: var(--color-text-onDanger);
+  /* lightening crimson toward white text loses contrast; the real hover token darkens it */
+  --_dismiss-hover: var(--color-bg-dangerHover);
+}
+.root[data-appearance="solid"][data-intent="neutral"] {
+  --_bg: var(--color-bg-inverse);
+  --_fg: var(--color-text-onInverse);
 }

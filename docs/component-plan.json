@@ -619,7 +619,7 @@
               "appearance",
               "soft · outline · solid",
               "soft",
-              "solid = full-width banner"
+              "solid = full-width banner; focus rings inside it use the text color"
             ],
             [
               "title / description",
@@ -637,7 +637,7 @@
               "dismissible",
               "boolean",
               "false",
-              ""
+              "Visibility is open / defaultOpen / onOpenChange; dismiss calls onOpenChange(false)"
             ]
           ],
           "beh": "Native"
@@ -669,13 +669,13 @@
               "duration",
               "ms",
               "5000",
-              "Pauses on hover and focus"
+              "Pauses on hover and focus; null stays until closed"
             ],
             [
               "position",
               "top-center · top-end · bottom-center · bottom-end",
               "bottom-end",
-              ""
+              "On <Toaster>; toast(options) adds to the queue"
             ]
           ],
           "beh": "React Aria"
@@ -727,7 +727,7 @@
               "intent",
               "accent · success · warning · danger",
               "accent",
-              ""
+              "Fill uses the intent’s text color so it reaches 3:1"
             ],
             [
               "label / showValue",
@@ -759,7 +759,7 @@
               "animated",
               "boolean",
               "true",
-              "Off under reduced motion"
+              "Off under reduced motion; width / height kept for sizing"
             ]
           ],
           "beh": "Native"

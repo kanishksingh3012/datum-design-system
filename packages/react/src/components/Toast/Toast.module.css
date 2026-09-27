@@ -1,27 +1,152 @@
-.root {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: var(--color-text-primary);
-  color: var(--color-bg-page);
-  padding: 0.7rem 1rem;
+/* ---------- region: a fixed stack; the newest toast is nearest the edge ---------- */
+.region {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+  width: min(360px, calc(100vw - var(--space-default) * 2));
+  outline: none;
+}
+.region[data-position^="top"] {
+  top: var(--space-default);
+}
+.region[data-position^="bottom"] {
+  bottom: var(--space-default);
+  flex-direction: column-reverse;
+}
+.region[data-position$="end"] {
+  inset-inline-end: var(--space-default);
+}
+.region[data-position$="center"] {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ---------- one toast: a raised surface; the intent shows as its icon ---------- */
+.toast {
+  --_icon: var(--color-text-primary);
+  --_enter: var(--space-default);
+
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-tight);
+  box-sizing: border-box;
+  padding: var(--space-tight) var(--space-compact) var(--space-tight) var(--space-default);
+  font-family: var(--type-body-md-family);
+  color: var(--color-text-primary);
+  background: var(--color-bg-surfaceRaised);
   border-radius: var(--radius-card);
   box-shadow: var(--elevation-overlay);
+  animation: datum-toast-enter var(--motion-normal) var(--motion-easing);
+}
+.region[data-position^="top"] .toast {
+  --_enter: calc(var(--space-default) * -1);
+}
+.toast:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.toast[data-intent="success"] {
+  --_icon: var(--color-text-success);
+}
+.toast[data-intent="danger"] {
+  --_icon: var(--color-text-danger);
+}
+.toast[data-intent="warning"] {
+  --_icon: var(--color-text-warning);
+}
+.toast[data-intent="info"] {
+  --_icon: var(--color-text-info);
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  gap: var(--space-tight);
+  min-width: 0;
+  /* centre the first line against the 32px buttons */
+  padding-block: calc(var(--space-compact) / 2);
+}
+.icon {
+  flex-shrink: 0;
+  width: var(--icon-control);
+  height: calc(var(--type-body-sm-size) * var(--type-body-sm-lineHeight));
+  color: var(--_icon);
+}
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-compact) / 4);
+  min-width: 0;
   font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
 }
-.dismiss {
-  background: none;
-  border: none;
-  color: inherit;
-  opacity: 0.7;
-  cursor: pointer;
+.title {
+  font-weight: var(--type-ui-label-weight);
+}
+
+.action {
+  flex-shrink: 0;
+}
+
+.close {
+  position: relative;
   display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
   padding: 0;
+  color: var(--color-text-primary);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
 }
-.dismiss svg {
-  width: 14px;
-  height: 14px;
+.close svg {
+  width: var(--icon-inline);
+  height: var(--icon-inline);
 }
-.dismiss:hover {
-  opacity: 1;
+.close:hover {
+  background: color-mix(in oklab, var(--color-bg-surfaceRaised), var(--color-text-primary) 8%);
+}
+.close:active {
+  transform: scale(0.98);
+}
+.close:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .close::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--interaction-minTarget);
+    height: var(--interaction-minTarget);
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes datum-toast-enter {
+  from {
+    transform: translateY(var(--_enter));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+  .close:active {
+    transform: none;
+  }
 }

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import {
-  Accordion, AccordionItem, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CardMedia,
-  Container, Grid, Heading, Link, Section, Separator, Stack, Text,
+  Accordion, AccordionItem, Alert, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CardMedia,
+  Container, Grid, Heading, Link, ProgressBar, Section, Separator, Skeleton, Spinner, Stack, Text, Toaster, toast,
+  type ToastIntent, type ToastPosition,
 } from "@datum-design/react";
 import { Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline } from "lucide-react";
 
@@ -127,6 +128,48 @@ const accordionProps: PropRow[] = [
   ["headingLevel", "2–6", "3", "The heading that wraps each trigger."],
   ["AccordionItem", "title, value, disabled", "—", "title is the trigger label."],
 ];
+const alertIntents = ["info", "success", "warning", "danger", "neutral"] as const;
+const alertProps: PropRow[] = [
+  ["intent", "info | success | warning | danger | neutral", "info", "Picks the icon. danger is role=alert (interrupts); the rest are role=status."],
+  ["appearance", "soft | outline | solid", "soft", "Tint / border only / full-width banner in the intent's fill (neutral is ink)."],
+  ["title / description", "ReactNode", "—", "Title in the label weight, description a step down (body-sm). Both text.primary."],
+  ["action", "ReactNode", "—", "A Button or Link. Under the text; at the end of the row in a banner."],
+  ["dismissible", "boolean", "false", "Adds a Dismiss button."],
+  ["open / defaultOpen / onOpenChange", "boolean / boolean / (open) => void", "— / true / —", "Visibility. Dismiss calls onOpenChange(false); uncontrolled alerts hide themselves."],
+];
+const toastProps: PropRow[] = [
+  ["toast(options)", "→ key", "—", "Adds a toast to the queue. toast.close(key) removes it."],
+  ["intent", "neutral | success | danger | warning | info", "neutral", "Every intent but neutral shows its icon on the same raised surface."],
+  ["title / description", "ReactNode", "—", "Name and description of the toast (aria-labelledby / describedby)."],
+  ["action", "{ label, onAction }", "—", "One follow-up, e.g. Undo. Running it also closes the toast."],
+  ["duration", "ms | null", "5000", "Pauses while the pointer or focus is on any toast. null stays until closed."],
+  ["position", "top-center | top-end | bottom-center | bottom-end", "bottom-end", "On <Toaster>. The newest toast is nearest the edge."],
+];
+const spinnerProps: PropRow[] = [
+  ["size", "sm | md | lg", "md", "16 / 20 / 24px."],
+  ["tone", "current | accent", "current", "current inherits the text color; accent is text.accent."],
+  ["label", "string", "\"Loading\"", "Screen-reader text in a role=status."],
+];
+const progressProps: PropRow[] = [
+  ["value", "0–100", "—", "Omit for indeterminate: a sliding segment, no value announced."],
+  ["size", "sm | md", "md", "4 / 8px track."],
+  ["intent", "accent | success | warning | danger", "accent", "The fill uses the intent's text color, so it reaches 3:1 in every mode."],
+  ["label", "string", "—", "Visible above the track; the accessible name. Without it, pass aria-label."],
+  ["showValue", "boolean", "false", "Rounded percentage opposite the label (determinate only)."],
+];
+const skeletonProps: PropRow[] = [
+  ["shape", "text | rect | circle", "text", "A text line / a block such as an image / an avatar."],
+  ["lines", "number", "1", "Text only; the last of several lines is shorter."],
+  ["animated", "boolean", "true", "Pulses the fill; always off under reduced motion."],
+  ["width / height", "CSS length", "100% / 120px", "Width is also a circle's diameter (default 40px); height is for rect."],
+];
+const toastExamples: [ToastIntent, string, string][] = [
+  ["neutral", "Link copied", "Anyone with the link can view."],
+  ["success", "Invoice sent", "Ada will get it in a minute."],
+  ["warning", "Storage almost full", "You've used 90% of your plan."],
+  ["danger", "Upload failed", "The file is larger than 25 MB."],
+  ["info", "New version available", "Reload to update."],
+];
 const people = ["Ada Lovelace", "Grace Hopper", "Alan Turing", "Katherine Johnson", "Edsger Dijkstra", "Barbara Liskov"];
 const faq = [
   ["refund", "Can I get a refund?", "Yes, within 30 days of purchase, no questions asked."],
@@ -176,6 +219,9 @@ export function App() {
   const [range, setRange] = useState("Week");
   const [align, setAlign] = useState("Left");
   const [section, setSection] = useState("Overview");
+  const [toastPosition, setToastPosition] = useState<ToastPosition>("bottom-end");
+  const [bannerOpen, setBannerOpen] = useState(true);
+  const [progress, setProgress] = useState(40);
   const [theme, setTheme] = useState(() => document.documentElement.dataset.theme ?? "orange");
   const [mode, setMode] = useState(() =>
     matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
@@ -227,7 +273,13 @@ export function App() {
         <a href="#avatar">Avatar</a>
         <a href="#separator">Separator</a>
         <a href="#accordion">Accordion</a>
+        <a href="#alert">Alert</a>
+        <a href="#toast">Toast</a>
+        <a href="#spinner">Spinner</a>
+        <a href="#progress-bar">Progress Bar</a>
+        <a href="#skeleton">Skeleton</a>
       </nav>
+      <Toaster position={toastPosition} />
 
       {/* ============ BUTTON ============ */}
       <section className="component-doc" id="button">
@@ -1285,6 +1337,255 @@ export function App() {
           <Usage
             dos={["Set headingLevel so triggers fit the page outline.", "Write titles as the question or topic, so they scan."]}
             donts={["Hide content everyone needs — critical information belongs on the page.", "Nest accordions."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ ALERT ============ */}
+      <section className="component-doc" id="alert">
+        <h1>Alert</h1>
+        <p className="dek">An inline message that stays on the page until the problem is solved or someone dismisses it. The icon follows <span className="prop-values">intent</span>; <span className="prop-values">appearance</span> decides how loud it is.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Alert
+            intent="warning"
+            title="Your trial ends in 3 days"
+            description="Add a payment method to keep your projects and history."
+            action={<Button size="sm" intent="neutral" appearance="outline">Add payment method</Button>}
+            dismissible
+            style={{ maxWidth: 560, margin: "0 auto" }}
+          />
+        </div>
+
+        <div className="doc-section">
+          <h2>Intent × appearance</h2>
+          <p className="lead"><b>soft</b> is the default: a tint of the intent, the icon in its text color, the words in <b>text.primary</b>. <b>outline</b> keeps whatever is behind it and draws the intent's border. Hierarchy comes from the type role, not a lighter gray: the title uses the label weight, the description steps down to <b>body-sm</b>.</p>
+          <div className="sample-box demo-on-page stack">
+            {(["soft", "outline"] as const).map((appearance) => (
+              <Stack key={appearance} gap="sm" style={{ width: "100%" }}>
+                <Text variant="code" tone="secondary">{appearance}</Text>
+                {alertIntents.map((intent) => (
+                  <Alert key={intent} intent={intent} appearance={appearance} title={`${intent[0].toUpperCase()}${intent.slice(1)} message`} description="A sentence of detail under the title." />
+                ))}
+              </Stack>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Solid banner</h2>
+          <p className="lead"><b>solid</b> is a full-width banner for the top of a page: the intent's fill with its <b>text.on*</b> color, one row, square ends because it runs edge to edge. Neutral solid is ink. Inside it, focus rings switch to the text color, which is the one color guaranteed to reach 3:1 on the fill; use <b>Link tone="inherit"</b> for the action.</p>
+          <div className="sample-box stack">
+            {alertIntents.map((intent) => (
+              <div key={intent} style={{ borderRadius: "var(--radius-card)", overflow: "hidden", border: "1px solid var(--color-border-subtle)" }}>
+                <Alert intent={intent} appearance="solid" title={`Scheduled maintenance on Sunday, 02:00–04:00 UTC (${intent})`} action={<Link href="#alert" tone="inherit">Details</Link>} dismissible />
+                <div style={{ height: 48, background: "var(--color-bg-page)" }} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Dismissing</h2>
+          <p className="lead"><b>dismissible</b> adds a Dismiss button. Uncontrolled, the alert hides itself; controlled with <b>open</b>, it calls <b>onOpenChange(false)</b> and waits for you.</p>
+          <div className="sample-box demo-on-page stack">
+            {bannerOpen ? (
+              <Alert intent="success" title="Profile updated" description="Changes are visible to your team." dismissible open={bannerOpen} onOpenChange={setBannerOpen} />
+            ) : (
+              <div><Button size="sm" intent="neutral" appearance="outline" onClick={() => setBannerOpen(true)}>Show the alert again</Button></div>
+            )}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={alertProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Say what happened and what to do next.", "Keep danger for problems that block the task — it interrupts screen readers.", "Use one solid banner per page, at the top."]}
+            donts={["Use an alert for confirmation of an action the person just took — that's a Toast.", "Stack several alerts; merge them into one."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ TOAST ============ */}
+      <section className="component-doc" id="toast">
+        <h1>Toast</h1>
+        <p className="dek">A brief, non-blocking notification about something that just happened. Call <span className="prop-values">toast()</span> from anywhere; one <span className="prop-values">&lt;Toaster /&gt;</span> near the app root shows the stack. Behaviour comes from React Aria: the stack is a landmark (reachable with F6), each toast is announced, and timers pause while the pointer or keyboard focus is on any toast.</p>
+
+        <div className="example-box">
+          <Button onClick={() => toast({ intent: "success", title: "Invoice sent", description: "Ada will get it in a minute." })}>Send invoice</Button>
+          <Button intent="neutral" appearance="outline" onClick={() => toast({ title: "Message archived", action: { label: "Undo", onAction: () => toast({ title: "Message restored" }) } })}>Archive with undo</Button>
+        </div>
+
+        <div className="doc-section">
+          <h2>Intent</h2>
+          <p className="lead">Every toast is the same raised surface (<b>bg.surfaceRaised</b>, <b>elevation.overlay</b>, <b>radius.card</b>) with <b>text.primary</b>; the intent shows as the icon in its text color. <b>neutral</b> has no icon. Each closes after 5 seconds unless <b>duration</b> says otherwise.</p>
+          <div className="sample-box">
+            {toastExamples.map(([intent, title, description]) => (
+              <Button key={intent} size="sm" intent="neutral" appearance="outline" onClick={() => toast({ intent, title, description })}>{intent}</Button>
+            ))}
+            <Button size="sm" intent="neutral" appearance="outline" onClick={() => toast({ intent: "danger", title: "Sync paused", description: "Stays until you close it.", duration: null })}>duration: null</Button>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Position</h2>
+          <p className="lead">Set on the Toaster. The newest toast sits nearest the edge and slides in from it (<b>motion.normal</b>; no movement under reduced motion). Up to five are visible; the rest wait their turn.</p>
+          <div className="sample-box">
+            <ButtonGroup attached size="sm" intent="neutral">
+              {(["top-center", "top-end", "bottom-center", "bottom-end"] as const).map((p) => (
+                <Button key={p} pressed={toastPosition === p} onPressedChange={() => setToastPosition(p)}>{p}</Button>
+              ))}
+            </ButtonGroup>
+            <Button size="sm" onClick={() => toast({ title: `Now at ${toastPosition}` })}>Show a toast</Button>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={toastProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Confirm what just happened in a few words.", "Offer Undo for destructive actions instead of a confirmation dialog.", "Use duration: null when the toast carries something the person must act on."]}
+            donts={["Put the only copy of important information in a toast — it goes away.", "Fire several at once for one action."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ SPINNER ============ */}
+      <section className="component-doc" id="spinner">
+        <h1>Spinner</h1>
+        <p className="dek">Indeterminate loading, on its own. The same ring as a loading Button: drawn in the text color, so it reaches 3:1 wherever that text reaches 4.5:1. It is a <span className="prop-values">role=status</span> with a visually hidden label.</p>
+
+        <div className="example-box">
+          <Spinner size="lg" tone="accent" />
+        </div>
+
+        <div className="doc-section">
+          <h2>Size and tone</h2>
+          <p className="lead"><b>sm</b>, <b>md</b>, <b>lg</b> are 16, 20 and 24px. <b>current</b> inherits the color around it; <b>accent</b> uses <b>text.accent</b>. One turn every <b>motion.slow</b>; four times slower under reduced motion, since it is the only sign that something is happening.</p>
+          <div className="sample-box">
+            {(["sm", "md", "lg"] as const).map((size) => <Spinner key={size} size={size} />)}
+            {(["sm", "md", "lg"] as const).map((size) => <Spinner key={size} size={size} tone="accent" />)}
+            <Text as="span" variant="body-sm" tone="secondary" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+              <Spinner size="sm" label="Saving" /> Saving…
+            </Text>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={spinnerProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Give a specific label: \"Loading invoices\" beats \"Loading\".", "Use Button's loading prop for a button, not a Spinner inside it."]}
+            donts={["Use a spinner when you know how far along it is — that's a ProgressBar.", "Show several spinners for one wait; use Skeletons for the layout instead."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ PROGRESS BAR ============ */}
+      <section className="component-doc" id="progress-bar">
+        <h1>Progress Bar</h1>
+        <p className="dek">How far along a task is. Give it a <span className="prop-values">value</span> for determinate progress, or leave it out while the total is unknown.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Stack gap="md" style={{ maxWidth: 420, margin: "0 auto" }}>
+            <ProgressBar value={progress} label="Uploading report.pdf" showValue />
+            <Stack direction="horizontal" gap="sm">
+              <Button size="sm" intent="neutral" appearance="outline" onClick={() => setProgress((p) => Math.max(0, p - 20))}>−20</Button>
+              <Button size="sm" intent="neutral" appearance="outline" onClick={() => setProgress((p) => Math.min(100, p + 20))}>+20</Button>
+            </Stack>
+          </Stack>
+        </div>
+
+        <div className="doc-section">
+          <h2>Intent and size</h2>
+          <p className="lead">The fill uses the intent's <b>text</b> color rather than its fill color, so even warning reaches 3:1 against the <b>bg.tertiary</b> track in every mode. <b>md</b> is an 8px track, <b>sm</b> 4px. The fill slides with <b>transform</b> (<b>motion.normal</b>), never width.</p>
+          <div className="sample-box stack">
+            {(["accent", "success", "warning", "danger"] as const).map((intent, i) => (
+              <ProgressBar key={intent} intent={intent} value={25 + i * 20} label={intent} showValue size={i % 2 ? "sm" : "md"} />
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Indeterminate</h2>
+          <p className="lead">Without <b>value</b>, a segment slides across and no value is announced. Under reduced motion it keeps sliding, much slower — like the spinner, it is the only sign of progress.</p>
+          <div className="sample-box stack">
+            <ProgressBar label="Preparing your export" />
+            <ProgressBar size="sm" aria-label="Loading" />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={progressProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Label what is progressing.", "Switch from indeterminate to a value as soon as you know the total."]}
+            donts={["Use it for a score or a quota — it's for progress over time.", "Let the value move backwards."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ SKELETON ============ */}
+      <section className="component-doc" id="skeleton">
+        <h1>Skeleton</h1>
+        <p className="dek">A placeholder in the shape of the content that is on its way, so the layout doesn't jump when it arrives. Skeletons are hidden from assistive tech; mark the loading region with <span className="prop-values">aria-busy</span>.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Stack direction="horizontal" gap="md" align="start" style={{ maxWidth: 420, margin: "0 auto" }} aria-busy="true">
+            <Skeleton shape="circle" />
+            <Stack gap="sm" style={{ flex: 1 }}>
+              <Skeleton width="40%" />
+              <Skeleton lines={3} />
+            </Stack>
+          </Stack>
+        </div>
+
+        <div className="doc-section">
+          <h2>Shape</h2>
+          <p className="lead"><b>text</b> draws one bar per line, spaced like body text, with a shorter last line. <b>rect</b> is a block with <b>radius.card</b>, for images and media. <b>circle</b> is an avatar. The fill is <b>bg.tertiary</b>, so it shows on the page and on surfaces. It pulses by fading the fill toward the text color; <b>animated</b> turns that off, and reduced motion always does.</p>
+          <div className="sample-box demo-on-page">
+            <Card style={{ width: 280 }}>
+              <CardBody>
+                <Stack gap="md">
+                  <Skeleton shape="rect" height={140} />
+                  <Stack direction="horizontal" gap="sm" align="center">
+                    <Skeleton shape="circle" width={32} />
+                    <Skeleton width="50%" />
+                  </Stack>
+                  <Skeleton lines={2} animated={false} />
+                </Stack>
+              </CardBody>
+            </Card>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={skeletonProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Match the real layout closely, so nothing moves when content arrives.", "Set aria-busy on the region that is loading."]}
+            donts={["Use a skeleton for a wait under a few hundred milliseconds.", "Mix skeletons and spinners for the same content."]}
           />
         </div>
       </section>

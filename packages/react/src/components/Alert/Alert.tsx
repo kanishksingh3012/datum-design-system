@@ -1,30 +1,75 @@
-import { forwardRef, type HTMLAttributes } from "react";
+import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
+import { useOverlayTriggerState } from "react-stately";
+import { CloseIcon, StatusIcon } from "../../lib/statusIcons";
 import styles from "./Alert.module.css";
 
-export type AlertVariant = "danger" | "warning" | "success";
+export type AlertIntent = "info" | "success" | "warning" | "danger" | "neutral";
+export type AlertAppearance = "soft" | "outline" | "solid";
 
 export interface AlertOwnProps {
-  variant: AlertVariant;
-  title: string;
-  body?: string;
+  /** What the message means; picks the icon. `danger` interrupts screen readers (role="alert"), the rest are polite. @default "info" */
+  intent?: AlertIntent;
+  /** Tint / border only / full-width banner in the solid fill of the intent. @default "soft" */
+  appearance?: AlertAppearance;
+  /** The message in a few words. */
+  title?: ReactNode;
+  /** Detail under the title. */
+  description?: ReactNode;
+  /** A Button or Link. Sits under the text, or at the end of the row in a solid banner. */
+  action?: ReactNode;
+  /** Shows a close button that hides the alert. @default false */
+  dismissible?: boolean;
+  /** Whether the alert is shown (controlled). */
+  open?: boolean;
+  /** Whether the alert starts shown (uncontrolled). @default true */
+  defaultOpen?: boolean;
+  /** Called with `false` when the alert is dismissed. */
+  onOpenChange?: (open: boolean) => void;
 }
 
 export type AlertProps = AlertOwnProps & Omit<HTMLAttributes<HTMLDivElement>, "role" | "title">;
 
 export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  { variant, title, body, className, ...rest },
+  {
+    intent = "info",
+    appearance = "soft",
+    title,
+    description,
+    action,
+    dismissible = false,
+    open,
+    defaultOpen = true,
+    onOpenChange,
+    className,
+    children,
+    ...rest
+  },
   ref
 ) {
+  const state = useOverlayTriggerState({ isOpen: open, defaultOpen, onOpenChange });
+  if (!state.isOpen) return null;
+
   return (
     <div
       ref={ref}
-      data-variant={variant}
-      role={variant === "danger" ? "alert" : "status"}
+      role={intent === "danger" ? "alert" : "status"}
+      data-intent={intent}
+      data-appearance={appearance}
       className={[styles.root, className].filter(Boolean).join(" ")}
       {...rest}
     >
-      <p className={styles.title}>{title}</p>
-      {body ? <p className={styles.body}>{body}</p> : null}
+      <StatusIcon intent={intent} className={styles.icon} />
+      <div className={styles.content}>
+        {title ? <div className={styles.title}>{title}</div> : null}
+        {description ? <div className={styles.description}>{description}</div> : null}
+        {children}
+      </div>
+      {action ? <div className={styles.action}>{action}</div> : null}
+      {dismissible ? (
+        <button type="button" className={styles.dismiss} aria-label="Dismiss" onClick={state.close}>
+          <CloseIcon />
+        </button>
+      ) : null}
     </div>
   );
 });

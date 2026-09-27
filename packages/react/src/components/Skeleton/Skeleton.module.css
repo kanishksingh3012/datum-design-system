@@ -1,29 +1,57 @@
 .root {
+  --_bone: var(--color-bg-tertiary);
+
   display: block;
-  background: var(--color-bg-surface);
-  border-radius: var(--radius-card);
-  animation: datum-skeleton-pulse 1.6s ease-in-out infinite;
+  width: 100%;
 }
+
+/* ---------- text: one bar per line, spaced like body text ---------- */
 .root[data-shape="text"] {
-  height: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
 }
-.root[data-shape="avatar"] {
+.line {
+  height: calc(var(--type-body-md-size) * 0.75);
+  background: var(--_bone);
+  border-radius: var(--radius-pill);
+}
+.line:last-child:not(:first-child) {
+  width: 60%;
+}
+
+/* ---------- rect and circle: the element is the bone ---------- */
+.root[data-shape="rect"],
+.root[data-shape="circle"] {
+  background: var(--_bone);
+}
+.root[data-shape="rect"] {
+  height: 120px;
+  border-radius: var(--radius-card);
+}
+.root[data-shape="circle"] {
   width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  border-radius: var(--radius-pill);
+}
+
+/* pulse the fill toward the text color; background is allowed to animate, opacity is not */
+.root[data-animated][data-shape="text"] .line,
+.root[data-animated][data-shape="rect"],
+.root[data-animated][data-shape="circle"] {
+  animation: datum-skeleton-pulse calc(var(--motion-slow) * 5) var(--motion-easing) infinite;
 }
 
 @keyframes datum-skeleton-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
   50% {
-    opacity: 0.45;
+    background-color: color-mix(in oklab, var(--color-bg-tertiary), var(--color-text-primary) 8%);
   }
 }
+
 @media (prefers-reduced-motion: reduce) {
-  .root {
-    animation-duration: 3.2s;
+  .root[data-animated] .line,
+  .root[data-animated][data-shape] {
+    animation: none;
   }
 }

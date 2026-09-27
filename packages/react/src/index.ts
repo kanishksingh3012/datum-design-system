@@ -72,9 +72,11 @@ export type {
 
 export { Skeleton } from "./components/Skeleton/Skeleton";
 export type { SkeletonProps, SkeletonOwnProps, SkeletonShape } from "./components/Skeleton/Skeleton";
+export { Spinner } from "./components/Spinner/Spinner";
+export type { SpinnerProps, SpinnerOwnProps, SpinnerSize, SpinnerTone } from "./components/Spinner/Spinner";
 
 export { ProgressBar } from "./components/ProgressBar/ProgressBar";
-export type { ProgressBarProps, ProgressBarOwnProps } from "./components/ProgressBar/ProgressBar";
+export type { ProgressBarProps, ProgressBarOwnProps, ProgressBarSize, ProgressBarIntent } from "./components/ProgressBar/ProgressBar";
 
 export { Checkbox } from "./components/Checkbox/Checkbox";
 export type { CheckboxProps, CheckboxOwnProps } from "./components/Checkbox/Checkbox";
@@ -92,7 +94,7 @@ export { Textarea } from "./components/Textarea/Textarea";
 export type { TextareaProps, TextareaOwnProps } from "./components/Textarea/Textarea";
 
 export { Alert } from "./components/Alert/Alert";
-export type { AlertProps, AlertOwnProps, AlertVariant } from "./components/Alert/Alert";
+export type { AlertProps, AlertOwnProps, AlertIntent, AlertAppearance } from "./components/Alert/Alert";
 
 export { Select } from "./components/Select/Select";
 export type { SelectProps, SelectOwnProps } from "./components/Select/Select";
@@ -100,8 +102,8 @@ export type { SelectProps, SelectOwnProps } from "./components/Select/Select";
 export { Tabs } from "./components/Tabs/Tabs";
 export type { TabsProps, TabsOwnProps, TabItem } from "./components/Tabs/Tabs";
 
-export { Toast } from "./components/Toast/Toast";
-export type { ToastProps, ToastOwnProps } from "./components/Toast/Toast";
+export { Toaster, toast, toastQueue } from "./components/Toast/Toast";
+export type { ToasterProps, ToastOptions, ToastContent, ToastIntent, ToastPosition } from "./components/Toast/Toast";
 
 export { Dialog } from "./components/Dialog/Dialog";
 export type { DialogProps, DialogOwnProps } from "./components/Dialog/Dialog";

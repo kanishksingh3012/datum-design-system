@@ -1,13 +1,88 @@
 .root {
-  height: 8px;
+  /* fills use the intent's text color: it reaches 3:1 against the track and the page in every mode, where a yellow fill would not */
+  --_fill: var(--color-text-accent);
+  --_height: 8px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
   width: 100%;
-  background: var(--color-bg-surface);
-  border-radius: 999px;
-  overflow: hidden;
+  font-family: var(--type-body-sm-family);
+  color: var(--color-text-primary);
 }
+.root[data-size="sm"] {
+  --_height: 4px;
+}
+.root[data-intent="success"] {
+  --_fill: var(--color-text-success);
+}
+.root[data-intent="warning"] {
+  --_fill: var(--color-text-warning);
+}
+.root[data-intent="danger"] {
+  --_fill: var(--color-text-danger);
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-tight);
+}
+.label {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-ui-label-weight);
+  line-height: var(--type-body-sm-lineHeight);
+}
+.value {
+  margin-left: auto;
+  font-family: var(--type-numeric-sm-family);
+  font-size: var(--type-numeric-sm-size);
+  font-weight: var(--type-numeric-sm-weight);
+  line-height: var(--type-numeric-sm-lineHeight);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.track {
+  position: relative;
+  height: var(--_height);
+  overflow: hidden;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-pill);
+}
+
+/* the fill is the full track slid left, so only transform animates */
 .fill {
-  height: 100%;
-  background: var(--color-bg-accent);
-  border-radius: 999px;
-  transition: width var(--motion-normal) var(--motion-easing);
+  position: absolute;
+  inset: 0;
+  background: var(--_fill);
+  border-radius: var(--radius-pill);
+  transition: transform var(--motion-normal) var(--motion-easing);
+}
+
+.root[data-indeterminate] .fill {
+  right: auto;
+  width: 40%;
+  transition: none;
+  animation: datum-progress-slide calc(var(--motion-slow) * 5) var(--motion-easing) infinite;
+}
+
+@keyframes datum-progress-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill {
+    transition: none;
+  }
+  /* indeterminate keeps moving (it is the only sign of progress), just slower */
+  .root[data-indeterminate] .fill {
+    animation-duration: calc(var(--motion-slow) * 20);
+  }
 }
