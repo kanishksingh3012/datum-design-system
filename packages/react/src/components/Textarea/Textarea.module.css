@@ -7,7 +7,8 @@
   --_pad-block: calc(var(--space-compact) + var(--space-compact) / 4);
 
   display: block;
-  min-height: 0;
+  /* never shorter than two lines, even when dragged smaller */
+  min-height: calc(2lh + 2 * var(--_pad-block) + 2px);
   padding: var(--_pad-block) var(--_pad);
   border-radius: var(--radius-card);
   resize: vertical;
