@@ -1,0 +1,20 @@
+/* The max width is the content width; the gutter sits outside it. */
+.root {
+  --_max: var(--grid-container);
+  --_pad: 0px;
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: calc(var(--_max) + 2 * var(--_pad));
+  margin-inline: auto;
+  padding-inline: var(--_pad);
+}
+
+.root[data-padded] {
+  --_pad: var(--grid-margin);
+}
+
+.root[data-size="sm"] { --_max: 640px; }
+.root[data-size="md"] { --_max: 768px; }
+.root[data-size="lg"] { --_max: 1024px; }
+.root[data-size="full"] { max-width: none; }

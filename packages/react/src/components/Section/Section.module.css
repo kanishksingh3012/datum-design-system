@@ -1,0 +1,15 @@
+/* A full-width band; put a Container inside it for the content width. */
+.root {
+  box-sizing: border-box;
+  width: 100%;
+  padding-block: calc(var(--space-section) * 2);
+  background: var(--color-bg-page);
+  color: var(--color-text-primary);
+}
+
+/* ---------- spacing: 32 / 64 / 96 ---------- */
+.root[data-spacing="sm"] { padding-block: var(--space-section); }
+.root[data-spacing="lg"] { padding-block: calc(var(--space-section) * 3); }
+
+.root[data-tone="muted"] { background: var(--color-bg-surface); }
+.root[data-tone="accent"] { background: var(--color-bg-accentSubtle); }

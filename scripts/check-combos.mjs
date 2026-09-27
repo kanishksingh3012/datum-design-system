@@ -11,6 +11,8 @@
 //    text 4.5:1 (3:1 large), control borders and focus rings 3:1 —
 //    at rest and on hover. Also fails any control whose touch hit area is
 //    under 44 × 44px (links in running text, underline="always", are exempt).
+//    Static text a fixture marks with data-check-text (type tones, text on
+//    section backgrounds) is measured too, at rest: 4.5:1, or 3:1 when large.
 //
 // Needs a built @datum-design/react (the gallery imports dist); `npm run check` builds first.
 // The gallery is built into a temp folder and served statically.
@@ -223,8 +225,15 @@ try {
           report("hover", await page.evaluate(measure, { id: i, focus: false }));
         }
         await page.mouse.move(0, 0);
+        const texts = await page.evaluate(() => {
+          const els = [...document.querySelectorAll("#fixture [data-check-text]")];
+          els.forEach((el, i) => el.setAttribute("data-check-id", `text-${i}`));
+          return els.length;
+        });
+        for (let i = 0; i < texts; i++) report("rest", await page.evaluate(measure, { id: `text-${i}`, focus: false }));
         const n = failures - before;
-        console.log(`${n ? "✗" : "✓"} ${name} ${theme}/${mode}: ${count} controls × rest, focus, hover — ${n} failure${n === 1 ? "" : "s"}`);
+        const what = [count && `${count} controls × rest, focus, hover`, texts && `${texts} text styles`].filter(Boolean).join(", ");
+        console.log(`${n ? "✗" : "✓"} ${name} ${theme}/${mode}: ${what || "nothing to measure"} — ${n} failure${n === 1 ? "" : "s"}`);
       }
     }
     // Touch targets: colors don't matter here, so one theme/mode is enough.

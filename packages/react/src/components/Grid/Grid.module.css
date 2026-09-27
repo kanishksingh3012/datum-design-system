@@ -1,0 +1,27 @@
+.root {
+  --_cols: 1;
+
+  display: grid;
+  grid-template-columns: repeat(var(--_cols), minmax(0, 1fr));
+  gap: var(--space-default);
+}
+
+/* breakpoint.md / breakpoint.lg (media queries can't read custom properties) */
+@media (min-width: 768px) {
+  .root { --_cols: var(--_cols-md); }
+}
+@media (min-width: 1024px) {
+  .root { --_cols: var(--_cols-lg); }
+}
+
+/* min() keeps a single item from overflowing a container narrower than --_min */
+.root[data-auto-fit] {
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--_min), 100%), 1fr));
+}
+
+/* ---------- gap: 0 / 4 / 8 / 16 / 24 / 32 ---------- */
+.root[data-gap="none"] { gap: 0; }
+.root[data-gap="xs"] { gap: calc(var(--space-compact) / 2); }
+.root[data-gap="sm"] { gap: var(--space-compact); }
+.root[data-gap="lg"] { gap: calc(var(--space-default) + var(--space-compact)); }
+.root[data-gap="xl"] { gap: var(--space-section); }

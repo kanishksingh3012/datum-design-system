@@ -148,15 +148,15 @@
   --color-bg-infoSubtle: light-dark(#D9F2F9, #00252D);
   --color-text-primary: light-dark(#343A40, #F8F9FA);
   --color-text-secondary: light-dark(#4D555D, #B9C0C7);
-  --color-text-tertiary: light-dark(#666E77, #9FA7B0);
+  --color-text-tertiary: light-dark(#4D555D, #B9C0C7);
   --color-text-disabled: light-dark(#9FA7B0, #666E77);
   --color-text-accent: light-dark(#355695, #AAC3F1);
   --color-text-onAccent: light-dark(#FFFFFF, #131E32);
-  --color-text-danger: light-dark(#AF1B37, #FD8188);
+  --color-text-danger: light-dark(#AF1B37, #FFAFB0);
   --color-text-onDanger: #FFFFFF;
   --color-text-warning: light-dark(#785C00, #F1C035);
   --color-text-onWarning: #1C2126;
-  --color-text-success: light-dark(#007440, #60C488);
+  --color-text-success: light-dark(#007440, #91DBAB);
   --color-text-onSuccess: #FFFFFF;
   --color-text-info: light-dark(#006C7F, #47BED8);
   --color-text-onInverse: light-dark(#F8F9FA, #1C2126);

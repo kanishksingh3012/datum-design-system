@@ -1,0 +1,63 @@
+/* Each size only sets the local --_* role variables; the base rule consumes them. */
+.root {
+  --_role-family: var(--type-heading-lg-family);
+  --_role-size: var(--type-heading-lg-size);
+  --_role-weight: var(--type-heading-lg-weight);
+  --_role-leading: var(--type-heading-lg-lineHeight);
+  --_role-tracking: var(--type-heading-lg-tracking);
+
+  margin: 0;
+  font-family: var(--_role-family);
+  font-size: var(--_role-size);
+  font-weight: var(--_role-weight);
+  line-height: var(--_role-leading);
+  letter-spacing: var(--_role-tracking);
+  color: var(--color-text-primary);
+  text-wrap: balance;
+}
+
+.root[data-size="display-lg"] {
+  --_role-family: var(--type-display-lg-family);
+  --_role-size: var(--type-display-lg-size);
+  --_role-weight: var(--type-display-lg-weight);
+  --_role-leading: var(--type-display-lg-lineHeight);
+  --_role-tracking: var(--type-display-lg-tracking);
+}
+.root[data-size="display-md"] {
+  --_role-family: var(--type-display-md-family);
+  --_role-size: var(--type-display-md-size);
+  --_role-weight: var(--type-display-md-weight);
+  --_role-leading: var(--type-display-md-lineHeight);
+  --_role-tracking: var(--type-display-md-tracking);
+}
+.root[data-size="display-sm"] {
+  --_role-family: var(--type-display-sm-family);
+  --_role-size: var(--type-display-sm-size);
+  --_role-weight: var(--type-display-sm-weight);
+  --_role-leading: var(--type-display-sm-lineHeight);
+  --_role-tracking: var(--type-display-sm-tracking);
+}
+.root[data-size="xl"] {
+  --_role-family: var(--type-heading-xl-family);
+  --_role-size: var(--type-heading-xl-size);
+  --_role-weight: var(--type-heading-xl-weight);
+  --_role-leading: var(--type-heading-xl-lineHeight);
+  --_role-tracking: var(--type-heading-xl-tracking);
+}
+.root[data-size="md"] {
+  --_role-family: var(--type-heading-md-family);
+  --_role-size: var(--type-heading-md-size);
+  --_role-weight: var(--type-heading-md-weight);
+  --_role-leading: var(--type-heading-md-lineHeight);
+  --_role-tracking: var(--type-heading-md-tracking);
+}
+.root[data-size="sm"] {
+  --_role-family: var(--type-heading-sm-family);
+  --_role-size: var(--type-heading-sm-size);
+  --_role-weight: var(--type-heading-sm-weight);
+  --_role-leading: var(--type-heading-sm-lineHeight);
+  --_role-tracking: var(--type-heading-sm-tracking);
+}
+
+.root[data-tone="secondary"] { color: var(--color-text-secondary); }
+.root[data-tone="accent"] { color: var(--color-text-accent); }

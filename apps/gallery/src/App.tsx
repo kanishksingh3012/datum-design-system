@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, ButtonGroup, Link } from "@datum-design/react";
+import { Button, ButtonGroup, Container, Grid, Heading, Link, Section, Stack, Text } from "@datum-design/react";
 import { Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
@@ -34,6 +34,96 @@ const legacy: [string, string][] = [
   ["danger-soft", "danger · soft"],
   ["link", "dropped — use Link"],
 ];
+
+type PropRow = [string, string, string, string];
+
+const containerProps: PropRow[] = [
+  ["size", "sm | md | lg | xl | full", "xl", "Max content width: 640 / 768 / 1024 / 1280px / none."],
+  ["padded", "boolean", "true", "Adds the responsive page gutter (grid.margin, 16–64px) outside the max width."],
+];
+const stackProps: PropRow[] = [
+  ["direction", "vertical | horizontal", "vertical", ""],
+  ["gap", "none | xs | sm | md | lg | xl", "md", "0 / 4 / 8 / 16 / 24 / 32px from the space scale."],
+  ["align", "start | center | end | stretch | baseline", "stretch", "Cross axis."],
+  ["justify", "start | center | end | between", "start", "Main axis."],
+  ["wrap", "boolean", "false", "Lets children wrap onto new lines."],
+];
+const gridProps: PropRow[] = [
+  ["columns", "1–12 | { base, md, lg }", "1", "A number applies at every width; an object switches at 768 / 1024px, each step inheriting the one below."],
+  ["minItemWidth", "number | string", "—", "Auto-fit: as many columns as fit, each at least this wide. Wins over columns."],
+  ["gap", "none | xs | sm | md | lg | xl", "md", "Same scale as Stack."],
+];
+const sectionProps: PropRow[] = [
+  ["spacing", "sm | md | lg", "md", "32 / 64 / 96px vertical padding."],
+  ["tone", "default | muted | accent", "default", "bg.page / bg.surface / bg.accentSubtle."],
+  ["as", "section | div | header | footer", "section", "The landmark element."],
+];
+const headingProps: PropRow[] = [
+  ["level", "1–6", "2", "Semantic tag, h1–h6."],
+  ["size", "display-lg | display-md | display-sm | xl | lg | md | sm", "from level", "Type role. Level 1 → xl, 2 → lg, 3 → md, 4–6 → sm."],
+  ["tone", "primary | secondary | accent", "primary", ""],
+];
+const textProps: PropRow[] = [
+  ["variant", "body-lg | body-md | body-sm | paragraph-lg | paragraph-md | label | caption | overline | numeric-lg | numeric-md | numeric-sm | code", "body-md", "One of the type roles. Numeric uses tabular figures; overline is uppercase."],
+  ["tone", "primary | secondary | tertiary | accent | danger | success | warning", "primary", ""],
+  ["weight", "regular | medium | semibold", "from role", "Override only when the role's weight doesn't fit."],
+  ["truncate", "boolean | number", "false", "true: one line with an ellipsis. A number: clamp to that many lines."],
+  ["as", "p | span | div | label", "p", "htmlFor passes through for label."],
+];
+
+const headingSizes = ["display-lg", "display-md", "display-sm", "xl", "lg", "md", "sm"] as const;
+const textVariants = [
+  ["body-lg", "Interface text, large"],
+  ["body-md", "Interface text, the default"],
+  ["body-sm", "Interface text, small"],
+  ["paragraph-lg", "Long-form reading, looser line height"],
+  ["paragraph-md", "Long-form reading, looser line height"],
+  ["label", "Form label"],
+  ["caption", "Helper text under a field"],
+  ["overline", "Category marker"],
+  ["numeric-lg", "$12,480.00"],
+  ["numeric-md", "1,024 / 2,048"],
+  ["numeric-sm", "08:45:12"],
+  ["code", "npm install @datum-design/react"],
+] as const;
+const textTones = ["primary", "secondary", "tertiary", "accent", "danger", "success", "warning"] as const;
+
+function PropsTable({ rows }: { rows: PropRow[] }) {
+  return (
+    <table className="props-table">
+      <thead>
+        <tr><th scope="col">Prop</th><th scope="col">Values</th><th scope="col">Default</th><th scope="col">Notes</th></tr>
+      </thead>
+      <tbody>
+        {rows.map(([prop, values, def, note]) => (
+          <tr key={prop}>
+            <th scope="row"><code>{prop}</code></th>
+            <td><code>{values}</code></td>
+            <td><code>{def}</code></td>
+            <td>{note}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function Usage({ dos, donts }: { dos: string[]; donts: string[] }) {
+  return (
+    <div className="usage-grid">
+      <div>
+        <h3>Do</h3>
+        <ul>{dos.map((d) => <li key={d}>{d}</li>)}</ul>
+      </div>
+      <div>
+        <h3>Don't</h3>
+        <ul>{donts.map((d) => <li key={d}>{d}</li>)}</ul>
+      </div>
+    </div>
+  );
+}
+
+const Cell = ({ children }: { children: string }) => <div className="demo-cell">{children}</div>;
 
 export function App() {
   const [pressed, setPressed] = useState(false);
@@ -80,6 +170,12 @@ export function App() {
         <a href="#floating">Floating (FAB)</a>
         <a href="#button-group">Button Group</a>
         <a href="#link">Link</a>
+        <a href="#container">Container</a>
+        <a href="#stack">Stack</a>
+        <a href="#grid">Grid</a>
+        <a href="#section">Section</a>
+        <a href="#heading">Heading</a>
+        <a href="#text">Text</a>
       </nav>
 
       {/* ============ BUTTON ============ */}
@@ -472,6 +568,354 @@ export function App() {
               </ul>
             </div>
           </div>
+        </div>
+      </section>
+      {/* ============ CONTAINER ============ */}
+      <section className="component-doc" id="container">
+        <h1>Container</h1>
+        <p className="dek">Centers content at a readable max width and adds the page gutter. Put one inside every Section; nest a smaller one for text that shouldn't run the full width.</p>
+
+        <div className="example-box demo-frame">
+          <Container size="sm" className="demo-outline">
+            <Text variant="caption" tone="secondary">size="sm" · 640px + gutter</Text>
+          </Container>
+        </div>
+
+        <div className="doc-section">
+          <h2>Sizes</h2>
+          <p className="lead"><b>sm</b> 640, <b>md</b> 768, <b>lg</b> 1024, <b>xl</b> 1280 (the default, <b>grid.container</b>) and <b>full</b> for no limit, shown here at half scale in a 1400px page. The width is the content width; the gutter sits outside it.</p>
+          <div className="sample-box demo-frame">
+            <div className="demo-zoom">
+              {(["sm", "md", "lg", "xl", "full"] as const).map((size) => (
+                <Container key={size} size={size} padded={false} className="demo-outline">
+                  <Text variant="body-lg" tone="secondary">{`size="${size}"`}</Text>
+                </Container>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Gutter</h2>
+          <p className="lead"><b>padded</b> (on by default) adds <b>grid.margin</b> on both sides: 16px on a phone, growing to 64px on a wide screen. Turn it off when the parent already has padding.</p>
+          <div className="sample-box stack demo-frame">
+            <Container size="full" className="demo-outline"><Text variant="caption" tone="secondary">padded</Text></Container>
+            <Container size="full" padded={false} className="demo-outline"><Text variant="caption" tone="secondary">padded={"{false}"}</Text></Container>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={containerProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Use one Container per Section for the page width.", "Use sm or md for long-form reading."]}
+            donts={["Nest padded Containers — the gutter doubles.", "Set max-width by hand on page content."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ STACK ============ */}
+      <section className="component-doc" id="stack">
+        <h1>Stack</h1>
+        <p className="dek">A row or column of children with one consistent gap. Replaces margins between siblings, so spacing lives in one place and always comes from the space scale.</p>
+
+        <div className="example-box">
+          <Stack gap="sm" align="center">
+            <Heading level={3}>Ready to start?</Heading>
+            <Text tone="secondary">Set up your workspace in a few minutes.</Text>
+            <Stack direction="horizontal" gap="sm">
+              <Button>Get started</Button>
+              <Button intent="neutral" appearance="outline">Talk to sales</Button>
+            </Stack>
+          </Stack>
+        </div>
+
+        <div className="doc-section">
+          <h2>Gap</h2>
+          <p className="lead"><b>none</b> 0, <b>xs</b> 4, <b>sm</b> 8, <b>md</b> 16 (default), <b>lg</b> 24, <b>xl</b> 32px.</p>
+          <div className="sample-box stack">
+            {(["xs", "sm", "md", "lg", "xl"] as const).map((gap) => (
+              <Stack key={gap} direction="horizontal" align="center">
+                <Text variant="code" tone="secondary" className="demo-label">{gap}</Text>
+                <Stack direction="horizontal" gap={gap}>
+                  <Cell>A</Cell><Cell>B</Cell><Cell>C</Cell>
+                </Stack>
+              </Stack>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Align and justify</h2>
+          <p className="lead"><b>align</b> works across the stack (default <b>stretch</b>; use <b>baseline</b> to line up text of different sizes). <b>justify</b> works along it; <b>between</b> pushes the first and last child to the ends.</p>
+          <div className="sample-box stack">
+            <Stack direction="horizontal" justify="between" align="baseline">
+              <Heading level={3} size="md">Invoices</Heading>
+              <Link href="#stack" underline="hover" size="sm">View all</Link>
+            </Stack>
+            <Stack direction="horizontal" justify="end" gap="sm">
+              <Button intent="neutral" appearance="ghost">Cancel</Button>
+              <Button>Save</Button>
+            </Stack>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Wrap</h2>
+          <p className="lead">With <b>wrap</b>, a horizontal stack flows onto new lines instead of overflowing — for tags and button rows on small screens.</p>
+          <div className="sample-box" style={{ display: "block", maxWidth: 320 }}>
+            <Stack direction="horizontal" gap="xs" wrap>
+              {["Design", "Tokens", "React", "Accessibility", "Theming", "Docs"].map((t) => <Cell key={t}>{t}</Cell>)}
+            </Stack>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={stackProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Space siblings with Stack instead of margins.", "Nest stacks: a vertical page stack of horizontal rows."]}
+            donts={["Add margins to children inside a Stack.", "Use Stack for a two-dimensional layout — use Grid."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ GRID ============ */}
+      <section className="component-doc" id="grid">
+        <h1>Grid</h1>
+        <p className="dek">Equal columns that collapse on small screens. Give it a column count per breakpoint, or a minimum item width and let it fit as many as it can.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Grid columns={{ base: 1, md: 3 }}>
+            <Cell>One</Cell><Cell>Two</Cell><Cell>Three</Cell>
+          </Grid>
+        </div>
+
+        <div className="doc-section">
+          <h2>Responsive columns</h2>
+          <p className="lead">An object switches at the <b>md</b> (768px) and <b>lg</b> (1024px) breakpoints; each step inherits the one below it. A plain number applies at every width. Resize the window to see this one go 1 → 2 → 4.</p>
+          <div className="sample-box" style={{ display: "block" }}>
+            <Grid columns={{ base: 1, md: 2, lg: 4 }} gap="sm">
+              {["1", "2", "3", "4", "5", "6", "7", "8"].map((n) => <Cell key={n}>{n}</Cell>)}
+            </Grid>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Auto-fit</h2>
+          <p className="lead"><b>minItemWidth</b> makes as many columns as fit, each at least that wide — no breakpoints needed. A single item never overflows a narrower container.</p>
+          <div className="sample-box" style={{ display: "block" }}>
+            <Grid minItemWidth={180} gap="sm">
+              {["Starter", "Team", "Business", "Enterprise"].map((n) => <Cell key={n}>{n}</Cell>)}
+            </Grid>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={gridProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Start at one column and add columns at md and lg.", "Use minItemWidth for card grids of unknown length."]}
+            donts={["Use a fixed column count above 2 without a responsive object — it stays that wide on phones.", "Use Grid for a single row of buttons — use Stack."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ SECTION ============ */}
+      <section className="component-doc" id="section">
+        <h1>Section</h1>
+        <p className="dek">A full-width page band with consistent vertical rhythm. The page is a stack of Sections, each holding a Container.</p>
+
+        <div className="example-box demo-bands">
+          <Section tone="accent" spacing="sm">
+            <Container size="sm">
+              <Stack gap="sm" align="center">
+                <Text variant="overline" tone="accent">New</Text>
+                <Heading level={2} size="xl">Datum 1.0 is here</Heading>
+                <Button>Read the release notes</Button>
+              </Stack>
+            </Container>
+          </Section>
+        </div>
+
+        <div className="doc-section">
+          <h2>Tone</h2>
+          <p className="lead"><b>default</b> is <b>bg.page</b>, <b>muted</b> is <b>bg.surface</b>, <b>accent</b> is <b>bg.accentSubtle</b>. Alternate default and muted to separate bands; keep accent for one band per page.</p>
+          <div className="sample-box stack demo-bands">
+            {(["default", "muted", "accent"] as const).map((tone) => (
+              <Section key={tone} tone={tone} spacing="sm">
+                <Container size="full">
+                  <Stack gap="xs">
+                    <Heading level={3} size="md">{`tone="${tone}"`}</Heading>
+                    <Text tone="secondary">Text and controls are checked for contrast on every tone.</Text>
+                  </Stack>
+                </Container>
+              </Section>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Spacing</h2>
+          <p className="lead"><b>sm</b> 32, <b>md</b> 64 (default), <b>lg</b> 96px above and below. Use lg for the hero, md for most bands.</p>
+          <div className="sample-box stack demo-bands">
+            {(["sm", "md", "lg"] as const).map((spacing) => (
+              <Section key={spacing} tone="muted" spacing={spacing} className="demo-rule">
+                <Container size="full"><Text variant="code" tone="secondary">{`spacing="${spacing}"`}</Text></Container>
+              </Section>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={sectionProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Give each Section a heading, or an aria-label, so it is a named region.", "Use as=\"header\" / \"footer\" for the page header and footer bands."]}
+            donts={["Put content straight into a Section without a Container.", "Stack two accent bands."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ HEADING ============ */}
+      <section className="component-doc" id="heading">
+        <h1>Heading</h1>
+        <p className="dek">Titles in the display and heading type roles. <span className="prop-values">level</span> is the HTML tag, for the document outline; <span className="prop-values">size</span> is how it looks. Pick them separately.</p>
+
+        <div className="example-box">
+          <Stack gap="xs" align="center">
+            <Heading level={1} size="display-md">Build faster</Heading>
+            <Heading level={2} size="md" tone="secondary">A design system for the web</Heading>
+          </Stack>
+        </div>
+
+        <div className="doc-section">
+          <h2>Sizes</h2>
+          <p className="lead">Three display sizes for hero statements (one per view) and four heading sizes for page, section, subsection and card titles. Barlow throughout.</p>
+          <div className="sample-box stack">
+            {headingSizes.map((size) => (
+              <Stack key={size} direction="horizontal" gap="md" align="baseline">
+                <Text variant="code" tone="secondary" className="demo-label">{size}</Text>
+                <Heading level={3} size={size}>Pricing plans</Heading>
+              </Stack>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Level and size</h2>
+          <p className="lead">Without <b>size</b>, the level decides: 1 → xl, 2 → lg, 3 → md, 4–6 → sm. Override the size, not the level, when a heading needs to look bigger or smaller — the outline must not skip levels.</p>
+          <div className="sample-box stack">
+            <Heading level={1} size="display-sm">level 1, size display-sm</Heading>
+            <Heading level={2} size="sm">level 2, size sm</Heading>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Tone</h2>
+          <div className="sample-box">
+            <Heading level={3} size="md">Primary</Heading>
+            <Heading level={3} size="md" tone="secondary">Secondary</Heading>
+            <Heading level={3} size="md" tone="accent">Accent</Heading>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={headingProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Use one level 1 per page.", "Choose the level for the outline and the size for the look."]}
+            donts={["Skip levels to get a smaller heading — change size.", "Use a display size more than once per view."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ TEXT ============ */}
+      <section className="component-doc" id="text">
+        <h1>Text</h1>
+        <p className="dek">Every non-heading text style, picked by purpose rather than size. Resets margins, so space it with Stack.</p>
+
+        <div className="example-box">
+          <Stack gap="xs">
+            <Text variant="overline" tone="secondary">Monthly revenue</Text>
+            <Text variant="numeric-lg">$48,210.00</Text>
+            <Text variant="caption" tone="success">+12.4% from last month</Text>
+          </Stack>
+        </div>
+
+        <div className="doc-section">
+          <h2>Variants</h2>
+          <p className="lead"><b>body</b> for interface text, <b>paragraph</b> for long-form reading (line height 1.7), <b>label</b>, <b>caption</b> and <b>overline</b> for UI text, <b>numeric</b> for figures (IBM Plex Mono, tabular so columns line up) and <b>code</b>.</p>
+          <div className="sample-box stack">
+            {textVariants.map(([variant, sample]) => (
+              <Stack key={variant} direction="horizontal" gap="md" align="baseline">
+                <Text variant="code" tone="secondary" className="demo-label">{variant}</Text>
+                <Text variant={variant}>{sample}</Text>
+              </Stack>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Tone</h2>
+          <p className="lead">All seven tones pass 4.5:1 on <b>bg.page</b> and <b>bg.surface</b> in every theme and mode. State tones say what happened; don't use them for decoration.</p>
+          <div className="sample-box">
+            {textTones.map((tone) => <Text key={tone} as="span" tone={tone}>{tone}</Text>)}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Weight</h2>
+          <p className="lead">Each variant brings its own weight. Override with <b>regular</b>, <b>medium</b> or <b>semibold</b> only when needed, e.g. to emphasise a total.</p>
+          <div className="sample-box">
+            <Text as="span" weight="regular">Regular</Text>
+            <Text as="span" weight="medium">Medium</Text>
+            <Text as="span" weight="semibold">Semibold</Text>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Truncate</h2>
+          <p className="lead"><b>true</b> cuts one line with an ellipsis; a number clamps to that many lines. Put the full text in a tooltip or detail view when it matters.</p>
+          <div className="sample-box" style={{ display: "block", maxWidth: 320 }}>
+            <Stack gap="sm">
+            <Text truncate>Quarterly planning — design system rollout across marketing and product</Text>
+            <Text truncate={2} tone="secondary">A description that runs on for a while, clamped to two lines so that cards in a grid stay the same height.</Text>
+            </Stack>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={textProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Pick the variant by purpose: figures use numeric, reading uses paragraph.", "Use as=\"span\" inside other text, as=\"label\" with htmlFor for a form label."]}
+            donts={["Pick a variant for its size — use the one that matches the job.", "Use tone alone to say something went wrong — say it in words too."]}
+          />
         </div>
       </section>
     </div>

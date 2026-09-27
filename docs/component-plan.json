@@ -126,13 +126,13 @@
               "columns",
               "1–12, or { base, md, lg }",
               "1",
-              "Responsive object switches at the md/lg breakpoints"
+              "A number applies at every width; the object switches at md (768) / lg (1024), each step inheriting the one below"
             ],
             [
               "minItemWidth",
               "length",
               "—",
-              "Auto-fit cards: as many columns as fit"
+              "Auto-fit cards: as many columns as fit (number = px); wins over columns"
             ],
             [
               "gap",
@@ -188,7 +188,7 @@
             [
               "size",
               "display-lg · display-md · display-sm · xl · lg · md · sm",
-              "from level",
+              "from level (1 xl · 2 lg · 3 md · 4–6 sm)",
               "Type role, e.g. level 1 can look like display-md"
             ],
             [
@@ -227,7 +227,7 @@
               "truncate",
               "boolean or line count",
               "false",
-              "Ellipsis on one or N lines"
+              "Ellipsis on one or N lines; shrinks inside flex and grid parents"
             ],
             [
               "as",
@@ -1312,6 +1312,18 @@
     [
       "border.strong",
       "Mode-aware (navy slate-600/400, orange stone-500/400) — it failed 3:1 on bg.surface in three of four combinations."
+    ],
+    [
+      "border.strong",
+      "Orange light moves stone-500 → stone-600: it failed 3:1 on bg.accentSubtle (accent Section)."
+    ],
+    [
+      "Text on surfaces",
+      "The combo check now measures static text too. Dark text.danger / text.success move 400 → 300; text.tertiary takes secondary's step where it failed 4.5:1 on bg.surface (orange dark, navy light and dark)."
+    ],
+    [
+      "Layout spacing",
+      "Stack and Grid gaps and Section padding are derived from the space tokens (compact, default, section); Container uses grid.container and grid.margin."
     ]
   ]
 }
