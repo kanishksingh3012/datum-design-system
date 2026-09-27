@@ -110,14 +110,16 @@ describe("Button", () => {
     expect(button.lastChild).toBe(suffix);
   });
 
-  it("replaces prefix with the spinner while loading, and hides suffix", () => {
-    render(
+  it("keeps prefix, label and suffix in place while loading and overlays a spinner", () => {
+    const { container } = render(
       <Button loading prefix={<span data-testid="prefix">P</span>} suffix={<span data-testid="suffix">S</span>}>
         Continue
       </Button>
     );
-    expect(screen.queryByTestId("prefix")).not.toBeInTheDocument();
-    expect(screen.queryByTestId("suffix")).not.toBeInTheDocument();
+    expect(screen.getByTestId("prefix")).toBeInTheDocument();
+    expect(screen.getByTestId("suffix")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "P Continue S" })).toHaveAttribute("aria-busy", "true");
+    expect(container.querySelector("[data-spinner]")).toHaveAttribute("aria-hidden", "true");
   });
 
   it("renders icon-only with the label as its accessible name", () => {

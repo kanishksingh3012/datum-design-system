@@ -40,7 +40,19 @@
       "Native elements where they are fully stylable (button, input, checkbox, radio); React Aria where behavior is hard (select, menus, dialogs, tabs, tooltips, toasts).",
       "Focus is always visible (border.focus ring); nothing is operable by mouse only.",
       "Motion respects prefers-reduced-motion.",
-      "Form controls share one Field pattern: label, helpText, errorText, required, disabled, readOnly."
+      "Form controls share one Field pattern: label, helpText, errorText, required, disabled, readOnly.",
+      "Every component follows the interaction rules in DESIGN.md → Interaction rules (conventions.interaction)."
+    ],
+    "interaction": [
+      "Hover swaps to a real hover token (or a color-mix toward text.primary where none exists); never filter or opacity tricks. Checked.",
+      "Press: :active scales to 0.98 over motion.fast; toggles use aria-pressed and take their intent's solid. Disabled and loading don't react.",
+      "Focus ring: :focus-visible only, 2px border.focus with a 2px offset at 3:1; the focused item in a group gets z-index 1. Checked.",
+      "Timing: motion.fast (color, shadow, press), motion.normal (movement and size), motion.slow (loops), motion.easing; no raw ms or s values. Checked.",
+      "Animate background, color, border-color, box-shadow, text-decoration-color, transform only; absolutely positioned indicators may animate width and height. Never animate layout.",
+      "Reduced motion: movement stops (press scale, sliding, text transitions); fades may stay; spinners slow down instead of stopping.",
+      "Loading: content keeps its space and accessible name (transparent text) with a spinner on top at 3:1 (checked); aria-busy; clicks blocked via aria-disabled; focus kept.",
+      "Disabled: native disabled, opacity 0.5, cursor not-allowed, no hover or press, exempt from contrast; anchors use aria-disabled and tabindex -1.",
+      "Touch: under pointer: coarse every control's hit area is at least 44 × 44 (interaction.minTarget), using an invisible ::after where the control looks smaller; links in running text are exempt. Checked."
     ]
   },
   "groups": [
@@ -276,7 +288,7 @@
               "loading",
               "boolean",
               "false",
-              "Spinner replaces prefix; blocks clicks via aria-disabled but keeps focus; aria-busy"
+              "Spinner over the label with no size change; blocks clicks via aria-disabled but keeps focus; aria-busy"
             ],
             [
               "pressed / onPressedChange",

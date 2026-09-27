@@ -13,7 +13,7 @@ export interface ButtonOwnProps {
   appearance?: ButtonAppearance;
   /** 32 / 40 / 48px tall with a precise pointer, +4px on touch screens (md becomes 44px). @default "md" */
   size?: ButtonSize;
-  /** Blocks clicks, shows a spinner in the prefix slot and sets aria-busy. Keeps focus. @default false */
+  /** Blocks clicks, overlays a spinner without changing the button's size, and sets aria-busy. Keeps focus. @default false */
   loading?: boolean;
   /** Icon or element shown before the label. */
   prefix?: ReactNode;
@@ -93,11 +93,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   const isBlocked = disabled || loading;
   const isToggle = pressed !== undefined;
 
+  // While loading, the content stays in place (hidden by CSS) and the
+  // spinner sits on top of it, so the button never changes size.
   const content = (
     <>
-      {loading ? <span className={styles.spinner} aria-hidden="true" /> : prefix}
+      {loading && <span className={styles.spinner} aria-hidden="true" data-spinner="" />}
+      {prefix}
       {children}
-      {!loading && suffix}
+      {suffix}
     </>
   );
 

@@ -3,11 +3,14 @@
 //
 //   node scripts/check-combos.mjs [Component ...]
 //
-// 1. Static scan: fails on hardcoded colors in a component's .css/.tsx.
+// 1. Static scan: fails on hardcoded colors in a component's .css/.tsx, and
+//    on breaking the interaction rules in DESIGN.md: filter-based hover, raw
+//    durations instead of motion tokens, and :focus rings instead of :focus-visible.
 // 2. Render: loads each component's fixture (apps/gallery/check.html) in
 //    orange/navy × light/dark and fails on WCAG contrast failures —
 //    text 4.5:1 (3:1 large), control borders and focus rings 3:1 —
-//    at rest and on hover.
+//    at rest and on hover. Also fails any control whose touch hit area is
+//    under 44 × 44px (links in running text, underline="always", are exempt).
 //
 // Needs a built @datum-design/react (the gallery imports dist); `npm run check` builds first.
 // The gallery is built into a temp folder and served statically.
@@ -74,9 +77,20 @@ function scanComponent(name) {
         hits++;
         fail(`hardcoded color "${found}" at ${where}`);
       }
+      if (file.endsWith(".css")) {
+        const rule =
+          (/(^|[\s;{])(backdrop-)?filter\s*:/.test(line) && "no filter effects — hover and press use real tokens") ||
+          (/(transition|animation)[\w-]*\s*:/.test(line) && /(^|[\s:,(])\d*\.?\d+m?s\b/.test(line.replace(/var\([^)]*\)/g, "")) &&
+            "timing must come from motion tokens") ||
+          (/:focus(?![\w-])/.test(line) && "focus rings use :focus-visible (keyboard only), not :focus");
+        if (rule) {
+          hits++;
+          fail(`interaction rule: ${rule} at ${where}`);
+        }
+      }
     });
   }
-  if (!hits) console.log(`  ✓ ${name}: no hardcoded colors (${files.join(", ")})`);
+  if (!hits) console.log(`  ✓ ${name}: no hardcoded colors or interaction-rule breaks (${files.join(", ")})`);
 }
 
 // ---------------------------------------------------------------- in-page measurement
@@ -123,10 +137,15 @@ function measure({ id, focus }) {
   const text = over(rgba(cs.color), own);
   const size = parseFloat(cs.fontSize);
   const large = size >= 24 || (size >= 18.66 && Number(cs.fontWeight) >= 700);
-  const out = {
-    label: el.getAttribute("aria-label") || el.textContent.trim(),
-    checks: [{ kind: "text", ratio: ratio(text, own), min: large ? 3 : 4.5, fg: hex(text), bg: hex(own) }],
-  };
+  const spinner = el.getAttribute("aria-busy") === "true" && el.querySelector("[data-spinner]");
+  const out = { label: el.getAttribute("aria-label") || el.textContent.trim(), checks: [] };
+  if (spinner) {
+    // Loading hides the label (it keeps its space); the spinner is the visible graphic: 3:1.
+    const sc = over(rgba(getComputedStyle(spinner).borderRightColor), own);
+    out.checks.push({ kind: "spinner", ratio: ratio(sc, own), min: 3, fg: hex(sc), bg: hex(own) });
+  } else {
+    out.checks.push({ kind: "text", ratio: ratio(text, own), min: large ? 3 : 4.5, fg: hex(text), bg: hex(own) });
+  }
   const ownFill = rgba(cs.backgroundColor)[3];
   const border = rgba(cs.borderTopColor);
   if (parseFloat(cs.borderTopWidth) > 0 && border[3] > 0 && ownFill === 0) {
@@ -208,6 +227,31 @@ try {
         console.log(`${n ? "✗" : "✓"} ${name} ${theme}/${mode}: ${count} controls × rest, focus, hover — ${n} failure${n === 1 ? "" : "s"}`);
       }
     }
+    // Touch targets: colors don't matter here, so one theme/mode is enough.
+    const touch = await browser.newContext({ viewport: { width: 1400, height: 1000 }, hasTouch: true, isMobile: true });
+    const tp = await touch.newPage();
+    await tp.goto(`${base}check.html?component=${name}&theme=orange&mode=light`);
+    await tp.waitForSelector("body[data-fixture=ready] #fixture > *");
+    const touchResult = await tp.evaluate(() => {
+      if (!matchMedia("(pointer: coarse)").matches) return { coarse: false, small: [], count: 0 };
+      const els = [...document.querySelectorAll("#fixture button, #fixture a")].filter(
+        // Links in running text (underline="always") are exempt, as in WCAG 2.5.8.
+        (el) => !el.matches(':disabled, [data-disabled], [data-underline="always"]')
+      );
+      const small = [];
+      for (const el of els) {
+        const r = el.getBoundingClientRect();
+        const after = getComputedStyle(el, "::after");
+        const w = Math.max(r.width, after.position === "absolute" ? parseFloat(after.width) || 0 : 0);
+        const h = Math.max(r.height, after.position === "absolute" ? parseFloat(after.height) || 0 : 0);
+        if (w < 43.5 || h < 43.5) small.push(`"${el.getAttribute("aria-label") || el.textContent.trim()}" ${Math.round(w)}×${Math.round(h)}`);
+      }
+      return { coarse: true, small, count: els.length };
+    });
+    await touch.close();
+    if (!touchResult.coarse) fail(`${name}: could not emulate a touch screen (pointer: coarse)`);
+    touchResult.small.forEach((m) => fail(`touch target under 44×44: ${m}`));
+    console.log(`${touchResult.small.length ? "✗" : "✓"} ${name} touch: ${touchResult.count} controls ≥ 44×44 hit area — ${touchResult.small.length} failure${touchResult.small.length === 1 ? "" : "s"}`);
   }
 } finally {
   await browser.close();

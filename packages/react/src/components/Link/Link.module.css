@@ -78,6 +78,25 @@
   border: 0;
 }
 
+/* standalone links (underline hover/none) are controls: 44 × 44 hit area on touch.
+   Links in running text (underline always) are exempt, as in WCAG 2.5.8. */
+@media (pointer: coarse) {
+  .root[data-underline="hover"],
+  .root[data-underline="none"] {
+    position: relative;
+  }
+  .root[data-underline="hover"]::after,
+  .root[data-underline="none"]::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, var(--interaction-minTarget));
+    height: max(100%, var(--interaction-minTarget));
+    transform: translate(-50%, -50%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .root {
     transition: none;

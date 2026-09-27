@@ -9,6 +9,7 @@
   --_height: 40px;
   --_pad: var(--space-default);
 
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -54,8 +55,11 @@
   cursor: not-allowed;
 }
 
+/* loading: content keeps its space (and its accessible name) but is not painted;
+   the spinner is centred on top, so the size never changes */
 .root[data-loading] {
   cursor: progress;
+  color: transparent;
 }
 
 /* ---------- sizes: 32 / 40 / 48, +4px on touch ---------- */
@@ -79,6 +83,16 @@
   }
   .root[data-size="lg"] {
     --_height: 52px;
+  }
+  /* the hit area is never smaller than 44 × 44, even when the button looks smaller */
+  .root::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, var(--interaction-minTarget));
+    height: max(100%, var(--interaction-minTarget));
+    transform: translate(-50%, -50%);
   }
 }
 
@@ -217,12 +231,14 @@
 }
 
 .spinner {
-  flex-shrink: 0;
+  position: absolute;
+  inset: 0;
+  margin: auto;
   box-sizing: border-box;
   width: var(--icon-inline);
   height: var(--icon-inline);
   border-radius: var(--radius-pill);
-  border: 2px solid currentColor;
+  border: 2px solid var(--_fg);
   border-top-color: transparent;
   animation: datum-button-spin var(--motion-slow) linear infinite;
 }
@@ -237,7 +253,8 @@
   .root:active:not(:disabled):not([aria-disabled="true"]) {
     transform: none;
   }
+  /* the spinner still turns (it is the only sign of progress), just slower */
   .spinner {
-    animation-duration: 1.4s;
+    animation-duration: calc(var(--motion-slow) * 4);
   }
 }

@@ -16,7 +16,7 @@ const buttonProps: [string, string, string, string][] = [
   ["prefix / suffix", "ReactNode", "—", "Icon or element before / after the label."],
   ["iconOnly", "boolean", "false", "Circular; requires label."],
   ["label", "string", "—", "Accessible name; required with iconOnly."],
-  ["loading", "boolean", "false", "Spinner replaces prefix; blocks clicks, keeps focus, sets aria-busy."],
+  ["loading", "boolean", "false", "Spinner over the label, no size change; blocks clicks, keeps focus, sets aria-busy."],
   ["disabled", "boolean", "false", "Native disabled."],
   ["pressed / onPressedChange", "boolean / (pressed) => void", "—", "Toggle mode via aria-pressed; on = the solid of its intent."],
   ["floating", "boolean", "false", "FAB treatment with overlay shadow."],

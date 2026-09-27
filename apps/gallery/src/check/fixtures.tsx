@@ -118,6 +118,12 @@ export const fixtures: Record<string, () => ReactNode> = {
           <Link href="https://example.com" external>
             External
           </Link>
+          <Link href="#check" size="sm" underline="hover">
+            Standalone sm
+          </Link>
+          <Link href="#check" tone="neutral" underline="none">
+            Standalone
+          </Link>
         </div>
       ))}
     </>

@@ -5,6 +5,11 @@ All notable changes to this project are recorded here. Format loosely follows [K
 ## [Unreleased]
 
 ### Added
+- **Interaction rules** in DESIGN.md and `conventions.interaction` in the component plan. They cover hover tokens, press, keyboard-only focus, motion tokens, what may animate, reduced motion, loading, disabled, and 44px touch targets.
+- `npm run check` enforces the rules it can:
+  - Fails on `filter`, on raw `ms`/`s` timings and on `:focus` rings in component CSS.
+  - Checks a loading spinner at 3:1.
+  - Checks that every control has a hit area of at least 44 × 44 under an emulated touch screen. Links in running text are exempt.
 - Link `tone` (accent · neutral · inherit), `external` (new tab, `rel="noopener noreferrer"`, arrow icon, "opens in a new tab" for screen readers; an explicit `target`/`rel` wins) and `size` (inherit · sm · md). Hover thickens the underline instead of dimming the text.
 - A Link fixture for the combo checker, covering every tone × underline in running text, on the page, `bg.surface` and `bg.accentSubtle`.
 - Attached ButtonGroup: the thumb slides between segments (200ms, `motion.normal`). It is re-measured on resize and whenever `aria-pressed` changes, and it doesn't animate when reduced motion is set.
@@ -13,6 +18,9 @@ All notable changes to this project are recorded here. Format loosely follows [K
 - A ButtonGroup fixture for the combo checker, including groups placed on `bg.surface`.
 
 ### Changed
+- Button `loading` no longer changes the button's size. The content keeps its space and accessible name (transparent text), and the spinner is centered on top. Before, the spinner replaced the prefix and the suffix was hidden.
+- Small Buttons and standalone Links (`underline` hover/none) get an invisible 44 × 44 hit area on touch screens.
+- The reduced-motion spinner duration now derives from `motion.slow` instead of a raw `1.4s`.
 - **Breaking:** Link `decorationStyle` is removed (not in the approved plan).
 - The combo checker now builds the gallery into a temp folder and serves it statically. The Vite dev server could reload the page mid-run when it discovered a dependency, which crashed the check.
 - Orange primary buttons use **white** text, like navy. `bg.accent` moves from orange-500 to orange-700 `#B34210` (white 5.67:1), hover orange-800, active orange-900. `text.onAccent` is now white.

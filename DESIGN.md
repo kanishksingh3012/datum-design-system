@@ -129,6 +129,22 @@ Two rules keep this from breaking: a **checkbox is never round** (a round checkb
 
 Radius is still one base (10px) times a ratio underneath (xs ×0.25 through 3xl ×3), so the whole system can be re-tuned from one value. Spacing runs on a 4px grid: compact 8, tight 12, default 16, section 32.
 
+## Interaction rules
+
+These come from Button and apply to **every** component. `npm run check` enforces the ones marked ✓.
+
+| Rule | How |
+|---|---|
+| **Hover changes a token** ✓ | Hover swaps to a real hover token (`bg.accentHover`, `bg.dangerHover`, `bg.inverseHover`, `bg.accentSubtleHover`). Where no hover token exists, mix toward the text color with `color-mix()`, e.g. 8% `text.primary`. Never `filter: brightness()` or opacity tricks; the hover state must pass contrast like any other state. |
+| **Press feedback** | `:active` scales the control to 0.98 (`motion.fast`). A toggle's on state is `aria-pressed="true"` and takes the solid treatment of its intent. Disabled and loading controls don't react. |
+| **Focus ring is keyboard-only** ✓ | `:focus-visible`, never `:focus`: a 2px `border.focus` outline with a 2px offset, measured at 3:1. A focused item in a group rises above its neighbors (`z-index: 1`) so the ring is never clipped. |
+| **All timing from motion tokens** ✓ | `motion.fast` (120ms) for color, background, border, shadow and press. `motion.normal` (200ms) for movement and size, like the ButtonGroup thumb. `motion.slow` (320ms) for loops like the spinner. `motion.easing` for all of them. No raw `ms` or `s` values. Derived timings are allowed, e.g. `calc(var(--motion-slow) * 4)`. |
+| **What may animate** | `background`, `color`, `border-color`, `box-shadow`, `text-decoration-color`, `transform`. Moving indicators such as the thumb may animate `width`/`height` only because they are absolutely positioned and can't push content. Never animate layout (margin, padding, the size of an element in the flow). |
+| **Reduced motion** | Under `prefers-reduced-motion: reduce`, movement stops: no press scale, no sliding thumb, no text transitions. Color and background fades may stay. A spinner keeps turning, but slower, because it is the only sign of progress. |
+| **Loading without layout shift** | The content stays in place with its text made transparent, so the size and the accessible name stay. A spinner in `text` color is centered on top and must reach 3:1 ✓. `aria-busy="true"`, and clicks are blocked via `aria-disabled`, but the control **keeps focus**. |
+| **Disabled** | Native `disabled` (so it leaves the tab order), opacity 0.5, `cursor: not-allowed`, no hover or press. Exempt from contrast, as in WCAG. When a control renders as an anchor it uses `aria-disabled="true"` and `tabindex="-1"` instead. |
+| **44px touch targets** ✓ | Under `pointer: coarse`, every control's hit area is at least 44 × 44 (`interaction.minTarget`). md grows to 44; smaller controls keep their look and extend an invisible `::after` hit area. Links in running text (`underline="always"`) are exempt, as in WCAG 2.5.8. |
+
 ## Do's and don'ts
 
 - **Do** pick a type role by purpose, not by the size you want.
@@ -156,3 +172,4 @@ Radius is still one base (10px) times a ratio underneath (xs ×0.25 through 3xl 
 - **2026-09-27** — `border.strong` becomes mode-aware (navy: slate-600 / slate-400; orange: stone-500 / stone-400). It failed 3:1 on `bg.surface` in three of the four combinations.
 - **2026-09-27** — Orange primary buttons use white text, like navy. The accent fill moves from orange-500 to orange-700 (hover orange-800, active orange-900) so white passes AA (5.67:1).
 - **2026-09-27** — Link rebuilt to the plan: tone, underline, external, size. Links in running text keep the underline (WCAG 1.4.1); `decorationStyle` dropped.
+- **2026-09-27** — Interaction rules written from Button and enforced by `npm run check` where they can be (filters, raw timings, `:focus`, spinner contrast, 44px touch targets). Button loading now overlays the spinner without changing size; small controls get a 44px touch hit area.
