@@ -9,6 +9,21 @@ const ranges = ["Day", "Week", "Month"];
 const sections = ["Overview", "Activity", "Settings"];
 const aligns = [["Left", AlignLeft], ["Center", AlignCenter], ["Right", AlignRight]] as const;
 
+const buttonProps: [string, string, string, string][] = [
+  ["intent", "accent | neutral | danger", "accent", "What the color means. neutral + solid is the ink button."],
+  ["appearance", "solid | soft | outline | ghost", "solid", "How much fill."],
+  ["size", "sm | md | lg", "md", "32 / 40 / 48px; +4px on touch screens."],
+  ["prefix / suffix", "ReactNode", "—", "Icon or element before / after the label."],
+  ["iconOnly", "boolean", "false", "Circular; requires label."],
+  ["label", "string", "—", "Accessible name; required with iconOnly."],
+  ["loading", "boolean", "false", "Spinner replaces prefix; blocks clicks, keeps focus, sets aria-busy."],
+  ["disabled", "boolean", "false", "Native disabled."],
+  ["pressed / onPressedChange", "boolean / (pressed) => void", "—", "Toggle mode via aria-pressed; on = the solid of its intent."],
+  ["floating", "boolean", "false", "FAB treatment with overlay shadow."],
+  ["fullWidth", "boolean", "false", "Stretches to its container."],
+  ["render", "(props) => ReactElement", "—", "Render as an anchor or router Link."],
+];
+
 const legacy: [string, string][] = [
   ["primary", "accent · solid"],
   ["secondary", "accent · soft"],
@@ -131,7 +146,7 @@ export function App() {
         <div className="doc-section">
           <h2>States</h2>
           <p className="lead">
-            Hover changes the fill token; focus shows a <b>border.focus</b> ring. Loading swaps the
+            Default, hover (the fill changes to its hover token), focus (a <b>border.focus</b> ring — press Tab to see it), pressed, disabled and loading. Loading swaps the
             prefix for a spinner and blocks clicks but keeps focus, so a submit button doesn't drop the keyboard user.
           </p>
           <div className="sample-box">
@@ -139,6 +154,8 @@ export function App() {
             <Button intent="neutral" appearance="outline" disabled>Disabled</Button>
             <Button loading>Saving</Button>
             <Button intent="neutral" appearance="soft" loading>Loading</Button>
+            <Button intent="neutral" appearance="outline" pressed={false} onPressedChange={() => {}}>Not pressed</Button>
+            <Button intent="neutral" appearance="outline" pressed onPressedChange={() => {}}>Pressed</Button>
           </div>
         </div>
 
@@ -162,19 +179,21 @@ export function App() {
 
         <div className="doc-section">
           <h2>Properties</h2>
-          <ul>
-            <li><b>intent</b><span className="prop-values">accent | neutral | danger — default accent</span></li>
-            <li><b>appearance</b><span className="prop-values">solid | soft | outline | ghost — default solid</span></li>
-            <li><b>size</b><span className="prop-values">sm | md | lg — default md</span></li>
-            <li><b>prefix</b> / <b>suffix</b><span className="prop-values">ReactNode — icon or element before/after the label</span></li>
-            <li><b>loading</b><span className="prop-values">boolean — spinner replaces prefix, blocks clicks, keeps focus, sets aria-busy</span></li>
-            <li><b>disabled</b><span className="prop-values">boolean</span></li>
-            <li><b>iconOnly</b> + <b>label</b><span className="prop-values">boolean + string — circular; label becomes the accessible name</span></li>
-            <li><b>pressed</b> / <b>onPressedChange</b><span className="prop-values">toggle mode via aria-pressed; on = the solid of its intent</span></li>
-            <li><b>floating</b><span className="prop-values">boolean — FAB treatment with overlay shadow</span></li>
-            <li><b>fullWidth</b><span className="prop-values">boolean — stretches to its container</span></li>
-            <li><b>render</b><span className="prop-values">(props) =&gt; ReactElement — render as an anchor or router Link</span></li>
-          </ul>
+          <table className="props-table">
+            <thead>
+              <tr><th scope="col">Prop</th><th scope="col">Values</th><th scope="col">Default</th><th scope="col">Notes</th></tr>
+            </thead>
+            <tbody>
+              {buttonProps.map(([prop, values, def, note]) => (
+                <tr key={prop}>
+                  <th scope="row"><code>{prop}</code></th>
+                  <td><code>{values}</code></td>
+                  <td><code>{def}</code></td>
+                  <td>{note}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         <div className="doc-section">

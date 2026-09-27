@@ -252,7 +252,7 @@
               "size",
               "sm · md · lg",
               "md",
-              ""
+              "32 / 40 / 48px; +4px under pointer: coarse (md = 44px on touch)"
             ],
             [
               "prefix / suffix",
@@ -264,19 +264,25 @@
               "iconOnly",
               "boolean",
               "false",
-              "Square/circle; requires label for screen readers"
+              "Circle; requires label, which becomes aria-label"
+            ],
+            [
+              "label",
+              "string",
+              "—",
+              "Accessible name; required with iconOnly"
             ],
             [
               "loading",
               "boolean",
               "false",
-              "Spinner replaces prefix; blocks double submit"
+              "Spinner replaces prefix; blocks clicks via aria-disabled but keeps focus; aria-busy"
             ],
             [
-              "pressed",
+              "pressed / onPressedChange",
               "boolean",
               "—",
-              "Toggle mode (aria-pressed)"
+              "Toggle mode (aria-pressed). On = the solid treatment of its own intent"
             ],
             [
               "floating",
@@ -288,7 +294,7 @@
               "fullWidth",
               "boolean",
               "false",
-              "New"
+              "Stretches to its container"
             ],
             [
               "intent=\"neutral\" + solid",
@@ -304,12 +310,13 @@
             ]
           ],
           "beh": "Native",
-          "note": "Today's variants map as: primary → accent/solid, secondary → accent/soft, tertiary → neutral/soft, outline → neutral/outline, text → neutral/ghost, danger → danger/solid, danger-soft → danger/soft. \"link\" is dropped — use Link."
+          "note": "Today's variants map as: primary → accent/solid, secondary → accent/soft, tertiary → neutral/soft, outline → neutral/outline, text → neutral/ghost, danger → danger/solid, danger-soft → danger/soft. \"link\" is dropped — use Link.",
+          "done": "2026-09-27 — passes npm run check in all four combinations"
         },
         {
           "n": "ButtonGroup",
           "st": "rework",
-          "why": "Related actions as one unit.",
+          "why": "Related actions as one unit. Spaced by default; attached is a segmented view switcher. Always hugs its content; vertical items share the widest width.",
           "props": [
             [
               "orientation",
@@ -321,16 +328,17 @@
               "attached",
               "boolean",
               "false",
-              "Joined segments with shared borders vs spaced buttons"
+              "One tinted track, no borders between segments; a raised thumb slides to the pressed segment (reduced motion: no slide). Vertical track uses radius.card, segments radius.card − inset"
             ],
             [
               "size / intent / appearance",
               "as Button",
               "—",
-              "Passed down to every child"
+              "Passed down to every child via context; a child's own prop wins. In an attached group, intent and appearance give way to the track treatment"
             ]
           ],
-          "beh": "Native"
+          "beh": "Native",
+          "done": "2026-09-27 — passes npm run check in all four combinations"
         },
         {
           "n": "Link",
@@ -341,7 +349,7 @@
               "tone",
               "accent · neutral · inherit",
               "accent",
-              ""
+              "neutral turns accent on hover; inherit takes the surrounding text color"
             ],
             [
               "underline",
@@ -353,7 +361,7 @@
               "external",
               "boolean",
               "false",
-              "Adds an icon, target and rel"
+              "New tab, rel=\"noopener noreferrer\", arrow icon, \"opens in a new tab\" for screen readers; explicit target/rel win"
             ],
             [
               "size",
@@ -362,7 +370,9 @@
               ""
             ]
           ],
-          "beh": "Native"
+          "beh": "Native",
+          "note": "decorationStyle removed (not in the plan). Hover thickens the underline instead of dimming the text.",
+          "done": "2026-09-27 — passes npm run check in all four combinations"
         }
       ]
     },
@@ -1274,6 +1284,22 @@
     [
       "Page blocks",
       "Come after the components."
+    ],
+    [
+      "Navy accent",
+      "Light-mode fill moves from navy-900 to navy-700 (hover 600, active 800) — navy-900 was nearly identical to the ink button."
+    ],
+    [
+      "Orange on-accent",
+      "Primary buttons carry white text in both themes. Orange's fill moves from orange-500 to orange-700 (hover 800, active 900) so white passes AA at 5.67:1."
+    ],
+    [
+      "ButtonGroup attached",
+      "Track with a sliding raised thumb (option A), chosen over a split-pill design. Replaces joined segments with shared borders."
+    ],
+    [
+      "border.strong",
+      "Mode-aware (navy slate-600/400, orange stone-500/400) — it failed 3:1 on bg.surface in three of four combinations."
     ]
   ]
 }
