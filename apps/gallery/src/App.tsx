@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, ButtonGroup, Link } from "@datum-design/react";
+import { Overlays, overlayNav } from "./Overlays";
 import { Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
@@ -80,6 +81,9 @@ export function App() {
         <a href="#floating">Floating (FAB)</a>
         <a href="#button-group">Button Group</a>
         <a href="#link">Link</a>
+        {overlayNav.map(([href, name]) => (
+          <a key={href} href={href}>{name}</a>
+        ))}
       </nav>
 
       {/* ============ BUTTON ============ */}
@@ -474,6 +478,8 @@ export function App() {
           </div>
         </div>
       </section>
+
+      <Overlays />
     </div>
   );
 }

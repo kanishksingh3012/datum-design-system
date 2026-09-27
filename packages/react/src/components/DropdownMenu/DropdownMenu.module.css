@@ -1,41 +1,137 @@
-.root {
-  position: relative;
-  display: inline-block;
-}
-.menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  z-index: 20;
-  min-width: 180px;
-  display: flex;
-  flex-direction: column;
-  padding: 0.3rem;
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-card);
-  box-shadow: var(--elevation-overlay);
-}
-.item {
-  display: flex;
-  align-items: center;
-  text-align: left;
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  color: var(--color-text-primary);
-  background: none;
-  border: none;
-  border-radius: var(--radius-control);
-  min-height: var(--interaction-minTarget);
-  padding: 0 var(--space-compact);
-  cursor: pointer;
-}
-.item:hover:not(:disabled),
-.item:focus-visible {
-  background: var(--color-bg-page);
+.popover {
   outline: none;
 }
-.item:disabled {
+
+/* ---------- the menu surface ---------- */
+.root {
+  --_item-height: 40px;
+  --_item-pad: var(--space-tight);
+  --_font-size: var(--type-body-md-size);
+
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: max(var(--trigger-width, 0px), 180px);
+  max-height: inherit;
+  overflow: auto;
+  padding: calc(var(--space-compact) / 2 + 2px);
+  font-family: var(--type-body-md-family);
+  font-size: var(--_font-size);
+  color: var(--color-text-primary);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-overlay);
+  outline: none;
+}
+.root[data-size="sm"] {
+  --_item-height: 32px;
+  --_item-pad: calc(var(--space-compact) + 2px);
+  --_font-size: var(--type-body-sm-size);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sectionLabel {
+  padding: var(--space-compact) var(--_item-pad) calc(var(--space-compact) / 2);
+  font-family: var(--type-ui-overline-family);
+  font-size: var(--type-ui-overline-size);
+  font-weight: var(--type-ui-overline-weight);
+  letter-spacing: var(--type-ui-overline-tracking);
+  line-height: var(--type-ui-overline-lineHeight);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.separator {
+  height: 1px;
+  margin: calc(var(--space-compact) / 2) var(--_item-pad);
+  background: var(--color-border-subtle);
+}
+
+/* ---------- items: pills, like every single-line control ---------- */
+.item {
+  --_bg-hover: color-mix(in oklab, var(--color-text-primary) 8%, transparent);
+  --_fg: var(--color-text-primary);
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-compact);
+  box-sizing: border-box;
+  min-height: var(--_item-height);
+  padding: 0 var(--_item-pad);
+  line-height: 1.2;
+  color: var(--_fg);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  outline: none;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+.item[data-intent="danger"] {
+  --_bg-hover: var(--color-bg-dangerSubtle);
+  --_fg: var(--color-text-danger);
+}
+/* hover moves focus in a menu, so hover and arrow-key focus look the same */
+.item:hover:not([data-disabled]),
+.item[data-focused]:not([data-disabled]) {
+  background: var(--_bg-hover);
+}
+.item:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.item[data-pressed]:not([data-disabled]) {
+  transform: scale(0.98);
+}
+.item[data-disabled] {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.indicator,
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+}
+.indicator svg,
+.icon svg {
+  width: 100%;
+  height: 100%;
+}
+.label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+}
+.shortcut {
+  margin-left: var(--space-default);
+  font-family: var(--type-code-sm-family);
+  font-size: var(--type-code-sm-size);
+  color: var(--color-text-secondary);
+}
+.item[data-intent="danger"] .shortcut {
+  color: inherit;
+}
+
+/* touch: items are stacked, so an invisible hit area would overlap the next
+   one; both sizes grow to the full 44px instead */
+@media (pointer: coarse) {
+  .root[data-size] {
+    --_item-height: var(--interaction-minTarget);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item[data-pressed]:not([data-disabled]) {
+    transform: none;
+  }
 }

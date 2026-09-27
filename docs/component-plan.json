@@ -987,7 +987,9 @@
               ""
             ]
           ],
-          "beh": "React Aria"
+          "beh": "React Aria",
+          "note": "Built on React Aria (ModalOverlay + Dialog). Adds open / defaultOpen / onOpenChange and an optional trigger; children may be a function that receives close. DialogHeader takes the title and a description (aria-describedby) and shows the close button when dismissible. dismissible defaults to true even for alertdialog, as planned; the docs say to set it to false for required choices.",
+          "done": "2026-09-27 — passes npm run check in all four combinations"
         },
         {
           "n": "Sheet",
@@ -1007,7 +1009,9 @@
               "320 / 420 / 560px"
             ]
           ],
-          "beh": "React Aria"
+          "beh": "React Aria",
+          "note": "Same modal behavior and the same Dialog slots (DialogHeader · DialogBody · DialogFooter). Always dismissible. Drag-to-dismiss dropped (not in the plan). Size is the width for left/right and the height for top/bottom.",
+          "done": "2026-09-27 — passes npm run check in all four combinations"
         },
         {
           "n": "DropdownMenu",
@@ -1033,7 +1037,9 @@
               ""
             ]
           ],
-          "beh": "React Aria"
+          "beh": "React Aria",
+          "note": "Items are plain objects. Consecutive checkbox or radio items are grouped into a section automatically; one kind of selectable item per section. Both sizes grow to 44px on touch, since stacked items cannot borrow an invisible hit area.",
+          "done": "2026-09-27 — passes npm run check in all four combinations"
         },
         {
           "n": "Tooltip",
@@ -1059,7 +1065,9 @@
               "Plain text only — never interactive"
             ]
           ],
-          "beh": "React Aria"
+          "beh": "React Aria",
+          "note": "Ink fill (bg.inverse / text.onInverse). Keyboard focus shows it immediately; the CSS data-tooltip utility still ships and should be retired once call sites move over.",
+          "done": "2026-09-27 — passes npm run check in all four combinations"
         }
       ]
     },

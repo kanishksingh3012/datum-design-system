@@ -5,6 +5,12 @@ All notable changes to this project are recorded here. Format loosely follows [K
 ## [Unreleased]
 
 ### Added
+- **Overlays on React Aria Components** (`react-aria-components` is now a dependency, external in the build):
+  - Dialog `size` (sm · md · lg · full), `role` (dialog · alertdialog), `dismissible`, `open`/`defaultOpen`/`onOpenChange`, optional `trigger`, and function children that receive `close`. New slots `DialogHeader` (title + `description`, close button), `DialogBody` (scrolls), `DialogFooter`.
+  - Sheet `side` (top · right · bottom · left, default right) and `size` (sm · md · lg), with the Dialog slots. Slides in by transform; appears in place under reduced motion.
+  - DropdownMenu `items` (action with icon, shortcut and danger intent · checkbox · radio · separator · section), `placement` (bottom-start · bottom-end · top-start · top-end), `size` (sm · md).
+  - Tooltip (new component): `content`, `placement`, `delay` (500ms); shows at once on keyboard focus.
+- Combo-checker fixtures for Dialog, Sheet, DropdownMenu and Tooltip. The checker now scans the whole page (overlays portal out of `#fixture`), counts menu items as controls, checks tooltip text, and skips anything hidden behind an open modal or visually hidden.
 - **Interaction rules** in DESIGN.md and `conventions.interaction` in the component plan. They cover hover tokens, press, keyboard-only focus, motion tokens, what may animate, reduced motion, loading, disabled, and 44px touch targets.
 - `npm run check` enforces the rules it can:
   - Fails on `filter`, on raw `ms`/`s` timings and on `:focus` rings in component CSS.
@@ -18,6 +24,7 @@ All notable changes to this project are recorded here. Format loosely follows [K
 - A ButtonGroup fixture for the combo checker, including groups placed on `bg.surface`.
 
 ### Changed
+- **Breaking:** Dialog no longer takes `title`, `body` or `onClose` — use `DialogHeader`/`DialogBody` and `onOpenChange`. Sheet likewise, and it defaults to `side="right"`; drag-to-dismiss is removed. DropdownMenu's `MenuItemDef` type is replaced by `DropdownMenuItem`.
 - Button `loading` no longer changes the button's size. The content keeps its space and accessible name (transparent text), and the spinner is centered on top. Before, the spinner replaced the prefix and the suffix was hidden.
 - Small Buttons and standalone Links (`underline` hover/none) get an invisible 44 × 44 hit area on touch screens.
 - The reduced-motion spinner duration now derives from `motion.slow` instead of a raw `1.4s`.

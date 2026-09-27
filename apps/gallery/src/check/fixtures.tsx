@@ -1,6 +1,17 @@
 import type { ReactNode } from "react";
-import { Button, ButtonGroup, Link } from "@datum-design/react";
-import { AlignCenter, AlignLeft, AlignRight, Plus } from "lucide-react";
+import {
+  Button,
+  ButtonGroup,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  DropdownMenu,
+  Link,
+  Sheet,
+  Tooltip,
+} from "@datum-design/react";
+import { AlignCenter, AlignLeft, AlignRight, Copy, Pencil, Plus, Trash2 } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
 const appearances = ["solid", "soft", "outline", "ghost"] as const;
@@ -127,5 +138,65 @@ export const fixtures: Record<string, () => ReactNode> = {
         </div>
       ))}
     </>
+  ),
+  // Overlays: one open at a time (a modal hides everything behind it), held
+  // open so focusing the trigger can't close it mid-measurement.
+  Dialog: () => (
+    <Dialog open onOpenChange={noop} trigger={<Button>Open dialog</Button>}>
+      <DialogHeader description="Supporting text in text.secondary.">Dialog title</DialogHeader>
+      <DialogBody>
+        Body copy with a <Link href="#check">link</Link> inside.
+      </DialogBody>
+      <DialogFooter>
+        <Button intent="neutral" appearance="outline">Cancel</Button>
+        <Button intent="danger">Delete</Button>
+      </DialogFooter>
+    </Dialog>
+  ),
+  Sheet: () => (
+    <Sheet open onOpenChange={noop} trigger={<Button>Open sheet</Button>}>
+      <DialogHeader description="Narrow the results.">Filters</DialogHeader>
+      <DialogBody>
+        <Button intent="neutral" appearance="soft">Reset</Button>
+      </DialogBody>
+      <DialogFooter>
+        <Button fullWidth>Show results</Button>
+      </DialogFooter>
+    </Sheet>
+  ),
+  DropdownMenu: () => (
+    <DropdownMenu
+      open
+      onOpenChange={noop}
+      trigger={<Button intent="neutral" appearance="outline">Options</Button>}
+      items={[
+        { label: "Edit", icon: <Pencil />, shortcut: "⌘E" },
+        { label: "Duplicate", icon: <Copy />, shortcut: "⌘D" },
+        { label: "Archive", disabled: true },
+        { type: "separator" },
+        { type: "checkbox", label: "Show grid", checked: true, onCheckedChange: noop },
+        { type: "checkbox", label: "Snap to grid", checked: false, onCheckedChange: noop },
+        {
+          type: "section",
+          label: "Sort by",
+          items: [
+            { type: "radio", label: "Name", checked: true, onSelect: noop },
+            { type: "radio", label: "Date", checked: false, onSelect: noop },
+          ],
+        },
+        { type: "separator" },
+        { label: "Delete", intent: "danger", icon: <Trash2 />, shortcut: "⌫" },
+      ]}
+    />
+  ),
+  Tooltip: () => (
+    <div className="row" style={{ padding: "48px 0" }}>
+      <Tooltip content="Top tooltip" open onOpenChange={noop}>
+        <Button intent="neutral" appearance="outline">Top</Button>
+      </Tooltip>
+      <Tooltip content="Bottom tooltip that wraps onto a second line when it runs long" placement="bottom" open onOpenChange={noop}>
+        <Button intent="neutral" appearance="outline">Bottom</Button>
+      </Tooltip>
+    </div>
   ),
 };

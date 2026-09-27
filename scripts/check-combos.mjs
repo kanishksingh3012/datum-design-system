@@ -11,6 +11,10 @@
 //    text 4.5:1 (3:1 large), control borders and focus rings 3:1 —
 //    at rest and on hover. Also fails any control whose touch hit area is
 //    under 44 × 44px (links in running text, underline="always", are exempt).
+//    Overlays portal out of #fixture, so the whole page is scanned: buttons,
+//    links and menu items are controls; tooltips are checked as text at rest.
+//    Anything hidden behind an open modal (aria-hidden / inert) or visually
+//    hidden (React Aria's 1px dismiss buttons) is not operable and is skipped.
 //
 // Needs a built @datum-design/react (the gallery imports dist); `npm run check` builds first.
 // The gallery is built into a temp folder and served statically.
@@ -29,6 +33,19 @@ const MODES = ["light", "dark"];
 const registered = [...readFileSync(join(GALLERY, "src/check/fixtures.tsx"), "utf8").matchAll(/^  (\w+): \(\) =>/gm)].map((m) => m[1]);
 const requested = process.argv.slice(2).filter((a) => !a.startsWith("-"));
 const targets = requested.length ? requested : registered;
+
+// What counts as a control, what is checked as text only, and what is operable.
+const CONTROLS = "button, a, [role^=menuitem]";
+const TEXT_ONLY = "[role=tooltip]";
+const OPERABLE = `
+  if (el.matches(":disabled, [data-disabled]")) return false;
+  if (el.closest('[aria-hidden="true"], [inert]')) return false;
+  for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
+    const r = n.getBoundingClientRect();
+    if ((n === el || getComputedStyle(n).overflow !== "visible") && (r.width <= 1 || r.height <= 1)) return false;
+  }
+  return true;
+`;
 
 let failures = 0;
 const fail = (msg) => {
@@ -201,13 +218,16 @@ try {
         await page.waitForSelector("body[data-fixture=ready] #fixture > *");
         await page.evaluate(() => document.fonts.ready);
         await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; }" });
-        const count = await page.evaluate(() => {
-          const els = [...document.querySelectorAll("#fixture button, #fixture a")].filter(
-            (el) => !el.matches(":disabled, [data-disabled]")
-          );
-          els.forEach((el, i) => el.setAttribute("data-check-id", String(i)));
-          return els.length;
-        });
+        const [count, texts] = await page.evaluate(
+          ([controls, textOnly, operable]) => {
+            const isOperable = new Function("el", operable);
+            const els = [...document.querySelectorAll(controls)].filter(isOperable);
+            const txt = [...document.querySelectorAll(textOnly)].filter(isOperable);
+            [...els, ...txt].forEach((el, i) => el.setAttribute("data-check-id", String(i)));
+            return [els.length, txt.length];
+          },
+          [CONTROLS, TEXT_ONLY, OPERABLE]
+        );
         const before = failures;
         const report = (state, res) => {
           for (const c of res.checks) {
@@ -218,13 +238,15 @@ try {
         };
         // Rest + focus ring (no pointer has touched the page, so focus() shows :focus-visible).
         for (let i = 0; i < count; i++) report("rest", await page.evaluate(measure, { id: i, focus: true }));
+        for (let i = count; i < count + texts; i++) report("rest", await page.evaluate(measure, { id: i, focus: false }));
         for (let i = 0; i < count; i++) {
           await page.hover(`[data-check-id="${i}"]`);
           report("hover", await page.evaluate(measure, { id: i, focus: false }));
         }
         await page.mouse.move(0, 0);
         const n = failures - before;
-        console.log(`${n ? "✗" : "✓"} ${name} ${theme}/${mode}: ${count} controls × rest, focus, hover — ${n} failure${n === 1 ? "" : "s"}`);
+        const extra = texts ? ` + ${texts} text${texts === 1 ? "" : "s"}` : "";
+        console.log(`${n ? "✗" : "✓"} ${name} ${theme}/${mode}: ${count} controls × rest, focus, hover${extra} — ${n} failure${n === 1 ? "" : "s"}`);
       }
     }
     // Touch targets: colors don't matter here, so one theme/mode is enough.
@@ -232,11 +254,12 @@ try {
     const tp = await touch.newPage();
     await tp.goto(`${base}check.html?component=${name}&theme=orange&mode=light`);
     await tp.waitForSelector("body[data-fixture=ready] #fixture > *");
-    const touchResult = await tp.evaluate(() => {
+    const touchResult = await tp.evaluate(([controls, operable]) => {
       if (!matchMedia("(pointer: coarse)").matches) return { coarse: false, small: [], count: 0 };
-      const els = [...document.querySelectorAll("#fixture button, #fixture a")].filter(
+      const isOperable = new Function("el", operable);
+      const els = [...document.querySelectorAll(controls)].filter(
         // Links in running text (underline="always") are exempt, as in WCAG 2.5.8.
-        (el) => !el.matches(':disabled, [data-disabled], [data-underline="always"]')
+        (el) => isOperable(el) && !el.matches('[data-underline="always"]')
       );
       const small = [];
       for (const el of els) {
@@ -247,7 +270,7 @@ try {
         if (w < 43.5 || h < 43.5) small.push(`"${el.getAttribute("aria-label") || el.textContent.trim()}" ${Math.round(w)}×${Math.round(h)}`);
       }
       return { coarse: true, small, count: els.length };
-    });
+    }, [CONTROLS, OPERABLE]);
     await touch.close();
     if (!touchResult.coarse) fail(`${name}: could not emulate a touch screen (pointer: coarse)`);
     touchResult.small.forEach((m) => fail(`touch target under 44×44: ${m}`));
