@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { useParams } from "react-router-dom";
-import { Badge, Heading, Link, Spinner, Text } from "@datum-design/react";
+import { Badge, Heading, Spinner, Text } from "@datum-design/react";
 import { components } from "./nav";
 import { docPages } from "./docs";
 
@@ -31,9 +31,6 @@ export function ComponentPage() {
       <Heading level={1}>{meta.name}</Heading>
       <Text as="p" variant="body-lg" tone="secondary">{meta.why}</Text>
       <Badge intent="neutral">Docs coming soon</Badge>
-      <Text as="p" tone="secondary">
-        Until this page moves over, the full reference lives in the <Link href="/gallery">legacy gallery</Link>.
-      </Text>
     </div>
   );
 }

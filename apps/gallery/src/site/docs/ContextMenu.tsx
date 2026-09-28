@@ -1,7 +1,6 @@
 import { type ReactNode } from "react";
 import { ContextMenu, ContextMenuItem, DropdownMenu } from "@datum-design/react";
 import { Copy, Pencil, Trash2 } from "lucide-react";
-import { CommandPaletteDoc } from "../../PickersSection";
 import { A11y, Demo, PropRow, PropsTable, Usage } from "./kit";
 
 const contextItems: ContextMenuItem[] = [
@@ -60,7 +59,6 @@ export default function ContextMenuDoc() {
         ]} />
     </section>
 
-    <CommandPaletteDoc />
 
     </>
   );

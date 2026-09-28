@@ -1,5 +1,4 @@
 import { FileUpload } from "@datum-design/react";
-import { PickerFormDocs } from "../../PickersSection";
 import { A11y, Demo, PropRow, PropsTable, Usage } from "./kit";
 
 const fileUploadProps: PropRow[] = [
@@ -49,7 +48,6 @@ export default function FileUploadDoc() {
           ["Drop zone", "Announces when files are dropped or rejected."],
         ]} />
     </section>
-    <PickerFormDocs />
 
     </>
   );
