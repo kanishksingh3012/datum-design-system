@@ -3,7 +3,7 @@
 Handoff for the next chat. Read this file only.
 
 ## Milestones
-- [x] M1 — shell + deploy config: `M1_HASH`
+- [x] M1 — shell + deploy config: `20aae2e`
 - [ ] M2 — doc page pattern + Actions
 - [ ] M3 — migrate remaining categories
 - [ ] M4 — Getting started + Theming
