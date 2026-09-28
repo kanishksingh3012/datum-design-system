@@ -1,5 +1,4 @@
-import { forwardRef, useEffect, useRef, useState, type HTMLAttributes, type Ref } from "react";
-import { mergeRefs } from "react-aria";
+import { forwardRef, useCallback, useEffect, useRef, useState, type HTMLAttributes } from "react";
 import styles from "./ScrollArea.module.css";
 
 export type ScrollAreaOrientation = "vertical" | "horizontal" | "both";
@@ -10,59 +9,96 @@ export interface ScrollAreaOwnProps {
   orientation?: ScrollAreaOrientation;
   /** The largest the area grows before it scrolls, e.g. 320 or "50vh". Or size it with `style`. */
   maxHeight?: number | string;
-  /** Space between the content and all four edges, which scrolls with the content: 0 / 12 / 16px. @default "md" */
+  /** Space between the box's edges and the region the content scrolls in, on all four sides: 0 / 12 / 16px. @default "md" */
   padding?: ScrollAreaPadding;
-  /** Names the area as a region for screen readers. Without it, pass `aria-label` or `aria-labelledby` if it needs a name. */
+  /** Fades the content out at an edge while more of it is hidden past that edge. @default true */
+  fade?: boolean;
+  /** Names the scrolling region for screen readers. Without it, pass `aria-label` or `aria-labelledby` if it needs a name. */
   label?: string;
 }
 
-/** `ref`, `className` and every other prop go on the scrolling element. */
+/** `ref`, `className`, `style` and every other prop go on the outer box; the label and tab stop go on the scrolling region. */
 export type ScrollAreaProps = ScrollAreaOwnProps & HTMLAttributes<HTMLDivElement>;
 
+type Edge = "top" | "bottom" | "start" | "end";
+
 /**
- * A box that scrolls its content natively, with thin scrollbars drawn in
- * `border.strong` (3:1 against the surface). While the content overflows the
- * area is in the tab order, so keyboard users can focus it and scroll with the
- * arrow keys; when it fits, it isn't a tab stop. The padding sits on an inner
- * wrapper, so content never runs into an edge, even scrolled to the end. `scrollbar-gutter: stable`
- * keeps content from shifting when a scrollbar appears.
+ * A box whose content scrolls inside an inset region: the box's padding
+ * surrounds a viewport, so content scrolls under the viewport's edge, never
+ * into the box's. While more content is hidden past an edge, it fades out
+ * there. Scrolling is native, with thin `border.strong` scrollbars. While the
+ * content overflows, the viewport is a tab stop, so keyboard users can focus
+ * it and scroll with the arrow keys.
  */
 export const ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(function ScrollArea(
-  { orientation = "vertical", maxHeight, padding = "md", label, className, style, tabIndex, children, ...rest },
+  {
+    orientation = "vertical",
+    maxHeight,
+    padding = "md",
+    fade = true,
+    label,
+    className,
+    style,
+    tabIndex,
+    children,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledby,
+    ...rest
+  },
   ref
 ) {
-  const own = useRef<HTMLDivElement>(null);
-  const [overflows, setOverflows] = useState(false);
+  const viewport = useRef<HTMLDivElement>(null);
+  const content = useRef<HTMLDivElement>(null);
+  // which edges have content hidden past them, as a space-separated list ("" when it all fits)
+  const [hidden, setHidden] = useState("");
+
+  const update = useCallback(() => {
+    const el = viewport.current;
+    if (!el) return;
+    const y = orientation !== "horizontal";
+    const x = orientation !== "vertical";
+    const left = Math.abs(el.scrollLeft); // negative in right-to-left
+    const edges: [Edge, boolean][] = [
+      ["top", y && el.scrollTop > 1],
+      ["bottom", y && el.scrollTop + el.clientHeight < el.scrollHeight - 1],
+      ["start", x && left > 1],
+      ["end", x && left + el.clientWidth < el.scrollWidth - 1],
+    ];
+    setHidden(edges.filter(([, on]) => on).map(([edge]) => edge).join(" "));
+  }, [orientation]);
 
   useEffect(() => {
-    const el = own.current;
-    if (!el) return;
-    const measure = () =>
-      setOverflows(
-        (orientation !== "horizontal" && el.scrollHeight > el.clientHeight) ||
-          (orientation !== "vertical" && el.scrollWidth > el.clientWidth)
-      );
-    measure();
+    update();
     if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(measure);
-    observer.observe(el);
-    [...el.children].forEach((child) => observer.observe(child));
+    const observer = new ResizeObserver(update);
+    if (viewport.current) observer.observe(viewport.current);
+    if (content.current) observer.observe(content.current);
     return () => observer.disconnect();
-  }, [orientation]);
+  }, [update]);
 
   return (
     <div
-      ref={mergeRefs(ref, own) as Ref<HTMLDivElement>}
-      role={label ? "region" : undefined}
-      aria-label={label}
-      tabIndex={tabIndex ?? (overflows ? 0 : undefined)}
+      ref={ref}
       className={[styles.root, className].filter(Boolean).join(" ")}
       data-orientation={orientation}
       data-padding={padding}
+      data-fade={fade ? hidden || undefined : undefined}
       style={maxHeight !== undefined ? { maxHeight, ...style } : style}
       {...rest}
     >
-      <div className={styles.content}>{children}</div>
+      <div
+        ref={viewport}
+        className={styles.viewport}
+        role={label || ariaLabel || ariaLabelledby ? "region" : undefined}
+        aria-label={label ?? ariaLabel}
+        aria-labelledby={ariaLabelledby}
+        tabIndex={tabIndex ?? (hidden ? 0 : undefined)}
+        onScroll={update}
+      >
+        <div ref={content} className={styles.content}>
+          {children}
+        </div>
+      </div>
     </div>
   );
 });

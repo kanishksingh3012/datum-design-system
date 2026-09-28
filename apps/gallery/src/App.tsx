@@ -333,7 +333,8 @@ const sliderProps: PropRow[] = [
 const scrollAreaProps: PropRow[] = [
   ["orientation", "vertical | horizontal | both", "vertical", "Which way the content scrolls."],
   ["maxHeight", "number | string", "—", "The largest it grows before it scrolls; or size it with style."],
-  ["padding", "none | sm | md", "md", "0 / 12 / 16px on all four edges; it scrolls with the content."],
+  ["padding", "none | sm | md", "md", "0 / 12 / 16px between the box and the region the content scrolls in, on all four sides."],
+  ["fade", "boolean", "true", "Fades content out at an edge while more is hidden past it."],
   ["label", "string", "—", "Names it as a region for screen readers."],
 ];
 const resizableProps: PropRow[] = [
@@ -1282,7 +1283,7 @@ export function App() {
       {/* ============ SCROLL AREA ============ */}
       <section className="component-doc" id="scroll-area">
         <h1>Scroll Area</h1>
-        <p className="dek">Native scrolling with thin <b>border.strong</b> scrollbars. While its content overflows it is a tab stop, so keyboard users can focus it and scroll with the arrow keys; <b>label</b> names it as a region.</p>
+        <p className="dek">A box whose content scrolls inside an inset region: the <b>padding</b> surrounds a viewport on all four sides, and content fades out at any edge it is hidden past. Scrolling is native, with thin <b>border.strong</b> scrollbars; while content is hidden, the region is a tab stop for the arrow keys, and <b>label</b> names it.</p>
 
         <div className="example-box" style={{ display: "block" }}>
           <ScrollArea label="Release notes" maxHeight={180} style={{ maxWidth: 360, margin: "0 auto", background: "var(--color-bg-surface)", border: "1px solid var(--color-border-subtle)", borderRadius: "var(--radius-card)" }}>

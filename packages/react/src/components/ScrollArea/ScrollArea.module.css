@@ -1,32 +1,108 @@
+/* Registered so the fades can ease in and out (a plain custom property can't transition). */
+@property --datum-scroll-fade-top { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --datum-scroll-fade-bottom { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --datum-scroll-fade-start { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --datum-scroll-fade-end { syntax: "<length>"; inherits: false; initial-value: 0px; }
+
+/* the box: its padding is the margin around the region the content scrolls in */
 .root {
   --_thumb: var(--color-border-strong);
+  --_fade: calc(var(--space-tight) * 2);
 
-  overflow: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--_thumb) transparent;
-  border-radius: inherit;
-}
-.root[data-orientation="vertical"] {
-  overflow-x: hidden;
-  scrollbar-gutter: stable;
-}
-.root[data-orientation="horizontal"] {
-  overflow-y: hidden;
-}
-/* the padding lives on the content, so it scrolls with it and holds at every edge */
-.content {
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   padding: var(--space-default);
 }
-.root[data-padding="sm"] > .content {
+.root[data-padding="sm"] {
   padding: var(--space-tight);
 }
-.root[data-padding="none"] > .content {
+.root[data-padding="none"] {
   padding: 0;
 }
-/* sideways, the content is as wide as it needs to be (a wide table, an unbroken line), never narrower than the area */
-.root:not([data-orientation="vertical"]) > .content {
+/* the ring goes round the whole box: the viewport's mask would clip one drawn on it */
+.root:has(> .viewport:focus-visible) {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.viewport {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  outline: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--_thumb) transparent;
+
+  /* An alpha mask, not a color: opaque where the content shows, clear where it fades.
+     Each edge fades only while content is hidden past it. */
+  --_mask-y: linear-gradient(
+    to bottom,
+    transparent,
+    black var(--datum-scroll-fade-top),
+    black calc(100% - var(--datum-scroll-fade-bottom)),
+    transparent
+  );
+  --_mask-x: linear-gradient(
+    to right,
+    transparent,
+    black var(--datum-scroll-fade-start),
+    black calc(100% - var(--datum-scroll-fade-end)),
+    transparent
+  );
+  -webkit-mask-image: var(--_mask-y), var(--_mask-x);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--_mask-y), var(--_mask-x);
+  mask-composite: intersect;
+  transition:
+    --datum-scroll-fade-top var(--motion-fast) var(--motion-easing),
+    --datum-scroll-fade-bottom var(--motion-fast) var(--motion-easing),
+    --datum-scroll-fade-start var(--motion-fast) var(--motion-easing),
+    --datum-scroll-fade-end var(--motion-fast) var(--motion-easing);
+}
+.root[data-orientation="vertical"] > .viewport {
+  overflow-x: hidden;
+}
+.root[data-orientation="horizontal"] > .viewport {
+  overflow-y: hidden;
+}
+.root[data-fade~="top"] > .viewport {
+  --datum-scroll-fade-top: var(--_fade);
+}
+.root[data-fade~="bottom"] > .viewport {
+  --datum-scroll-fade-bottom: var(--_fade);
+}
+.root[data-fade~="start"] > .viewport {
+  --datum-scroll-fade-start: var(--_fade);
+}
+.root[data-fade~="end"] > .viewport {
+  --datum-scroll-fade-end: var(--_fade);
+}
+/* right to left, the start edge is on the right */
+.root:dir(rtl) > .viewport {
+  --_mask-x: linear-gradient(
+    to left,
+    transparent,
+    black var(--datum-scroll-fade-start),
+    black calc(100% - var(--datum-scroll-fade-end)),
+    transparent
+  );
+}
+
+/* Room for the scrollbar beside the content: overlay scrollbars (macOS) take no space
+   of their own and would otherwise sit on top of the text while scrolling. */
+.root:not([data-orientation="horizontal"]) .content {
+  padding-inline-end: var(--space-tight);
+}
+.root:not([data-orientation="vertical"]) .content {
+  padding-bottom: var(--space-tight);
+}
+
+/* sideways, the content is as wide as it needs to be (a wide table, an unbroken line), never narrower than the region */
+.root:not([data-orientation="vertical"]) .content {
   width: fit-content;
   min-width: 100%;
 }
@@ -35,20 +111,16 @@
 .root:hover {
   --_thumb: color-mix(in oklab, var(--color-border-strong), var(--color-text-primary) 40%);
 }
-.root:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
-}
 
 /* WebKit fallback for the same look where scrollbar-color isn't supported */
-.root::-webkit-scrollbar {
+.viewport::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
-.root::-webkit-scrollbar-track {
+.viewport::-webkit-scrollbar-track {
   background: transparent;
 }
-.root::-webkit-scrollbar-thumb {
+.viewport::-webkit-scrollbar-thumb {
   background: var(--_thumb);
   border: 2px solid transparent;
   border-radius: var(--radius-pill);
