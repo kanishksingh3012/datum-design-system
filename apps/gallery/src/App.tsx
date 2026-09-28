@@ -4,6 +4,7 @@ import {
   Checkbox, CheckboxGroup, Container, Field, Grid, Heading, Label, Link, ProgressBar, Radio, RadioGroup, Section, Select, Separator,
   Skeleton, Spinner, Stack, Switch, Text, TextField, Textarea, Toaster, toast,
   Dialog, DialogBody, DialogFooter, DialogHeader, DropdownMenu, Sheet, Tooltip, type DropdownMenuItem, type SheetSide,
+  Breadcrumbs, BreadcrumbItem, Footer, Navbar, Pagination, Tabs, type NavbarLink, type NavbarLayout, type NavbarAppearance, type TabItem,
   type CheckedState, type SelectOption, type ToastIntent, type ToastPosition,
 } from "@datum-design/react";
 import { Mail, Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline } from "lucide-react";
@@ -288,6 +289,85 @@ const tooltipProps: PropRow[] = [
   ["delay", "number (ms)", "500", "Hover delay. Keyboard focus shows it at once."],
   ...openStateRows,
 ];
+const tabsProps: PropRow[] = [
+  ["items", "{ value, label, icon, disabled, content }[]", "—", "content becomes the tab panel, wired with aria-controls; leave it out to render the view yourself."],
+  ["value / defaultValue / onValueChange", "string / string / (value) => void", "first enabled tab", "The selected tab."],
+  ["appearance", "underline | pill | segmented", "underline", "An accent bar on a hairline / an ink pill / a raised thumb on a track."],
+  ["size", "sm | md", "md", "32 / 40px; +4px on touch screens."],
+  ["orientation", "horizontal | vertical", "horizontal", "Arrow keys follow the orientation."],
+  ["fullWidth", "boolean", "false", "Tabs share the width of the row."],
+];
+const breadcrumbsProps: PropRow[] = [
+  ["separator", "chevron | slash", "chevron", "Drawn between items, hidden from screen readers."],
+  ["size", "sm | md", "md", "body-sm / body-md."],
+  ["maxItems", "number", "—", "Collapses the middle into a … button that shows the rest."],
+  ["BreadcrumbItem current", "boolean", "false", "The current page: plain text with aria-current=\"page\"."],
+];
+const paginationProps: PropRow[] = [
+  ["pageCount", "number", "—", "How many pages there are."],
+  ["value / defaultValue / onValueChange", "number / number / (page) => void", "1", "The current page."],
+  ["size", "sm | md", "md", "32 / 40px Buttons; +4px on touch screens."],
+  ["siblings", "number", "1", "Page numbers either side of the current one."],
+  ["compact", "boolean", "false", "\"Page 3 of 12\" with arrows only."],
+  ["getHref", "(page) => string", "—", "Renders pages as links, so they can be crawled and opened in a new tab."],
+];
+const footerProps: PropRow[] = [
+  ["columns", "{ title, links: { label, href }[] }[]", "—", "One column per group; they wrap on narrow screens."],
+  ["bottom", "ReactNode", "—", "Legal, copyright, social."],
+  ["tone", "default | muted", "muted", "muted sits on bg.surface; default on the page with a hairline above."],
+  ["children", "ReactNode", "—", "The lead column: a logo and a line about the site."],
+];
+const navbarProps: PropRow[] = [
+  ["layout", "standard | start | centered", "standard", "Logo left, links center / logo and links left / logo in the middle."],
+  ["appearance", "solid | blur | transparent | inverse", "solid", "transparent turns solid on scroll; inverse is an ink band."],
+  ["position", "static | sticky | fixed", "sticky", ""],
+  ["hideOnScroll", "boolean", "false", "Slides away scrolling down, returns scrolling up or on focus."],
+  ["size", "compact | default", "default", "56 / 72px tall."],
+  ["bordered", "boolean", "true", "Hairline under the bar."],
+  ["links", "{ label, href, icon, badge, active, items, columns }[]", "—", "items opens a dropdown; columns opens a mega menu with descriptions."],
+  ["activeHref", "string", "—", "Marks the current page (and the menu holding it) with aria-current."],
+  ["logo / search / actions / announcement", "ReactNode", "—", "announcement is a thin bar above the navbar."],
+  ["mobileBreakpoint", "sm | md | lg", "md", "Below 640 / 768 / 1024px the links move into a Sheet with accordion groups."],
+  ["maxWidth", "Container size", "xl", "Keeps the bar aligned with page content."],
+  ["open / defaultOpen / onOpenChange", "boolean / boolean / (open) => void", "—", "The mobile menu."],
+];
+const tabItems: TabItem[] = [
+  { value: "overview", label: "Overview", content: <p className="lead">Overview: the numbers that matter this week.</p> },
+  { value: "activity", label: "Activity", content: <p className="lead">Activity: every change, newest first.</p> },
+  { value: "settings", label: "Settings", content: <p className="lead">Settings: names, members and billing.</p> },
+  { value: "archive", label: "Archive", disabled: true },
+];
+const plainTabs = tabItems.map(({ content: _content, ...item }) => item);
+const navLinks: NavbarLink[] = [
+  { label: "Product", href: "#product" },
+  { label: "Docs", href: "#docs", badge: "New" },
+  { label: "Resources", items: [{ label: "Blog", href: "#blog" }, { label: "Guides", href: "#guides" }, { label: "Changelog", href: "#changelog" }] },
+  {
+    label: "Solutions",
+    columns: [
+      { title: "By team", items: [{ label: "Design", href: "#design", description: "Tokens, themes and a gallery" }, { label: "Engineering", href: "#eng", description: "React components on React Aria" }] },
+      { title: "By site", items: [{ label: "Marketing", href: "#marketing", description: "Heroes, pricing, footers" }, { label: "Docs", href: "#docs-sites", description: "Navigation that scales" }] },
+    ],
+  },
+];
+const navbarLayouts: NavbarLayout[] = ["standard", "start", "centered"];
+const navbarAppearances: NavbarAppearance[] = ["solid", "blur", "transparent", "inverse"];
+const DemoNavbar = (props: Partial<Parameters<typeof Navbar>[0]>) => (
+  <Navbar
+    position="static"
+    links={navLinks}
+    activeHref="#docs"
+    maxWidth="full"
+    logo={<a href="#navbar">Datum</a>}
+    actions={<><Button intent="neutral" appearance="ghost" size="sm">Sign in</Button><Button size="sm">Get started</Button></>}
+    {...props}
+  />
+);
+const footerColumns = [
+  { title: "Product", links: [{ label: "Pricing", href: "#" }, { label: "Changelog", href: "#" }, { label: "Docs", href: "#" }] },
+  { title: "Company", links: [{ label: "About", href: "#" }, { label: "Careers", href: "#" }, { label: "Press", href: "#" }] },
+  { title: "Legal", links: [{ label: "Privacy", href: "#" }, { label: "Terms", href: "#" }] },
+];
 const sheetSides: SheetSide[] = ["right", "left", "top", "bottom"];
 const moreIcon = <MoreHorizontal />;
 
@@ -430,6 +510,11 @@ export function App() {
         <a href="#sheet">Sheet</a>
         <a href="#dropdown-menu">Dropdown Menu</a>
         <a href="#tooltip">Tooltip</a>
+        <a href="#tabs">Tabs</a>
+        <a href="#breadcrumbs">Breadcrumbs</a>
+        <a href="#pagination">Pagination</a>
+        <a href="#footer">Footer</a>
+        <a href="#navbar">Navbar</a>
       </nav>
       <Toaster position={toastPosition} />
 
@@ -2349,6 +2434,253 @@ export function App() {
           <Usage
             dos={["Name icon-only controls.", "Keep it to a few words, as plain text."]}
             donts={["Put links, buttons or anything interactive in a tooltip.", "Hide information people need — touch screens have no hover.", "Put one on a disabled control, which can't take focus."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ TABS ============ */}
+      <section className="component-doc" id="tabs">
+        <h1>Tabs</h1>
+        <p className="dek">
+          Switch between views in the same place, on React Aria's tab hooks: arrow keys move and select, Home and End jump, disabled
+          tabs are skipped. Give an item <span className="prop-values">content</span> and it becomes the tab panel.
+        </p>
+
+        <div className="example-box">
+          <Tabs items={tabItems} aria-label="Project" style={{ width: "100%" }} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Appearances</h2>
+          <p className="lead"><b>underline</b> for page sections, <b>pill</b> (ink when selected, like a pressed Button) for filters, <b>segmented</b> (a raised thumb on a track) for switching a view in place.</p>
+          <div className="sample-box column">
+            {(["underline", "pill", "segmented"] as const).map((appearance) => (
+              <Tabs key={appearance} items={plainTabs} appearance={appearance} aria-label={appearance} />
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Sizes and width</h2>
+          <p className="lead">32 and 40px, growing to 36 and 44px on touch screens. <b>fullWidth</b> shares the row.</p>
+          <div className="sample-box column">
+            <Tabs items={plainTabs} appearance="segmented" size="sm" aria-label="Small" />
+            <Tabs items={plainTabs.slice(0, 3)} appearance="segmented" fullWidth aria-label="Full width" style={{ width: "100%" }} />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Vertical</h2>
+          <p className="lead">The list stands beside the panel; up and down arrows move.</p>
+          <div className="sample-box">
+            <Tabs items={tabItems} orientation="vertical" aria-label="Vertical" />
+            <Tabs items={tabItems} appearance="pill" orientation="vertical" aria-label="Vertical pill" />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={tabsProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Keep labels to a word or two.", "Use segmented for two to four views of the same thing."]}
+            donts={["Use tabs to move between pages — use the Navbar or links.", "Use tabs for steps in a sequence."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ BREADCRUMBS ============ */}
+      <section className="component-doc" id="breadcrumbs">
+        <h1>Breadcrumbs</h1>
+        <p className="dek">
+          Where you are in a hierarchy: a labelled <span className="prop-values">nav</span> with an ordered list. Links are{" "}
+          <b>text.secondary</b> and step up to primary on hover; the current page is text with{" "}
+          <span className="prop-values">aria-current="page"</span>.
+        </p>
+
+        <div className="example-box">
+          <Breadcrumbs>
+            <BreadcrumbItem href="#breadcrumbs">Home</BreadcrumbItem>
+            <BreadcrumbItem href="#breadcrumbs">Docs</BreadcrumbItem>
+            <BreadcrumbItem href="#breadcrumbs">Components</BreadcrumbItem>
+            <BreadcrumbItem current>Breadcrumbs</BreadcrumbItem>
+          </Breadcrumbs>
+        </div>
+
+        <div className="doc-section">
+          <h2>Separators and sizes</h2>
+          <p className="lead">A chevron or a slash, hidden from screen readers; body-md or body-sm.</p>
+          <div className="sample-box column">
+            {(["chevron", "slash"] as const).map((separator) => (
+              <Breadcrumbs key={separator} separator={separator} size="sm">
+                <BreadcrumbItem href="#breadcrumbs">Home</BreadcrumbItem>
+                <BreadcrumbItem href="#breadcrumbs">Docs</BreadcrumbItem>
+                <BreadcrumbItem current>{separator}</BreadcrumbItem>
+              </Breadcrumbs>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Collapsed</h2>
+          <p className="lead">With <b>maxItems</b>, the middle folds into a … button; the first item and the last ones stay.</p>
+          <div className="sample-box">
+            <Breadcrumbs maxItems={3}>
+              {["Home", "Docs", "Components", "Navigation"].map((x) => <BreadcrumbItem key={x} href="#breadcrumbs">{x}</BreadcrumbItem>)}
+              <BreadcrumbItem current>Breadcrumbs</BreadcrumbItem>
+            </Breadcrumbs>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={breadcrumbsProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Start at the site's root.", "End with the current page, not a link to it."]}
+            donts={["Use breadcrumbs for a flat site.", "Use them as a history of pages visited."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ PAGINATION ============ */}
+      <section className="component-doc" id="pagination">
+        <h1>Pagination</h1>
+        <p className="dek">
+          Move through pages of results. Built from Buttons, so pages inherit their hover, press, focus and touch rules. The current
+          page is ink with <span className="prop-values">aria-current="page"</span>; the first and last pages always show.
+        </p>
+
+        <div className="example-box">
+          <Pagination pageCount={12} defaultValue={6} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Siblings</h2>
+          <p className="lead">How many pages either side of the current one. The list keeps its length as you move, so the arrows don't jump.</p>
+          <div className="sample-box column">
+            <Pagination pageCount={20} defaultValue={10} siblings={2} />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Compact and small</h2>
+          <p className="lead">"Page 3 of 12" between the arrows for tight spaces; 32px buttons with size sm.</p>
+          <div className="sample-box column">
+            <Pagination pageCount={12} defaultValue={3} compact />
+            <Pagination pageCount={12} defaultValue={3} size="sm" />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={paginationProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Use getHref on websites, so every page has a URL.", "Put it under the results it pages through."]}
+            donts={["Paginate a list short enough to show whole.", "Use it for steps in a form."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ FOOTER ============ */}
+      <section className="component-doc" id="footer">
+        <h1>Footer</h1>
+        <p className="dek">
+          The site footer: a lead column, groups of links (a heading and a named list each, in a Footer{" "}
+          <span className="prop-values">nav</span>) and a bottom row for legal and social.
+        </p>
+
+        <div className="example-box" style={{ display: "block", padding: 0, overflow: "hidden" }}>
+          <Footer columns={footerColumns} bottom={<><span>© 2026 Datum</span><Link href="#footer">Status</Link></>}>
+            <strong style={{ color: "var(--color-text-primary)" }}>Datum</strong>
+            <p>Components for building websites, in orange and navy.</p>
+          </Footer>
+        </div>
+
+        <div className="doc-section">
+          <h2>Tones</h2>
+          <p className="lead"><b>muted</b> (the default) sits on bg.surface; <b>default</b> stays on the page with a hairline above.</p>
+          <div className="sample-box stack" style={{ padding: 0, overflow: "hidden" }}>
+            <Footer tone="default" bottom={<span>© 2026 Datum</span>} columns={footerColumns.slice(0, 2)} />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={footerProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Keep columns to five links or so.", "Repeat the important links from the Navbar."]}
+            donts={["Put a third text color in the footer — step down a type role instead.", "Hide the only path to a page in the footer."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ NAVBAR ============ */}
+      <section className="component-doc" id="navbar">
+        <h1>Navbar</h1>
+        <p className="dek">
+          One site header for every website layout. Built from Container, Button, DropdownMenu and Sheet, so it inherits their keyboard
+          and focus behavior. A link can open a dropdown or a mega menu; below the breakpoint, links move into a Sheet with accordion
+          groups. Replaces Header, Nav and NavigationMenu.
+        </p>
+
+        <div className="example-box" style={{ display: "block", padding: 0 }}>
+          <DemoNavbar announcement={<>Datum 2 is out. <Link href="#navbar">Read the notes</Link></>} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Layouts</h2>
+          <p className="lead"><b>standard</b>: logo left, links center, actions right · <b>start</b>: logo and links left · <b>centered</b>: logo in the middle.</p>
+          <div className="sample-box stack">
+            {navbarLayouts.map((layout) => <DemoNavbar key={layout} layout={layout} size="compact" />)}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Appearances</h2>
+          <p className="lead"><b>solid</b> and <b>blur</b> (translucent, blurring the page behind) for most sites; <b>transparent</b> sits over a hero and turns solid once the page scrolls; <b>inverse</b> is an ink band that re-points the text and focus tokens, so the Buttons inside follow.</p>
+          <div className="sample-box stack">
+            {navbarAppearances.map((appearance) => <DemoNavbar key={appearance} appearance={appearance} size="compact" layout="start" />)}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Menus</h2>
+          <p className="lead">Give a link <b>items</b> for a dropdown (Resources), or <b>columns</b> for a mega menu with descriptions (Solutions). Both are React Aria menus of real links: arrow keys, typeahead, Escape.</p>
+        </div>
+
+        <div className="doc-section">
+          <h2>Mobile</h2>
+          <p className="lead">Below <b>mobileBreakpoint</b> (640 / 768 / 1024px) the links fold into a Sheet: plain links as rows, menus as accordions, with the one holding the current page open. Narrow the window to see it.</p>
+          <div className="sample-box">
+            <DemoNavbar mobileBreakpoint="lg" style={{ width: "100%" }} />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={navbarProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Keep five to seven top-level links.", "Use one accent action; the rest ghost.", "Set maxWidth to match the page's Container."]}
+            donts={["Use transparent where the hero behind it can't hold the text's contrast.", "Nest menus inside menus.", "Use hideOnScroll on a short page."]}
           />
         </div>
       </section>

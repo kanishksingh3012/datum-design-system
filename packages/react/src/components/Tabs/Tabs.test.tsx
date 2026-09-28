@@ -4,38 +4,70 @@ import userEvent from "@testing-library/user-event";
 import { Tabs } from "./Tabs";
 
 const items = [
-  { value: "one", label: "One" },
-  { value: "two", label: "Two" },
+  { value: "one", label: "One", content: "First panel" },
+  { value: "two", label: "Two", content: "Second panel" },
   { value: "three", label: "Three", disabled: true },
+  { value: "four", label: "Four" },
 ];
 
 describe("Tabs", () => {
-  it("wires role=tablist/tab and aria-selected on the active tab", () => {
-    render(<Tabs items={items} active="two" onChange={() => {}} />);
-    expect(screen.getByRole("tablist")).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: "Two" })).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByRole("tab", { name: "One" })).toHaveAttribute("aria-selected", "false");
+  it("defaults to appearance=underline, size=md, horizontal, first tab selected", () => {
+    render(<Tabs items={items} aria-label="Views" data-testid="tabs" />);
+    const root = screen.getByTestId("tabs");
+    expect(root).toHaveAttribute("data-appearance", "underline");
+    expect(root).toHaveAttribute("data-size", "md");
+    expect(root).toHaveAttribute("data-orientation", "horizontal");
+    expect(screen.getByRole("tablist", { name: "Views" })).toHaveAttribute("aria-orientation", "horizontal");
+    expect(screen.getByRole("tab", { name: "One" })).toHaveAttribute("aria-selected", "true");
   });
 
-  it("calls onChange when a tab is clicked", async () => {
-    const user = userEvent.setup();
-    const onChange = vi.fn();
-    render(<Tabs items={items} active="one" onChange={onChange} />);
-    await user.click(screen.getByRole("tab", { name: "Two" }));
-    expect(onChange).toHaveBeenCalledWith("two");
+  it("reflects appearance, size, orientation and fullWidth", () => {
+    render(<Tabs items={items} appearance="segmented" size="sm" orientation="vertical" fullWidth data-testid="tabs" />);
+    const root = screen.getByTestId("tabs");
+    expect(root).toHaveAttribute("data-appearance", "segmented");
+    expect(root).toHaveAttribute("data-size", "sm");
+    expect(root).toHaveAttribute("data-full-width", "true");
+    expect(screen.getByRole("tablist")).toHaveAttribute("aria-orientation", "vertical");
   });
 
-  it("moves focus and selection with ArrowRight, skipping disabled tabs", async () => {
-    const user = userEvent.setup();
-    const onChange = vi.fn();
-    render(<Tabs items={items} active="two" onChange={onChange} />);
-    screen.getByRole("tab", { name: "Two" }).focus();
-    await user.keyboard("{ArrowRight}");
-    expect(onChange).toHaveBeenCalledWith("one");
+  it("shows the selected tab's panel, labelled by its tab", async () => {
+    render(<Tabs items={items} defaultValue="two" />);
+    const panel = screen.getByRole("tabpanel");
+    expect(panel).toHaveTextContent("Second panel");
+    expect(panel).toHaveAccessibleName("Two");
+    await userEvent.click(screen.getByRole("tab", { name: "One" }));
+    expect(screen.getByRole("tabpanel")).toHaveTextContent("First panel");
   });
 
-  it("disables the disabled tab", () => {
-    render(<Tabs items={items} active="one" onChange={() => {}} />);
-    expect(screen.getByRole("tab", { name: "Three" })).toBeDisabled();
+  it("is controlled with value and reports changes through onValueChange", async () => {
+    const onValueChange = vi.fn();
+    render(<Tabs items={items} value="one" onValueChange={onValueChange} />);
+    await userEvent.click(screen.getByRole("tab", { name: "Two" }));
+    expect(onValueChange).toHaveBeenCalledWith("two");
+    expect(screen.getByRole("tab", { name: "One" })).toHaveAttribute("aria-selected", "true");
+  });
+
+  it("moves and selects with arrow keys, skipping disabled tabs", async () => {
+    const onValueChange = vi.fn();
+    render(<Tabs items={items} defaultValue="two" onValueChange={onValueChange} />);
+    await userEvent.click(screen.getByRole("tab", { name: "Two" }));
+    await userEvent.keyboard("{ArrowRight}");
+    expect(screen.getByRole("tab", { name: "Four" })).toHaveFocus();
+    expect(onValueChange).toHaveBeenLastCalledWith("four");
+    await userEvent.keyboard("{Home}");
+    expect(screen.getByRole("tab", { name: "One" })).toHaveFocus();
+  });
+
+  it("marks disabled tabs and never selects them", async () => {
+    render(<Tabs items={items} />);
+    const tab = screen.getByRole("tab", { name: "Three" });
+    expect(tab).toHaveAttribute("data-disabled", "true");
+    await userEvent.click(tab);
+    expect(tab).toHaveAttribute("aria-selected", "false");
+  });
+
+  it("renders no panel when items carry no content", () => {
+    render(<Tabs items={[{ value: "a", label: "A" }]} />);
+    expect(screen.queryByRole("tabpanel")).toBeNull();
   });
 });

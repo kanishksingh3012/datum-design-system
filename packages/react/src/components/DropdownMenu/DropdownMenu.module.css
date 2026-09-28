@@ -135,3 +135,35 @@
     transform: none;
   }
 }
+
+/* ---------- link items and descriptions ---------- */
+a.item {
+  text-decoration: none;
+}
+/* two lines are no longer a single-line control: the card radius, as in Select */
+.item[data-described] {
+  align-items: flex-start;
+  padding-block: var(--space-compact);
+  border-radius: var(--radius-card);
+}
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.description {
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+  color: var(--color-text-secondary);
+  white-space: normal;
+}
+
+/* ---------- columns: sections side by side (a mega menu) ---------- */
+.root[data-columns] {
+  display: grid;
+  grid-template-columns: repeat(var(--_columns), minmax(200px, 260px));
+  gap: var(--space-compact) var(--space-default);
+  padding: var(--space-tight);
+}

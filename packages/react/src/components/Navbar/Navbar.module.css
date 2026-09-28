@@ -1,0 +1,292 @@
+.root {
+  --_height: 72px;
+  --_bg: var(--color-bg-page);
+
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  font-family: var(--type-body-md-family);
+  color: var(--color-text-primary);
+  transition: transform var(--motion-normal) var(--motion-easing);
+}
+.root[data-size="compact"] {
+  --_height: 56px;
+}
+.root[data-position="static"] {
+  position: static;
+}
+.root[data-position="fixed"] {
+  position: fixed;
+  left: 0;
+  right: 0;
+}
+.root[data-hidden] {
+  transform: translateY(-100%);
+}
+
+.band {
+  background: var(--_bg);
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    box-shadow var(--motion-fast) var(--motion-easing);
+}
+.root[data-bordered] .band {
+  box-shadow: inset 0 -1px 0 var(--color-border-default);
+}
+
+/* ---------- appearances ---------- */
+.root[data-appearance="blur"] {
+  --_bg: color-mix(in oklab, var(--color-bg-page) 80%, transparent);
+}
+.root[data-appearance="blur"] .band {
+  backdrop-filter: blur(16px) saturate(1.5);
+}
+/* transparent: no fill or hairline until the page scrolls under it */
+.root[data-appearance="transparent"]:not([data-scrolled]) {
+  --_bg: transparent;
+}
+.root[data-appearance="transparent"]:not([data-scrolled]) .band {
+  box-shadow: none;
+}
+/* inverse: an ink band. It re-points the text, surface, edge and focus
+   tokens for everything inside, so nested Buttons follow. */
+.root[data-appearance="inverse"] {
+  --_bg: var(--color-bg-inverse);
+}
+.root[data-appearance="inverse"] .band {
+  --color-text-primary: var(--color-text-onInverse);
+  --color-text-secondary: color-mix(in oklab, var(--color-text-onInverse) 75%, var(--color-bg-inverse));
+  --color-bg-surface: color-mix(in oklab, var(--color-text-onInverse) 12%, var(--color-bg-inverse));
+  --color-border-strong: color-mix(in oklab, var(--color-text-onInverse) 60%, var(--color-bg-inverse));
+  --color-border-default: color-mix(in oklab, var(--color-text-onInverse) 20%, var(--color-bg-inverse));
+  --color-border-focus: var(--color-text-onInverse);
+  color: var(--color-text-primary);
+}
+
+.announcement {
+  padding: var(--space-compact) var(--space-default);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+  text-align: center;
+  color: var(--color-text-primary);
+  background: var(--color-bg-accentSubtle);
+}
+
+/* ---------- layouts ---------- */
+.bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-areas: "logo nav end";
+  align-items: center;
+  gap: var(--space-default);
+  min-height: var(--_height);
+}
+.logo {
+  grid-area: logo;
+  justify-self: start;
+  display: flex;
+  align-items: center;
+}
+/* a linked logo gets a control's height and ring */
+.logo > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  border-radius: var(--radius-subtle);
+  font-weight: var(--type-ui-label-weight);
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+.logo > a:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.nav {
+  grid-area: nav;
+  justify-self: center;
+}
+.end {
+  grid-area: end;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: var(--space-tight);
+}
+.root[data-layout="start"] .bar {
+  grid-template-columns: auto 1fr auto;
+}
+.root[data-layout="start"] .nav {
+  justify-self: start;
+}
+.root[data-layout="centered"] .bar {
+  grid-template-areas: "nav logo end";
+}
+.root[data-layout="centered"] .nav {
+  justify-self: start;
+}
+.root[data-layout="centered"] .logo {
+  justify-self: center;
+}
+
+/* ---------- links ---------- */
+.links {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-compact) / 2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-compact);
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: 0 var(--space-tight);
+  font: inherit;
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-ui-label-weight);
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-control);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    color var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+.link:hover,
+.link[aria-expanded="true"] {
+  color: var(--color-text-primary);
+  background: color-mix(in oklab, var(--color-text-primary) 8%, transparent);
+}
+.link:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.link:active {
+  transform: scale(0.98);
+}
+/* the current page: primary text and a short accent bar under the label */
+.link[data-active] {
+  color: var(--color-text-primary);
+}
+.link[data-active]::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 16px;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-accent);
+  transform: translateX(-50%);
+}
+.icon {
+  display: inline-flex;
+}
+.icon svg,
+.chevron {
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+}
+.chevron {
+  transition: transform var(--motion-normal) var(--motion-easing);
+}
+.link[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+/* ---------- mobile: below the breakpoint the links move into a Sheet ---------- */
+.menu {
+  display: none;
+}
+@media (max-width: 639.98px) {
+  .root[data-breakpoint="sm"] .nav { display: none; }
+  .root[data-breakpoint="sm"] .menu { display: contents; }
+}
+@media (max-width: 767.98px) {
+  .root[data-breakpoint="md"] .nav { display: none; }
+  .root[data-breakpoint="md"] .menu { display: contents; }
+}
+@media (max-width: 1023.98px) {
+  .root[data-breakpoint="lg"] .nav { display: none; }
+  .root[data-breakpoint="lg"] .menu { display: contents; }
+}
+.mobileNav {
+  margin-inline: calc(var(--space-tight) * -1);
+}
+.mobileList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mobileLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-compact);
+  box-sizing: border-box;
+  min-height: var(--interaction-minTarget);
+  padding: 0 var(--space-tight);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--type-ui-label-weight);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  border-radius: var(--radius-control);
+  transition: background var(--motion-fast) var(--motion-easing);
+}
+.mobileLink:hover {
+  background: color-mix(in oklab, var(--color-text-primary) 8%, transparent);
+}
+.mobileLink[data-active] {
+  background: color-mix(in oklab, var(--color-text-primary) 8%, transparent);
+  box-shadow: inset 3px 0 0 var(--color-bg-accent);
+}
+.mobileLink[data-active]:hover {
+  background: color-mix(in oklab, var(--color-text-primary) 12%, transparent);
+}
+.mobileLink:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.mobileGroup + .mobileGroup {
+  margin-top: var(--space-tight);
+}
+.mobileGroupTitle {
+  margin: 0;
+  padding: var(--space-compact) var(--space-tight);
+  font-family: var(--type-ui-overline-family);
+  font-size: var(--type-ui-overline-size);
+  font-weight: var(--type-ui-overline-weight);
+  letter-spacing: var(--type-ui-overline-tracking);
+  line-height: var(--type-ui-overline-lineHeight);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+@media (pointer: coarse) {
+  .logo > a,
+  .link {
+    min-height: var(--interaction-minTarget);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .chevron {
+    transition: none;
+  }
+  .link:active {
+    transform: none;
+  }
+}

@@ -5,8 +5,9 @@ import {
   Checkbox, CheckboxGroup, Container, Field, Grid, Heading, Label, Link, ProgressBar, Radio, RadioGroup, Section, Select, Separator,
   Skeleton, Spinner, Stack, Switch, Text, TextField, Textarea, Toaster, toast, type SelectOption,
   Dialog, DialogBody, DialogFooter, DialogHeader, DropdownMenu, Sheet, Tooltip, type DropdownMenuItem,
+  Breadcrumbs, BreadcrumbItem, Footer, Navbar, Pagination, Tabs, type NavbarLink, type TabItem,
 } from "@datum-design/react";
-import { AlignCenter, AlignLeft, AlignRight, Copy, Mail, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, Copy, Mail, Pencil, Plus, Search, Star, Trash2 } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
 const appearances = ["solid", "soft", "outline", "ghost"] as const;
@@ -29,6 +30,52 @@ const countries: SelectOption[] = [
   { value: "ca", label: "Canada", group: "Americas" },
   { value: "fr", label: "France", group: "Europe" },
 ];
+
+
+const megaItems: DropdownMenuItem[] = [
+  { type: "section", label: "Build", items: [
+    { label: "Editor", href: "#editor", description: "Write and preview in one place" },
+    { label: "Components", href: "#components", description: "Thirty parts, four themes" },
+  ] },
+  { type: "section", label: "Ship", items: [
+    { label: "Deploy", href: "#deploy", description: "Push to go live" },
+    { label: "Analytics", href: "#analytics" },
+  ] },
+];
+const tabItems: TabItem[] = [
+  { value: "overview", label: "Overview", icon: <Star />, content: <Text>The overview panel.</Text> },
+  { value: "activity", label: "Activity" },
+  { value: "settings", label: "Settings" },
+  { value: "billing", label: "Billing", disabled: true },
+];
+const crumbs = ["Home", "Docs", "Components", "Navigation"].map((label) => (
+  <BreadcrumbItem key={label} href="#">{label}</BreadcrumbItem>
+));
+const footerColumns = [
+  { title: "Product", links: [{ label: "Pricing", href: "#" }, { label: "Changelog", href: "#" }, { label: "Docs", href: "#" }] },
+  { title: "Company", links: [{ label: "About", href: "#" }, { label: "Careers", href: "#" }] },
+  { title: "Legal", links: [{ label: "Privacy", href: "#" }, { label: "Terms", href: "#" }] },
+];
+const navLinks: NavbarLink[] = [
+  { label: "Home", href: "/" },
+  { label: "Docs", href: "/docs", badge: "New" },
+  { label: "Resources", items: [{ label: "Blog", href: "/blog" }, { label: "Guides", href: "/guides" }] },
+  { label: "Products", columns: [
+    { title: "Build", items: [{ label: "Editor", href: "/editor", description: "Write and preview" }] },
+    { title: "Ship", items: [{ label: "Deploy", href: "/deploy", description: "Push to go live" }] },
+  ] },
+];
+const navbar = (props: Partial<Parameters<typeof Navbar>[0]> = {}) => (
+  <Navbar
+    position="static"
+    links={navLinks}
+    activeHref="/docs"
+    logo={<a href="/">Datum</a>}
+    search={<Button iconOnly label="Search" intent="neutral" appearance="ghost"><Search /></Button>}
+    actions={<><Button intent="neutral" appearance="ghost">Sign in</Button><Button>Get started</Button></>}
+    {...props}
+  />
+);
 
 /** Every state the combo checker renders, keyed by component name. */
 /** Renders overlays inside #fixture instead of <body>, so the checker finds them. */
@@ -604,6 +651,85 @@ export const fixtures: Record<string, Fixture> = {
       </div>
     </>
   ),
+  Tabs: () => (
+    <>
+      {(["underline", "pill", "segmented"] as const).map((appearance) => (
+        <div key={appearance} className="row" style={{ alignItems: "flex-start", gap: "var(--space-section)" }}>
+          {(["md", "sm"] as const).map((size) => (
+            <Tabs key={size} items={tabItems} appearance={appearance} size={size} aria-label={`${appearance} ${size}`} />
+          ))}
+          <Tabs items={tabItems.slice(1)} appearance={appearance} orientation="vertical" aria-label={`${appearance} vertical`} />
+        </div>
+      ))}
+      <Tabs items={tabItems.slice(0, 3)} appearance="segmented" fullWidth aria-label="Full width" />
+      <div style={box}>
+        <Tabs items={tabItems.slice(1)} appearance="segmented" aria-label="On a surface" />
+        <Tabs items={tabItems.slice(1)} appearance="pill" aria-label="Pill on a surface" />
+        <Tabs items={tabItems.slice(1)} aria-label="Underline on a surface" />
+      </div>
+    </>
+  ),
+  Breadcrumbs: () => (
+    <>
+      {(["chevron", "slash"] as const).map((separator) =>
+        (["md", "sm"] as const).map((size) => (
+          <Breadcrumbs key={separator + size} separator={separator} size={size} data-check-text="deep">
+            {crumbs}
+            <BreadcrumbItem current>Tabs</BreadcrumbItem>
+          </Breadcrumbs>
+        ))
+      )}
+      <Breadcrumbs maxItems={3}>
+        {crumbs}
+        <BreadcrumbItem current>Tabs</BreadcrumbItem>
+      </Breadcrumbs>
+      <div style={box}>
+        <Breadcrumbs data-check-text="deep">
+          {crumbs}
+          <BreadcrumbItem current>On a surface</BreadcrumbItem>
+        </Breadcrumbs>
+      </div>
+    </>
+  ),
+  Pagination: () => (
+    <>
+      <Pagination pageCount={12} defaultValue={6} />
+      <Pagination pageCount={12} defaultValue={1} size="sm" />
+      <Pagination pageCount={20} defaultValue={10} siblings={2} getHref={(p) => `#page-${p}`} />
+      <Pagination pageCount={12} defaultValue={3} compact data-check-text="deep" />
+      <Pagination pageCount={12} defaultValue={3} compact size="sm" data-check-text="deep" />
+      <div style={box}>
+        <Pagination pageCount={5} defaultValue={2} />
+      </div>
+    </>
+  ),
+  Footer: () => (
+    <div data-check-text="deep">
+      {(["muted", "default"] as const).map((tone) => (
+        <Footer key={tone} tone={tone} columns={footerColumns} bottom={<><span>© 2026 Datum</span><Link href="#">Status</Link></>}>
+          <strong>Datum</strong>
+          <p>Components for building websites, in four themes.</p>
+        </Footer>
+      ))}
+    </div>
+  ),
+  Navbar: states(["layouts", "appearances", "mobile menu"], (v) =>
+    v === "layouts" ? (
+      <>
+        {navbar()}
+        {navbar({ layout: "start", size: "compact" })}
+        {navbar({ layout: "centered", bordered: false })}
+      </>
+    ) : v === "appearances" ? (
+      <>
+        {navbar({ appearance: "blur", announcement: <>Datum 2 is out. <Link href="#">Read the notes</Link></> })}
+        {navbar({ appearance: "transparent" })}
+        {navbar({ appearance: "inverse", layout: "start" })}
+      </>
+    ) : (
+      // the bar behind the open Sheet is measured in the other states
+      <div data-check-skip="">{navbar({ defaultOpen: true, activeHref: "/blog" })}</div>
+    ), true),
   Dialog: states(["closed", "open", "alertdialog", "full"], (v) =>
     v === "closed" ? (
       <div className="row">
@@ -630,14 +756,18 @@ export const fixtures: Record<string, Fixture> = {
       </Sheet>
     )
   ),
-  DropdownMenu: states(["closed", "open md", "open sm"], (v) => (
+  DropdownMenu: states(["closed", "open md", "open sm", "open mega"], (v) => (
     <div className="row">
+      {v === "open mega" ? (
+        <DropdownMenu trigger={<Button data-check-skip="">Products</Button>} items={megaItems} columns={2} defaultOpen />
+      ) : (
       <DropdownMenu
         trigger={<Button intent="neutral" appearance="outline" data-check-skip={v === "closed" ? undefined : ""}>Options</Button>}
         items={menuItems()}
         size={v === "open sm" ? "sm" : "md"}
         defaultOpen={v !== "closed"}
       />
+      )}
     </div>
   ), true),
   Tooltip: states(["closed", "open"], (v) => (

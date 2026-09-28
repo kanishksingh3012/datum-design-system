@@ -1,33 +1,82 @@
+.root {
+  --_font-size: var(--type-body-md-size);
+  font-family: var(--type-body-md-family);
+  font-size: var(--_font-size);
+  line-height: var(--type-body-md-lineHeight);
+}
+.root[data-size="sm"] {
+  --_font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+}
 .list {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.4rem;
-  list-style: none;
+  gap: var(--space-compact);
   margin: 0;
   padding: 0;
-  font-size: var(--type-body-sm-size);
+  list-style: none;
 }
 .item {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  min-width: 0;
 }
-.item:not(:first-child)::before {
-  content: "/";
-  color: var(--color-text-disabled);
-}
-.link {
+.separator {
+  display: flex;
+  align-items: center;
   color: var(--color-text-secondary);
-  text-decoration: none;
 }
-.link:hover {
+.separator svg {
+  width: 1em;
+  height: 1em;
+}
+
+/* links and the "…" button share one look: secondary text that steps up to primary */
+.link,
+.more {
+  position: relative;
+  border-radius: var(--radius-subtle);
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.2em;
+  transition:
+    color var(--motion-fast) var(--motion-easing),
+    text-decoration-color var(--motion-fast) var(--motion-easing);
+}
+.link:hover,
+.more:hover {
   color: var(--color-text-primary);
+  text-decoration-color: currentColor;
 }
-.link:focus-visible {
+.link:focus-visible,
+.more:focus-visible {
+  z-index: 1;
   outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
 }
+.more {
+  padding: 0 var(--space-compact);
+  font: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
 .current {
   color: var(--color-text-primary);
-  font-weight: 600;
+  font-weight: var(--type-ui-label-weight);
+}
+
+@media (pointer: coarse) {
+  .link::after,
+  .more::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, var(--interaction-minTarget));
+    height: max(100%, var(--interaction-minTarget));
+    transform: translate(-50%, -50%);
+  }
 }

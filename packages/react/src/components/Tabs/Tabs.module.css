@@ -1,32 +1,202 @@
+/* Each appearance only sets the local --_* variables; .tab consumes them. */
 .root {
+  --_height: 40px;
+  --_pad: var(--space-default);
+  --_font-size: var(--type-body-md-size);
+
   display: flex;
-  gap: 1.6rem;
-  border-bottom: 1px solid var(--color-border-default);
+  flex-direction: column;
+  gap: var(--space-default);
+  font-family: var(--type-body-md-family);
 }
+.root[data-orientation="vertical"] {
+  flex-direction: row;
+  align-items: flex-start;
+}
+.root[data-size="sm"] {
+  --_height: 32px;
+  --_pad: var(--space-tight);
+  --_font-size: var(--type-body-sm-size);
+}
+
+.list {
+  position: relative;
+  display: flex;
+  gap: var(--space-compact);
+}
+.root[data-orientation="vertical"] .list {
+  flex-direction: column;
+}
+.root[data-full-width] .list {
+  width: 100%;
+}
+.root[data-full-width] .tab {
+  flex: 1;
+}
+
 .tab {
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  font-weight: 500;
-  padding: 0 0 var(--space-compact);
-  background: none;
+  --_bg: transparent;
+  --_bg-hover: color-mix(in oklab, var(--color-text-primary) 8%, transparent);
+  --_fg: var(--color-text-secondary);
+  --_fg-hover: var(--color-text-primary);
+  --_shadow: none;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-compact);
+  box-sizing: border-box;
+  min-height: var(--_height);
+  padding: 0 var(--_pad);
+  font: inherit;
+  font-size: var(--_font-size);
+  font-weight: var(--type-ui-label-weight);
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--_fg);
+  background: var(--_bg);
   border: none;
-  border-bottom: 2px solid transparent;
-  color: var(--color-text-secondary);
+  border-radius: var(--radius-control);
+  box-shadow: var(--_shadow);
   cursor: pointer;
-  margin-bottom: -1px;
-  min-height: var(--interaction-minTarget);
-  transition: color var(--motion-fast) var(--motion-easing), border-color var(--motion-fast) var(--motion-easing);
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    color var(--motion-fast) var(--motion-easing),
+    box-shadow var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
 }
-.tab[data-active] {
-  color: var(--color-text-primary);
-  border-bottom-color: var(--color-bg-accent);
-  font-weight: 600;
+.tab:hover:not([data-disabled]) {
+  color: var(--_fg-hover);
+  background: var(--_bg-hover);
 }
 .tab:focus-visible {
+  z-index: 1;
   outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
 }
-.tab:disabled {
+.tab:active:not([data-disabled]) {
+  transform: scale(0.98);
+}
+.tab[data-disabled] {
   opacity: 0.5;
   cursor: not-allowed;
+}
+.tab[data-selected] {
+  --_fg: var(--color-text-primary);
+}
+.icon {
+  display: inline-flex;
+}
+.icon svg {
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+}
+
+/* ---------- underline: a hairline under the row, the selected tab carries an accent bar ---------- */
+.root[data-appearance="underline"] .list {
+  gap: 0;
+  box-shadow: inset 0 -1px 0 var(--color-border-default);
+}
+.root[data-appearance="underline"][data-orientation="vertical"] .list {
+  box-shadow: inset 1px 0 0 var(--color-border-default);
+}
+.root[data-appearance="underline"] .tab {
+  border-radius: var(--radius-subtle);
+}
+.root[data-appearance="underline"] .tab::before {
+  content: "";
+  position: absolute;
+  left: var(--_pad);
+  right: var(--_pad);
+  bottom: 0;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  transition: background var(--motion-fast) var(--motion-easing);
+}
+.root[data-appearance="underline"][data-orientation="vertical"] .tab {
+  justify-content: flex-start;
+}
+.root[data-appearance="underline"][data-orientation="vertical"] .tab::before {
+  left: 0;
+  right: auto;
+  top: var(--space-compact);
+  bottom: var(--space-compact);
+  width: 2px;
+  height: auto;
+}
+.root[data-appearance="underline"] .tab[data-selected]::before {
+  background: var(--color-bg-accent);
+}
+
+/* ---------- pill: the selected tab is ink, like a pressed neutral Button ---------- */
+.root[data-appearance="pill"] .tab[data-selected] {
+  --_bg: var(--color-bg-inverse);
+  --_bg-hover: var(--color-bg-inverseHover);
+  --_fg: var(--color-text-onInverse);
+  --_fg-hover: var(--color-text-onInverse);
+}
+.root[data-appearance="pill"][data-orientation="vertical"] .tab {
+  justify-content: flex-start;
+}
+
+/* ---------- segmented: one tinted track, the selected tab is a raised thumb ---------- */
+.root[data-appearance="segmented"] .list {
+  --_inset: calc(var(--space-compact) / 2);
+  gap: 0;
+  padding: var(--_inset);
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-control);
+}
+.root[data-appearance="segmented"]:not([data-full-width]) .list {
+  align-self: flex-start;
+}
+.root[data-appearance="segmented"][data-orientation="vertical"] .list {
+  border-radius: var(--radius-card);
+}
+.root[data-appearance="segmented"][data-orientation="vertical"] .tab {
+  border-radius: calc(var(--radius-card) - var(--_inset));
+}
+.root[data-appearance="segmented"] .tab {
+  --_fg: var(--color-text-primary);
+}
+.root[data-appearance="segmented"] .tab[data-selected] {
+  --_bg: var(--color-bg-surfaceRaised);
+  --_bg-hover: var(--color-bg-surfaceRaised);
+  --_shadow: var(--elevation-raised);
+}
+
+.panel {
+  flex: 1;
+  min-width: 0;
+  border-radius: var(--radius-subtle);
+}
+.panel:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .root {
+    --_height: var(--interaction-minTarget);
+  }
+  .root[data-size="sm"] {
+    --_height: 36px;
+  }
+  .tab::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, var(--interaction-minTarget));
+    height: max(100%, var(--interaction-minTarget));
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab:active:not([data-disabled]) {
+    transform: none;
+  }
 }

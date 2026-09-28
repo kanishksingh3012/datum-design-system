@@ -1,6 +1,6 @@
 import { useId, useMemo, useState } from "react";
 import { Table, TableCaption, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../Table/Table";
-import { Pagination, PaginationItem, PaginationPrevious, PaginationNext } from "../Pagination/Pagination";
+import { Pagination } from "../Pagination/Pagination";
 import styles from "./DataTable.module.css";
 
 export interface DataTableColumn<Row> {
@@ -113,19 +113,7 @@ export function DataTable<Row>({ caption, columns, rows, rowKey, pageSize }: Dat
         </TableBody>
       </Table>
       {pageSize && totalPages > 1 ? (
-        <Pagination>
-          <PaginationPrevious disabled={currentPage === 1} onClick={() => setPage((p) => p - 1)} />
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
-            <PaginationItem
-              key={pageNumber}
-              current={pageNumber === currentPage}
-              onClick={() => setPage(pageNumber)}
-            >
-              {pageNumber}
-            </PaginationItem>
-          ))}
-          <PaginationNext disabled={currentPage === totalPages} onClick={() => setPage((p) => p + 1)} />
-        </Pagination>
+        <Pagination pageCount={totalPages} value={currentPage} onValueChange={setPage} />
       ) : null}
     </div>
   );

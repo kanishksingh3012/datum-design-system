@@ -29,6 +29,8 @@ interface ItemBase {
   icon?: ReactNode;
   /** Keyboard shortcut shown after the label, e.g. "⌘D". Display only — bind the key yourself. */
   shortcut?: string;
+  /** A line of `text.secondary` under the label, linked with aria-describedby. */
+  description?: string;
   disabled?: boolean;
 }
 
@@ -37,6 +39,8 @@ export interface DropdownMenuActionItem extends ItemBase {
   /** `danger` for destructive actions. @default "neutral" */
   intent?: "neutral" | "danger";
   onSelect?: () => void;
+  /** Makes the item a link: it renders as an `<a>` and navigates when chosen. */
+  href?: string;
 }
 
 export interface DropdownMenuCheckboxItem extends ItemBase {
@@ -80,6 +84,8 @@ export interface DropdownMenuOwnProps {
   placement?: DropdownMenuPlacement;
   /** 32 / 40px items, 44px on touch screens. @default "md" */
   size?: DropdownMenuSize;
+  /** Lays sections out side by side (a mega menu): one column per section, up to this many. @default 1 */
+  columns?: number;
   /** Controlled open state. */
   open?: boolean;
   defaultOpen?: boolean;
@@ -120,7 +126,7 @@ function buildModel(list: DropdownMenuItem[]): Model {
     if (pendingSeparator) model.separatorBefore.add(key);
     pendingSeparator = false;
     return (
-      <Item key={key} textValue={item.label}>
+      <Item key={key} textValue={item.label} href={"href" in item ? item.href : undefined}>
         {item.label}
       </Item>
     );
@@ -187,7 +193,7 @@ const toAriaPlacement = (placement: DropdownMenuPlacement) => placement.replace(
  * Checkbox and radio items are exposed as menuitemcheckbox / menuitemradio.
  */
 export const DropdownMenu = forwardRef<HTMLDivElement, DropdownMenuProps>(function DropdownMenu(
-  { trigger, items, placement = "bottom-start", size = "md", open, defaultOpen, onOpenChange, ...rest },
+  { trigger, items, placement = "bottom-start", size = "md", columns = 1, open, defaultOpen, onOpenChange, ...rest },
   ref
 ) {
   const state = useMenuTriggerState({ isOpen: open, defaultOpen, onOpenChange });
@@ -200,7 +206,7 @@ export const DropdownMenu = forwardRef<HTMLDivElement, DropdownMenuProps>(functi
       {cloneTrigger(trigger, buttonProps, triggerRef)}
       {state.isOpen ? (
         <MenuPopover state={state} triggerRef={triggerRef} placement={placement}>
-          <MenuList ref={ref} menuProps={menuProps} model={model} size={size} {...rest} />
+          <MenuList ref={ref} menuProps={menuProps} model={model} size={size} columns={columns} {...rest} />
         </MenuPopover>
       ) : null}
     </>
@@ -242,9 +248,10 @@ interface MenuListProps extends HTMLAttributes<HTMLDivElement> {
   menuProps: object;
   model: Model;
   size: DropdownMenuSize;
+  columns: number;
 }
 
-const MenuList = forwardRef<HTMLDivElement, MenuListProps>(function MenuList({ menuProps, model, size, className, ...rest }, forwardedRef) {
+const MenuList = forwardRef<HTMLDivElement, MenuListProps>(function MenuList({ menuProps, model, size, columns, className, style, ...rest }, forwardedRef) {
   const ref = useObjectRef(forwardedRef);
   const onAction = (key: Key) => {
     const item = model.items.get(String(key));
@@ -263,6 +270,8 @@ const MenuList = forwardRef<HTMLDivElement, MenuListProps>(function MenuList({ m
       ref={ref}
       className={[styles.root, className].filter(Boolean).join(" ")}
       data-size={size}
+      data-columns={columns > 1 ? columns : undefined}
+      style={columns > 1 ? { ...style, ["--_columns" as string]: columns } : style}
     >
       {[...tree.collection].map((node) =>
         node.type === "section" ? (
@@ -318,16 +327,18 @@ function MenuRow({ node, tree, model }: { node: Node<object>; tree: TreeState<ob
   const item = model.items.get(String(node.key))!;
   const selectable = isSelectable(item) ? item : null;
   // a checkbox toggles in place; everything else closes the menu
-  const { menuItemProps, labelProps, keyboardShortcutProps, isFocused, isPressed, isDisabled } = useMenuItem(
+  const { menuItemProps, labelProps, descriptionProps, keyboardShortcutProps, isFocused, isPressed, isDisabled } = useMenuItem(
     { key: node.key, closeOnSelect: item.type !== "checkbox" },
     tree,
     ref
   );
   const intent = selectable ? "neutral" : ((item as DropdownMenuActionItem).intent ?? "neutral");
+  // a link item is a real anchor, so it opens in a new tab, shows its URL and can be copied
+  const Row = (!selectable && (item as DropdownMenuActionItem).href ? "a" : "div") as "div";
   return (
     <>
       {model.separatorBefore.has(String(node.key)) ? <Separator /> : null}
-      <div
+      <Row
         {...menuItemProps}
         // the tree has no selection of its own: each checkbox or radio reports its `checked` prop
         role={selectable ? (selectable.type === "checkbox" ? "menuitemcheckbox" : "menuitemradio") : "menuitem"}
@@ -338,6 +349,7 @@ function MenuRow({ node, tree, model }: { node: Node<object>; tree: TreeState<ob
         data-focused={isFocused || undefined}
         data-pressed={isPressed || undefined}
         data-disabled={isDisabled || undefined}
+        data-described={item.description ? true : undefined}
       >
         {selectable ? (
           <span className={styles.indicator} aria-hidden="true">
@@ -349,15 +361,26 @@ function MenuRow({ node, tree, model }: { node: Node<object>; tree: TreeState<ob
             {item.icon}
           </span>
         ) : null}
-        <span {...labelProps} className={styles.label}>
-          {item.label}
-        </span>
+        {item.description ? (
+          <span className={styles.text}>
+            <span {...labelProps} className={styles.label}>
+              {item.label}
+            </span>
+            <span {...descriptionProps} className={styles.description}>
+              {item.description}
+            </span>
+          </span>
+        ) : (
+          <span {...labelProps} className={styles.label}>
+            {item.label}
+          </span>
+        )}
         {item.shortcut ? (
           <kbd {...keyboardShortcutProps} className={styles.shortcut}>
             {item.shortcut}
           </kbd>
         ) : null}
-      </div>
+      </Row>
     </>
   );
 }

@@ -55,7 +55,7 @@ describe("DataTable", () => {
     render(<DataTable caption="Team" columns={columns} rows={people} rowKey={(p) => p.id} pageSize={2} />);
     expect(screen.getByText("Bea")).toBeInTheDocument();
     expect(screen.queryByText("Dev")).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "2" }));
+    await user.click(screen.getByRole("button", { name: "Page 2" }));
     expect(screen.getByText("Dev")).toBeInTheDocument();
     expect(screen.queryByText("Bea")).not.toBeInTheDocument();
   });

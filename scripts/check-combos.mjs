@@ -25,7 +25,9 @@
 //    Overlays render into the fixture, so what a modal hides (aria-hidden) is skipped,
 //    as is hover on anything a scrim or popover covers. [data-check-skip] marks a
 //    control measured in another variant (a menu's trigger, while the menu holds focus).
-//    Visually hidden controls (React Aria's screen-reader DismissButton) are skipped.
+//    Visually hidden controls (React Aria's screen-reader DismissButton) are skipped, and so are
+//    controls that aren't rendered (display: none — a navbar's menu button above its breakpoint).
+//    backdrop-filter is allowed (a translucent bar blurring what's behind it); filter is not.
 //
 // Needs a built @datum-design/react (the gallery imports dist); `npm run check` builds first.
 // The gallery is built into a temp folder and served statically.
@@ -98,7 +100,7 @@ function scanComponent(name) {
       }
       if (file.endsWith(".css")) {
         const rule =
-          (/(^|[\s;{])(backdrop-)?filter\s*:/.test(line) && "no filter effects — hover and press use real tokens") ||
+          (/(^|[\s;{])filter\s*:/.test(line) && "no filter effects — hover and press use real tokens") ||
           (/(transition|animation)[\w-]*\s*:/.test(line) && /(^|[\s:,(])\d*\.?\d+m?s\b/.test(line.replace(/var\([^)]*\)/g, "")) &&
             "timing must come from motion tokens") ||
           (/:focus(?![\w-])/.test(line) && "focus rings use :focus-visible (keyboard only), not :focus");
@@ -248,7 +250,7 @@ try {
         );
         const count = await page.evaluate((selector) => {
           const els = [...document.querySelectorAll(selector)].filter(
-            (el) => !el.matches(":disabled, [data-disabled]") && !el.closest('[aria-hidden="true"], [data-check-skip]') && ![el, el.parentElement].some((n) => n && getComputedStyle(n).clipPath === "inset(50%)")
+            (el) => el.getClientRects().length > 0 && !el.matches(":disabled, [data-disabled]") && !el.closest('[aria-hidden="true"], [data-check-skip]') && ![el, el.parentElement].some((n) => n && getComputedStyle(n).clipPath === "inset(50%)")
           );
           els.forEach((el, i) => {
             el.setAttribute("data-check-id", String(i));
@@ -314,7 +316,7 @@ try {
       if (!matchMedia("(pointer: coarse)").matches) return { coarse: false, small: [], count: 0 };
       const els = [...document.querySelectorAll(selector)].filter(
         // Links in running text (underline="always") are exempt, as in WCAG 2.5.8.
-        (el) => !el.matches(':disabled, [data-disabled], [data-underline="always"]') && !el.closest('[aria-hidden="true"], [data-check-skip]') && ![el, el.parentElement].some((n) => n && getComputedStyle(n).clipPath === "inset(50%)")
+        (el) => el.getClientRects().length > 0 && !el.matches(':disabled, [data-disabled], [data-underline="always"]') && !el.closest('[aria-hidden="true"], [data-check-skip]') && ![el, el.parentElement].some((n) => n && getComputedStyle(n).clipPath === "inset(50%)")
       );
       const small = [];
       for (const control of els) {

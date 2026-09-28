@@ -1,10 +1,101 @@
 .root {
+  font-family: var(--type-body-md-family);
+  color: var(--color-text-primary);
+  background: var(--color-bg-surface);
+}
+.root[data-tone="default"] {
+  background: var(--color-bg-page);
+  border-top: 1px solid var(--color-border-default);
+}
+.inner {
   display: flex;
+  flex-direction: column;
+  gap: var(--space-section);
+  padding-block: var(--space-section);
+}
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-section);
+}
+.lead {
+  flex: 1 1 240px;
+  max-width: 360px;
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+  color: var(--color-text-secondary);
+}
+.columns {
+  flex: 3 1 480px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-section) var(--space-default);
+}
+.title {
+  margin: 0 0 var(--space-tight);
+  font-family: var(--type-ui-label-family);
+  font-size: var(--type-ui-label-size);
+  font-weight: var(--type-ui-label-weight);
+  line-height: var(--type-ui-label-lineHeight);
+  color: var(--color-text-primary);
+}
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.link {
+  position: relative;
+  border-radius: var(--radius-subtle);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.2em;
+  transition:
+    color var(--motion-fast) var(--motion-easing),
+    text-decoration-color var(--motion-fast) var(--motion-easing);
+}
+.link:hover {
+  color: var(--color-text-primary);
+  text-decoration-color: currentColor;
+}
+.link:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-default);
-  padding: var(--space-default) var(--space-section);
-  border-top: 1px solid var(--color-border-default);
-  color: var(--color-text-secondary);
+  gap: var(--space-tight) var(--space-default);
+  padding-top: var(--space-default);
+  border-top: 1px solid var(--color-border-subtle);
   font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+  color: var(--color-text-secondary);
+}
+.top:empty {
+  display: none;
+}
+
+/* stacked links get a taller hit area without moving: the lists are spaced so they don't overlap */
+@media (pointer: coarse) {
+  .links {
+    gap: var(--space-default);
+  }
+  .link::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, var(--interaction-minTarget));
+    height: max(100%, var(--interaction-minTarget));
+    transform: translate(-50%, -50%);
+  }
 }

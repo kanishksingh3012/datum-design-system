@@ -115,3 +115,24 @@ describe("DropdownMenu", () => {
     expect(menu).toHaveAttribute("data-size", "sm");
   });
 });
+
+describe("DropdownMenu links, descriptions and columns", () => {
+  it("renders link items as anchors with a described label, laid out in columns", () => {
+    render(
+      <DropdownMenu
+        trigger={<button type="button">Products</button>}
+        defaultOpen
+        columns={2}
+        items={[
+          { type: "section", label: "Build", items: [{ label: "Editor", href: "/editor", description: "Write and preview" }] },
+          { type: "section", label: "Ship", items: [{ label: "Deploy", href: "/deploy" }] },
+        ]}
+      />
+    );
+    const editor = screen.getByRole("menuitem", { name: "Editor" });
+    expect(editor.tagName).toBe("A");
+    expect(editor).toHaveAttribute("href", "/editor");
+    expect(editor).toHaveAccessibleDescription("Write and preview");
+    expect(screen.getByRole("menu")).toHaveAttribute("data-columns", "2");
+  });
+});

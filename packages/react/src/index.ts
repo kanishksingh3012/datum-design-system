@@ -117,7 +117,7 @@ export { Select } from "./components/Select/Select";
 export type { SelectProps, SelectOwnProps, SelectOption, SelectSize } from "./components/Select/Select";
 
 export { Tabs } from "./components/Tabs/Tabs";
-export type { TabsProps, TabsOwnProps, TabItem } from "./components/Tabs/Tabs";
+export type { TabsProps, TabsOwnProps, TabItem, TabsAppearance, TabsSize, TabsOrientation } from "./components/Tabs/Tabs";
 
 export { Toaster, toast, toastQueue } from "./components/Toast/Toast";
 export type { ToasterProps, ToastOptions, ToastContent, ToastIntent, ToastPosition } from "./components/Toast/Toast";
@@ -151,17 +151,25 @@ export type {
   AccordionAppearance,
 } from "./components/Accordion/Accordion";
 
-export { Header } from "./components/Header/Header";
-export type { HeaderProps, HeaderOwnProps } from "./components/Header/Header";
+export { Navbar } from "./components/Navbar/Navbar";
+export type {
+  NavbarProps,
+  NavbarOwnProps,
+  NavbarLink,
+  NavbarMenuLink,
+  NavbarMenuColumn,
+  NavbarLayout,
+  NavbarAppearance,
+  NavbarPosition,
+  NavbarSize,
+  NavbarBreakpoint,
+} from "./components/Navbar/Navbar";
 
 export { Footer } from "./components/Footer/Footer";
-export type { FooterProps, FooterOwnProps } from "./components/Footer/Footer";
+export type { FooterProps, FooterOwnProps, FooterColumn, FooterLink, FooterTone } from "./components/Footer/Footer";
 
 export { Sidebar } from "./components/Sidebar/Sidebar";
 export type { SidebarProps, SidebarOwnProps } from "./components/Sidebar/Sidebar";
-
-export { Nav, NavLink } from "./components/Nav/Nav";
-export type { NavProps, NavOwnProps, NavLinkProps, NavLinkOwnProps } from "./components/Nav/Nav";
 
 export { Breadcrumbs, BreadcrumbItem } from "./components/Breadcrumbs/Breadcrumbs";
 export type {
@@ -169,21 +177,12 @@ export type {
   BreadcrumbsOwnProps,
   BreadcrumbItemProps,
   BreadcrumbItemOwnProps,
+  BreadcrumbsSeparator,
+  BreadcrumbsSize,
 } from "./components/Breadcrumbs/Breadcrumbs";
 
-export {
-  Pagination,
-  PaginationItem,
-  PaginationPrevious,
-  PaginationNext,
-  PaginationEllipsis,
-} from "./components/Pagination/Pagination";
-export type {
-  PaginationProps,
-  PaginationOwnProps,
-  PaginationItemProps,
-  PaginationItemOwnProps,
-} from "./components/Pagination/Pagination";
+export { Pagination, pageRange } from "./components/Pagination/Pagination";
+export type { PaginationProps, PaginationOwnProps, PaginationSize } from "./components/Pagination/Pagination";
 
 export { Slider } from "./components/Slider/Slider";
 export type { SliderProps, SliderOwnProps } from "./components/Slider/Slider";
@@ -273,21 +272,6 @@ export type { SheetProps, SheetOwnProps, SheetSide, SheetSize } from "./componen
 
 export { Tooltip } from "./components/Tooltip/Tooltip";
 export type { TooltipProps, TooltipOwnProps, TooltipPlacement } from "./components/Tooltip/Tooltip";
-
-export {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuTrigger,
-  NavigationMenuContent,
-} from "./components/NavigationMenu/NavigationMenu";
-export type {
-  NavigationMenuOwnProps,
-  NavigationMenuItemOwnProps,
-  NavigationMenuLinkOwnProps,
-  NavigationMenuTriggerOwnProps,
-  NavigationMenuContentOwnProps,
-} from "./components/NavigationMenu/NavigationMenu";
 
 export { ThinkingIndicator } from "./components/ThinkingIndicator/ThinkingIndicator";
 export type { ThinkingIndicatorOwnProps } from "./components/ThinkingIndicator/ThinkingIndicator";
