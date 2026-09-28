@@ -1,6 +1,6 @@
 import type { MouseEvent } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Link, Navbar, Sidebar } from "@datum-design/react";
+import { Link, Navbar, Sidebar, Toaster } from "@datum-design/react";
 import { ThemeSwitch } from "./ThemeSwitch";
 import { docsSections } from "./nav";
 
@@ -42,6 +42,8 @@ export function Layout() {
         logo={<Link href="/" className="site-logo">Datum</Link>}
         actions={<ThemeSwitch />}
       />
+      {/* The Toast page mounts its own Toaster to demo positions. */}
+      {pathname !== "/docs/components/toast" && <Toaster />}
       {inDocs ? (
         <div className="site-docs">
           <Sidebar className="site-sidebar" label="Documentation" sections={docsSections} activeHref={pathname} />
