@@ -706,7 +706,7 @@ export const fixtures: Record<string, Fixture> = {
   Footer: () => (
     <div data-check-text="deep">
       {(["muted", "default"] as const).map((tone) => (
-        <Footer key={tone} tone={tone} columns={footerColumns} bottom={<><span>© 2026 Datum</span><Link href="#">Status</Link></>}>
+        <Footer key={tone} tone={tone} maxWidth={tone === "default" ? "lg" : undefined} columns={footerColumns} bottom={<><span>© 2026 Datum</span><Link href="#">Status</Link></>}>
           <strong>Datum</strong>
           <p>Components for building websites, in four themes.</p>
         </Footer>

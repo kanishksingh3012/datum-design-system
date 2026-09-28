@@ -1,5 +1,5 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
-import { Container } from "../Container/Container";
+import { Container, type ContainerSize } from "../Container/Container";
 import styles from "./Footer.module.css";
 
 export type FooterTone = "default" | "muted";
@@ -22,6 +22,8 @@ export interface FooterOwnProps {
   bottom?: ReactNode;
   /** `muted` sits on `bg.surface`; `default` on the page with a hairline above. @default "muted" */
   tone?: FooterTone;
+  /** Keeps the footer aligned with page content: a Container size. Match the Navbar's `maxWidth`. @default "xl" */
+  maxWidth?: ContainerSize;
   /** The lead column before the links, e.g. a logo and a line about the site. */
   children?: ReactNode;
 }
@@ -29,12 +31,12 @@ export interface FooterOwnProps {
 export type FooterProps = FooterOwnProps & HTMLAttributes<HTMLElement>;
 
 export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
-  { columns, bottom, tone = "muted", className, children, ...rest },
+  { columns, bottom, tone = "muted", maxWidth = "xl", className, children, ...rest },
   ref
 ) {
   return (
     <footer ref={ref} className={[styles.root, className].filter(Boolean).join(" ")} data-tone={tone} {...rest}>
-      <Container className={styles.inner}>
+      <Container size={maxWidth} className={styles.inner}>
         {children || columns?.length ? (
           <div className={styles.top}>
             {children ? <div className={styles.lead}>{children}</div> : null}

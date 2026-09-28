@@ -315,6 +315,7 @@ const footerProps: PropRow[] = [
   ["columns", "{ title, links: { label, href }[] }[]", "—", "One column per group; they wrap on narrow screens."],
   ["bottom", "ReactNode", "—", "Legal, copyright, social."],
   ["tone", "default | muted", "muted", "muted sits on bg.surface; default on the page with a hairline above."],
+  ["maxWidth", "Container size", "xl", "Match the Navbar's maxWidth so both line up with the page."],
   ["children", "ReactNode", "—", "The lead column: a logo and a line about the site."],
 ];
 const navbarProps: PropRow[] = [
@@ -933,8 +934,8 @@ export function App() {
 
         <div className="doc-section">
           <h2>Sizes</h2>
-          <p className="lead"><b>sm</b> 640, <b>md</b> 768, <b>lg</b> 1024, <b>xl</b> 1280 (the default, <b>grid.container</b>) and <b>full</b> for no limit, shown here at half scale in a 1400px page. The width is the content width; the gutter sits outside it.</p>
-          <div className="sample-box demo-frame">
+          <p className="lead"><b>sm</b> 640, <b>md</b> 768, <b>lg</b> 1024, <b>xl</b> 1280 (the default, <b>grid.container</b>) and <b>full</b> for no limit, shown here at half scale in a 1400px page (it scrolls sideways on a narrow screen). The width is the content width; the gutter sits outside it.</p>
+          <div className="sample-box demo-frame demo-scroll">
             <div className="demo-zoom">
               {(["sm", "md", "lg", "xl", "full"] as const).map((size) => (
                 <Container key={size} size={size} padded={false} className="demo-outline">

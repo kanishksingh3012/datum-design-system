@@ -33,6 +33,13 @@ describe("Footer", () => {
     expect(screen.queryByRole("navigation")).toBeNull();
   });
 
+  it("sizes its content with maxWidth, xl by default", () => {
+    const { container, rerender } = render(<Footer bottom="©" />);
+    expect(container.querySelector("[data-size]")).toHaveAttribute("data-size", "xl");
+    rerender(<Footer bottom="©" maxWidth="lg" />);
+    expect(container.querySelector("[data-size]")).toHaveAttribute("data-size", "lg");
+  });
+
   it("forwards its ref and merges className", () => {
     let node: HTMLElement | null = null;
     render(<Footer ref={(el) => (node = el)} className="custom" />);

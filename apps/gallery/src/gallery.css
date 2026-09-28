@@ -169,6 +169,8 @@ body {
 .demo-bands { display: block; padding: 0; overflow: hidden; gap: 0; }
 .demo-rule + .demo-rule { border-top: 1px solid var(--color-border-default); }
 /* half-scale 1400px page, so every Container size is visible in proportion */
+/* the half-scale page is wider than a phone: it scrolls inside its box, never the page */
+.demo-scroll { overflow-x: auto; }
 .demo-zoom { zoom: 0.5; width: 1400px; display: grid; gap: 16px; padding: 24px 0; }
 .demo-zoom .demo-outline { padding: 16px 24px; }
 .demo-media { height: 120px; background: var(--color-bg-accentSubtle); }
