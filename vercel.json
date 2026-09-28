@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build -w @datum-design/styles && npm run build -w @datum-design/react && npm run build -w @datum-design/gallery",
+  "outputDirectory": "apps/gallery/dist",
+  "framework": null,
+  "rewrites": [
+    { "source": "/((?!assets/|check\\.html|review\\.html).*)", "destination": "/index.html" }
+  ]
+}

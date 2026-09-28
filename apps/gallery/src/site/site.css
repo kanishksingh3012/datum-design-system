@@ -1,0 +1,17 @@
+/* Docs site shell. Tokens only. */
+.site-logo { font-family: var(--font-display); font-weight: var(--type-heading-xl-weight); }
+.site-docs {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  align-items: start;
+}
+.site-sidebar { position: sticky; top: 64px; height: calc(100dvh - 64px); overflow-y: auto; }
+.site-main { min-width: 0; padding: var(--space-section) var(--space-section) calc(var(--space-section) * 3); }
+.site-main > * { max-width: 800px; margin-inline: auto; }
+.site-prose { display: flex; flex-direction: column; gap: var(--space-default); align-items: flex-start; }
+.site-install { width: 100%; max-width: 520px; }
+@media (max-width: 767px) {
+  .site-docs { grid-template-columns: minmax(0, 1fr); }
+  .site-sidebar { position: static; height: auto; }
+  .site-main { padding-inline: var(--space-default); }
+}
