@@ -1,9 +1,29 @@
 .root {
+  --_thumb: var(--color-border-strong);
+
   overflow: auto;
-  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border-strong) transparent;
+  scrollbar-color: var(--_thumb) transparent;
+  border-radius: inherit;
 }
+.root[data-orientation="vertical"] {
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+.root[data-orientation="horizontal"] {
+  overflow-y: hidden;
+}
+/* the thumb steps toward the text color on hover (there is no hover token for an edge) */
+.root:hover {
+  --_thumb: color-mix(in oklab, var(--color-border-strong), var(--color-text-primary) 40%);
+}
+.root:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* WebKit fallback for the same look where scrollbar-color isn't supported */
 .root::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -12,8 +32,8 @@
   background: transparent;
 }
 .root::-webkit-scrollbar-thumb {
-  background: var(--color-border-strong);
-  border-radius: 999px;
+  background: var(--_thumb);
   border: 2px solid transparent;
+  border-radius: var(--radius-pill);
   background-clip: content-box;
 }

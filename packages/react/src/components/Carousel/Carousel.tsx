@@ -1,118 +1,187 @@
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { forwardRef, useEffect, useRef, useState, type HTMLAttributes, type ReactNode } from "react";
+import { mergeProps, useFocusWithin, useHover, useMove } from "react-aria";
+import { useControlledState } from "react-stately/useControlledState";
+import { Button } from "../Button/Button";
 import styles from "./Carousel.module.css";
 
-export interface CarouselSlideDef {
-  id: string;
-  label: string;
+export interface CarouselSlide {
+  /** Stable key; falls back to the index. */
+  id?: string;
+  /** Names the slide for screen readers, after "2 of 5". */
+  label?: string;
   content: ReactNode;
 }
 
 export interface CarouselOwnProps {
+  /** Names the carousel, e.g. "Featured stories". */
   label: string;
-  slides: CarouselSlideDef[];
-  /** ms between auto-advances. Omit to disable auto-rotation entirely. */
-  autoRotateMs?: number;
+  slides: CarouselSlide[];
+  /** The index of the slide shown (controlled). */
+  value?: number;
+  /** The first slide shown (uncontrolled). @default 0 */
+  defaultValue?: number;
+  /** Called with the new index when the slide changes. */
+  onValueChange?: (index: number) => void;
+  /** Advances on its own every this many ms, with a pause button. Never under reduced motion. */
+  autoplay?: number;
+  /** Wraps from the last slide to the first. @default true */
+  loop?: boolean;
 }
 
-export type CarouselProps = CarouselOwnProps;
+/** `ref`, `className` and every other prop go on the root. */
+export type CarouselProps = CarouselOwnProps & Omit<HTMLAttributes<HTMLElement>, "defaultValue" | "onChange">;
 
-function prefersReducedMotion(): boolean {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const Arrow = ({ back }: { back?: boolean }) => (
+  <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+    <path d={back ? "M15 6l-6 6 6 6" : "M9 6l6 6-6 6"} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+const PauseIcon = (
+  <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+    <path d="M9 6v12M15 6v12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  </svg>
+);
+const PlayIcon = (
+  <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+    <path d="M8 5.5v13l10-6.5z" fill="currentColor" />
+  </svg>
+);
+
+/** Live: turning reduced motion on mid-rotation stops it. */
+function useReducedMotion() {
+  const query = "(prefers-reduced-motion: reduce)";
+  const [reduced, setReduced] = useState(() => typeof matchMedia === "function" && matchMedia(query).matches);
+  useEffect(() => {
+    if (typeof matchMedia !== "function") return;
+    const list = matchMedia(query);
+    const onChange = () => setReduced(list.matches);
+    onChange();
+    list.addEventListener?.("change", onChange);
+    return () => list.removeEventListener?.("change", onChange);
+  }, []);
+  return reduced;
 }
 
 /**
- * Native CSS scroll-snap does the actual sliding - no JS scroll
- * animation to get wrong. Auto-rotation is opt-in via autoRotateMs, is
- * always off when the OS is set to reduced motion (checked live, not
- * just on mount), pauses on hover/focus, and the Pause control sits in
- * the DOM before the slides per the APG carousel example.
+ * One slide at a time, with previous / next buttons and a row of slide
+ * buttons below — the APG carousel pattern. Slides move by `transform`
+ * (motion.normal; instant under reduced motion) and can be swiped. Hidden
+ * slides are inert, so their links are out of the tab order. Autoplay is
+ * opt-in, has a pause button first in the tab order, pauses while the
+ * pointer or focus is inside, and never runs under reduced motion.
  */
-export function Carousel({ label, slides, autoRotateMs }: CarouselProps) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const groupId = useId();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [manuallyPaused, setManuallyPaused] = useState(false);
-  const [hovering, setHovering] = useState(false);
+export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel(
+  { label, slides, value, defaultValue = 0, onValueChange, autoplay, loop = true, className, ...rest },
+  ref
+) {
+  const count = slides.length;
+  const [index, setIndex] = useControlledState(value, defaultValue, onValueChange);
+  const [paused, setPaused] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const reduced = useReducedMotion();
+  const rotating = autoplay !== undefined && !reduced && !paused;
+  const running = rotating && !hovered && !focused;
 
-  const autoRotateEnabled = autoRotateMs !== undefined && !manuallyPaused && !hovering;
+  const go = (next: number) => {
+    const target = loop ? (next + count) % count : Math.min(count - 1, Math.max(0, next));
+    if (target !== index) setIndex(target);
+  };
+  const latest = useRef(go);
+  latest.current = go;
 
   useEffect(() => {
-    if (!autoRotateEnabled) return;
-    if (prefersReducedMotion()) return;
-    const timer = setInterval(() => {
-      setActiveIndex((index) => (index + 1) % slides.length);
-    }, autoRotateMs);
+    if (!running || count < 2) return;
+    const timer = setInterval(() => latest.current(index + 1), autoplay);
     return () => clearInterval(timer);
-  }, [autoRotateEnabled, autoRotateMs, slides.length]);
+  }, [running, autoplay, index, count]);
 
-  useEffect(() => {
-    slideRefs.current[activeIndex]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
-  }, [activeIndex]);
-
-  function goTo(index: number) {
-    setActiveIndex((index + slides.length) % slides.length);
-  }
+  const { hoverProps } = useHover({ onHoverChange: setHovered });
+  const { focusWithinProps } = useFocusWithin({ onFocusWithinChange: setFocused });
+  // a horizontal swipe of a quarter of the slide turns it
+  const swipe = useRef(0);
+  const viewport = useRef<HTMLDivElement>(null);
+  const { moveProps } = useMove({
+    onMoveStart: () => {
+      swipe.current = 0;
+    },
+    onMove: (e) => {
+      if (e.pointerType !== "keyboard") swipe.current += e.deltaX;
+    },
+    onMoveEnd: () => {
+      const width = viewport.current?.offsetWidth ?? 0;
+      if (Math.abs(swipe.current) > width / 4) go(index + (swipe.current < 0 ? 1 : -1));
+    },
+  });
+  // useMove would also take arrow keys on the viewport; keep only pointer handling
+  const { onKeyDown: _keys, ...pointerProps } = moveProps;
+  const atStart = !loop && index === 0;
+  const atEnd = !loop && index === count - 1;
 
   return (
-    <div
-      className={styles.root}
+    <section
+      {...mergeProps(rest, hoverProps, focusWithinProps)}
+      ref={ref}
+      className={[styles.root, className].filter(Boolean).join(" ")}
       aria-roledescription="carousel"
       aria-label={label}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-      onFocus={() => setHovering(true)}
-      onBlur={() => setHovering(false)}
     >
+      <div ref={viewport} className={styles.viewport} {...pointerProps}>
+        <div
+          className={styles.track}
+          style={{ transform: `translateX(${-index * 100}%)` }}
+          aria-live={rotating ? "off" : "polite"}
+        >
+          {slides.map((slide, i) => (
+            <div
+              key={slide.id ?? i}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} of ${count}${slide.label ? `: ${slide.label}` : ""}`}
+              className={styles.slide}
+              aria-hidden={i === index ? undefined : true}
+              {...(i === index ? {} : { inert: "" })}
+            >
+              {slide.content}
+            </div>
+          ))}
+        </div>
+      </div>
       <div className={styles.controls}>
-        {autoRotateMs !== undefined ? (
-          <button
-            type="button"
-            className={styles.control}
-            aria-pressed={manuallyPaused}
-            onClick={() => setManuallyPaused((value) => !value)}
+        {autoplay !== undefined && !reduced ? (
+          <Button
+            intent="neutral"
+            appearance="ghost"
+            size="sm"
+            iconOnly
+            label={paused ? "Start slide rotation" : "Stop slide rotation"}
+            onClick={() => setPaused(!paused)}
+            className={styles.pause}
           >
-            {manuallyPaused ? "Play" : "Pause"}
-          </button>
+            {paused ? PlayIcon : PauseIcon}
+          </Button>
         ) : null}
-        <button type="button" aria-label="Previous slide" className={styles.control} onClick={() => goTo(activeIndex - 1)}>
-          &#8249;
-        </button>
-        <button type="button" aria-label="Next slide" className={styles.control} onClick={() => goTo(activeIndex + 1)}>
-          &#8250;
-        </button>
+        <Button intent="neutral" appearance="outline" size="sm" iconOnly label="Previous slide" disabled={atStart} onClick={() => go(index - 1)}>
+          <Arrow back />
+        </Button>
+        <div className={styles.dots}>
+          {slides.map((slide, i) => (
+            <button
+              key={slide.id ?? i}
+              type="button"
+              className={styles.dot}
+              aria-label={`Slide ${i + 1}${slide.label ? `: ${slide.label}` : ""}`}
+              aria-current={i === index ? "true" : undefined}
+              onClick={() => go(i)}
+            />
+          ))}
+        </div>
+        <Button intent="neutral" appearance="outline" size="sm" iconOnly label="Next slide" disabled={atEnd} onClick={() => go(index + 1)}>
+          <Arrow />
+        </Button>
       </div>
-      <div ref={trackRef} className={styles.track}>
-        {slides.map((slide, index) => (
-          <div
-            key={slide.id}
-            ref={(node) => {
-              slideRefs.current[index] = node;
-            }}
-            role="group"
-            aria-roledescription="slide"
-            aria-label={`${index + 1} of ${slides.length}: ${slide.label}`}
-            className={styles.slide}
-          >
-            {slide.content}
-          </div>
-        ))}
-      </div>
-      <div role="tablist" aria-label={`${label} slides`} className={styles.dots}>
-        {slides.map((slide, index) => (
-          <button
-            key={slide.id}
-            role="tab"
-            id={`${groupId}-${slide.id}`}
-            aria-selected={index === activeIndex}
-            aria-label={`Go to slide ${index + 1}`}
-            className={styles.dot}
-            data-active={index === activeIndex || undefined}
-            onClick={() => goTo(index)}
-          />
-        ))}
-      </div>
-    </div>
+    </section>
   );
-}
+});
+
+Carousel.displayName = "Carousel";

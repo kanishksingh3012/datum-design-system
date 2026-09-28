@@ -1,5 +1,5 @@
-import { forwardRef, useEffect, useId, useRef, type HTMLAttributes, type ReactElement, type ReactNode, type RefObject } from "react";
-import { Overlay, mergeProps, useFocus, useHover, useKeyboard, useObjectRef, useOverlayPosition } from "react-aria";
+import { forwardRef, useEffect, useId, useRef, type HTMLAttributes, type ReactElement, type ReactNode, type Ref, type RefObject } from "react";
+import { Overlay, mergeProps, mergeRefs, useFocus, useFocusWithin, useHover, useKeyboard, useObjectRef, useOverlayPosition } from "react-aria";
 import { useOverlayTriggerState, type OverlayTriggerState } from "react-stately";
 import { cloneTrigger } from "../../lib/cloneTrigger";
 import styles from "./HoverCard.module.css";
@@ -26,10 +26,15 @@ export interface HoverCardOwnProps {
 /** `ref`, `className` and every other prop go on the card. */
 export type HoverCardProps = HoverCardOwnProps & Omit<HTMLAttributes<HTMLDivElement>, "children">;
 
+const TABBABLE = 'a[href], button:not(:disabled), input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), [tabindex]';
+const tabbables = (root: Element) =>
+  [...root.querySelectorAll<HTMLElement>(TABBABLE)].filter((el) => el.tabIndex >= 0 && !el.closest("[hidden], [inert]"));
+
 /**
  * A preview card on hover or keyboard focus, for sighted pointer and keyboard
- * users. It stays open while the pointer is on the trigger or the card, and
- * Escape closes it. The trigger is described by the card while it is open.
+ * users. It stays open while the pointer or focus is on the trigger or the
+ * card: Tab from the trigger moves into the card's links, and Tab past the
+ * last one moves on to what follows the trigger. Escape closes it. The trigger is described by the card while it is open.
  * Built on React Aria's `useHover`, `useFocus`, `useKeyboard` and
  * `useOverlayPosition` with `useOverlayTriggerState`.
  */
@@ -41,8 +46,10 @@ export const HoverCard = forwardRef<HTMLDivElement, HoverCardProps>(function Hov
   const triggerRef = useRef<HTMLElement>(null);
   const cardId = useId();
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  // the pointer is on the card: leaving the trigger (or its focus) doesn't close it
+  // the pointer (or focus) is on the card: leaving the trigger doesn't close it
   const onCard = useRef(false);
+  const inCard = useRef(false);
+  const cardRef = useRef<HTMLDivElement>(null);
   const clear = () => clearTimeout(timer.current);
   const later = (fn: () => void, ms: number) => {
     clear();
@@ -52,7 +59,7 @@ export const HoverCard = forwardRef<HTMLDivElement, HoverCardProps>(function Hov
 
   const show = () => later(state.open, openDelay);
   const hide = () => {
-    if (onCard.current) clear();
+    if (onCard.current || inCard.current) clear();
     else later(state.close, closeDelay);
   };
   const { hoverProps } = useHover({ onHoverStart: show, onHoverEnd: hide });
@@ -62,7 +69,49 @@ export const HoverCard = forwardRef<HTMLDivElement, HoverCardProps>(function Hov
       if (e.key === "Escape" && state.isOpen) {
         clear();
         state.close();
+      } else if (e.key === "Tab" && !e.shiftKey && state.isOpen && cardRef.current) {
+        // the card is portalled to the end of the page: Tab takes focus into it, as if it followed the trigger
+        const first = tabbables(cardRef.current)[0];
+        if (first) {
+          e.preventDefault();
+          clear();
+          first.focus();
+        } else e.continuePropagation();
       } else e.continuePropagation();
+    },
+  });
+  const { focusWithinProps } = useFocusWithin({
+    onFocusWithinChange: (focused) => {
+      inCard.current = focused;
+      if (focused) clear();
+      else hide();
+    },
+  });
+  const { keyboardProps: cardKeyboardProps } = useKeyboard({
+    onKeyDown: (e) => {
+      const card = cardRef.current;
+      const trigger = triggerRef.current;
+      if (!card || !trigger) return e.continuePropagation();
+      if (e.key === "Escape") {
+        clear();
+        state.close();
+        trigger.focus();
+        return;
+      }
+      if (e.key !== "Tab") return e.continuePropagation();
+      const inside = tabbables(card);
+      const edge = e.shiftKey ? inside[0] : inside[inside.length - 1];
+      if (e.target !== edge) return e.continuePropagation();
+      // leaving the card: back to the trigger, or on to whatever follows the trigger
+      e.preventDefault();
+      let next: HTMLElement | undefined = trigger;
+      if (!e.shiftKey) {
+        next = tabbables(document.body).find(
+          (el) => !card.contains(el) && Boolean(trigger.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING)
+        );
+        state.close();
+      }
+      (next ?? trigger).focus();
     },
   });
   const { hoverProps: cardHoverProps } = useHover({
@@ -81,7 +130,7 @@ export const HoverCard = forwardRef<HTMLDivElement, HoverCardProps>(function Hov
       {cloneTrigger(trigger, mergeProps(hoverProps, focusProps, keyboardProps, { "aria-describedby": state.isOpen ? cardId : undefined }), triggerRef)}
       {state.isOpen ? (
         <Overlay>
-          <Card ref={ref} id={cardId} state={state} triggerRef={triggerRef} placement={placement} {...mergeProps(rest, cardHoverProps)}>
+          <Card ref={mergeRefs(ref, cardRef) as Ref<HTMLDivElement>} id={cardId} state={state} triggerRef={triggerRef} placement={placement} {...mergeProps(rest, cardHoverProps, focusWithinProps, cardKeyboardProps)}>
             {children}
           </Card>
         </Overlay>

@@ -204,6 +204,66 @@
             ]
           ],
           "beh": "Native"
+        },
+        {
+          "n": "ScrollArea",
+          "st": "rework",
+          "why": "A box that scrolls its content with themed scrollbars.",
+          "props": [
+            [
+              "orientation",
+              "vertical · horizontal · both",
+              "vertical",
+              ""
+            ],
+            [
+              "maxHeight",
+              "number · string",
+              "—",
+              ""
+            ],
+            [
+              "label",
+              "string",
+              "—",
+              "Names it as a region"
+            ]
+          ],
+          "beh": "Native",
+          "note": "Wave 2. A tab stop only while its content overflows."
+        },
+        {
+          "n": "Resizable",
+          "st": "rework",
+          "why": "Two panels with a handle that resizes them.",
+          "props": [
+            [
+              "orientation",
+              "horizontal · vertical",
+              "horizontal",
+              ""
+            ],
+            [
+              "value / defaultValue / onValueChange",
+              "number",
+              "50",
+              "The first panel's share"
+            ],
+            [
+              "min / max / step",
+              "number",
+              "10 / 90 / 1",
+              ""
+            ],
+            [
+              "disabled",
+              "boolean",
+              "false",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useSlider + useSliderThumb; the handle is a native range input with a 44px grab area."
         }
       ]
     },
@@ -598,6 +658,33 @@
             ]
           ],
           "beh": "React Aria"
+        },
+        {
+          "n": "Carousel",
+          "st": "rework",
+          "why": "One slide at a time, for featured content.",
+          "props": [
+            [
+              "value / defaultValue / onValueChange",
+              "number",
+              "0",
+              "The slide index"
+            ],
+            [
+              "autoplay",
+              "number (ms)",
+              "—",
+              "Pause button; never under reduced motion"
+            ],
+            [
+              "loop",
+              "boolean",
+              "true",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useMove for swipe, useHover + useFocusWithin to pause; hidden slides are inert."
         }
       ]
     },
@@ -1181,6 +1268,72 @@
           ],
           "beh": "React Aria",
           "note": "Wave 2. useField wiring; one cell in the tab order at a time."
+        },
+        {
+          "n": "ColorPicker",
+          "st": "rework",
+          "why": "Pick a color by area, hue, hex or swatch.",
+          "props": [
+            [
+              "value / defaultValue / onValueChange",
+              "string",
+              "#000000",
+              "Hex out"
+            ],
+            [
+              "swatches",
+              "string[]",
+              "—",
+              ""
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "false",
+              ""
+            ],
+            [
+              "size",
+              "sm · md · lg",
+              "md",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useColorArea, useColorSlider, useColorField, useColorSwatch; the panel is a Popover."
+        },
+        {
+          "n": "FileUpload",
+          "st": "rework",
+          "why": "Choose or drop files, with the list below.",
+          "props": [
+            [
+              "value / defaultValue / onValueChange",
+              "File[]",
+              "[]",
+              ""
+            ],
+            [
+              "accept / maxSize / maxFiles",
+              "string / bytes / number",
+              "—",
+              "Turned-away files get a message and onReject"
+            ],
+            [
+              "multiple",
+              "boolean",
+              "false",
+              ""
+            ],
+            [
+              "size",
+              "sm · md",
+              "md",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useDrop; a Button opens the native dialog."
         }
       ]
     },
@@ -1567,6 +1720,45 @@
             ]
           ],
           "beh": "Native"
+        },
+        {
+          "n": "Sidebar",
+          "st": "rework",
+          "why": "App navigation down the side of the page.",
+          "props": [
+            [
+              "sections",
+              "{ title?, links }[]",
+              "—",
+              ""
+            ],
+            [
+              "activeHref",
+              "string",
+              "—",
+              "aria-current=\"page\""
+            ],
+            [
+              "size",
+              "sm · md",
+              "md",
+              "240 / 288px"
+            ],
+            [
+              "mobileBreakpoint",
+              "sm · md · lg",
+              "md",
+              "Folds into a bar with a Sheet menu"
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "false",
+              "The mobile menu"
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. Navbar's pattern: links as pill rows, Sheet below the breakpoint."
         }
       ]
     }
@@ -1669,6 +1861,10 @@
     [
       "Wave 2 popups + simple inputs",
       "Popover, HoverCard, ContextMenu, NumberField, Slider and InputOTP rebuilt to the phase-1 standard on react-aria / react-stately hooks and added to the review under Overlays and Forms. ContextMenu reuses DropdownMenu's menu; NumberField steppers sit inside the pill; OTP cells are circles (radius.control, square box); the Slider thumb is a field-drawn knob over a text.accent fill."
+    ],
+    [
+      "Wave 2 layout + rich inputs",
+      "Sidebar, ScrollArea, Resizable, Carousel, ColorPicker and FileUpload rebuilt to the phase-1 standard and added to the review under Navigation, Layout, Content and Forms. Resizable's handle is a Slider thumb; ColorPicker runs on React Aria's color hooks inside a Popover; FileUpload drops through useDrop. HoverCard keeps open while focus is in the card."
     ]
   ]
 }

@@ -1,54 +1,197 @@
 .root {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+  max-width: 320px;
 }
-.label {
-  font-size: var(--type-ui-label-size);
-  font-weight: var(--type-ui-label-weight);
-  color: var(--color-text-primary);
-}
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.swatchLabel {
-  display: inline-flex;
-}
-.swatch {
-  width: var(--interaction-minTarget);
-  height: var(--interaction-minTarget);
-  padding: 0;
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-control);
-  background: none;
+
+/* the trigger is a field box, like Select's: a color chip, then the hex value */
+.trigger {
+  composes: control from "../Field/control.module.css";
+  --_chip: 20px;
+  width: auto;
+  min-width: 160px;
+  padding-inline-start: calc((var(--_height) - var(--_chip)) / 2 - 1px);
+  text-align: start;
   cursor: pointer;
 }
-.hexInput {
-  width: 100px;
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  color: var(--color-text-primary);
-  background: var(--color-bg-page);
-  border: 1px solid var(--color-border-default);
+.trigger.trigger[data-size="sm"] {
+  --_chip: 16px;
+}
+.trigger.trigger[data-size="lg"] {
+  --_chip: 24px;
+}
+.trigger:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.trigger[data-disabled] {
+  opacity: 0.5;
+}
+.trigger[data-readonly] {
+  cursor: default;
+  opacity: 1;
+}
+/* the chip shows the user's color; its edge keeps a pale or dark color visible on the field */
+.chip {
+  flex: none;
+  box-sizing: border-box;
+  width: var(--_chip);
+  height: var(--_chip);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+}
+.value {
+  font-family: var(--type-numeric-md-family);
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+}
+
+.panel.panel {
+  width: 256px;
+  min-width: 0;
+}
+
+/* nested inside the panel, so its corners are the card radius minus the panel padding */
+.area {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: calc(var(--radius-card) - var(--space-default));
+  touch-action: none;
+}
+.hue {
+  position: relative;
+  height: 24px;
   border-radius: var(--radius-control);
-  padding: 0 var(--space-compact);
-  min-height: var(--interaction-minTarget);
+  touch-action: none;
 }
-.hexInput:focus-visible,
-.swatch:focus-visible {
+.hue .thumb {
+  top: 50%;
+}
+
+/* A thumb filled with the color under it: a surface ring inside a border.strong edge,
+   so it shows on any color, light or dark. */
+.thumb {
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--color-bg-surfaceRaised);
+  border-radius: var(--radius-pill);
+  box-shadow:
+    0 0 0 1px var(--color-border-strong),
+    var(--elevation-field);
+  transform: translate(-50%, -50%);
+  transition: transform var(--motion-fast) var(--motion-easing);
+}
+.thumb:active,
+.thumb[data-dragging] {
+  transform: translate(-50%, -50%) scale(0.98);
+}
+.thumb:has(input:focus-visible) {
+  z-index: 1;
   outline: 2px solid var(--color-border-focus);
-  outline-offset: 1px;
+  outline-offset: 2px;
 }
-.visuallyHidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
+@media (pointer: coarse) {
+  .thumb::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--interaction-minTarget);
+    height: var(--interaction-minTarget);
+    transform: translate(-50%, -50%);
+  }
+}
+
+.hexRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-tight);
+}
+.hexLabel {
+  font-family: var(--type-ui-label-family);
+  font-size: var(--type-ui-label-size);
+  font-weight: var(--type-ui-label-weight);
+  line-height: var(--type-ui-label-lineHeight);
+  color: var(--color-text-primary);
+}
+.hexBox {
+  composes: control from "../Field/control.module.css";
+  flex: 1;
+}
+.hexInput {
+  width: 100%;
+  min-width: 0;
   padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
+  font: inherit;
+  font-family: var(--type-numeric-sm-family);
+  text-transform: uppercase;
+  color: inherit;
+  background: transparent;
   border: 0;
+  outline: none;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+  gap: var(--space-compact);
+}
+/* a token ring (border.strong, 3:1) around a chip of the user's color, so the control's own
+   edge never depends on the color it shows; the chip's edge keeps pale colors visible */
+.swatch {
+  position: relative;
+  box-sizing: border-box;
+  display: grid;
+  width: 100%;
+  aspect-ratio: 1;
+  margin: 0;
+  padding: 2px;
+  color: var(--color-text-primary);
+  background: transparent;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    border-color var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+.swatchColor {
+  border-radius: var(--radius-pill);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 16%, transparent);
+}
+.swatch:hover {
+  border-color: color-mix(in oklab, var(--color-border-strong), var(--color-text-primary) 40%);
+}
+.swatch:active {
+  transform: scale(0.98);
+}
+.swatch[aria-pressed="true"] {
+  border: 2px solid var(--color-text-primary);
+  padding: 1px;
+}
+.swatch:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+@media (pointer: coarse) {
+  .swatch::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--interaction-minTarget);
+    height: var(--interaction-minTarget);
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger:active:not(:disabled),
+  .swatch:active {
+    transform: none;
+  }
+  .thumb:active,
+  .thumb[data-dragging] {
+    transform: translate(-50%, -50%);
+  }
 }

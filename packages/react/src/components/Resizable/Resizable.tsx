@@ -1,110 +1,122 @@
-import { useCallback, useId, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
+import { forwardRef, useRef, type HTMLAttributes, type ReactNode, type Ref } from "react";
+import { mergeProps, mergeRefs, useNumberFormatter, useSlider, useSliderThumb } from "react-aria";
+import { useSliderState } from "react-stately";
+import { useControlledState } from "react-stately/useControlledState";
 import styles from "./Resizable.module.css";
 
+export type ResizableOrientation = "horizontal" | "vertical";
+
 export interface ResizableOwnProps {
+  /** The first panel: left, or top when vertical. */
   first: ReactNode;
+  /** The second panel: right, or bottom when vertical. */
   second: ReactNode;
-  /** 0-100, the first pane's share of the axis. @default 50 */
-  defaultSplit?: number;
-  /** @default "horizontal" - panes sit side by side, splitter drags left/right */
-  orientation?: "horizontal" | "vertical";
+  /** `horizontal` puts the panels side by side; `vertical` stacks them. @default "horizontal" */
+  orientation?: ResizableOrientation;
+  /** The first panel's share of the space, 0–100 (controlled). */
+  value?: number;
+  /** The first panel's starting share (uncontrolled). @default 50 */
+  defaultValue?: number;
+  /** Called with the first panel's new share as the handle moves. */
+  onValueChange?: (value: number) => void;
+  /** Called once a drag or key press ends — for saving the layout. */
+  onValueCommit?: (value: number) => void;
+  /** The smallest share the first panel can have. @default 10 */
   min?: number;
+  /** The largest share the first panel can have. @default 90 */
   max?: number;
+  /** How far one arrow key press moves the handle, in percent. @default 1 */
+  step?: number;
+  /** Names the handle. @default "Resize panels" */
+  handleLabel?: string;
+  /** @default false */
+  disabled?: boolean;
 }
 
-export type ResizableProps = ResizableOwnProps;
+/** `ref`, `className` and every other prop go on the root. */
+export type ResizableProps = ResizableOwnProps & Omit<HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange">;
 
-export function Resizable({
-  first,
-  second,
-  defaultSplit = 50,
-  orientation = "horizontal",
-  min = 10,
-  max = 90,
-}: ResizableProps) {
-  const [split, setSplit] = useState(() => clamp(defaultSplit, min, max));
-  const containerRef = useRef<HTMLDivElement>(null);
-  const draggingRef = useRef(false);
-  const labelId = useId();
+const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
-  const updateFromPointer = useCallback(
-    (clientX: number, clientY: number) => {
-      const container = containerRef.current;
-      if (!container) return;
-      const rect = container.getBoundingClientRect();
-      const percent =
-        orientation === "horizontal"
-          ? ((clientX - rect.left) / rect.width) * 100
-          : ((clientY - rect.top) / rect.height) * 100;
-      setSplit(clamp(percent, min, max));
-    },
-    [orientation, min, max]
-  );
-
-  function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
-    draggingRef.current = true;
-    event.currentTarget.setPointerCapture(event.pointerId);
-  }
-
-  function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
-    if (!draggingRef.current) return;
-    updateFromPointer(event.clientX, event.clientY);
-  }
-
-  function handlePointerUp(event: PointerEvent<HTMLDivElement>) {
-    draggingRef.current = false;
-    event.currentTarget.releasePointerCapture(event.pointerId);
-  }
-
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    const step = event.shiftKey ? 10 : 2;
-    if (
-      (orientation === "horizontal" && event.key === "ArrowLeft") ||
-      (orientation === "vertical" && event.key === "ArrowUp")
-    ) {
-      event.preventDefault();
-      setSplit((value) => clamp(value - step, min, max));
-    } else if (
-      (orientation === "horizontal" && event.key === "ArrowRight") ||
-      (orientation === "vertical" && event.key === "ArrowDown")
-    ) {
-      event.preventDefault();
-      setSplit((value) => clamp(value + step, min, max));
-    } else if (event.key === "Home") {
-      event.preventDefault();
-      setSplit(min);
-    } else if (event.key === "End") {
-      event.preventDefault();
-      setSplit(max);
-    }
-  }
+/**
+ * Two panels with a handle between them that resizes them. The handle is a
+ * slider thumb on React Aria's `useSlider` and `useSliderThumb`: drag it, or
+ * focus it and use the arrow keys (Home and End jump to the limits). Its native
+ * range input carries the name and the value, announced as the first panel's
+ * share. The line is 1px; the grab area around it is 44px.
+ */
+export const Resizable = forwardRef<HTMLDivElement, ResizableProps>(function Resizable(
+  {
+    first,
+    second,
+    orientation = "horizontal",
+    value,
+    defaultValue = 50,
+    onValueChange,
+    onValueCommit,
+    min = 10,
+    max = 90,
+    step = 1,
+    handleLabel = "Resize panels",
+    disabled = false,
+    className,
+    style,
+    ...rest
+  },
+  ref
+) {
+  const vertical = orientation === "vertical";
+  const [split, setSplit] = useControlledState(value, clamp(defaultValue, min, max), onValueChange);
+  // A vertical slider grows upward, so it holds the bottom panel's share: the keys and the drag then
+  // move the handle the way they point. The track is the whole root, so a drag maps 1:1 to the pointer.
+  const flip = (v: number) => (vertical ? 100 - v : v);
+  const numberFormatter = useNumberFormatter();
+  const props = {
+    "aria-label": handleLabel,
+    orientation,
+    value: [flip(split)],
+    onChange: (v: number[]) => setSplit(clamp(flip(v[0]), min, max)),
+    onChangeEnd: onValueCommit && ((v: number[]) => onValueCommit(clamp(flip(v[0]), min, max))),
+    minValue: 0,
+    maxValue: 100,
+    step,
+    isDisabled: disabled,
+  };
+  const state = useSliderState({ ...props, numberFormatter });
+  const rootRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  useSlider(props, state, rootRef);
+  const { thumbProps, inputProps, isDragging } = useSliderThumb({ index: 0, trackRef: rootRef, inputRef, "aria-label": handleLabel, orientation, isDisabled: disabled }, state);
+  const { style: _position, ...handleProps } = thumbProps;
+  const tracks = `minmax(0, ${split}fr) auto minmax(0, ${100 - split}fr)`;
 
   return (
-    <div ref={containerRef} className={styles.root} data-orientation={orientation}>
-      <div className={styles.pane} style={{ flexBasis: `${split}%` }} id={labelId}>
-        {first}
+    <div
+      {...rest}
+      ref={mergeRefs(ref, rootRef) as Ref<HTMLDivElement>}
+      className={[styles.root, className].filter(Boolean).join(" ")}
+      style={{ ...(vertical ? { gridTemplateRows: tracks } : { gridTemplateColumns: tracks }), ...style }}
+      data-orientation={orientation}
+      data-dragging={isDragging || undefined}
+      data-disabled={disabled || undefined}
+    >
+      <div className={styles.panel}>{first}</div>
+      <div {...handleProps} className={styles.handle} data-control="" data-dragging={isDragging || undefined}>
+        <span className={styles.grip} aria-hidden="true" />
+        <input
+          {...mergeProps(inputProps, {
+            // the real limits and the first panel's share, whichever way the slider runs
+            min: vertical ? 100 - max : min,
+            max: vertical ? 100 - min : max,
+            "aria-valuetext": `${Math.round(split)}%`,
+          })}
+          ref={inputRef}
+          className={styles.input}
+        />
       </div>
-      <div
-        role="separator"
-        aria-orientation={orientation === "horizontal" ? "vertical" : "horizontal"}
-        aria-valuenow={Math.round(split)}
-        aria-valuemin={min}
-        aria-valuemax={max}
-        aria-controls={labelId}
-        tabIndex={0}
-        className={styles.splitter}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onKeyDown={handleKeyDown}
-      />
-      <div className={styles.pane} style={{ flexBasis: `${100 - split}%` }}>
-        {second}
-      </div>
+      <div className={styles.panel}>{second}</div>
     </div>
   );
-}
+});
 
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
-}
+Resizable.displayName = "Resizable";

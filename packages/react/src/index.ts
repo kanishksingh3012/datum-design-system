@@ -169,7 +169,7 @@ export { Footer } from "./components/Footer/Footer";
 export type { FooterProps, FooterOwnProps, FooterColumn, FooterLink, FooterTone } from "./components/Footer/Footer";
 
 export { Sidebar } from "./components/Sidebar/Sidebar";
-export type { SidebarProps, SidebarOwnProps } from "./components/Sidebar/Sidebar";
+export type { SidebarProps, SidebarOwnProps, SidebarLink, SidebarSection, SidebarSize, SidebarBreakpoint } from "./components/Sidebar/Sidebar";
 
 export { Breadcrumbs, BreadcrumbItem } from "./components/Breadcrumbs/Breadcrumbs";
 export type {
@@ -191,10 +191,10 @@ export { NumberField } from "./components/NumberField/NumberField";
 export type { NumberFieldProps, NumberFieldOwnProps, NumberFieldSize } from "./components/NumberField/NumberField";
 
 export { ScrollArea } from "./components/ScrollArea/ScrollArea";
-export type { ScrollAreaProps, ScrollAreaOwnProps } from "./components/ScrollArea/ScrollArea";
+export type { ScrollAreaProps, ScrollAreaOwnProps, ScrollAreaOrientation } from "./components/ScrollArea/ScrollArea";
 
 export { Resizable } from "./components/Resizable/Resizable";
-export type { ResizableProps, ResizableOwnProps } from "./components/Resizable/Resizable";
+export type { ResizableProps, ResizableOwnProps, ResizableOrientation } from "./components/Resizable/Resizable";
 
 export { Popover } from "./components/Popover/Popover";
 export type { PopoverProps, PopoverOwnProps, PopoverPlacement } from "./components/Popover/Popover";
@@ -203,7 +203,7 @@ export { HoverCard } from "./components/HoverCard/HoverCard";
 export type { HoverCardProps, HoverCardOwnProps, HoverCardPlacement } from "./components/HoverCard/HoverCard";
 
 export { FileUpload } from "./components/FileUpload/FileUpload";
-export type { FileUploadProps, FileUploadOwnProps, FileUploadErrorType } from "./components/FileUpload/FileUpload";
+export type { FileUploadProps, FileUploadOwnProps, FileUploadSize, FileUploadRejection, FileUploadRejectReason } from "./components/FileUpload/FileUpload";
 
 export { InputOTP } from "./components/InputOTP/InputOTP";
 export type { InputOTPProps, InputOTPOwnProps, InputOTPSize } from "./components/InputOTP/InputOTP";
@@ -229,7 +229,7 @@ export type {
 } from "./components/Table/Table";
 
 export { ColorPicker } from "./components/ColorPicker/ColorPicker";
-export type { ColorPickerProps, ColorPickerOwnProps } from "./components/ColorPicker/ColorPicker";
+export type { ColorPickerProps, ColorPickerOwnProps, ColorPickerSize } from "./components/ColorPicker/ColorPicker";
 
 export { DropdownMenu } from "./components/DropdownMenu/DropdownMenu";
 export type {
@@ -262,7 +262,7 @@ export { DateRangePicker } from "./components/DateRangePicker/DateRangePicker";
 export type { DateRangePickerOwnProps, DateRange } from "./components/DateRangePicker/DateRangePicker";
 
 export { Carousel } from "./components/Carousel/Carousel";
-export type { CarouselOwnProps, CarouselSlideDef } from "./components/Carousel/Carousel";
+export type { CarouselProps, CarouselOwnProps, CarouselSlide } from "./components/Carousel/Carousel";
 
 export { DataTable } from "./components/DataTable/DataTable";
 export type { DataTableOwnProps, DataTableColumn } from "./components/DataTable/DataTable";

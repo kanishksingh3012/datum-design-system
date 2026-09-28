@@ -1,11 +1,12 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Carousel } from "./Carousel";
 
 function mockMatchMedia(reduced: boolean) {
   Object.defineProperty(window, "matchMedia", {
     writable: true,
+    configurable: true,
     value: vi.fn().mockImplementation((query: string) => ({
       matches: reduced && query.includes("prefers-reduced-motion"),
       media: query,
@@ -15,56 +16,64 @@ function mockMatchMedia(reduced: boolean) {
   });
 }
 
-beforeEach(() => {
-  mockMatchMedia(false);
-  // jsdom has no real scroll layout - scrollIntoView is unimplemented.
-  Element.prototype.scrollIntoView = vi.fn();
-});
-
 const slides = [
-  { id: "a", label: "First slide", content: <p>Slide A</p> },
-  { id: "b", label: "Second slide", content: <p>Slide B</p> },
-  { id: "c", label: "Third slide", content: <p>Slide C</p> },
+  { id: "a", label: "Alpha", content: <a href="#a">Alpha link</a> },
+  { id: "b", label: "Beta", content: "Beta" },
+  { id: "c", label: "Gamma", content: "Gamma" },
 ];
 
+beforeEach(() => mockMatchMedia(false));
+afterEach(() => vi.useRealTimers());
+
 describe("Carousel", () => {
-  it("marks each slide with role=group and aria-roledescription=slide, numbered", () => {
-    render(<Carousel label="Featured products" slides={slides} />);
-    expect(screen.getByLabelText("1 of 3: First slide")).toBeInTheDocument();
-    expect(screen.getByLabelText("2 of 3: Second slide")).toBeInTheDocument();
+  it("is a labelled carousel of slides; only the current one is exposed", () => {
+    render(<Carousel label="Featured" slides={slides} />);
+    expect(screen.getByRole("region", { name: "Featured" })).toHaveAttribute("aria-roledescription", "carousel");
+    expect(screen.getByRole("group", { name: "1 of 3: Alpha" })).toBeInTheDocument();
+    expect(screen.queryByRole("group", { name: "2 of 3: Beta" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Slide 1: Alpha" })).toHaveAttribute("aria-current", "true");
   });
 
-  it("moves the active slide with the Previous/Next controls", async () => {
-    const user = userEvent.setup();
-    render(<Carousel label="Featured products" slides={slides} />);
-    const tabs = screen.getAllByRole("tab");
-    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
-    await user.click(screen.getByRole("button", { name: "Next slide" }));
-    expect(tabs[1]).toHaveAttribute("aria-selected", "true");
+  it("moves with next, previous and the slide buttons, and wraps", async () => {
+    const onValueChange = vi.fn();
+    render(<Carousel label="Featured" slides={slides} onValueChange={onValueChange} />);
+    await userEvent.click(screen.getByRole("button", { name: "Previous slide" }));
+    expect(onValueChange).toHaveBeenLastCalledWith(2);
+    await userEvent.click(screen.getByRole("button", { name: "Next slide" }));
+    expect(onValueChange).toHaveBeenLastCalledWith(0);
+    await userEvent.click(screen.getByRole("button", { name: "Slide 2: Beta" }));
+    expect(screen.getByRole("group", { name: "2 of 3: Beta" })).toBeInTheDocument();
   });
 
-  it("renders a Pause control before the slides when auto-rotation is enabled", () => {
-    render(<Carousel label="Featured products" slides={slides} autoRotateMs={3000} />);
-    expect(screen.getByRole("button", { name: "Pause" })).toBeInTheDocument();
+  it("stops at the ends without loop, and is controlled by value", () => {
+    const { rerender } = render(<Carousel label="Featured" slides={slides} loop={false} value={0} />);
+    expect(screen.getByRole("button", { name: "Previous slide" })).toBeDisabled();
+    rerender(<Carousel label="Featured" slides={slides} loop={false} value={2} />);
+    expect(screen.getByRole("button", { name: "Next slide" })).toBeDisabled();
+    expect(screen.getByRole("group", { name: "3 of 3: Gamma" })).toBeInTheDocument();
   });
 
-  it("does not auto-rotate at all when prefers-reduced-motion is set, even with autoRotateMs", () => {
+  it("autoplays with a pause button, and stops when paused", async () => {
     vi.useFakeTimers();
-    mockMatchMedia(true);
-    render(<Carousel label="Featured products" slides={slides} autoRotateMs={100} />);
-    vi.advanceTimersByTime(500);
-    const tabs = screen.getAllByRole("tab");
-    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
-    vi.useRealTimers();
+    const onValueChange = vi.fn();
+    render(<Carousel label="Featured" slides={slides} autoplay={1000} onValueChange={onValueChange} />);
+    act(() => vi.advanceTimersByTime(1000));
+    expect(onValueChange).toHaveBeenLastCalledWith(1);
+    act(() => screen.getByRole("button", { name: "Stop slide rotation" }).click());
+    // clicking focused the button, which also pauses; blur to rule that out
+    act(() => (document.activeElement as HTMLElement).blur());
+    act(() => vi.advanceTimersByTime(3000));
+    expect(onValueChange).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("button", { name: "Start slide rotation" })).toBeInTheDocument();
   });
 
-  it("pauses auto-rotation on hover via the Pause toggle reflecting aria-pressed", async () => {
-    const user = userEvent.setup();
-    render(<Carousel label="Featured products" slides={slides} autoRotateMs={3000} />);
-    const pauseButton = screen.getByRole("button", { name: "Pause" });
-    expect(pauseButton).toHaveAttribute("aria-pressed", "false");
-    await user.click(pauseButton);
-    expect(pauseButton).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("button", { name: "Play" })).toBeInTheDocument();
+  it("never autoplays under reduced motion", () => {
+    mockMatchMedia(true);
+    vi.useFakeTimers();
+    const onValueChange = vi.fn();
+    render(<Carousel label="Featured" slides={slides} autoplay={1000} onValueChange={onValueChange} />);
+    act(() => vi.advanceTimersByTime(5000));
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(screen.queryByRole("button", { name: /slide rotation/ })).not.toBeInTheDocument();
   });
 });

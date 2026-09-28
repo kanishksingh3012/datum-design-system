@@ -6,6 +6,7 @@ import {
   Dialog, DialogBody, DialogFooter, DialogHeader, DropdownMenu, Sheet, Tooltip, type DropdownMenuItem, type SheetSide,
   Breadcrumbs, BreadcrumbItem, Footer, Navbar, Pagination, Tabs, type NavbarLink, type NavbarLayout, type NavbarAppearance, type TabItem,
   ContextMenu, HoverCard, InputOTP, NumberField, Popover, Slider, type ContextMenuItem,
+  Carousel, ColorPicker, FileUpload, Resizable, ScrollArea, Sidebar, type SidebarSection,
   type CheckedState, type SelectOption, type ToastIntent, type ToastPosition,
 } from "@datum-design/react";
 import { Mail, Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2, Copy, Pencil, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline } from "lucide-react";
@@ -329,6 +330,70 @@ const sliderProps: PropRow[] = [
   ["size", "sm | md", "md", "4 / 6px rail, 16 / 20px thumb; a 44px hit area on touch."],
   ["disabled", "boolean", "false", ""],
 ];
+const scrollAreaProps: PropRow[] = [
+  ["orientation", "vertical | horizontal | both", "vertical", "Which way the content scrolls."],
+  ["maxHeight", "number | string", "—", "The largest it grows before it scrolls; or size it with style."],
+  ["label", "string", "—", "Names it as a region for screen readers."],
+];
+const resizableProps: PropRow[] = [
+  ["first / second", "ReactNode", "—", "The two panels."],
+  ["orientation", "horizontal | vertical", "horizontal", "Side by side, or stacked."],
+  ["value / defaultValue / onValueChange", "number", "50", "The first panel's share, 0–100."],
+  ["onValueCommit", "(value) => void", "—", "Once a drag or key press ends — for saving the layout."],
+  ["min / max / step", "number", "10 / 90 / 1", "Limits on the first panel, and one arrow key's move."],
+  ["handleLabel", "string", "Resize panels", "Names the handle."],
+  ["disabled", "boolean", "false", ""],
+];
+const carouselProps: PropRow[] = [
+  ["label", "string", "—", "Names the carousel."],
+  ["slides", "{ id?, label?, content }[]", "—", "Each slide's label follows “2 of 5”."],
+  ["value / defaultValue / onValueChange", "number", "0", "The index of the slide shown."],
+  ["autoplay", "number (ms)", "—", "Advances on its own, with a pause button; never under reduced motion."],
+  ["loop", "boolean", "true", "Wraps from the last slide to the first."],
+];
+const colorPickerProps: PropRow[] = [
+  ["label / helpText / errorText", "string", "—", "As every field."],
+  ["value / defaultValue / onValueChange", "string", "#000000", "Any CSS color in; a 6-digit hex out."],
+  ["swatches", "string[]", "—", "Preset colors under the picker."],
+  ["open / defaultOpen / onOpenChange", "boolean", "false", "The panel."],
+  ["size", "sm | md | lg", "md", "32 / 40 / 48px trigger."],
+  ["placement", "Popover placements", "bottom-start", ""],
+  ["disabled / readOnly / required / name", "boolean / string", "—", "As every field; name submits the hex."],
+];
+const fileUploadProps: PropRow[] = [
+  ["label / helpText / errorText", "string", "—", "As every field; a turned-away file shows its reason as the error."],
+  ["value / defaultValue / onValueChange", "File[]", "[]", "The chosen files."],
+  ["onReject", "(rejections) => void", "—", "Files turned away, each with a reason: type, size or count."],
+  ["accept", "string", "—", "As a native file input: \"image/*,.pdf\"."],
+  ["multiple / maxFiles / maxSize", "boolean / number / bytes", "false", "With multiple, new files are added to the list."],
+  ["hint", "string", "—", "A short line under the prompt."],
+  ["size", "sm | md", "md", "A tall drop area, or one row."],
+  ["disabled / required / name", "boolean / string", "—", "As every field."],
+];
+const sidebarProps: PropRow[] = [
+  ["sections", "{ title?, links }[]", "—", "Links: label, href, icon, badge, active."],
+  ["activeHref", "string", "—", "The link holding it gets aria-current=\"page\"."],
+  ["label", "string", "Sidebar", "Names the navigation and the mobile menu."],
+  ["header / footer", "ReactNode", "—", "A logo, an account row. The header stays in the mobile bar."],
+  ["size", "sm | md", "md", "240 / 288px wide."],
+  ["mobileBreakpoint", "sm | md | lg", "md", "Below it: a bar with a menu button that opens a Sheet."],
+  ["open / defaultOpen / onOpenChange", "boolean", "false", "The mobile menu."],
+];
+const sidebarSections: SidebarSection[] = [
+  { links: [{ label: "Home", href: "#sidebar" }, { label: "Inbox", href: "#inbox", badge: 12 }, { label: "Search", href: "#search" }] },
+  { title: "Projects", links: [{ label: "Datum", href: "#datum" }, { label: "Website", href: "#website" }] },
+];
+const demoSlide = (title: string, accent = false) => (
+  <div style={{ padding: "var(--space-section)", minHeight: 140, background: accent ? "var(--color-bg-accentSubtle)" : "var(--color-bg-surface)" }}>
+    <h3 style={{ margin: 0 }}>{title}</h3>
+    <Text tone="secondary">Swipe, or use the buttons below.</Text>
+  </div>
+);
+const demoSlides = [
+  { label: "Launch", content: demoSlide("Datum 2 is out", true) },
+  { label: "Themes", content: demoSlide("Two themes, four combos") },
+  { label: "Forms", content: demoSlide("Forms that read the same") },
+];
 const otpProps: PropRow[] = [
   ["label / helpText / errorText", "string", "—", "As every field; the cells form a group named by the label."],
   ["length", "number", "6", "Number of digits."],
@@ -543,6 +608,8 @@ export function App() {
         <a href="#stack">Stack</a>
         <a href="#grid">Grid</a>
         <a href="#section">Section</a>
+        <a href="#scroll-area">Scroll Area</a>
+        <a href="#resizable">Resizable</a>
         <a href="#heading">Heading</a>
         <a href="#text">Text</a>
         <a href="#card">Card</a>
@@ -550,6 +617,7 @@ export function App() {
         <a href="#avatar">Avatar</a>
         <a href="#separator">Separator</a>
         <a href="#accordion">Accordion</a>
+        <a href="#carousel">Carousel</a>
         <a href="#alert">Alert</a>
         <a href="#toast">Toast</a>
         <a href="#spinner">Spinner</a>
@@ -565,6 +633,8 @@ export function App() {
         <a href="#number-field">Number Field</a>
         <a href="#slider">Slider</a>
         <a href="#input-otp">Input OTP</a>
+        <a href="#color-picker">Color Picker</a>
+        <a href="#file-upload">File Upload</a>
         <a href="#dialog">Dialog</a>
         <a href="#sheet">Sheet</a>
         <a href="#dropdown-menu">Dropdown Menu</a>
@@ -577,6 +647,7 @@ export function App() {
         <a href="#pagination">Pagination</a>
         <a href="#footer">Footer</a>
         <a href="#navbar">Navbar</a>
+        <a href="#sidebar">Sidebar</a>
       </nav>
       <Toaster position={toastPosition} />
 
@@ -1205,6 +1276,82 @@ export function App() {
         </div>
       </section>
 
+
+      {/* ============ SCROLL AREA ============ */}
+      <section className="component-doc" id="scroll-area">
+        <h1>Scroll Area</h1>
+        <p className="dek">Native scrolling with thin <b>border.strong</b> scrollbars. While its content overflows it is a tab stop, so keyboard users can focus it and scroll with the arrow keys; <b>label</b> names it as a region.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <ScrollArea label="Release notes" maxHeight={180} style={{ maxWidth: 360, margin: "0 auto" }}>
+            {Array.from({ length: 12 }, (_, i) => <Text key={i}>{`Release 2.${12 - i}: fixes and small improvements.`}</Text>)}
+          </ScrollArea>
+        </div>
+
+        <div className="doc-section">
+          <h2>Orientation</h2>
+          <p className="lead"><b>vertical</b> (default), <b>horizontal</b> or <b>both</b>.</p>
+          <div className="sample-box demo-on-page">
+            <ScrollArea orientation="horizontal" label="Wide line" style={{ maxWidth: 360 }}>
+              <Text style={{ whiteSpace: "nowrap" }}>A single line far too long for its box, so the area scrolls sideways instead of wrapping it.</Text>
+            </ScrollArea>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={scrollAreaProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Give a scrolling region a label when it holds more than a list.", "Size it with maxHeight or the layout around it."]}
+            donts={["Nest scroll areas that scroll the same way.", "Hide the only copy of important content in a small scroll box."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ RESIZABLE ============ */}
+      <section className="component-doc" id="resizable">
+        <h1>Resizable</h1>
+        <p className="dek">Two panels with a handle between them. The handle is a slider thumb on React Aria's <span className='prop-values'>useSlider</span>: drag it, or focus it and use the arrow keys, Home and End. The line is 1px; its grab area is 44px.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Resizable
+            first={<div style={{ padding: "var(--space-default)" }}><Text>Files</Text></div>}
+            second={<div style={{ padding: "var(--space-default)" }}><Text>Editor</Text></div>}
+            defaultValue={30}
+            style={{ height: 200, border: "1px solid var(--color-border-subtle)", borderRadius: "var(--radius-card)" }}
+          />
+        </div>
+
+        <div className="doc-section">
+          <h2>Vertical</h2>
+          <p className="lead"><b>vertical</b> stacks the panels; ArrowDown grows the top one.</p>
+          <div className="sample-box demo-on-page">
+            <Resizable
+              orientation="vertical"
+              first={<div style={{ padding: "var(--space-default)" }}><Text>Preview</Text></div>}
+              second={<div style={{ padding: "var(--space-default)" }}><Text>Console</Text></div>}
+              style={{ height: 240, border: "1px solid var(--color-border-subtle)", borderRadius: "var(--radius-card)" }}
+            />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={resizableProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Set min and max so neither panel can vanish.", "Save the layout from onValueCommit."]}
+            donts={["Use it where a fixed layout would do.", "Put a resizable inside a resizable that moves the same way."]}
+          />
+        </div>
+      </section>
       {/* ============ HEADING ============ */}
       <section className="component-doc" id="heading">
         <h1>Heading</h1>
@@ -1640,6 +1787,37 @@ export function App() {
         </div>
       </section>
 
+
+      {/* ============ CAROUSEL ============ */}
+      <section className="component-doc" id="carousel">
+        <h1>Carousel</h1>
+        <p className="dek">One slide at a time with previous, next and slide buttons — the APG carousel. Slides move by transform, can be swiped, and hidden slides are inert. <b>autoplay</b> adds a pause button, pauses on hover and focus, and never runs under reduced motion.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Carousel label="Featured" slides={demoSlides} style={{ maxWidth: 520, margin: "0 auto" }} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Autoplay</h2>
+          <p className="lead">Rotation is opt-in. The pause button comes first in the tab order.</p>
+          <div className="sample-box demo-on-page">
+            <Carousel label="Announcements" slides={demoSlides} autoplay={5000} style={{ maxWidth: 520 }} />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={carouselProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Give each slide a label.", "Keep every slide reachable some other way."]}
+            donts={["Autoplay slides people need to read.", "Put the key message only on a later slide."]}
+          />
+        </div>
+      </section>
       {/* ============ ALERT ============ */}
       <section className="component-doc" id="alert">
         <h1>Alert</h1>
@@ -2426,6 +2604,72 @@ export function App() {
         </div>
       </section>
 
+
+      {/* ============ COLOR PICKER ============ */}
+      <section className="component-doc" id="color-picker">
+        <h1>Color Picker</h1>
+        <p className="dek">A field whose trigger shows the color and its hex value. It opens a panel with a saturation × brightness area, a hue slider, a hex field and optional swatches, on React Aria's color hooks. The colors are the user's data, so they are set inline; everything around them is tokens.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <ColorPicker label="Brand color" defaultValue="#FC6E20" swatches={["#FC6E20", "#355695", "#007440", "#D52F4A", "#F1C035", "#1B1B1B"]} style={{ margin: "0 auto" }} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Sizes and states</h2>
+          <p className="lead">32 / 40 / 48px triggers, like the other fields.</p>
+          <div className="sample-box demo-on-page">
+            <div className="form-grid">
+              <ColorPicker label="Size sm" size="sm" defaultValue="#355695" />
+              <ColorPicker label="Invalid" defaultValue="#F1C035" errorText="Too light for text on white." />
+              <ColorPicker label="Disabled" defaultValue="#007440" disabled />
+            </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={colorPickerProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Offer swatches for the colors people use most.", "Say what the color is used for in helpText."]}
+            donts={["Use it to pick from a few fixed options — use Radio cards.", "Rely on the color alone to carry meaning."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ FILE UPLOAD ============ */}
+      <section className="component-doc" id="file-upload">
+        <h1>File Upload</h1>
+        <p className="dek">A drop area with a Choose files button, and the chosen files listed with a remove button each. Dropping runs on React Aria's <span className='prop-values'>useDrop</span>; the button opens the native dialog, so nobody has to drag. Files that break <b>accept</b>, <b>maxSize</b> or <b>maxFiles</b> are turned away with a message.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <FileUpload label="Attachments" multiple maxSize={5_000_000} hint="Up to 5 MB each." style={{ margin: "0 auto" }} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Compact</h2>
+          <p className="lead"><b>size='sm'</b> is one row, for forms.</p>
+          <div className="sample-box demo-on-page">
+            <FileUpload label="Resume" size="sm" accept=".pdf" hint="PDF only." />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={fileUploadProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Say what is accepted in hint.", "Handle onReject if you need more than the built-in message."]}
+            donts={["Make dragging the only way in.", "Upload before the person has chosen to."]}
+          />
+        </div>
+      </section>
       {/* ============ DIALOG ============ */}
       <section className="component-doc" id="dialog">
         <h1>Dialog</h1>
@@ -2980,6 +3224,29 @@ export function App() {
           <Usage
             dos={["Keep five to seven top-level links.", "Use one accent action; the rest ghost.", "Set maxWidth to match the page's Container."]}
             donts={["Use transparent where the hero behind it can't hold the text's contrast.", "Nest menus inside menus.", "Use hideOnScroll on a short page."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ SIDEBAR ============ */}
+      <section className="component-doc" id="sidebar">
+        <h1>Sidebar</h1>
+        <p className="dek">App navigation down the side of a page: grouped links with the current page marked, a header and a footer. Below <b>mobileBreakpoint</b> it folds into a bar with a menu button that opens the same links in a Sheet, like the Navbar.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Sidebar sections={sidebarSections} activeHref="#inbox" label="Workspace" header={<b>Acme Inc.</b>} footer={<Text>Ada Lovelace</Text>} style={{ height: 420, margin: "0 auto" }} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={sidebarProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Group links under short titles.", "Keep the header in the bar on small screens."]}
+            donts={["Nest more than one level.", "Use it for a marketing site — use a Navbar."]}
           />
         </div>
       </section>

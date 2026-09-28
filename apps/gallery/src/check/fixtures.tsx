@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { UNSAFE_PortalProvider } from "react-aria";
 import {
   Accordion, AccordionItem, Alert, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader,
@@ -7,8 +7,9 @@ import {
   Dialog, DialogBody, DialogFooter, DialogHeader, DropdownMenu, Sheet, Tooltip, type DropdownMenuItem,
   Breadcrumbs, BreadcrumbItem, Footer, Navbar, Pagination, Tabs, type NavbarLink, type TabItem,
   ContextMenu, HoverCard, InputOTP, NumberField, Popover, Slider, type ContextMenuItem,
+  Carousel, ColorPicker, FileUpload, Resizable, ScrollArea, Sidebar, type CarouselSlide, type SidebarSection,
 } from "@datum-design/react";
-import { AlignCenter, AlignLeft, AlignRight, Copy, Mail, Pencil, Plus, Search, Star, Trash2 } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, Copy, FolderOpen, Home, Inbox, Mail, Pencil, Plus, Search, Settings, Star, Trash2 } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
 const appearances = ["solid", "soft", "outline", "ghost"] as const;
@@ -171,6 +172,64 @@ function SegmentedFields() {
       </Field>
     </>
   );
+}
+
+const sidebarSections: SidebarSection[] = [
+  { links: [
+    { label: "Home", href: "/", icon: <Home /> },
+    { label: "Inbox", href: "/inbox", icon: <Inbox />, badge: 12 },
+    { label: "Search", href: "/search", icon: <Search /> },
+  ] },
+  { title: "Projects", links: [
+    { label: "Datum", href: "/p/datum", icon: <FolderOpen />, badge: "New" },
+    { label: "Website", href: "/p/website", icon: <FolderOpen /> },
+  ] },
+  { title: "Account", links: [{ label: "Settings", href: "/settings", icon: <Settings /> }] },
+];
+const sidebar = (props: Partial<Parameters<typeof Sidebar>[0]> = {}) => (
+  <Sidebar
+    sections={sidebarSections}
+    activeHref="/inbox"
+    label="Workspace"
+    header={<Text variant="label">Acme Inc.</Text>}
+    footer={<div className="row"><Avatar name="Ada Lovelace" size="sm" /><Text variant="body-sm">Ada Lovelace</Text></div>}
+    style={{ height: 560 }}
+    {...props}
+  />
+);
+const lines = (n: number, prefix: string) =>
+  Array.from({ length: n }, (_, i) => <Text key={i} style={{ whiteSpace: "nowrap" }}>{`${prefix} ${i + 1}: a line long enough to need room in a narrow box.`}</Text>);
+const panel = (text: string) => (
+  <div style={{ ...box, height: "100%", boxSizing: "border-box", padding: "var(--space-default)" }}>
+    <Text>{text}</Text>
+  </div>
+);
+const slide = (title: string, tone: "surface" | "accent") => (
+  <div style={{ padding: "var(--space-section)", minHeight: 160, background: tone === "accent" ? "var(--color-bg-accentSubtle)" : "var(--color-bg-surface)" }}>
+    <Heading level={3} size="md">{title}</Heading>
+    <Text tone="secondary">A slide with a heading, a line of text and <Link href="#slide">a link</Link>.</Text>
+  </div>
+);
+const slides: CarouselSlide[] = [
+  { label: "Launch", content: slide("Datum 2 is out", "accent") },
+  { label: "Themes", content: slide("Two themes, four combos", "surface") },
+  { label: "Forms", content: slide("Forms that read the same", "surface") },
+];
+const swatchColors = ["#FC6E20", "#355695", "#007440", "#D52F4A", "#F1C035", "#1B1B1B", "#FFFFFF"];
+const demoFile = (name: string, size: number, type: string) => new File([new Uint8Array(size)], name, { type, lastModified: 0 });
+/** Starts a file drag over the drop area, so its dragging state can be measured. */
+function Dragging({ children }: { children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const zone = ref.current?.querySelector(`[data-drop-target], [data-size="md"], [data-size="sm"]:not(button)`);
+    if (!zone) return;
+    // a script-made DataTransfer can't allow any drop effect outside a real drag, so this stands in for one
+    const dataTransfer = { types: ["Files"], items: [{ kind: "file", type: "image/png" }], files: [], effectAllowed: "copy", dropEffect: "none" };
+    const event = new DragEvent("dragenter", { bubbles: true, cancelable: true });
+    Object.defineProperty(event, "dataTransfer", { value: dataTransfer });
+    zone.dispatchEvent(event);
+  }, []);
+  return <div ref={ref}>{children}</div>;
 }
 
 type Fixture = ((props: { variant?: number }) => ReactNode) & { variants?: string[] };
@@ -892,4 +951,91 @@ export const fixtures: Record<string, Fixture> = {
       </div>
     </>
   ),
+  Sidebar: states(["layouts", "mobile menu", "mobile menu open"], (v) =>
+    v === "layouts" ? (
+      <div className="row" style={{ alignItems: "stretch" }}>
+        {sidebar()}
+        {sidebar({ size: "sm", header: undefined, footer: undefined, activeHref: "/p/datum" })}
+      </div>
+    ) : v === "mobile menu" ? (
+      // the collapsed bar and its menu trigger only exist below the breakpoint — their one real coverage
+      sidebar({ style: undefined })
+    ) : (
+      // an open Sheet traps focus, so it gets its own state; its contents are Sheet's coverage
+      <div data-check-skip="">{sidebar({ style: undefined, defaultOpen: true })}</div>
+    ), true),
+  ScrollArea: () => (
+    <div className="row" data-check-text="deep" style={{ alignItems: "flex-start" }}>
+      <ScrollArea label="Vertical" maxHeight={200} style={{ ...box, width: 280, borderRadius: "var(--radius-card)" }}>{lines(12, "Row")}</ScrollArea>
+      <ScrollArea label="Horizontal" orientation="horizontal" style={{ ...box, width: 280, borderRadius: "var(--radius-card)" }}>{lines(3, "Wide row")}</ScrollArea>
+      <ScrollArea label="Both ways" orientation="both" maxHeight={200} style={{ ...box, width: 280, borderRadius: "var(--radius-card)" }}>{lines(12, "Cell")}</ScrollArea>
+    </div>
+  ),
+  Resizable: () => (
+    <div data-check-text="deep" style={{ display: "grid", gap: "var(--space-section)", maxWidth: 720 }}>
+      {(["horizontal", "vertical"] as const).map((orientation) => (
+        <Resizable
+          key={orientation}
+          orientation={orientation}
+          first={panel(`${cap(orientation)}: first panel`)}
+          second={panel("Second panel")}
+          defaultValue={35}
+          style={{ height: 200, border: "1px solid var(--color-border-subtle)", borderRadius: "var(--radius-card)" }}
+        />
+      ))}
+      <Resizable
+        disabled
+        first={panel("Disabled: first panel")}
+        second={panel("Second panel")}
+        style={{ height: 120, border: "1px solid var(--color-border-subtle)", borderRadius: "var(--radius-card)" }}
+      />
+    </div>
+  ),
+  Carousel: () => (
+    <div data-check-text="deep" style={{ display: "grid", gap: "var(--space-section)", maxWidth: 560 }}>
+      <Carousel label="Featured" slides={slides} />
+      <Carousel label="Autoplay" slides={slides} autoplay={600000} defaultValue={1} />
+      <Carousel label="Last slide, no loop" slides={slides} loop={false} defaultValue={2} />
+    </div>
+  ),
+  ColorPicker: states(["closed", "open"], (v) =>
+    v === "closed" ? (
+      <>
+        {sizes.map((size) => (
+          <ColorPicker key={size} size={size} label={`Brand ${size}`} defaultValue="#FC6E20" helpText="Used for primary buttons." />
+        ))}
+        <ColorPicker label="Invalid" defaultValue="#F1C035" errorText="Too light for text on white." />
+        <ColorPicker label="Read-only" defaultValue="#355695" readOnly />
+        <ColorPicker label="Disabled" defaultValue="#007440" disabled />
+        <div style={box}><ColorPicker label="On a surface" defaultValue="#D52F4A" /></div>
+      </>
+    ) : (
+      // the trigger is measured closed; while the panel is open it holds focus
+      <div data-check-skip=""><ColorPicker label="Brand" defaultValue="#FC6E20" swatches={swatchColors} defaultOpen /></div>
+    ), true),
+  FileUpload: states(["empty", "dragging", "has files", "error", "disabled"], (v) =>
+    v === "dragging" ? (
+      <Dragging><FileUpload label="Photos" multiple accept="image/*" hint="PNG or JPG, up to 5 MB." /></Dragging>
+    ) : v === "has files" ? (
+      <>
+        <FileUpload label="Attachments" multiple defaultValue={[demoFile("brief.pdf", 248000, "application/pdf"), demoFile("moodboard-final-v3.png", 3400000, "image/png")]} helpText="Up to 10 files." />
+        <FileUpload label="Resume" size="sm" defaultValue={[demoFile("ada-lovelace-cv.pdf", 92000, "application/pdf")]} />
+      </>
+    ) : v === "error" ? (
+      <>
+        <FileUpload label="Photos" multiple required errorText="“scan.tiff” isn’t an accepted file type." hint="PNG or JPG, up to 5 MB." />
+        <FileUpload label="Resume" size="sm" errorText="Upload failed. Try again." />
+      </>
+    ) : v === "disabled" ? (
+      <>
+        <FileUpload label="Photos" multiple disabled hint="PNG or JPG, up to 5 MB." />
+        <FileUpload label="Resume" size="sm" disabled defaultValue={[demoFile("ada-lovelace-cv.pdf", 92000, "application/pdf")]} />
+      </>
+    ) : (
+      <>
+        <FileUpload label="Photos" multiple accept="image/*" hint="PNG or JPG, up to 5 MB." helpText="They stay private until you share them." />
+        <FileUpload label="Resume" size="sm" accept=".pdf" hint="PDF only." />
+        <div style={box}><FileUpload label="On a surface" size="sm" /></div>
+      </>
+    ), true),
 };

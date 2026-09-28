@@ -42,6 +42,26 @@ describe("HoverCard", () => {
     expect(onOpenChange).toHaveBeenLastCalledWith(false);
   });
 
+  it("stays open while keyboard focus is inside the card, and Tab past it moves on", async () => {
+    render(
+      <>
+        <HoverCard trigger={<a href="/ada">@ada</a>} openDelay={10} closeDelay={10}>
+          <a href="/profile">View profile</a>
+        </HoverCard>
+        <a href="/next">Next</a>
+      </>
+    );
+    await userEvent.tab();
+    await screen.findByRole("link", { name: "View profile" });
+    await userEvent.tab();
+    expect(screen.getByRole("link", { name: "View profile" })).toHaveFocus();
+    await new Promise((r) => setTimeout(r, 40));
+    expect(screen.getByRole("link", { name: "View profile" })).toBeInTheDocument();
+    await userEvent.tab();
+    expect(screen.getByRole("link", { name: "Next" })).toHaveFocus();
+    await waitFor(() => expect(screen.queryByRole("link", { name: "View profile" })).not.toBeInTheDocument());
+  });
+
   it("is controlled by open, with className and props on the card", () => {
     const { rerender } = render(card({ open: false }));
     expect(screen.queryByText(/first programmer/)).not.toBeInTheDocument();
