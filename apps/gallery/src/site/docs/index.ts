@@ -40,4 +40,12 @@ export const docPages: Record<string, ComponentType> = {
   "tag-input": lazy(() => import("./TagInput")),
   "date-picker": lazy(() => import("./DatePicker")),
   "date-range-picker": lazy(() => import("./DateRangePicker")),
+  "dialog": lazy(() => import("./Dialog")),
+  "sheet": lazy(() => import("./Sheet")),
+  "dropdown-menu": lazy(() => import("./DropdownMenu")),
+  "tooltip": lazy(() => import("./Tooltip")),
+  "popover": lazy(() => import("./Popover")),
+  "hover-card": lazy(() => import("./HoverCard")),
+  "context-menu": lazy(() => import("./ContextMenu")),
+  "command-palette": lazy(() => import("./CommandPalette")),
 };
