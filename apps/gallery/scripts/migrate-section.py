@@ -101,10 +101,11 @@ def code_only(s):
         if ch == "{": depth += 1
         elif ch == "}": depth -= 1
         elif depth > 0: buf.append(ch)
+        if ch == "}": buf.append(" ")
     return "".join(buf) + " " + " ".join(re.findall(r"</?([A-Z]\w*)", s))
 scan(code_only(jsx))
 
-allsrc = code_only(jsx) + "\n".join(decls[d] for d in used_decls) + "\n".join(used_state)
+allsrc = "\n".join([code_only(jsx), *(decls[d] for d in used_decls), *used_state])
 toks = set(idre.findall(allsrc))
 react = sorted({"useState", "useRef", "useEffect", "Fragment"} & toks)
 imp = []

@@ -4,10 +4,13 @@ Handoff for the next chat. Read this file only.
 
 ## Milestones
 - [x] M1 — shell + deploy config: `20aae2e`
-- [x] M2 — doc page pattern + Actions: commit "Docs site M2" (hash recorded in the next commit)
+- [x] M2 — doc page pattern + Actions: b3e36c5
 - [ ] M3 — migrate remaining categories
 - [ ] M4 — Getting started + Theming
 - [ ] M5 — retire old single page
+
+## M3 commits
+- Layout: see `git log --grep 'M3: Layout'`
 
 ## Layout of the site
 - `apps/gallery/src/main.tsx`: BrowserRouter. `/`, `/docs`, `/docs/theming`, `/docs/components/:slug`, `/blocks`; the old one-page gallery is kept at `/gallery` until M5.
@@ -16,8 +19,8 @@ Handoff for the next chat. Read this file only.
 - `vercel.json` (repo root): builds styles → react → gallery, output `apps/gallery/dist`, SPA rewrite (excludes `assets/`, `check.html`, `review.html`).
 
 ## Categories
-Migrated: Actions (Button incl. icon-only/toggle/FAB, ButtonGroup, Link).
-Left: Layout, Typography, Content, Feedback, Forms, Overlays, Navigation, Data, AI.
+Migrated: Actions (Button incl. icon-only/toggle/FAB, ButtonGroup, Link), Layout.
+Left: Typography, Content, Feedback, Forms, Overlays, Navigation, Data, AI.
 
 ## Next step
 M3, one category per commit, in order: Layout, Typography, Content, Feedback, Forms, Overlays, Navigation, Data, AI.
@@ -35,3 +38,4 @@ A doc file keeps the legacy markup (`section.component-doc`, `h1`, `p.dek`, `.do
 - Root `npm run build` builds only styles + react; build the site with `npm run build -w @datum-design/gallery`.
 - Gallery has no tsconfig, so there's no typecheck; Vite only transpiles. Check pages in the browser.
 - Switch takes `label` + `defaultChecked` (not children/defaultSelected).
+- migrate-section.py overwrites the doc file, so re-running it drops hand-added A11y notes. Don't re-run on a finished page.
