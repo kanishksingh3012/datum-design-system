@@ -48,4 +48,10 @@ export const docPages: Record<string, ComponentType> = {
   "hover-card": lazy(() => import("./HoverCard")),
   "context-menu": lazy(() => import("./ContextMenu")),
   "command-palette": lazy(() => import("./CommandPalette")),
+  "tabs": lazy(() => import("./Tabs")),
+  "breadcrumbs": lazy(() => import("./Breadcrumbs")),
+  "pagination": lazy(() => import("./Pagination")),
+  "footer": lazy(() => import("./Footer")),
+  "navbar": lazy(() => import("./Navbar")),
+  "sidebar": lazy(() => import("./Sidebar")),
 };
