@@ -5,8 +5,8 @@ Handoff for the next chat. Read this file only.
 ## Milestones
 - [x] M1 — shell + deploy config: `20aae2e`
 - [x] M2 — doc page pattern + Actions: b3e36c5
-- [ ] M3 — migrate remaining categories
-- [ ] M4 — Getting started + Theming
+- [x] M3 — migrate remaining categories (commits below; AI: `07eb8dd`)
+- [x] M4 — Getting started + Theming: commit "Docs site M4"
 - [ ] M5 — retire old single page
 
 ## M3 commits
@@ -31,12 +31,12 @@ Migrated: Actions (Button incl. icon-only/toggle/FAB, ButtonGroup, Link), Layout
 Left: none.
 
 ## Next step
-M3, one category per commit, in order: Layout, Typography, Content, Feedback, Forms, Overlays, Navigation, Data, AI.
-For each component: find its line range with `grep -n "/\* ====" apps/gallery/src/App.tsx`, then from `apps/gallery`:
-`python3 scripts/migrate-section.py <Name> <slug> App.tsx <start>:<end>` (slug = `slugify` in nav.ts, e.g. `field-label`, `scroll-area`).
-It copies the section, turns sample-box/example-box into `<Demo>`, pulls in imports, top-level consts and useState lines, and registers the page in `docs/index.ts`.
-Then add `<A11y items={[...]} />` before the last `</section>` (import it from ./kit), build, and eyeball one page.
-Forms pickers (Combobox, TagInput, DatePicker, DateRangePicker) and CommandPalette live in PickersSection.tsx; Table/DataTable in DataSection.tsx; AI in AiSection.tsx: pass that file as <src>.
+M5: retire the old single page. Every component has a routed page (66 slugs, checked against component-plan.json).
+1. Remove the `/gallery` route and `App` import from `apps/gallery/src/main.tsx`.
+2. Delete `apps/gallery/src/App.tsx`, `AiSection.tsx`, `DataSection.tsx`, `PickersSection.tsx` and `apps/gallery/scripts/` (check.html / review.html don't import them: confirm with grep first).
+3. In `pages.tsx`, drop the "legacy gallery" sentence from the coming-soon fallback.
+4. Drop the dead `.doc`, `.doc-nav`, `.theme-switch`, `.switches` rules from `gallery.css` (grep before removing; docs pages still use `.component-doc`, `.doc-section`, `.sample-box`, `.example-box`, `.props-table`, `.usage-grid`).
+5. `npm run build -w @datum-design/gallery`, then `npm test` once. Commit, push.
 
 ## Doc file shape (M2)
 `src/site/docs/kit.tsx`: `Demo` (Preview/Code Tabs; code is generated from the JSX children by `toJsx`, shown in `CodeBlock copyable`), `PropsTable`, `Usage`, `A11y`.
@@ -47,3 +47,6 @@ A doc file keeps the legacy markup (`section.component-doc`, `h1`, `p.dek`, `.do
 - Gallery has no tsconfig, so there's no typecheck; Vite only transpiles. Check pages in the browser.
 - Switch takes `label` + `defaultChecked` (not children/defaultSelected).
 - migrate-section.py overwrites the doc file, so re-running it drops hand-added A11y notes. Don't re-run on a finished page.
+- Conflict in the sources: DESIGN.md says orange's accent fill is orange-700 with white text; packages/styles/README.md says orange's accent carries dark text (#1B1B1B on #FC6E20). The Theming page avoids both and points at `text.onAccent`. Someone should reconcile the two docs.
+- packages/react/README.md says 61 components and "real HTML element instead of an ARIA-role div"; the plan lists 66 and many are React Aria based. The Getting Started page doesn't repeat either claim.
+- AI pages were split from one AiSection: each keeps a local `Part` helper that renders the page header, Demo, props and A11y.
