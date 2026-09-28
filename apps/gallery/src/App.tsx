@@ -3,6 +3,7 @@ import {
   Accordion, AccordionItem, Alert, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CardMedia,
   Checkbox, CheckboxGroup, Container, Field, Grid, Heading, Label, Link, ProgressBar, Radio, RadioGroup, Section, Select, Separator,
   Skeleton, Spinner, Stack, Switch, Text, TextField, Textarea, Toaster, toast,
+  Dialog, DialogBody, DialogFooter, DialogHeader, DropdownMenu, Sheet, Tooltip, type DropdownMenuItem, type SheetSide,
   type CheckedState, type SelectOption, type ToastIntent, type ToastPosition,
 } from "@datum-design/react";
 import { Mail, Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline } from "lucide-react";
@@ -253,6 +254,65 @@ const roles: SelectOption[] = [
   { value: "editor", label: "Editor", description: "Can change content" },
   { value: "admin", label: "Admin", description: "Can manage members and billing" },
 ];
+const openStateRows: PropRow[] = [
+  ["open", "boolean", "—", "Controlled open state. Pair with onOpenChange."],
+  ["defaultOpen", "boolean", "false", "Uncontrolled starting state."],
+  ["onOpenChange", "(open) => void", "—", "Called on every open and close, from any cause."],
+];
+const dialogProps: PropRow[] = [
+  ["trigger", "ReactElement", "—", "Element that opens it, usually a Button. Optional: without one, drive open yourself. Focus returns to it on close."],
+  ...openStateRows,
+  ["size", "sm | md | lg | full", "md", "400 / 560 / 720px wide, or the whole viewport (square corners, like any full-bleed band)."],
+  ["role", "dialog | alertdialog", "dialog", "alertdialog for destructive confirmations."],
+  ["dismissible", "boolean", "true", "Escape, a click on the scrim, and DialogHeader's close button."],
+  ["children", "slots | (close) => ReactNode", "—", "DialogHeader (title + description), DialogBody, DialogFooter."],
+];
+const sheetProps: PropRow[] = [
+  ["trigger", "ReactElement", "—", "As Dialog."],
+  ...openStateRows,
+  ["side", "top | right | bottom | left", "right", "The edge it slides in from. The edge facing the page is rounded; the viewport edges are square."],
+  ["size", "sm | md | lg", "md", "320 / 420 / 560px — width from the sides, height from the top or bottom. Always leaves a strip of scrim."],
+  ["children", "slots | (close) => ReactNode", "—", "The same slots as Dialog. Always dismissible."],
+];
+const menuProps: PropRow[] = [
+  ["trigger", "ReactElement", "—", "Required. The element that opens the menu, usually a Button."],
+  ["items", "DropdownMenuItem[]", "—", "Actions, checkbox and radio items, separators and labelled sections."],
+  ["placement", "bottom-start | bottom-end | top-start | top-end", "bottom-start", "Flips when there is no room."],
+  ["size", "sm | md", "md", "32 / 40px items; both grow to 44px on touch screens."],
+  ...openStateRows,
+];
+const tooltipProps: PropRow[] = [
+  ["content", "string", "—", "Plain text only. A tooltip is never interactive."],
+  ["children", "ReactElement", "—", "The focusable element it describes."],
+  ["placement", "top | right | bottom | left", "top", "Flips when there is no room."],
+  ["delay", "number (ms)", "500", "Hover delay. Keyboard focus shows it at once."],
+  ...openStateRows,
+];
+const sheetSides: SheetSide[] = ["right", "left", "top", "bottom"];
+const moreIcon = <MoreHorizontal />;
+
+function MenuDemo({ size = "md" as const }: { size?: "sm" | "md" }) {
+  const [grid, setGrid] = useState(true);
+  const [rulers, setRulers] = useState(false);
+  const [sort, setSort] = useState("name");
+  const items: DropdownMenuItem[] = [
+    { label: "Edit", shortcut: "⌘E" },
+    { label: "Duplicate", shortcut: "⌘D" },
+    { label: "Archive", disabled: true },
+    { type: "separator" },
+    { type: "checkbox", label: "Show grid", checked: grid, onCheckedChange: setGrid },
+    { type: "checkbox", label: "Show rulers", checked: rulers, onCheckedChange: setRulers },
+    {
+      type: "section",
+      label: "Sort by",
+      items: ["name", "date", "size"].map((k) => ({ type: "radio" as const, id: k, label: k[0].toUpperCase() + k.slice(1), checked: sort === k, onSelect: () => setSort(k) })),
+    },
+    { type: "separator" },
+    { label: "Delete", intent: "danger", icon: <Trash2 />, shortcut: "⌫" },
+  ];
+  return <DropdownMenu size={size} trigger={<Button intent="neutral" appearance="outline" suffix={moreIcon}>{size === "sm" ? "Small" : "Options"}</Button>} items={items} />;
+}
+
 const toppingOptions = [["cheese", "Cheese"], ["olives", "Olives"], ["basil", "Basil"]] as const;
 
 function PropsTable({ rows }: { rows: PropRow[] }) {
@@ -366,6 +426,10 @@ export function App() {
         <a href="#radio">Radio</a>
         <a href="#switch">Switch</a>
         <a href="#select">Select</a>
+        <a href="#dialog">Dialog</a>
+        <a href="#sheet">Sheet</a>
+        <a href="#dropdown-menu">Dropdown Menu</a>
+        <a href="#tooltip">Tooltip</a>
       </nav>
       <Toaster position={toastPosition} />
 
@@ -2077,6 +2141,214 @@ export function App() {
           <Usage
             dos={["Use for 7 or more options, or when space is tight.", "Order options in a way people expect — alphabetical, or most used first."]}
             donts={["Use a Select for 2–5 options people should compare — use a RadioGroup.", "Make people scroll a long list to find one item — a searchable list is a Combobox."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ DIALOG ============ */}
+      <section className="component-doc" id="dialog">
+        <h1>Dialog</h1>
+        <p className="dek">
+          A focused task that blocks the page. Built on React Aria's hooks: focus moves in and is trapped, the page behind is
+          hidden from assistive tech and can't scroll, Escape closes it, and focus returns to whatever opened it. The title in{" "}
+          <span className="prop-values">DialogHeader</span> is the accessible name; its description is linked too.
+        </p>
+
+        <div className="example-box">
+          <Dialog trigger={<Button>Edit project</Button>}>
+            {(close) => (
+              <>
+                <DialogHeader description="Changes apply to everyone on the team.">Edit project</DialogHeader>
+                <DialogBody>
+                  <TextField label="Project name" defaultValue="Datum" />
+                </DialogBody>
+                <DialogFooter>
+                  <Button intent="neutral" appearance="outline" onClick={close}>Cancel</Button>
+                  <Button onClick={close}>Save</Button>
+                </DialogFooter>
+              </>
+            )}
+          </Dialog>
+        </div>
+
+        <div className="doc-section">
+          <h2>Sizes</h2>
+          <p className="lead">400, 560 and 720px wide, or the full viewport. Every size keeps <b>radius.card</b> except full, whose corners are the viewport's.</p>
+          <div className="sample-box">
+            {(["sm", "md", "lg", "full"] as const).map((size) => (
+              <Dialog key={size} size={size} trigger={<Button intent="neutral" appearance="outline">{size}</Button>}>
+                {(close) => (
+                  <>
+                    <DialogHeader>Size {size}</DialogHeader>
+                    <DialogBody>The body scrolls on its own when the dialog reaches the viewport height.</DialogBody>
+                    <DialogFooter><Button onClick={close}>Done</Button></DialogFooter>
+                  </>
+                )}
+              </Dialog>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Destructive confirmation</h2>
+          <p className="lead"><b>role="alertdialog"</b> with <b>dismissible=false</b>: no close button, Escape and the scrim do nothing, so the choice is explicit.</p>
+          <div className="sample-box">
+            <Dialog role="alertdialog" dismissible={false} size="sm" trigger={<Button intent="danger" appearance="outline">Delete project</Button>}>
+              {(close) => (
+                <>
+                  <DialogHeader description="This removes every file. It can't be undone.">Delete project?</DialogHeader>
+                  <DialogFooter>
+                    <Button intent="neutral" appearance="outline" onClick={close}>Cancel</Button>
+                    <Button intent="danger" onClick={close}>Delete</Button>
+                  </DialogFooter>
+                </>
+              )}
+            </Dialog>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={dialogProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Use for a short task that must finish or be cancelled before going on.", "Put the primary action last in the footer.", "Use alertdialog for destructive confirmations."]}
+            donts={["Stack dialogs on dialogs.", "Use a dialog for information that could sit on the page — use an Alert.", "Use one for long forms or browsing — use a Sheet or a page."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ SHEET ============ */}
+      <section className="component-doc" id="sheet">
+        <h1>Sheet</h1>
+        <p className="dek">
+          A panel that slides in from an edge — filters, settings, mobile navigation. It is a modal dialog with the same slots as
+          Dialog: focus is trapped and returns on close, and Escape, the scrim and the close button all dismiss it.
+        </p>
+
+        <div className="example-box">
+          <Sheet trigger={<Button intent="neutral" appearance="outline">Filters</Button>}>
+            {(close) => (
+              <>
+                <DialogHeader description="Narrow the list.">Filters</DialogHeader>
+                <DialogBody>
+                  <Stack gap="sm">
+                    <Checkbox label="Open issues" defaultChecked />
+                    <Checkbox label="Assigned to me" />
+                  </Stack>
+                </DialogBody>
+                <DialogFooter><Button onClick={close}>Apply</Button></DialogFooter>
+              </>
+            )}
+          </Sheet>
+        </div>
+
+        <div className="doc-section">
+          <h2>Sides</h2>
+          <p className="lead">Flush with its edge; only the edge facing the page is rounded. It moves in by transform, and appears in place under reduced motion.</p>
+          <div className="sample-box">
+            {sheetSides.map((side) => (
+              <Sheet key={side} side={side} trigger={<Button intent="neutral" appearance="outline">{side}</Button>}>
+                <DialogHeader>From the {side}</DialogHeader>
+                <DialogBody>320, 420 or 560px deep, always leaving a strip of scrim to tap.</DialogBody>
+              </Sheet>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={sheetProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Use for secondary tasks that relate to the page behind — filters, details, settings.", "Use side=\"bottom\" for mobile actions within thumb reach."]}
+            donts={["Use for a confirmation — use a Dialog.", "Put primary navigation in a sheet on desktop, where it can stay on the page."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ DROPDOWN MENU ============ */}
+      <section className="component-doc" id="dropdown-menu">
+        <h1>Dropdown Menu</h1>
+        <p className="dek">
+          Actions behind a trigger, on React Aria's menu hooks: arrow keys, Home/End, type-ahead, Escape, and focus back to the
+          trigger. Checkbox and radio items are <span className="prop-values">menuitemcheckbox</span> and{" "}
+          <span className="prop-values">menuitemradio</span>; a checkbox toggles in place, everything else closes the menu.
+        </p>
+
+        <div className="example-box">
+          <MenuDemo />
+        </div>
+
+        <div className="doc-section">
+          <h2>Sizes</h2>
+          <p className="lead">32 and 40px items — pills, like every single-line control — on a <b>radius.card</b> surface. Both grow to 44px on touch screens.</p>
+          <div className="sample-box">
+            <MenuDemo size="sm" />
+            <MenuDemo size="md" />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={menuProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Group related items with separators or labelled sections.", "Put destructive actions last, with intent=\"danger\".", "Show shortcuts you have actually bound."]}
+            donts={["Use a menu to pick a form value — use a Select.", "Hide the only way to do a common action in a menu."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ TOOLTIP ============ */}
+      <section className="component-doc" id="tooltip">
+        <h1>Tooltip</h1>
+        <p className="dek">
+          A short hint on hover (after 500ms) or keyboard focus (at once), linked with <span className="prop-values">aria-describedby</span>.
+          Escape hides it. Ink on <b>radius.card</b>. It adds to the trigger's accessible name — an icon-only Button still needs its{" "}
+          <span className="prop-values">label</span>.
+        </p>
+
+        <div className="example-box">
+          <Tooltip content="Search the docs">
+            <Button iconOnly label="Search" intent="neutral" appearance="ghost"><Search /></Button>
+          </Tooltip>
+          <Tooltip content="Add a member">
+            <Button iconOnly label="Add" intent="neutral" appearance="outline"><Plus /></Button>
+          </Tooltip>
+        </div>
+
+        <div className="doc-section">
+          <h2>Placement</h2>
+          <p className="lead">The preferred side; it flips when there is no room.</p>
+          <div className="sample-box">
+            {(["top", "right", "bottom", "left"] as const).map((placement) => (
+              <Tooltip key={placement} content={`On the ${placement}`} placement={placement}>
+                <Button intent="neutral" appearance="outline">{placement}</Button>
+              </Tooltip>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={tooltipProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Name icon-only controls.", "Keep it to a few words, as plain text."]}
+            donts={["Put links, buttons or anything interactive in a tooltip.", "Hide information people need — touch screens have no hover.", "Put one on a disabled control, which can't take focus."]}
           />
         </div>
       </section>

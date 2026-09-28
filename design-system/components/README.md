@@ -56,6 +56,8 @@ Sourced against Material Design 3, IBM Carbon, and Atlassian Design System's rea
 
 **Problem**: A short label on hover/focus for sighted users who can't infer what an icon-only control does just from its shape.
 
+> **Superseded in the React package.** `@datum-design/react` uses the `<Tooltip>` component (React Aria: announced through `aria-describedby`, Escape to hide, flips when there is no room); the `data-tooltip` attribute was removed from it. The attribute below survives only in the static token dashboard, which has no React. See DESIGN.md.
+
 **API**: A `data-tooltip="text"` attribute on any trigger element — no separate component instance needed.
 
 **States**: hidden, visible (on `:hover` or `:focus-visible`).

@@ -1,5 +1,3 @@
-import "./tooltip.css";
-
 export { Container } from "./components/Container/Container";
 export type { ContainerProps, ContainerOwnProps, ContainerSize } from "./components/Container/Container";
 

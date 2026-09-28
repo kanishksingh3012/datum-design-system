@@ -28,6 +28,9 @@ All notable changes to this project are recorded here. Format loosely follows [K
 - `border.strong` is now mode-aware: navy slate-600 / slate-400, orange stone-500 / stone-400. It previously failed 3:1 on `bg.surface` in orange dark and in navy light and dark.
 - Navy light-mode accent fill: navy-900 → navy-700 (hover navy-600, active navy-800), so accent and ink buttons are distinct. White on it is 7.2:1.
 
+### Removed
+- The CSS-only `data-tooltip` attribute (`tooltip.css`) is gone from `@datum-design/react`. Use `<Tooltip content="…">` around the trigger: it is announced (aria-describedby), shows on keyboard focus, hides on Escape and flips when there is no room. The attribute's text was never reliably read by screen readers.
+
 ## 2026-09-27 — Checkpoint 1: combo checker and Button rebuild
 
 ### Added
