@@ -10,7 +10,8 @@ Handoff for the next chat. Read this file only.
 - [ ] M5 — retire old single page
 
 ## M3 commits
-- Data: see `git log --grep 'M3: Data'`
+- AI: see `git log --grep 'M3: AI'`
+- Data: `8e3f87f`
 - Navigation: `2b87a6a`
 - Overlays: `f9c92aa`
 - Forms: `af266c9`
@@ -26,8 +27,8 @@ Handoff for the next chat. Read this file only.
 - `vercel.json` (repo root): builds styles → react → gallery, output `apps/gallery/dist`, SPA rewrite (excludes `assets/`, `check.html`, `review.html`).
 
 ## Categories
-Migrated: Actions (Button incl. icon-only/toggle/FAB, ButtonGroup, Link), Layout, Typography, Content, Feedback, Forms, Overlays, Navigation, Data.
-Left: AI.
+Migrated: Actions (Button incl. icon-only/toggle/FAB, ButtonGroup, Link), Layout, Typography, Content, Feedback, Forms, Overlays, Navigation, Data, AI.
+Left: none.
 
 ## Next step
 M3, one category per commit, in order: Layout, Typography, Content, Feedback, Forms, Overlays, Navigation, Data, AI.

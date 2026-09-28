@@ -48,8 +48,13 @@ while i < fn_start:
     m = re.match(r"^(?:export )?(?:const|function|type|interface) (\w+)", lines[i])
     if m and not lines[i].startswith("import"):
         j = i + 1
-        while j < fn_start and lines[j].strip() and not re.match(r"^(const|function|type|interface|export|import)\b", lines[j]):
+        if re.match(r"^(export )?function ", lines[i]) and not lines[i].rstrip().endswith("}"):
+            while j < fn_start and lines[j] != "}":
+                j += 1
             j += 1
+        else:
+            while j < fn_start and lines[j].strip() and not re.match(r"^(const|function|type|interface|export|import)\b", lines[j]):
+                j += 1
         decls[m.group(1)] = "\n".join(lines[i:j])
         i = j
     else:
