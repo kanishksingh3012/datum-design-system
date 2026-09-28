@@ -60,12 +60,12 @@ for k in kit:
 
 # state in the component function
 states = {}
-for l in lines[fn_start:fn_start + 60]:
+for l in lines[fn_start:]:
     m = re.match(r"\s*const \[(\w+), (\w+)\] = useState", l)
     if m:
         states[m.group(1)] = l.strip()
         states[m.group(2)] = l.strip()
-    m = re.match(r"\s*const (\w+)(?::[^=]+)? = ", l)
+    m = re.match(r"  {1,2}const (\w+)(?::[^=]+)? = ", l)
     if m and "useState" not in l and m.group(1) not in states and l.rstrip().endswith(";"):
         states[m.group(1)] = l.strip()
 
@@ -78,6 +78,13 @@ for block in re.findall(r"export (?:type )?\{([^}]*)\}", (repo / "packages/react
 lucide = set()
 for m in re.finditer(r"import \{([^}]*)\} from \"lucide-react\"", text):
     lucide |= set(idre.findall(m.group(1)))
+other_imports = {}
+for m in re.finditer(r"import \{([^}]*)\} from \"([^.\"][^\"]*)\"", text):
+    if m.group(2) in ("react", "@datum-design/react", "lucide-react"):
+        continue
+    for n in idre.findall(m.group(1)):
+        if n != "type":
+            other_imports[n] = m.group(2)
 local_imports = {}
 for m in re.finditer(r"import \{([^}]*)\} from \"\./(\w+)\"", text):
     for n in idre.findall(m.group(1)):
@@ -104,19 +111,25 @@ def code_only(s):
         if ch == "}": buf.append(" ")
     return "".join(buf) + " " + " ".join(re.findall(r"</?([A-Z]\w*)", s))
 scan(code_only(jsx))
+order = {l.strip(): i for i, l in enumerate(lines)}
+used_state.sort(key=lambda l: order.get(l, 0))
 
 allsrc = "\n".join([code_only(jsx), *(decls[d] for d in used_decls), *used_state])
 toks = set(idre.findall(allsrc))
-react = sorted({"useState", "useRef", "useEffect", "Fragment"} & toks)
+react = sorted({"useState", "useRef", "useEffect", "Fragment", "useMemo", "useCallback"} & toks)
+if "ReactNode" in toks: react.append("type ReactNode")
 imp = []
 if react:
     imp.append(f'import {{ {", ".join(react)} }} from "react";')
-d = sorted(toks & datum)
+d = sorted((toks & datum) - set(used_decls))
 if d:
     imp.append(f'import {{ {", ".join(d)} }} from "@datum-design/react";')
 lu = sorted(toks & lucide)
 if lu:
     imp.append(f'import {{ {", ".join(lu)} }} from "lucide-react";')
+for mod in sorted({other_imports[t] for t in toks if t in other_imports}):
+    names = sorted(t for t in toks if other_imports.get(t) == mod)
+    imp.append(f'import {{ {", ".join(names)} }} from "{mod}";')
 for mod in sorted({local_imports[t] for t in toks if t in local_imports}):
     names = sorted(t for t in toks if local_imports.get(t) == mod)
     imp.append(f'import {{ {", ".join(names)} }} from "../../{mod}";')
