@@ -6,6 +6,7 @@ import {
   Skeleton, Spinner, Stack, Switch, Text, TextField, Textarea, Toaster, toast, type SelectOption,
   Dialog, DialogBody, DialogFooter, DialogHeader, DropdownMenu, Sheet, Tooltip, type DropdownMenuItem,
   Breadcrumbs, BreadcrumbItem, Footer, Navbar, Pagination, Tabs, type NavbarLink, type TabItem,
+  ContextMenu, HoverCard, InputOTP, NumberField, Popover, Slider, type ContextMenuItem,
 } from "@datum-design/react";
 import { AlignCenter, AlignLeft, AlignRight, Copy, Mail, Pencil, Plus, Search, Star, Trash2 } from "lucide-react";
 
@@ -127,6 +128,24 @@ function menuItems(): DropdownMenuItem[] {
     { label: "Delete", intent: "danger", icon: <Trash2 />, shortcut: "⌫" },
   ];
 }
+
+const contextItems: ContextMenuItem[] = [
+  { label: "Copy", icon: <Copy />, shortcut: "⌘C" },
+  { label: "Rename", icon: <Pencil /> },
+  { label: "Paste", disabled: true },
+  { type: "separator" },
+  { label: "Delete", intent: "danger", icon: <Trash2 />, shortcut: "⌫" },
+];
+const popoverBody = (
+  <>
+    <Text>Only show results from the last 30 days.</Text>
+    <TextField label="Keyword" defaultValue="design" size="sm" />
+    <div className="row">
+      <Button size="sm" intent="neutral" appearance="ghost">Reset</Button>
+      <Button size="sm">Apply</Button>
+    </div>
+  </>
+);
 
 function SegmentedFields() {
   const [period, setPeriod] = useState("Monthly");
@@ -794,4 +813,83 @@ export const fixtures: Record<string, Fixture> = {
       </Tooltip>
     </div>
   )),
+  Popover: states(["closed", "open", "open titled"], (v) => (
+    <div className="row">
+      <Popover
+        trigger={<Button intent="neutral" appearance="outline" data-check-skip={v === "closed" ? undefined : ""}>Filters</Button>}
+        title={v === "open titled" ? "Filter results" : undefined}
+        defaultOpen={v !== "closed"}
+      >
+        {popoverBody}
+      </Popover>
+    </div>
+  ), true),
+  HoverCard: states(["closed", "open"], (v) => (
+    <div>
+      <Text>
+        Written by{" "}
+        <HoverCard open={v === "open" ? true : undefined} trigger={<Link href="#ada">Ada Lovelace</Link>}>
+          <div className="row">
+            <Avatar name="Ada Lovelace" />
+            <strong>Ada Lovelace</strong>
+          </div>
+          <span>Mathematician, and the first to publish an algorithm for a machine.</span>
+          <Link href="#profile">View profile</Link>
+        </HoverCard>
+        , 1843.
+      </Text>
+    </div>
+  ), true),
+  ContextMenu: states(["closed", "open md", "open sm"], (v) => (
+    <ContextMenu items={contextItems} defaultOpen={v !== "closed"} size={v === "open sm" ? "sm" : "md"}>
+      <div style={{ ...box, width: 360, height: 280, border: "1px dashed var(--color-border-strong)", borderRadius: "var(--radius-card)" }}>
+        <Text>Right-click anywhere in this box.</Text>
+      </div>
+    </ContextMenu>
+  ), true),
+  NumberField: () => (
+    <>
+      {sizes.map((size) => (
+        <Deep key={size}><NumberField size={size} label={`Guests ${size}`} defaultValue={2} min={1} max={12} helpText="Up to 12." /></Deep>
+      ))}
+      <Deep><NumberField label="At the minimum" defaultValue={1} min={1} /></Deep>
+      <Deep><NumberField label="Price" defaultValue={24} formatOptions={{ style: "currency", currency: "USD" }} step={0.5} /></Deep>
+      <Deep><NumberField label="Width" defaultValue={320} hideSteppers /></Deep>
+      <Deep><NumberField label="Quantity" defaultValue={40} required errorText="We only have 12 in stock." /></Deep>
+      <Deep><NumberField label="Seats" defaultValue={8} readOnly /></Deep>
+      <Deep><NumberField label="Disabled" defaultValue={3} disabled /></Deep>
+      <div style={box}>
+        <Deep><NumberField label="On a surface" defaultValue={5} /></Deep>
+      </div>
+    </>
+  ),
+  Slider: () => (
+    <div data-check-text="deep" style={{ ...narrow, display: "grid", gap: "var(--space-section)" }}>
+      {(["md", "sm"] as const).map((size) => (
+        <Slider key={size} size={size} label={`Volume ${size}`} defaultValue={60} />
+      ))}
+      <Slider label="Price range" defaultValue={[20, 80]} formatOptions={{ style: "currency", currency: "USD", maximumFractionDigits: 0 }} />
+      <Slider label="Opacity" defaultValue={0.4} min={0} max={1} step={0.05} formatOptions={{ style: "percent" }} />
+      <Slider aria-label="Zoom" defaultValue={30} />
+      <Slider label="Disabled" defaultValue={50} disabled />
+      <div style={box}>
+        <Slider label="On a surface" defaultValue={25} />
+      </div>
+    </div>
+  ),
+  InputOTP: () => (
+    <>
+      {sizes.map((size) => (
+        <Deep key={size}><InputOTP size={size} label={`Code ${size}`} defaultValue="1234" helpText="Sent to +1 ••• 4417." /></Deep>
+      ))}
+      <Deep><InputOTP label="Empty" length={4} required /></Deep>
+      <Deep><InputOTP label="Complete" length={4} defaultValue="9021" /></Deep>
+      <Deep><InputOTP label="Expired" defaultValue="483" errorText="That code has expired." /></Deep>
+      <Deep><InputOTP label="Read-only" length={4} defaultValue="77" readOnly /></Deep>
+      <Deep><InputOTP label="Disabled" length={4} defaultValue="12" disabled /></Deep>
+      <div style={box}>
+        <Deep><InputOTP label="On a surface" length={4} defaultValue="5" /></Deep>
+      </div>
+    </>
+  ),
 };

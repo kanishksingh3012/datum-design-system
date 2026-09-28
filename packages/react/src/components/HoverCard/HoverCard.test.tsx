@@ -1,32 +1,51 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { HoverCard } from "./HoverCard";
 
+const card = (props: Partial<Parameters<typeof HoverCard>[0]> = {}) => (
+  <HoverCard trigger={<a href="/ada">@ada</a>} openDelay={10} closeDelay={10} {...props}>
+    Ada Lovelace — first programmer
+  </HoverCard>
+);
+
 describe("HoverCard", () => {
-  it("is closed until hover, then opens after the open delay", async () => {
-    const user = userEvent.setup();
-    render(
-      <HoverCard trigger={<a href="/profile">@jane</a>} openDelay={10} closeDelay={10}>
-        Jane Doe - Product designer
-      </HoverCard>
-    );
-    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
-    await user.hover(screen.getByRole("link", { name: "@jane" }));
-    await waitFor(() => expect(screen.getByRole("tooltip")).toHaveTextContent("Jane Doe - Product designer"));
+  it("opens after the delay on hover and describes the trigger", async () => {
+    render(card());
+    const link = screen.getByRole("link", { name: "@ada" });
+    expect(screen.queryByText(/first programmer/)).not.toBeInTheDocument();
+    await userEvent.hover(link);
+    await waitFor(() => expect(screen.getByText(/first programmer/)).toBeInTheDocument());
+    expect(link).toHaveAccessibleDescription("Ada Lovelace — first programmer");
   });
 
-  it("closes after the close delay once the pointer leaves", async () => {
-    const user = userEvent.setup();
-    render(
-      <HoverCard trigger={<a href="/profile">@jane</a>} openDelay={10} closeDelay={10}>
-        Jane Doe
-      </HoverCard>
-    );
-    const trigger = screen.getByRole("link", { name: "@jane" });
-    await user.hover(trigger);
-    await waitFor(() => expect(screen.getByRole("tooltip")).toBeInTheDocument());
-    await user.unhover(trigger);
-    await waitFor(() => expect(screen.queryByRole("tooltip")).not.toBeInTheDocument());
+  it("closes after the pointer leaves, but stays while it is on the card", async () => {
+    render(card());
+    const link = screen.getByRole("link");
+    await userEvent.hover(link);
+    const body = await screen.findByText(/first programmer/);
+    await userEvent.hover(body);
+    await new Promise((r) => setTimeout(r, 30));
+    expect(screen.getByText(/first programmer/)).toBeInTheDocument();
+    await userEvent.unhover(body);
+    await waitFor(() => expect(screen.queryByText(/first programmer/)).not.toBeInTheDocument());
+  });
+
+  it("opens on keyboard focus and closes on Escape", async () => {
+    const onOpenChange = vi.fn();
+    render(card({ onOpenChange }));
+    await userEvent.tab();
+    await waitFor(() => expect(screen.getByText(/first programmer/)).toBeInTheDocument());
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
+    await userEvent.keyboard("{Escape}");
+    expect(screen.queryByText(/first programmer/)).not.toBeInTheDocument();
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+  });
+
+  it("is controlled by open, with className and props on the card", () => {
+    const { rerender } = render(card({ open: false }));
+    expect(screen.queryByText(/first programmer/)).not.toBeInTheDocument();
+    rerender(card({ open: true, className: "profile", "data-testid": "card" } as never));
+    expect(screen.getByTestId("card")).toHaveClass("profile");
   });
 });

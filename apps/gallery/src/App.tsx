@@ -5,9 +5,10 @@ import {
   Skeleton, Spinner, Stack, Switch, Text, TextField, Textarea, Toaster, toast,
   Dialog, DialogBody, DialogFooter, DialogHeader, DropdownMenu, Sheet, Tooltip, type DropdownMenuItem, type SheetSide,
   Breadcrumbs, BreadcrumbItem, Footer, Navbar, Pagination, Tabs, type NavbarLink, type NavbarLayout, type NavbarAppearance, type TabItem,
+  ContextMenu, HoverCard, InputOTP, NumberField, Popover, Slider, type ContextMenuItem,
   type CheckedState, type SelectOption, type ToastIntent, type ToastPosition,
 } from "@datum-design/react";
-import { Mail, Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline } from "lucide-react";
+import { Mail, Search, Plus, Star, MoreHorizontal, ArrowRight, X, Trash2, Copy, Pencil, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
 const appearances = ["solid", "soft", "outline", "ghost"] as const;
@@ -289,6 +290,60 @@ const tooltipProps: PropRow[] = [
   ["delay", "number (ms)", "500", "Hover delay. Keyboard focus shows it at once."],
   ...openStateRows,
 ];
+const popoverProps: PropRow[] = [
+  ["trigger", "ReactElement", "—", "Required. The element that opens it, usually a Button."],
+  ["title", "ReactNode", "—", "A heading that also names the dialog. Without one, the trigger's text names it (or pass aria-label)."],
+  ["placement", "top | top-start | top-end | bottom | bottom-start | bottom-end | left | right", "bottom", "Flips when there is no room."],
+  ...openStateRows,
+];
+const hoverCardProps: PropRow[] = [
+  ["trigger", "ReactElement", "—", "Required. A focusable element it previews, usually a Link."],
+  ["placement", "top | right | bottom | left", "bottom", "Flips when there is no room."],
+  ["openDelay / closeDelay", "number (ms)", "500 / 300", "The close delay is time to move onto the card, which keeps it open."],
+  ...openStateRows,
+];
+const contextMenuProps: PropRow[] = [
+  ["children", "ReactNode", "—", "The region that opens the menu when right-clicked."],
+  ["items", "ContextMenuItem[]", "—", "The same item kinds as DropdownMenu: actions, links, checkboxes, radios, separators, sections."],
+  ["size", "sm | md", "md", "32 / 40px items; both grow to 44px on touch screens."],
+  ["menuLabel", "string", "Context menu", "Names the menu for assistive tech."],
+  ["disabled", "boolean", "false", "Leaves the browser's own context menu in place."],
+  ...openStateRows,
+];
+const numberFieldProps: PropRow[] = [
+  ["label / helpText / errorText", "string", "—", "As every field: wired by useField."],
+  ["value / defaultValue / onValueChange", "number / number / (value) => void", "NaN (empty)", "Committed on blur, Enter, a step or a stepper press. NaN means empty."],
+  ["min / max / step", "number", "— / — / 1", "Typed values are clamped and snapped on commit."],
+  ["formatOptions", "Intl.NumberFormatOptions", "—", "Currency, percent, units, decimals — shown and parsed."],
+  ["size", "sm | md | lg", "md", "32 / 40 / 48px; +4px on touch screens."],
+  ["hideSteppers", "boolean", "false", "Drops − and +; arrow keys still step."],
+  ["required / disabled / readOnly", "boolean", "false", "Read-only hides the steppers and draws a dashed edge."],
+];
+const sliderProps: PropRow[] = [
+  ["label", "string", "—", "Names the slider; or pass aria-label for none."],
+  ["value / defaultValue / onValueChange", "number | number[]", "min", "Two numbers make a range with two thumbs."],
+  ["onValueCommit", "(value) => void", "—", "Once a drag or key press ends — for heavy work."],
+  ["min / max / step", "number", "0 / 100 / 1", ""],
+  ["formatOptions", "Intl.NumberFormatOptions", "—", "How the value is shown and announced."],
+  ["showValue", "boolean", "true with a label", "The value beside the label."],
+  ["size", "sm | md", "md", "4 / 6px rail, 16 / 20px thumb; a 44px hit area on touch."],
+  ["disabled", "boolean", "false", ""],
+];
+const otpProps: PropRow[] = [
+  ["label / helpText / errorText", "string", "—", "As every field; the cells form a group named by the label."],
+  ["length", "number", "6", "Number of digits."],
+  ["value / defaultValue / onValueChange", "string", "\"\"", "The code so far."],
+  ["onComplete", "(code) => void", "—", "Once every digit is filled."],
+  ["size", "sm | md | lg", "md", "36 / 44 / 52px round cells; never under 44px on touch."],
+  ["name", "string", "—", "Submits the code as one value."],
+  ["required / disabled / readOnly", "boolean", "false", ""],
+];
+const contextItems: ContextMenuItem[] = [
+  { label: "Copy", icon: <Copy />, shortcut: "⌘C" },
+  { label: "Rename", icon: <Pencil /> },
+  { type: "separator" },
+  { label: "Delete", intent: "danger", icon: <Trash2 />, shortcut: "⌫" },
+];
 const tabsProps: PropRow[] = [
   ["items", "{ value, label, icon, disabled, content }[]", "—", "content becomes the tab panel, wired with aria-controls; leave it out to render the view yourself."],
   ["value / defaultValue / onValueChange", "string / string / (value) => void", "first enabled tab", "The selected tab."],
@@ -507,10 +562,16 @@ export function App() {
         <a href="#radio">Radio</a>
         <a href="#switch">Switch</a>
         <a href="#select">Select</a>
+        <a href="#number-field">Number Field</a>
+        <a href="#slider">Slider</a>
+        <a href="#input-otp">Input OTP</a>
         <a href="#dialog">Dialog</a>
         <a href="#sheet">Sheet</a>
         <a href="#dropdown-menu">Dropdown Menu</a>
         <a href="#tooltip">Tooltip</a>
+        <a href="#popover">Popover</a>
+        <a href="#hover-card">Hover Card</a>
+        <a href="#context-menu">Context Menu</a>
         <a href="#tabs">Tabs</a>
         <a href="#breadcrumbs">Breadcrumbs</a>
         <a href="#pagination">Pagination</a>
@@ -2231,6 +2292,140 @@ export function App() {
         </div>
       </section>
 
+      {/* ============ NUMBER FIELD ============ */}
+      <section className="component-doc" id="number-field">
+        <h1>Number Field</h1>
+        <p className="dek">A number with − and + steppers nested in the pill's ends, on React Aria's <span className="prop-values">useNumberField</span>. Typing is limited to what the format allows; the value is clamped and snapped on commit; arrow keys, Page Up / Down, Home and End step it.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <NumberField label="Guests" defaultValue={2} min={1} max={12} helpText="Up to 12." style={{ maxWidth: 220, margin: "0 auto" }} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Formats</h2>
+          <p className="lead"><b>formatOptions</b> shows and parses currency, percent and units. The value is tabular, so it doesn't shift as it steps.</p>
+          <div className="sample-box demo-on-page">
+            <div className="form-grid">
+              <NumberField label="Price" defaultValue={24} step={0.5} formatOptions={{ style: "currency", currency: "USD" }} />
+              <NumberField label="Discount" defaultValue={0.15} step={0.05} min={0} max={1} formatOptions={{ style: "percent" }} />
+              <NumberField label="Width" defaultValue={120} hideSteppers formatOptions={{ style: "unit", unit: "centimeter" }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Sizes and states</h2>
+          <p className="lead">The same 32 / 40 / 48px as TextField. A stepper dims at <b>min</b> or <b>max</b>; <b>readOnly</b> hides them.</p>
+          <div className="sample-box demo-on-page">
+            <div className="form-grid">
+              {(["sm", "md", "lg"] as const).map((size) => <NumberField key={size} size={size} label={`Size ${size}`} defaultValue={1} min={1} />)}
+              <NumberField label="Invalid" defaultValue={40} errorText="We only have 12 in stock." />
+              <NumberField label="Read-only" defaultValue={8} readOnly />
+              <NumberField label="Disabled" defaultValue={3} disabled />
+            </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={numberFieldProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Use for counts and amounts people adjust by small steps.", "Set min and max so the steppers stop where the value must."]}
+            donts={["Use for numbers that aren't quantities — phone numbers, card numbers, codes. Use a TextField (or InputOTP).", "Hide the steppers on a quantity people usually nudge by one."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ SLIDER ============ */}
+      <section className="component-doc" id="slider">
+        <h1>Slider</h1>
+        <p className="dek">Picks a number, or a range, by dragging along a track, on React Aria's <span className="prop-values">useSlider</span> and <span className="prop-values">useSliderThumb</span>. Each thumb is a native range input: arrow keys, Page Up / Down, Home and End work, and the formatted value is announced. The fill is <b>text.accent</b>, like ProgressBar.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <Slider label="Volume" defaultValue={60} style={{ maxWidth: 320, margin: "0 auto" }} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Ranges and formats</h2>
+          <p className="lead">Two values make a range with two thumbs, named Minimum and Maximum. <b>formatOptions</b> formats the value shown beside the label and the one announced.</p>
+          <div className="sample-box demo-on-page">
+            <div className="form-grid">
+              <Slider label="Price range" defaultValue={[20, 80]} formatOptions={{ style: "currency", currency: "USD", maximumFractionDigits: 0 }} />
+              <Slider label="Opacity" defaultValue={0.4} min={0} max={1} step={0.05} formatOptions={{ style: "percent" }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Sizes and states</h2>
+          <p className="lead">A 6px (md) or 4px (sm) rail. The thumb is a raised knob drawn like a field; its hit area is 44px on touch screens either way.</p>
+          <div className="sample-box demo-on-page">
+            <div className="form-grid">
+              <Slider label="Size md" defaultValue={40} />
+              <Slider label="Size sm" size="sm" defaultValue={40} />
+              <Slider label="Disabled" defaultValue={50} disabled />
+            </div>
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={sliderProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Use where the relative position matters more than the exact number — volume, opacity, a price range.", "Show the value when people need to know it."]}
+            donts={["Use for an exact value people will type — use a NumberField.", "Run heavy work on every move — use onValueCommit."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ INPUT OTP ============ */}
+      <section className="component-doc" id="input-otp">
+        <h1>Input OTP</h1>
+        <p className="dek">A one-time code as a row of round cells. Typing moves forward, Backspace back, arrow keys move freely and a paste fills every cell. The first cell offers <span className="prop-values">autocomplete="one-time-code"</span>, so phones can fill it from a text message. One cell is in the tab order at a time.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <InputOTP label="Verification code" helpText="Sent to +1 ••• 4417." style={{ width: "fit-content", margin: "0 auto" }} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Sizes</h2>
+          <p className="lead">36 / 44 / 52px cells. A cell is a single-line control, so it takes <b>radius.control</b> — as wide as it is tall, the pill is a circle. Cells are never under 44px on touch screens.</p>
+          <div className="sample-box demo-on-page" style={{ flexDirection: "column", alignItems: "flex-start" }}>
+            {(["sm", "md", "lg"] as const).map((size) => <InputOTP key={size} size={size} length={4} label={`Size ${size}`} defaultValue="12" />)}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>States</h2>
+          <div className="sample-box demo-on-page" style={{ flexDirection: "column", alignItems: "flex-start" }}>
+            <InputOTP label="Invalid" defaultValue="483" errorText="That code has expired." />
+            <InputOTP label="Read-only" length={4} defaultValue="7702" readOnly />
+            <InputOTP label="Disabled" length={4} disabled />
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={otpProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Say where the code was sent in the help text.", "Submit on onComplete, and keep a way to resend."]}
+            donts={["Use for passwords or anything longer than a short code.", "Clear the cells on an error — let people fix one digit."]}
+          />
+        </div>
+      </section>
+
       {/* ============ DIALOG ============ */}
       <section className="component-doc" id="dialog">
         <h1>Dialog</h1>
@@ -2435,6 +2630,109 @@ export function App() {
           <Usage
             dos={["Name icon-only controls.", "Keep it to a few words, as plain text."]}
             donts={["Put links, buttons or anything interactive in a tooltip.", "Hide information people need — touch screens have no hover.", "Put one on a disabled control, which can't take focus."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ POPOVER ============ */}
+      <section className="component-doc" id="popover">
+        <h1>Popover</h1>
+        <p className="dek">Rich, interactive content anchored to a trigger — a small form, filters, details. A dialog on React Aria's <span className="prop-values">useOverlayTrigger</span>, <span className="prop-values">usePopover</span> and <span className="prop-values">useDialog</span>: focus moves in on open and back to the trigger on close; Escape or a click outside closes it. The menus' surface: <b>radius.card</b>, <b>elevation.overlay</b>.</p>
+
+        <div className="example-box">
+          <Popover trigger={<Button intent="neutral" appearance="outline">Filters</Button>} title="Filter results">
+            <Text variant="body-sm">Only show results from the last 30 days.</Text>
+            <TextField label="Keyword" size="sm" defaultValue="design" />
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-compact)" }}>
+              <Button size="sm" intent="neutral" appearance="ghost">Reset</Button>
+              <Button size="sm">Apply</Button>
+            </div>
+          </Popover>
+        </div>
+
+        <div className="doc-section">
+          <h2>Placement</h2>
+          <p className="lead">The preferred side; it flips when there is no room.</p>
+          <div className="sample-box">
+            {(["top", "right", "bottom", "left"] as const).map((placement) => (
+              <Popover key={placement} placement={placement} trigger={<Button intent="neutral" appearance="outline">{placement}</Button>}>
+                <Text variant="body-sm">Opens on the {placement}.</Text>
+              </Popover>
+            ))}
+          </div>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={popoverProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Keep it to one small task, with its own actions.", "Give it a title when the trigger's text doesn't say what's inside."]}
+            donts={["Use for a list of actions — use a DropdownMenu.", "Put a long flow in it — use a Dialog or a Sheet."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ HOVER CARD ============ */}
+      <section className="component-doc" id="hover-card">
+        <h1>Hover Card</h1>
+        <p className="dek">A preview on hover (after 500ms) or keyboard focus — a profile, a page summary. It stays open while the pointer is on the trigger or the card; Escape closes it. Unlike a Tooltip it can hold links, but it is supplementary: never the one way to reach something.</p>
+
+        <div className="example-box">
+          <Text>
+            Written by{" "}
+            <HoverCard trigger={<Link href="#hover-card">Ada Lovelace</Link>}>
+              <div style={{ display: "flex", gap: "var(--space-compact)", alignItems: "center" }}>
+                <Avatar name="Ada Lovelace" />
+                <strong>Ada Lovelace</strong>
+              </div>
+              <span>Mathematician, and the first to publish an algorithm for a machine.</span>
+              <Link href="#hover-card">View profile</Link>
+            </HoverCard>
+            , 1843.
+          </Text>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={hoverCardProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Preview what the link leads to.", "Keep the same content reachable by following the trigger."]}
+            donts={["Put the only way to an action in it — touch screens have no hover.", "Use for a short hint on a control — use a Tooltip."]}
+          />
+        </div>
+      </section>
+
+      {/* ============ CONTEXT MENU ============ */}
+      <section className="component-doc" id="context-menu">
+        <h1>Context Menu</h1>
+        <p className="dek">DropdownMenu's menu, opened by right-click at the pointer or by Shift+F10 from anything focused inside the region. macOS has no keyboard equivalent, so every action must also be reachable another way.</p>
+
+        <div className="example-box" style={{ display: "block" }}>
+          <ContextMenu items={contextItems}>
+            <div className="demo-cell" style={{ height: 160, display: "grid", placeItems: "center", border: "1px dashed var(--color-border-strong)", borderRadius: "var(--radius-card)" }}>
+              Right-click anywhere here
+            </div>
+          </ContextMenu>
+        </div>
+
+        <div className="doc-section">
+          <h2>Properties</h2>
+          <PropsTable rows={contextMenuProps} />
+        </div>
+
+        <div className="doc-section">
+          <h2>Usage guidelines</h2>
+          <Usage
+            dos={["Mirror actions that also live in a visible menu or toolbar.", "Keep the order and wording of the matching DropdownMenu."]}
+            donts={["Hide an action only here — people rarely look for it.", "Replace the browser's menu on text people will want to copy."]}
           />
         </div>
       </section>

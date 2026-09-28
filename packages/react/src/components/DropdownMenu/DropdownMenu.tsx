@@ -99,7 +99,7 @@ type Leaf = Exclude<DropdownMenuLeafItem, DropdownMenuSeparatorItem>;
 
 const isSelectable = (item: DropdownMenuItem): item is Selectable => item.type === "checkbox" || item.type === "radio";
 
-interface Model {
+export interface Model {
   /** Collection children for useTreeState: plain items, and sections for runs of checkboxes or radios and explicit sections. */
   children: ReactElement[];
   /** Every item by key. */
@@ -116,7 +116,7 @@ interface Model {
  * collection nodes, so they are recorded against the node that follows them
  * and drawn at render time; arrow keys never land on them.
  */
-function buildModel(list: DropdownMenuItem[]): Model {
+export function buildModel(list: DropdownMenuItem[]): Model {
   const model: Model = { children: [], items: new Map(), sections: new Map(), separatorBefore: new Set(), disabledKeys: [] };
   let pendingSeparator = false;
 
@@ -215,19 +215,22 @@ export const DropdownMenu = forwardRef<HTMLDivElement, DropdownMenuProps>(functi
 
 DropdownMenu.displayName = "DropdownMenu";
 
-function MenuPopover({
+/** Internal (shared with ContextMenu): the positioned layer a menu opens in. */
+export function MenuPopover({
   state,
   triggerRef,
   placement,
+  offset = 4,
   children,
 }: {
   state: MenuTriggerState;
   triggerRef: RefObject<HTMLElement | null>;
   placement: DropdownMenuPlacement;
+  offset?: number;
   children: ReactNode;
 }) {
   const popoverRef = useRef<HTMLDivElement>(null);
-  const { popoverProps } = usePopover({ triggerRef, popoverRef, placement: toAriaPlacement(placement), offset: 4 }, state);
+  const { popoverProps } = usePopover({ triggerRef, popoverRef, placement: toAriaPlacement(placement), offset }, state);
   return (
     <Overlay>
       <div
@@ -251,7 +254,8 @@ interface MenuListProps extends HTMLAttributes<HTMLDivElement> {
   columns: number;
 }
 
-const MenuList = forwardRef<HTMLDivElement, MenuListProps>(function MenuList({ menuProps, model, size, columns, className, style, ...rest }, forwardedRef) {
+/** Internal (shared with ContextMenu): the menu surface and its items. */
+export const MenuList = forwardRef<HTMLDivElement, MenuListProps>(function MenuList({ menuProps, model, size, columns, className, style, ...rest }, forwardedRef) {
   const ref = useObjectRef(forwardedRef);
   const onAction = (key: Key) => {
     const item = model.items.get(String(key));

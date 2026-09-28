@@ -1,16 +1,35 @@
-.root {
-  position: relative;
-  display: inline-block;
+.popover {
+  outline: none;
 }
-.content {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  z-index: 20;
+
+/* a lifted surface, like the menus: card radius, overlay elevation */
+.root {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-tight);
   min-width: 200px;
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border-default);
+  max-width: min(360px, calc(100vw - 2 * var(--space-default)));
+  max-height: inherit;
+  overflow: auto;
+  padding: var(--space-default);
+  font-family: var(--type-body-md-family);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-lineHeight);
+  color: var(--color-text-primary);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-card);
   box-shadow: var(--elevation-overlay);
-  padding: var(--space-default);
+  outline: none;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--type-heading-sm-family);
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  line-height: var(--type-heading-sm-lineHeight);
+  letter-spacing: var(--type-heading-sm-tracking);
+  color: var(--color-text-primary);
 }

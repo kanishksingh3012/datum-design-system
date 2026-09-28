@@ -1,55 +1,131 @@
 .root {
+  --_rail: 6px;
+  --_thumb: 20px;
+
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  max-width: 280px;
+  gap: var(--space-compact);
   width: 100%;
-}
-.label {
-  font-size: var(--type-ui-label-size);
-  font-weight: var(--type-ui-label-weight);
+  font-family: var(--type-body-sm-family);
   color: var(--color-text-primary);
 }
-.input {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 100%;
-  height: var(--interaction-minTarget);
-  background: transparent;
+.root[data-size="sm"] {
+  --_rail: 4px;
+  --_thumb: 16px;
+}
+.root[data-disabled] {
+  opacity: 0.5;
+}
+
+/* label and value on one row, as in ProgressBar */
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-tight);
+}
+.label {
+  font-family: var(--type-ui-label-family);
+  font-size: var(--type-ui-label-size);
+  font-weight: var(--type-ui-label-weight);
+  line-height: var(--type-ui-label-lineHeight);
+  letter-spacing: var(--type-ui-label-tracking);
+}
+.value {
+  margin-left: auto;
+  font-family: var(--type-numeric-sm-family);
+  font-size: var(--type-numeric-sm-size);
+  font-weight: var(--type-numeric-sm-weight);
+  line-height: var(--type-numeric-sm-lineHeight);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+/* the track is the pointer target; it is inset by half a thumb so the thumbs never overhang */
+.track {
+  position: relative;
+  height: var(--_thumb);
+  margin-inline: calc(var(--_thumb) / 2);
   cursor: pointer;
 }
-.input::-webkit-slider-runnable-track {
-  height: 4px;
-  border-radius: 999px;
-  background: var(--color-border-strong);
+.root[data-disabled] .track {
+  cursor: not-allowed;
 }
-.input::-moz-range-track {
-  height: 4px;
-  border-radius: 999px;
-  background: var(--color-border-strong);
+/* the rail runs under the thumbs at both ends; the fill runs between thumb centers */
+.rail,
+.fill {
+  position: absolute;
+  top: 50%;
+  height: var(--_rail);
+  border-radius: var(--radius-pill);
+  transform: translateY(-50%);
 }
-.input::-webkit-slider-thumb {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  margin-top: -7px;
-  border-radius: 50%;
-  background: var(--color-bg-accent);
-  transition: box-shadow var(--motion-fast) var(--motion-easing);
+.rail {
+  left: calc(var(--_thumb) / -2);
+  right: calc(var(--_thumb) / -2);
+  background: var(--color-bg-tertiary);
 }
-.input::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border: none;
-  border-radius: 50%;
-  background: var(--color-bg-accent);
+/* text.accent, like ProgressBar's fill: 3:1 against the rail in every combo */
+.fill {
+  background: var(--color-text-accent);
 }
-.input:focus-visible::-webkit-slider-thumb {
+
+/* a raised knob, drawn like a field: surfaceRaised with a border.strong edge */
+.thumb {
+  top: 50%;
+  box-sizing: border-box;
+  width: var(--_thumb);
+  height: var(--_thumb);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elevation-field);
+  transform: translate(-50%, -50%);
+  transition:
+    border-color var(--motion-fast) var(--motion-easing),
+    box-shadow var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+.root:not([data-disabled]) .thumb:hover {
+  border-color: color-mix(in oklab, var(--color-border-strong), var(--color-text-primary) 40%);
+}
+.root:not([data-disabled]) .thumb:active,
+.thumb[data-dragging] {
+  transform: translate(-50%, -50%) scale(0.98);
+}
+.thumb:has(> .input:focus-visible) {
+  z-index: 1;
   outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
 }
-.input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+
+/* The native range input stays in the page (and the tab order) inside the
+   thumb, invisible and untouchable: presses land on the drawn thumb. */
+.input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (pointer: coarse) {
+  .thumb::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--interaction-minTarget);
+    height: var(--interaction-minTarget);
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root:not([data-disabled]) .thumb:active,
+  .thumb[data-dragging] {
+    transform: translate(-50%, -50%);
+  }
 }

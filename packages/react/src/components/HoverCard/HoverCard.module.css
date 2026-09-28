@@ -1,16 +1,18 @@
+/* The same lifted surface as Popover: card radius, overlay elevation */
 .root {
-  position: relative;
-  display: inline-block;
-}
-.content {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  z-index: 20;
-  min-width: 240px;
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border-default);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+  width: max-content;
+  max-width: min(320px, calc(100vw - 2 * var(--space-default)));
+  padding: var(--space-default);
+  font-family: var(--type-body-sm-family);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+  color: var(--color-text-primary);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-card);
   box-shadow: var(--elevation-overlay);
-  padding: var(--space-default);
 }

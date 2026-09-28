@@ -1,61 +1,72 @@
-import { describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Button } from "../Button/Button";
 import { Popover } from "./Popover";
 
+const trigger = <Button>Filters</Button>;
+
 describe("Popover", () => {
-  it("is closed until the trigger is clicked, then shows the content", async () => {
-    const user = userEvent.setup();
+  it("wires the trigger and opens a dialog named by its title", async () => {
     render(
-      <Popover trigger={<button>Open</button>}>
+      <Popover trigger={trigger} title="Filter results">
         <p>Panel content</p>
       </Popover>
     );
+    const button = screen.getByRole("button", { name: "Filters" });
+    expect(button).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByText("Panel content")).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Open" }));
-    expect(screen.getByText("Panel content")).toBeInTheDocument();
+    await userEvent.click(button);
+    expect(button).toHaveAttribute("aria-expanded", "true");
+    const dialog = screen.getByRole("dialog", { name: "Filter results" });
+    expect(dialog).toHaveTextContent("Panel content");
+    expect(button).toHaveAttribute("aria-controls", dialog.parentElement!.id || dialog.id);
   });
 
-  it("sets aria-expanded on the trigger", async () => {
-    const user = userEvent.setup();
+  it("without a title, the trigger names it", async () => {
+    render(<Popover trigger={trigger}>Content</Popover>);
+    await userEvent.click(screen.getByRole("button", { name: "Filters" }));
+    expect(screen.getByRole("dialog", { name: "Filters" })).toBeInTheDocument();
+  });
+
+  it("moves focus in, closes on Escape and returns focus to the trigger", async () => {
+    const onOpenChange = vi.fn();
     render(
-      <Popover trigger={<button>Open</button>}>
-        <p>Panel content</p>
+      <Popover trigger={trigger} onOpenChange={onOpenChange}>
+        <input aria-label="Min price" />
       </Popover>
     );
-    const trigger = screen.getByRole("button", { name: "Open" });
-    expect(trigger).toHaveAttribute("aria-expanded", "false");
-    await user.click(trigger);
-    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    await userEvent.click(screen.getByRole("button", { name: "Filters" }));
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
+    await waitFor(() => expect(screen.getByRole("dialog")).toContainElement(document.activeElement as HTMLElement));
+    await userEvent.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+    await waitFor(() => expect(screen.getByRole("button", { name: "Filters" })).toHaveFocus());
   });
 
-  it("closes on Escape and returns focus to the trigger", async () => {
-    const user = userEvent.setup();
+  it("closes on a click outside", async () => {
     render(
-      <Popover trigger={<button>Open</button>}>
-        <p>Panel content</p>
-      </Popover>
+      <>
+        <Popover trigger={trigger} defaultOpen>Content</Popover>
+        <p>Elsewhere</p>
+      </>
     );
-    const trigger = screen.getByRole("button", { name: "Open" });
-    await user.click(trigger);
-    await user.keyboard("{Escape}");
-    expect(screen.queryByText("Panel content")).not.toBeInTheDocument();
-    expect(document.activeElement).toBe(trigger);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    await userEvent.click(screen.getByText("Elsewhere"));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("closes on an outside click", async () => {
-    const user = userEvent.setup();
-    render(
-      <div>
-        <Popover trigger={<button>Open</button>}>
-          <p>Panel content</p>
-        </Popover>
-        <button>Outside</button>
-      </div>
-    );
-    await user.click(screen.getByRole("button", { name: "Open" }));
-    expect(screen.getByText("Panel content")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Outside" }));
-    expect(screen.queryByText("Panel content")).not.toBeInTheDocument();
+  it("is controlled by open", () => {
+    const { rerender } = render(<Popover trigger={trigger} open={false}>Content</Popover>);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    rerender(<Popover trigger={trigger} open>Content</Popover>);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("puts className and other props on the panel", () => {
+    render(<Popover trigger={trigger} defaultOpen className="wide" data-testid="panel">Content</Popover>);
+    expect(screen.getByTestId("panel")).toHaveClass("wide");
+    expect(screen.getByTestId("panel")).toHaveAttribute("role", "dialog");
   });
 });

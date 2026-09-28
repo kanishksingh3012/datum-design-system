@@ -1,38 +1,79 @@
-.root {
+/* One round cell per digit. A cell is a single-line control, so it takes
+   radius.control; as wide as it is tall, the pill is a circle, never a stadium.
+   Each cell is drawn like the shared field box. */
+.cells {
+  --_cell: 44px;
+
   display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+  flex-wrap: wrap;
+  gap: var(--space-compact);
+  font-family: var(--type-numeric-md-family);
+  font-size: var(--type-numeric-md-size);
+  font-weight: var(--type-numeric-md-weight);
 }
-.label {
-  font-size: var(--type-ui-label-size);
-  font-weight: var(--type-ui-label-weight);
-  color: var(--color-text-primary);
+.cells[data-size="sm"] {
+  --_cell: 36px;
 }
-.digits {
-  display: flex;
-  gap: 0.5rem;
+.cells[data-size="lg"] {
+  --_cell: 52px;
+  gap: var(--space-tight);
+  font-family: var(--type-numeric-lg-family);
+  font-size: var(--type-numeric-lg-size);
+  font-weight: var(--type-numeric-lg-weight);
 }
-.digit {
-  width: 40px;
-  height: var(--interaction-minTarget);
+
+.cell {
+  --_edge: var(--color-border-strong);
+
+  box-sizing: border-box;
+  width: var(--_cell);
+  height: var(--_cell);
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
   text-align: center;
-  font-family: var(--font-body);
-  font-size: var(--type-heading-md-size);
   color: var(--color-text-primary);
-  background: var(--color-bg-page);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-card);
-  transition: border-color var(--motion-fast) var(--motion-easing);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid var(--_edge);
+  border-radius: var(--radius-control);
+  box-shadow: var(--elevation-field);
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    border-color var(--motion-fast) var(--motion-easing),
+    box-shadow var(--motion-fast) var(--motion-easing);
 }
-.digit:hover:not(:disabled) {
-  border-color: var(--color-border-strong);
+.cell[data-invalid] {
+  --_edge: var(--color-border-danger);
 }
-.digit:focus-visible {
+.cell:hover:not(:disabled):not([data-readonly]) {
+  border-color: color-mix(in oklab, var(--_edge), var(--color-text-primary) 40%);
+}
+.cell:focus-visible {
+  z-index: 1;
   outline: 2px solid var(--color-border-focus);
-  outline-offset: 1px;
-  border-color: var(--color-border-focus);
+  outline-offset: 2px;
 }
-.digit:disabled {
-  opacity: 0.5;
+.cell::selection {
+  background: transparent;
+}
+/* read-only: full contrast, but a dashed edge and no fill or lift, as in every field */
+.cell[data-readonly] {
+  border-style: dashed;
+  background: transparent;
+  box-shadow: none;
+}
+.cell:disabled {
   cursor: not-allowed;
+}
+
+/* inputs can't carry a larger invisible hit area, so the cells themselves grow */
+@media (pointer: coarse) {
+  .cells[data-size] {
+    --_cell: var(--interaction-minTarget);
+  }
+  .cells[data-size="lg"] {
+    --_cell: 52px;
+  }
 }

@@ -185,10 +185,10 @@ export { Pagination, pageRange } from "./components/Pagination/Pagination";
 export type { PaginationProps, PaginationOwnProps, PaginationSize } from "./components/Pagination/Pagination";
 
 export { Slider } from "./components/Slider/Slider";
-export type { SliderProps, SliderOwnProps } from "./components/Slider/Slider";
+export type { SliderProps, SliderOwnProps, SliderSize } from "./components/Slider/Slider";
 
 export { NumberField } from "./components/NumberField/NumberField";
-export type { NumberFieldProps, NumberFieldOwnProps } from "./components/NumberField/NumberField";
+export type { NumberFieldProps, NumberFieldOwnProps, NumberFieldSize } from "./components/NumberField/NumberField";
 
 export { ScrollArea } from "./components/ScrollArea/ScrollArea";
 export type { ScrollAreaProps, ScrollAreaOwnProps } from "./components/ScrollArea/ScrollArea";
@@ -197,16 +197,16 @@ export { Resizable } from "./components/Resizable/Resizable";
 export type { ResizableProps, ResizableOwnProps } from "./components/Resizable/Resizable";
 
 export { Popover } from "./components/Popover/Popover";
-export type { PopoverOwnProps } from "./components/Popover/Popover";
+export type { PopoverProps, PopoverOwnProps, PopoverPlacement } from "./components/Popover/Popover";
 
 export { HoverCard } from "./components/HoverCard/HoverCard";
-export type { HoverCardOwnProps } from "./components/HoverCard/HoverCard";
+export type { HoverCardProps, HoverCardOwnProps, HoverCardPlacement } from "./components/HoverCard/HoverCard";
 
 export { FileUpload } from "./components/FileUpload/FileUpload";
 export type { FileUploadProps, FileUploadOwnProps, FileUploadErrorType } from "./components/FileUpload/FileUpload";
 
 export { InputOTP } from "./components/InputOTP/InputOTP";
-export type { InputOTPProps, InputOTPOwnProps } from "./components/InputOTP/InputOTP";
+export type { InputOTPProps, InputOTPOwnProps, InputOTPSize } from "./components/InputOTP/InputOTP";
 
 export { TagInput } from "./components/TagInput/TagInput";
 export type { TagInputProps, TagInputOwnProps } from "./components/TagInput/TagInput";
@@ -247,7 +247,7 @@ export type {
 } from "./components/DropdownMenu/DropdownMenu";
 
 export { ContextMenu } from "./components/ContextMenu/ContextMenu";
-export type { ContextMenuOwnProps, ContextMenuItemDef } from "./components/ContextMenu/ContextMenu";
+export type { ContextMenuProps, ContextMenuOwnProps, ContextMenuItem } from "./components/ContextMenu/ContextMenu";
 
 export { Combobox } from "./components/Combobox/Combobox";
 export type { ComboboxOwnProps, ComboboxOption } from "./components/Combobox/Combobox";

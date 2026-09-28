@@ -1,85 +1,173 @@
-import { useId, useRef, type ClipboardEvent, type KeyboardEvent } from "react";
+import { forwardRef, useRef, type ClipboardEvent, type HTMLAttributes, type KeyboardEvent } from "react";
+import { useField } from "react-aria";
+import { useControllableState } from "../../lib/useControllableState";
+import { FieldFrame, type FieldProps } from "../Field/Field";
 import styles from "./InputOTP.module.css";
 
-export interface InputOTPOwnProps {
-  /** Never substitute with placeholder - placeholder-as-label is banned. */
-  label: string;
-  /** @default 6 */
+export type InputOTPSize = "sm" | "md" | "lg";
+
+export interface InputOTPOwnProps extends FieldProps {
+  /** Number of digits. @default 6 */
   length?: number;
-  value: string;
-  onChange: (value: string) => void;
-  disabled?: boolean;
+  /** 36 / 44 / 52px round cells; never under 44px on touch screens. @default "md" */
+  size?: InputOTPSize;
+  /** The code so far (controlled). */
+  value?: string;
+  /** The starting code (uncontrolled). @default "" */
+  defaultValue?: string;
+  /** Called with the code on every edit. */
+  onValueChange?: (value: string) => void;
+  /** Called once every digit is filled. */
+  onComplete?: (value: string) => void;
+  /** Submitted with a form, as one value. */
+  name?: string;
 }
 
-export type InputOTPProps = InputOTPOwnProps;
+/** `ref`, `className` and every other prop go on the field's root. */
+export type InputOTPProps = InputOTPOwnProps & Omit<HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange">;
 
-export function InputOTP({ label, length = 6, value, onChange, disabled }: InputOTPProps) {
-  const groupId = useId();
-  const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
+/**
+ * A one-time code as a row of single-digit cells. Typing moves to the next
+ * cell, Backspace to the previous one, arrow keys move freely, and pasting a
+ * code fills every cell. The first cell offers `autocomplete="one-time-code"`
+ * so phones can fill it from a text message. Label, help and error text are
+ * wired by React Aria's `useField`; the cells form a labelled group.
+ */
+export const InputOTP = forwardRef<HTMLDivElement, InputOTPProps>(function InputOTP(
+  {
+    label,
+    helpText,
+    errorText,
+    required = false,
+    disabled = false,
+    readOnly = false,
+    length = 6,
+    size = "md",
+    value: valueProp,
+    defaultValue = "",
+    onValueChange,
+    onComplete,
+    name,
+    className,
+    ...rest
+  },
+  ref
+) {
+  const [value, setValue] = useControllableState(valueProp, defaultValue, onValueChange);
+  const { labelProps, fieldProps, descriptionProps, errorMessageProps } = useField({
+    label,
+    description: errorText ? undefined : helpText,
+    errorMessage: errorText,
+    isInvalid: Boolean(errorText),
+  });
+  const cells = useRef<Array<HTMLInputElement | null>>([]);
   const digits = Array.from({ length }, (_, i) => value[i] ?? "");
+  const editable = !disabled && !readOnly;
+  const focus = (i: number) => cells.current[Math.max(0, Math.min(length - 1, i))]?.focus();
 
-  function setDigit(index: number, digit: string) {
+  const commit = (next: string[]) => {
+    // keep the code contiguous: a cleared cell closes the gap
+    const code = next.join("").slice(0, length);
+    setValue(code);
+    if (code.length === length) onComplete?.(code);
+  };
+
+  const onInput = (i: number, raw: string) => {
+    const typed = raw.replace(/\D/g, "");
+    if (!typed) return;
     const next = digits.slice();
-    next[index] = digit;
-    onChange(next.join(""));
-  }
+    // typing over a filled cell replaces it; more than one digit (autofill) spills forward
+    typed.split("").forEach((d, k) => {
+      if (i + k < length) next[i + k] = d;
+    });
+    commit(next);
+    focus(Math.min(i + typed.length, length - 1));
+  };
 
-  function handleChange(index: number, raw: string) {
-    const digit = raw.replace(/\D/g, "").slice(-1);
-    setDigit(index, digit);
-    if (digit && index < length - 1) inputRefs.current[index + 1]?.focus();
-  }
-
-  function handleKeyDown(index: number, event: KeyboardEvent<HTMLInputElement>) {
-    if (event.key === "Backspace" && !digits[index] && index > 0) {
+  const onKeyDown = (i: number, event: KeyboardEvent<HTMLInputElement>) => {
+    const next = digits.slice();
+    if (event.key === "Backspace" && editable) {
       event.preventDefault();
-      inputRefs.current[index - 1]?.focus();
-      setDigit(index - 1, "");
-    } else if (event.key === "ArrowLeft" && index > 0) {
+      const at = digits[i] ? i : i - 1;
+      if (at < 0) return;
+      next.splice(at, 1);
+      commit(next);
+      focus(at);
+    } else if (event.key === "Delete" && editable) {
       event.preventDefault();
-      inputRefs.current[index - 1]?.focus();
-    } else if (event.key === "ArrowRight" && index < length - 1) {
+      next.splice(i, 1);
+      commit(next);
+    } else if (event.key === "ArrowLeft") {
       event.preventDefault();
-      inputRefs.current[index + 1]?.focus();
+      focus(i - 1);
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      focus(i + 1);
+    } else if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      focus(event.key === "Home" ? 0 : length - 1);
     }
-  }
+  };
 
-  function handlePaste(event: ClipboardEvent<HTMLInputElement>) {
+  const onPaste = (event: ClipboardEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    if (!editable) return;
     const pasted = event.clipboardData.getData("text").replace(/\D/g, "").slice(0, length);
     if (!pasted) return;
-    event.preventDefault();
-    onChange(pasted.padEnd(length, "").slice(0, length));
-    const focusIndex = Math.min(pasted.length, length - 1);
-    inputRefs.current[focusIndex]?.focus();
-  }
+    commit(pasted.split(""));
+    focus(pasted.length);
+  };
 
   return (
-    <div role="group" aria-labelledby={groupId} className={styles.root}>
-      <span id={groupId} className={styles.label}>
-        {label}
-      </span>
-      <div className={styles.digits}>
-        {digits.map((digit, index) => (
+    <FieldFrame
+      ref={ref}
+      label={label}
+      labelAs="span"
+      labelProps={{ id: labelProps.id }}
+      helpText={helpText}
+      errorText={errorText}
+      required={required}
+      disabled={disabled}
+      readOnly={readOnly}
+      descriptionProps={descriptionProps}
+      errorMessageProps={errorMessageProps}
+      rootProps={rest}
+      className={className}
+    >
+      <div role="group" aria-labelledby={labelProps.id} className={styles.cells} data-size={size}>
+        {digits.map((digit, i) => (
           <input
-            // eslint-disable-next-line react/no-array-index-key
-            key={index}
+            key={i}
             ref={(node) => {
-              inputRefs.current[index] = node;
+              cells.current[i] = node;
             }}
             type="text"
             inputMode="numeric"
-            autoComplete={index === 0 ? "one-time-code" : "off"}
-            maxLength={1}
+            pattern="[0-9]*"
+            autoComplete={i === 0 ? "one-time-code" : "off"}
+            // one cell at a time in the tab order: the next empty one, like a single field
+            tabIndex={i === Math.min(value.length, length - 1) ? 0 : -1}
             value={digit}
             disabled={disabled}
-            aria-label={`Digit ${index + 1} of ${length}`}
-            className={styles.digit}
-            onChange={(event) => handleChange(index, event.currentTarget.value)}
-            onKeyDown={(event) => handleKeyDown(index, event)}
-            onPaste={handlePaste}
+            readOnly={readOnly}
+            required={required && i === 0 ? true : undefined}
+            aria-label={`Digit ${i + 1} of ${length}`}
+            aria-describedby={fieldProps["aria-describedby"]}
+            aria-invalid={errorText ? true : undefined}
+            className={styles.cell}
+            data-control=""
+            data-invalid={errorText ? true : undefined}
+            data-readonly={readOnly || undefined}
+            onChange={(event) => onInput(i, event.currentTarget.value.replace(digit, ""))}
+            onKeyDown={(event) => onKeyDown(i, event)}
+            onPaste={onPaste}
+            onFocus={(event) => event.currentTarget.select()}
           />
         ))}
       </div>
-    </div>
+      {name && <input type="hidden" name={name} value={value} />}
+    </FieldFrame>
   );
-}
+});
+
+InputOTP.displayName = "InputOTP";

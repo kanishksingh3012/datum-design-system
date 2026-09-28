@@ -1052,6 +1052,135 @@
           ],
           "beh": "React Aria",
           "note": "Moves off the native <select> to a styled listbox with full keyboard support and type-ahead."
+        },
+        {
+          "n": "NumberField",
+          "st": "rework",
+          "why": "A number with − and + steppers.",
+          "props": [
+            [
+              "size",
+              "sm · md · lg",
+              "md",
+              ""
+            ],
+            [
+              "value / defaultValue / onValueChange",
+              "number (NaN = empty)",
+              "NaN",
+              ""
+            ],
+            [
+              "min / max / step",
+              "number",
+              "— / — / 1",
+              "Clamped and snapped on commit"
+            ],
+            [
+              "formatOptions",
+              "Intl.NumberFormatOptions",
+              "—",
+              "Currency, percent, units"
+            ],
+            [
+              "hideSteppers",
+              "boolean",
+              "false",
+              ""
+            ],
+            [
+              "…Field props",
+              "—",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useNumberField; steppers nested in the pill's ends, value centered."
+        },
+        {
+          "n": "Slider",
+          "st": "rework",
+          "why": "A number or a range by dragging.",
+          "props": [
+            [
+              "size",
+              "sm · md",
+              "md",
+              "4 / 6px rail, 16 / 20px thumb, 44px touch"
+            ],
+            [
+              "value / defaultValue / onValueChange",
+              "number | number[]",
+              "min",
+              "Two values make a range"
+            ],
+            [
+              "onValueCommit",
+              "(value) => void",
+              "—",
+              ""
+            ],
+            [
+              "min / max / step",
+              "number",
+              "0 / 100 / 1",
+              ""
+            ],
+            [
+              "formatOptions",
+              "Intl.NumberFormatOptions",
+              "—",
+              ""
+            ],
+            [
+              "showValue",
+              "boolean",
+              "true with a label",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useSlider + useSliderThumb; text.accent fill like ProgressBar."
+        },
+        {
+          "n": "InputOTP",
+          "st": "rework",
+          "why": "A one-time code, one cell per digit.",
+          "props": [
+            [
+              "length",
+              "number",
+              "6",
+              ""
+            ],
+            [
+              "size",
+              "sm · md · lg",
+              "md",
+              "36 / 44 / 52px round cells"
+            ],
+            [
+              "value / defaultValue / onValueChange",
+              "string",
+              "\"\"",
+              ""
+            ],
+            [
+              "onComplete",
+              "(code) => void",
+              "—",
+              ""
+            ],
+            [
+              "…Field props",
+              "—",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useField wiring; one cell in the tab order at a time."
         }
       ]
     },
@@ -1161,6 +1290,93 @@
             ]
           ],
           "beh": "React Aria"
+        },
+        {
+          "n": "Popover",
+          "st": "rework",
+          "why": "Interactive content anchored to a trigger.",
+          "props": [
+            [
+              "title",
+              "ReactNode",
+              "—",
+              "Names the dialog"
+            ],
+            [
+              "placement",
+              "top · bottom (± start/end) · left · right",
+              "bottom",
+              ""
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "false",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useOverlayTrigger + usePopover + useDialog."
+        },
+        {
+          "n": "HoverCard",
+          "st": "rework",
+          "why": "A preview on hover or focus.",
+          "props": [
+            [
+              "placement",
+              "top · right · bottom · left",
+              "bottom",
+              ""
+            ],
+            [
+              "openDelay / closeDelay",
+              "ms",
+              "500 / 300",
+              ""
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "false",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useHover + useFocus + useOverlayPosition; supplementary content only."
+        },
+        {
+          "n": "ContextMenu",
+          "st": "rework",
+          "why": "DropdownMenu's menu on right-click.",
+          "props": [
+            [
+              "items",
+              "the DropdownMenu item kinds",
+              "—",
+              ""
+            ],
+            [
+              "size",
+              "sm · md",
+              "md",
+              ""
+            ],
+            [
+              "menuLabel",
+              "string",
+              "\"Context menu\"",
+              ""
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "false",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. Right-click at the pointer or Shift+F10; shares DropdownMenu's list and popover."
         }
       ]
     },
@@ -1449,6 +1665,10 @@
     [
       "State trios",
       "Every piece of component state is current / default / on-change. Booleans keep their names: pressed / defaultPressed / onPressedChange (toggle Button), checked / defaultChecked / onCheckedChange (Checkbox, Switch); otherwise value / defaultValue / onValueChange or open / defaultOpen / onOpenChange. Button gains defaultPressed."
+    ],
+    [
+      "Wave 2 popups + simple inputs",
+      "Popover, HoverCard, ContextMenu, NumberField, Slider and InputOTP rebuilt to the phase-1 standard on react-aria / react-stately hooks and added to the review under Overlays and Forms. ContextMenu reuses DropdownMenu's menu; NumberField steppers sit inside the pill; OTP cells are circles (radius.control, square box); the Slider thumb is a field-drawn knob over a text.accent fill."
     ]
   ]
 }

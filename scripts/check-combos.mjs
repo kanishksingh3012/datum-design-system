@@ -302,11 +302,12 @@ try {
         await page.mouse.move(0, 0);
         const texts = await page.evaluate(() => {
           const hasText = (el) => [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
-          const els = [...document.querySelectorAll("#fixture [data-check-text]")].flatMap((el) =>
+          // a Set: text marked inside a deep container would otherwise be listed (and id'd) twice
+          const els = [...new Set([...document.querySelectorAll("#fixture [data-check-text]")].flatMap((el) =>
             el.dataset.checkText === "deep"
               ? [el, ...[...el.querySelectorAll("*")].filter((d) => hasText(d) && !d.closest('button, a, option, [aria-hidden="true"]'))]
               : [el]
-          );
+          ))];
           els.forEach((el, i) => el.setAttribute("data-check-id", `text-${i}`));
           return els.length;
         });
