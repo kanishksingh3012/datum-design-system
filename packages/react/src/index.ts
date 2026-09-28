@@ -191,7 +191,7 @@ export { NumberField } from "./components/NumberField/NumberField";
 export type { NumberFieldProps, NumberFieldOwnProps, NumberFieldSize } from "./components/NumberField/NumberField";
 
 export { ScrollArea } from "./components/ScrollArea/ScrollArea";
-export type { ScrollAreaProps, ScrollAreaOwnProps, ScrollAreaOrientation } from "./components/ScrollArea/ScrollArea";
+export type { ScrollAreaProps, ScrollAreaOwnProps, ScrollAreaOrientation, ScrollAreaPadding } from "./components/ScrollArea/ScrollArea";
 
 export { Resizable } from "./components/Resizable/Resizable";
 export type { ResizableProps, ResizableOwnProps, ResizableOrientation } from "./components/Resizable/Resizable";

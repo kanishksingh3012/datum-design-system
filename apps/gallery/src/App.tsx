@@ -333,6 +333,7 @@ const sliderProps: PropRow[] = [
 const scrollAreaProps: PropRow[] = [
   ["orientation", "vertical | horizontal | both", "vertical", "Which way the content scrolls."],
   ["maxHeight", "number | string", "—", "The largest it grows before it scrolls; or size it with style."],
+  ["padding", "none | sm | md", "md", "0 / 12 / 16px on all four edges; it scrolls with the content."],
   ["label", "string", "—", "Names it as a region for screen readers."],
 ];
 const resizableProps: PropRow[] = [
@@ -341,6 +342,7 @@ const resizableProps: PropRow[] = [
   ["value / defaultValue / onValueChange", "number", "50", "The first panel's share, 0–100."],
   ["onValueCommit", "(value) => void", "—", "Once a drag or key press ends — for saving the layout."],
   ["min / max / step", "number", "10 / 90 / 1", "Limits on the first panel, and one arrow key's move."],
+  ["minPanelSize", "number (px)", "64", "Neither panel shrinks below this, whatever min and max say."],
   ["handleLabel", "string", "Resize panels", "Names the handle."],
   ["disabled", "boolean", "false", ""],
 ];
@@ -1283,7 +1285,7 @@ export function App() {
         <p className="dek">Native scrolling with thin <b>border.strong</b> scrollbars. While its content overflows it is a tab stop, so keyboard users can focus it and scroll with the arrow keys; <b>label</b> names it as a region.</p>
 
         <div className="example-box" style={{ display: "block" }}>
-          <ScrollArea label="Release notes" maxHeight={180} style={{ maxWidth: 360, margin: "0 auto" }}>
+          <ScrollArea label="Release notes" maxHeight={180} style={{ maxWidth: 360, margin: "0 auto", background: "var(--color-bg-surface)", border: "1px solid var(--color-border-subtle)", borderRadius: "var(--radius-card)" }}>
             {Array.from({ length: 12 }, (_, i) => <Text key={i}>{`Release 2.${12 - i}: fixes and small improvements.`}</Text>)}
           </ScrollArea>
         </div>
@@ -1292,7 +1294,7 @@ export function App() {
           <h2>Orientation</h2>
           <p className="lead"><b>vertical</b> (default), <b>horizontal</b> or <b>both</b>.</p>
           <div className="sample-box demo-on-page">
-            <ScrollArea orientation="horizontal" label="Wide line" style={{ maxWidth: 360 }}>
+            <ScrollArea orientation="horizontal" label="Wide line" style={{ maxWidth: 360, background: "var(--color-bg-surface)", border: "1px solid var(--color-border-subtle)", borderRadius: "var(--radius-card)" }}>
               <Text style={{ whiteSpace: "nowrap" }}>A single line far too long for its box, so the area scrolls sideways instead of wrapping it.</Text>
             </ScrollArea>
           </div>

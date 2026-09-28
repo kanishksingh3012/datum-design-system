@@ -112,7 +112,8 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(function Slider(
       )}
       <div {...trackProps} ref={trackRef} className={styles.track}>
         <span className={styles.rail} aria-hidden="true" />
-        <span className={styles.fill} style={{ left: `${start * 100}%`, right: `${(1 - end) * 100}%` }} aria-hidden="true" />
+        {/* one value fills from the rail's own start; a range fills between its thumbs */}
+        <span className={styles.fill} data-from-start={range ? undefined : ""} style={{ left: range ? `${start * 100}%` : undefined, right: `${(1 - end) * 100}%` }} aria-hidden="true" />
         {state.values.map((_, i) => (
           <Thumb key={i} index={i} state={state} trackRef={trackRef} name={name} disabled={disabled} label={range ? (i === 0 ? "Minimum" : "Maximum") : undefined} />
         ))}

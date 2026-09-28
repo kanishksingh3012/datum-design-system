@@ -14,6 +14,23 @@
 .root[data-orientation="horizontal"] {
   overflow-y: hidden;
 }
+/* the padding lives on the content, so it scrolls with it and holds at every edge */
+.content {
+  box-sizing: border-box;
+  padding: var(--space-default);
+}
+.root[data-padding="sm"] > .content {
+  padding: var(--space-tight);
+}
+.root[data-padding="none"] > .content {
+  padding: 0;
+}
+/* sideways, the content is as wide as it needs to be (a wide table, an unbroken line), never narrower than the area */
+.root:not([data-orientation="vertical"]) > .content {
+  width: fit-content;
+  min-width: 100%;
+}
+
 /* the thumb steps toward the text color on hover (there is no hover token for an edge) */
 .root:hover {
   --_thumb: color-mix(in oklab, var(--color-border-strong), var(--color-text-primary) 40%);

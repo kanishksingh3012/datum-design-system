@@ -69,6 +69,10 @@
 .fill {
   background: var(--color-text-accent);
 }
+/* the rail starts half a thumb before the track, so a single value's fill does too — no bare stub at the start */
+.fill[data-from-start] {
+  left: calc(var(--_thumb) / -2);
+}
 
 /* a raised knob, drawn like a field: surfaceRaised with a border.strong edge */
 .thumb {

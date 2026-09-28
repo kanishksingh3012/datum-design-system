@@ -1,4 +1,4 @@
-import { forwardRef, useRef, type HTMLAttributes, type ReactNode, type Ref } from "react";
+import { forwardRef, useEffect, useRef, useState, type HTMLAttributes, type ReactNode, type Ref } from "react";
 import { mergeProps, mergeRefs, useNumberFormatter, useSlider, useSliderThumb } from "react-aria";
 import { useSliderState } from "react-stately";
 import { useControlledState } from "react-stately/useControlledState";
@@ -25,6 +25,8 @@ export interface ResizableOwnProps {
   min?: number;
   /** The largest share the first panel can have. @default 90 */
   max?: number;
+  /** Neither panel shrinks below this many px along the axis, whatever `min` and `max` say, so its content always has room. @default 64 */
+  minPanelSize?: number;
   /** How far one arrow key press moves the handle, in percent. @default 1 */
   step?: number;
   /** Names the handle. @default "Resize panels" */
@@ -57,6 +59,7 @@ export const Resizable = forwardRef<HTMLDivElement, ResizableProps>(function Res
     min = 10,
     max = 90,
     step = 1,
+    minPanelSize = 64,
     handleLabel = "Resize panels",
     disabled = false,
     className,
@@ -66,7 +69,26 @@ export const Resizable = forwardRef<HTMLDivElement, ResizableProps>(function Res
   ref
 ) {
   const vertical = orientation === "vertical";
-  const [split, setSplit] = useControlledState(value, clamp(defaultValue, min, max), onValueChange);
+  const rootRef = useRef<HTMLDivElement>(null);
+  // the root's length along the axis, to turn minPanelSize into a share
+  const [length, setLength] = useState(0);
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const measure = () => setLength(vertical ? el.clientHeight : el.clientWidth);
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [vertical]);
+  const floor = length > 0 ? (minPanelSize / length) * 100 : 0;
+  let lo = Math.max(min, floor);
+  let hi = Math.min(max, 100 - floor);
+  if (lo > hi) lo = hi = 50; // too small for both floors: split evenly
+  const [stored, setSplit] = useControlledState(value, clamp(defaultValue, min, max), onValueChange);
+  // a stored split outside the limits (the box shrank) is shown at the nearest one
+  const split = clamp(stored, lo, hi);
   // A vertical slider grows upward, so it holds the bottom panel's share: the keys and the drag then
   // move the handle the way they point. The track is the whole root, so a drag maps 1:1 to the pointer.
   const flip = (v: number) => (vertical ? 100 - v : v);
@@ -75,15 +97,14 @@ export const Resizable = forwardRef<HTMLDivElement, ResizableProps>(function Res
     "aria-label": handleLabel,
     orientation,
     value: [flip(split)],
-    onChange: (v: number[]) => setSplit(clamp(flip(v[0]), min, max)),
-    onChangeEnd: onValueCommit && ((v: number[]) => onValueCommit(clamp(flip(v[0]), min, max))),
+    onChange: (v: number[]) => setSplit(clamp(flip(v[0]), lo, hi)),
+    onChangeEnd: onValueCommit && ((v: number[]) => onValueCommit(clamp(flip(v[0]), lo, hi))),
     minValue: 0,
     maxValue: 100,
     step,
     isDisabled: disabled,
   };
   const state = useSliderState({ ...props, numberFormatter });
-  const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   useSlider(props, state, rootRef);
   const { thumbProps, inputProps, isDragging } = useSliderThumb({ index: 0, trackRef: rootRef, inputRef, "aria-label": handleLabel, orientation, isDisabled: disabled }, state);
@@ -106,8 +127,8 @@ export const Resizable = forwardRef<HTMLDivElement, ResizableProps>(function Res
         <input
           {...mergeProps(inputProps, {
             // the real limits and the first panel's share, whichever way the slider runs
-            min: vertical ? 100 - max : min,
-            max: vertical ? 100 - min : max,
+            min: Math.round(vertical ? 100 - hi : lo),
+            max: Math.round(vertical ? 100 - lo : hi),
             "aria-valuetext": `${Math.round(split)}%`,
           })}
           ref={inputRef}

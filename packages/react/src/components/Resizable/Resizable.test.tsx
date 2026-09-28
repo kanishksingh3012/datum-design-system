@@ -39,6 +39,19 @@ describe("Resizable", () => {
     expect(onValueChange).toHaveBeenLastCalledWith(41);
   });
 
+  it("keeps each panel at least minPanelSize px along the axis", async () => {
+    const height = vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockReturnValue(200);
+    const onValueChange = vi.fn();
+    render(panels({ orientation: "vertical", minPanelSize: 50, onValueChange }));
+    const handle = screen.getByRole("slider");
+    // 50px of 200px is 25%: the top panel stops there, not at min (10)
+    expect(handle).toHaveAttribute("max", "75");
+    await userEvent.click(handle);
+    fireEvent.keyDown(handle, { key: "End" });
+    expect(onValueChange).toHaveBeenLastCalledWith(25);
+    height.mockRestore();
+  });
+
   it("is controlled by value, and disabled leaves the tab order", () => {
     const { rerender } = render(panels({ value: 25 }));
     expect(screen.getByRole("slider")).toHaveAttribute("aria-valuetext", "25%");

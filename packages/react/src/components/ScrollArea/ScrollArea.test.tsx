@@ -9,6 +9,14 @@ describe("ScrollArea", () => {
     expect(area).toHaveTextContent("Content");
     expect(area).toHaveAttribute("data-orientation", "vertical");
     expect(area).toHaveStyle({ maxHeight: "120px" });
+    expect(area).toHaveAttribute("data-padding", "md");
+  });
+
+  it("pads its content on an inner wrapper, or not at all", () => {
+    render(<ScrollArea data-testid="area" padding="none"><p>Row</p></ScrollArea>);
+    const area = screen.getByTestId("area");
+    expect(area).toHaveAttribute("data-padding", "none");
+    expect(screen.getByText("Row").parentElement?.parentElement).toBe(area);
   });
 
   it("is a named region when labelled", () => {

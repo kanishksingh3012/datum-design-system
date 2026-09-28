@@ -964,13 +964,22 @@ export const fixtures: Record<string, Fixture> = {
       // an open Sheet traps focus, so it gets its own state; its contents are Sheet's coverage
       <div data-check-skip="">{sidebar({ style: undefined, defaultOpen: true })}</div>
     ), true),
-  ScrollArea: () => (
-    <div className="row" data-check-text="deep" style={{ alignItems: "flex-start" }}>
-      <ScrollArea label="Vertical" maxHeight={200} style={{ ...box, width: 280, borderRadius: "var(--radius-card)" }}>{lines(12, "Row")}</ScrollArea>
-      <ScrollArea label="Horizontal" orientation="horizontal" style={{ ...box, width: 280, borderRadius: "var(--radius-card)" }}>{lines(3, "Wide row")}</ScrollArea>
-      <ScrollArea label="Both ways" orientation="both" maxHeight={200} style={{ ...box, width: 280, borderRadius: "var(--radius-card)" }}>{lines(12, "Cell")}</ScrollArea>
-    </div>
-  ),
+  ScrollArea: () => {
+    const frame = { background: "var(--color-bg-surface)", width: 280, border: "1px solid var(--color-border-subtle)", borderRadius: "var(--radius-card)" };
+    return (
+      <div data-check-text="deep" style={{ display: "grid", gap: "var(--space-section)" }}>
+        <div className="row" style={{ alignItems: "flex-start" }}>
+          <ScrollArea label="Vertical" maxHeight={200} style={frame}>{lines(12, "Row")}</ScrollArea>
+          <ScrollArea label="Horizontal" orientation="horizontal" style={frame}>{lines(3, "Wide row")}</ScrollArea>
+          <ScrollArea label="Both ways" orientation="both" maxHeight={200} style={frame}>{lines(12, "Cell")}</ScrollArea>
+        </div>
+        <div className="row" style={{ alignItems: "flex-start" }}>
+          <ScrollArea label="Padding sm" padding="sm" maxHeight={160} style={frame}>{lines(8, "Small")}</ScrollArea>
+          <ScrollArea label="Padding none" padding="none" maxHeight={160} style={frame}>{lines(8, "Flush")}</ScrollArea>
+        </div>
+      </div>
+    );
+  },
   Resizable: () => (
     <div data-check-text="deep" style={{ display: "grid", gap: "var(--space-section)", maxWidth: 720 }}>
       {(["horizontal", "vertical"] as const).map((orientation) => (
