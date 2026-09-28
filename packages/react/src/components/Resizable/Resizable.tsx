@@ -135,6 +135,8 @@ export const Resizable = forwardRef<HTMLDivElement, ResizableProps>(function Res
             })}
             ref={inputRef}
             className={styles.input}
+            // the checker's opt-in: this control shows focus as a fill, not a ring
+            data-check-focus="fill"
           />
         </span>
       </div>

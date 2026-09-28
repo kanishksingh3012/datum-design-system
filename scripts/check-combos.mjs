@@ -4,6 +4,7 @@
 //   node scripts/check-combos.mjs [Component ...]
 //
 // 1. Static scan: fails on hardcoded colors in a component's .css/.tsx, and
+//    and in packages/react/src/lib (shared parts several components render),
 //    on breaking the interaction rules in DESIGN.md: filter-based hover, raw
 //    durations instead of motion tokens, and :focus rings instead of :focus-visible.
 // 2. Render: loads each component's fixture (apps/gallery/check.html) in
@@ -32,8 +33,10 @@
 //    actually visible and measured there, rather than silently skipped everywhere. Any other
 //    display:none control is still skipped outright — real screen coverage of anything
 //    breakpoint-hidden needs its own "mobile menu"-style variant, not a blanket assumption.
-//    Focus is a ring (an outline) at 3:1, or, for a control too small to ring well (Resizable's
-//    grip), a fill that changes on focus and reaches 3:1 against what is behind it.
+//    Focus is a ring (an outline) at 3:1. The one opt-out is a control marked
+//    data-check-focus="fill" (today only Resizable's grip, too small to ring well): it may
+//    instead show focus with a fill that changes on focus and reaches 3:1 against what is
+//    behind it. Any other control without a ring fails, even if its fill changes.
 //    backdrop-filter is allowed (a translucent bar blurring what's behind it); filter is not.
 //
 // Needs a built @datum-design/react (the gallery imports dist); `npm run check` builds first.
@@ -83,8 +86,7 @@ function stripComments(src) {
     .replace(/(^|[^:"'`])\/\/.*$/gm, (m, p) => p);
 }
 
-function scanComponent(name) {
-  const dir = join(COMPONENTS, name);
+function scanComponent(name, dir = join(COMPONENTS, name)) {
   if (!existsSync(dir)) return fail(`${name}: no folder at ${relative(ROOT, dir)}`);
   const files = readdirSync(dir).filter((f) => /\.(css|tsx)$/.test(f) && !f.includes(".test."));
   let hits = 0;
@@ -200,9 +202,11 @@ function measure({ id, focus }) {
   }
   if (focus) {
     if (vcs.outlineStyle === "none" || parseFloat(vcs.outlineWidth) === 0) {
-      // no ring: focus must change the fill, and the focused fill must reach 3:1 against what's behind it
-      const changed = vcs.backgroundColor !== restFill;
-      out.checks.push({ kind: "focus", ratio: changed ? fillRatio : 0, min: 3, fg: changed ? hex(fill) : "none", bg: hex(outer) });
+      // no ring: only a control that opts in (data-check-focus="fill") may show focus by filling instead,
+      // and then the fill must change on focus and reach 3:1 against what's behind it
+      const optIn = el.getAttribute("data-check-focus") === "fill";
+      const changed = optIn && vcs.backgroundColor !== restFill;
+      out.checks.push({ kind: "focus", ratio: changed ? fillRatio : 0, min: 3, fg: changed ? hex(fill) : optIn ? "unchanged fill" : "no ring", bg: hex(outer) });
     } else {
       const o = over(rgba(vcs.outlineColor), outer);
       out.checks.push({ kind: "focus", ratio: ratio(o, outer), min: 3, fg: hex(o), bg: hex(outer) });
@@ -218,7 +222,9 @@ const { chromium } = await import("playwright");
 
 console.log(`\nDatum combo check — ${targets.join(", ") || "(nothing registered)"}\n`);
 console.log("Static scan");
-targets.forEach(scanComponent);
+targets.forEach((name) => scanComponent(name));
+// shared internals (the AI disclosure, status badge, syntax styles) are held to the same rules
+scanComponent("lib", join(ROOT, "packages/react/src/lib"));
 
 // A static build, not the dev server: the dev server can reload the page
 // mid-run when it discovers a dependency, which destroys the measurement.
