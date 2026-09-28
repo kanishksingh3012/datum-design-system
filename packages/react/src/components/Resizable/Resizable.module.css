@@ -18,28 +18,34 @@
   overflow: auto;
 }
 
-/* the drawn handle: a 1px border.strong line (3:1 against the surface) with a grip in its middle */
+/* The handle is the pointer target; its 1px border.strong line (3:1 against the surface) is a
+   pseudo-element, so the grip in its middle sits on the panels, not on the line. */
 .handle {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 1px;
-  background: var(--color-border-strong);
   cursor: col-resize;
   touch-action: none;
-  transition: background var(--motion-fast) var(--motion-easing);
 }
 .root[data-orientation="vertical"] .handle {
   width: auto;
   height: 1px;
   cursor: row-resize;
 }
+.handle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-border-strong);
+  transition: background var(--motion-fast) var(--motion-easing);
+}
 .root[data-disabled] .handle {
   opacity: 0.5;
   cursor: not-allowed;
 }
-/* a 44px grab area centered on the line, for every pointer */
+/* a 44px grab area along the whole line, for every pointer */
 .handle::after {
   content: "";
   position: absolute;
@@ -57,6 +63,7 @@
   transform: translateY(-50%);
 }
 
+/* the grip: a raised pill drawn like a field */
 .grip {
   position: relative;
   z-index: 1;
@@ -69,6 +76,7 @@
   border-radius: var(--radius-pill);
   box-shadow: var(--elevation-field);
   transition:
+    background var(--motion-fast) var(--motion-easing),
     border-color var(--motion-fast) var(--motion-easing),
     transform var(--motion-fast) var(--motion-easing);
 }
@@ -76,9 +84,19 @@
   width: 24px;
   height: 8px;
 }
+/* the grip's own 44px target, around it */
+.grip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--interaction-minTarget);
+  height: var(--interaction-minTarget);
+  transform: translate(-50%, -50%);
+}
 
-.root:not([data-disabled]) .handle:hover,
-.handle[data-dragging] {
+.root:not([data-disabled]) .handle:hover::before,
+.handle[data-dragging]::before {
   background: color-mix(in oklab, var(--color-border-strong), var(--color-text-primary) 40%);
 }
 .root:not([data-disabled]) .handle:hover .grip,
@@ -89,10 +107,14 @@
 .handle[data-dragging] .grip {
   transform: scale(0.98);
 }
-.handle:has(> .input:focus-visible) {
-  z-index: 1;
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
+/* Keyboard focus fills the grip with border.focus (3:1 against the panels) rather than
+   ringing the whole line; the line under it takes the same color so the two read as one. */
+.grip:has(> .input:focus-visible) {
+  background: var(--color-border-focus);
+  border-color: var(--color-border-focus);
+}
+.handle:has(.input:focus-visible)::before {
+  background: var(--color-border-focus);
 }
 
 /* the native range input stays in the page (and the tab order), invisible and untouchable */

@@ -45,7 +45,8 @@ const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v
  * slider thumb on React Aria's `useSlider` and `useSliderThumb`: drag it, or
  * focus it and use the arrow keys (Home and End jump to the limits). Its native
  * range input carries the name and the value, announced as the first panel's
- * share. The line is 1px; the grab area around it is 44px.
+ * share. The line is 1px; the grab area around it is 44px. Focused, the grip
+ * fills with `border.focus` instead of a ring round the whole line.
  */
 export const Resizable = forwardRef<HTMLDivElement, ResizableProps>(function Resizable(
   {
@@ -122,18 +123,20 @@ export const Resizable = forwardRef<HTMLDivElement, ResizableProps>(function Res
       data-disabled={disabled || undefined}
     >
       <div className={styles.panel}>{first}</div>
-      <div {...handleProps} className={styles.handle} data-control="" data-dragging={isDragging || undefined}>
-        <span className={styles.grip} aria-hidden="true" />
-        <input
-          {...mergeProps(inputProps, {
-            // the real limits and the first panel's share, whichever way the slider runs
-            min: Math.round(vertical ? 100 - hi : lo),
-            max: Math.round(vertical ? 100 - lo : hi),
-            "aria-valuetext": `${Math.round(split)}%`,
-          })}
-          ref={inputRef}
-          className={styles.input}
-        />
+      <div {...handleProps} className={styles.handle} data-dragging={isDragging || undefined}>
+        {/* the grip is the drawn control: focus fills it (no ring around the whole line) */}
+        <span className={styles.grip} data-control="">
+          <input
+            {...mergeProps(inputProps, {
+              // the real limits and the first panel's share, whichever way the slider runs
+              min: Math.round(vertical ? 100 - hi : lo),
+              max: Math.round(vertical ? 100 - lo : hi),
+              "aria-valuetext": `${Math.round(split)}%`,
+            })}
+            ref={inputRef}
+            className={styles.input}
+          />
+        </span>
       </div>
       <div className={styles.panel}>{second}</div>
     </div>

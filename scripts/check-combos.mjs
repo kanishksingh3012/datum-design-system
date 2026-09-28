@@ -32,6 +32,8 @@
 //    actually visible and measured there, rather than silently skipped everywhere. Any other
 //    display:none control is still skipped outright — real screen coverage of anything
 //    breakpoint-hidden needs its own "mobile menu"-style variant, not a blanket assumption.
+//    Focus is a ring (an outline) at 3:1, or, for a control too small to ring well (Resizable's
+//    grip), a fill that changes on focus and reaches 3:1 against what is behind it.
 //    backdrop-filter is allowed (a translucent bar blurring what's behind it); filter is not.
 //
 // Needs a built @datum-design/react (the gallery imports dist); `npm run check` builds first.
@@ -160,6 +162,8 @@ function measure({ id, focus }) {
   const isField = el.matches("input, textarea");
   const isChoice = el.matches("input[type=checkbox], input[type=radio]");
   const vis = isField ? (el.closest("[data-control]") ?? el.parentElement.querySelector(":scope > [data-control]") ?? el) : el;
+  // the drawn element's fill before focus, for a control that shows focus by filling instead of a ring
+  const restFill = getComputedStyle(vis).backgroundColor;
   if (focus) el.focus();
   const cs = getComputedStyle(el);
   const vcs = getComputedStyle(vis);
@@ -196,7 +200,9 @@ function measure({ id, focus }) {
   }
   if (focus) {
     if (vcs.outlineStyle === "none" || parseFloat(vcs.outlineWidth) === 0) {
-      out.checks.push({ kind: "focus", ratio: 0, min: 3, fg: "none", bg: hex(outer) });
+      // no ring: focus must change the fill, and the focused fill must reach 3:1 against what's behind it
+      const changed = vcs.backgroundColor !== restFill;
+      out.checks.push({ kind: "focus", ratio: changed ? fillRatio : 0, min: 3, fg: changed ? hex(fill) : "none", bg: hex(outer) });
     } else {
       const o = over(rgba(vcs.outlineColor), outer);
       out.checks.push({ kind: "focus", ratio: ratio(o, outer), min: 3, fg: hex(o), bg: hex(outer) });
