@@ -8,6 +8,9 @@ import {
   Breadcrumbs, BreadcrumbItem, Footer, Navbar, Pagination, Tabs, type NavbarLink, type TabItem,
   ContextMenu, HoverCard, InputOTP, NumberField, Popover, Slider, type ContextMenuItem,
   Carousel, ColorPicker, FileUpload, Resizable, ScrollArea, Sidebar, type CarouselSlide, type SidebarSection,
+  AgentActivity, Citation, CodeBlock, Composer, FileDiff, Message, MessageList, MessageScroller, Reasoning, Source, Sources,
+  Suggestion, SuggestionItem, ThinkingIndicator, TodoItem, TodoList, ToolCall, type DiffRow, type CodeLine,
+  DataTable, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, type DataTableColumn,
 } from "@datum-design/react";
 import { AlignCenter, AlignLeft, AlignRight, Copy, FolderOpen, Home, Inbox, Mail, Pencil, Plus, Search, Settings, Star, Trash2 } from "lucide-react";
 
@@ -91,6 +94,54 @@ function InFixture({ deep, children }: { deep?: boolean; children: ReactNode }) 
     </div>
   );
 }
+
+const codeLines: CodeLine[] = [
+  { tokens: [{ text: "// grows with its content", kind: "comment" }] },
+  { tokens: [{ text: "export", kind: "keyword" }, { text: " " }, { text: "function", kind: "keyword" }, { text: " " }, { text: "Composer", kind: "function" }, { text: "({ label }) {", kind: "punctuation" }] },
+  { tokens: [{ text: "  " }, { text: "return", kind: "keyword" }, { text: " <textarea aria-label={label} rows={" }, { text: "1", kind: "number" }, { text: "} />;" }] },
+  { tokens: [{ text: "}", kind: "punctuation" }] },
+  { tokens: [{ text: "const", kind: "keyword" }, { text: " hint = " }, { text: '"Enter sends, Shift+Enter adds a line"', kind: "string" }, { text: ";" }] },
+];
+const diffRows: DiffRow[] = [
+  { kind: "hunk", content: "@@ -12,4 +12,5 @@ export function Composer" },
+  { kind: "context", oldLine: 12, newLine: 12, content: "  const id = useId();" },
+  { kind: "remove", oldLine: 13, content: "  const [value, setValue] = useState(\"\");" },
+  { kind: "add", newLine: 13, content: "  const [draft, setDraft] = useControllableState(value, defaultValue, onValueChange);" },
+  { kind: "add", newLine: 14, content: "  const canSend = !disabled && !thinking && draft.trim() !== \"\";" },
+  { kind: "context", oldLine: 14, newLine: 15, content: "  return (" },
+];
+
+type Invoice = { id: string; client: string; status: string; amount: number };
+const invoices: Invoice[] = [
+  { id: "INV-104", client: "Acme Inc.", status: "Paid", amount: 1200 },
+  { id: "INV-105", client: "Globex", status: "Overdue", amount: 860.5 },
+  { id: "INV-106", client: "Initech", status: "Draft", amount: 4300 },
+  { id: "INV-107", client: "Umbrella Corporation International", status: "Paid", amount: 99 },
+];
+const invoiceColumns: DataTableColumn<Invoice>[] = [
+  { key: "id", label: "Invoice", sortable: true },
+  { key: "client", label: "Client", sortable: true, rowHeader: true },
+  { key: "status", label: "Status", render: (r) => <Badge intent={r.status === "Overdue" ? "danger" : r.status === "Paid" ? "success" : "neutral"} appearance="soft" size="sm">{r.status}</Badge> },
+  { key: "amount", label: "Amount", sortable: true, align: "end", render: (r) => `$${r.amount.toFixed(2)}` },
+];
+const InvoiceTable = ({ rows = invoices, ...props }: Partial<Parameters<typeof Table>[0]> & { rows?: Invoice[] }) => (
+  <Table aria-label="Invoices" {...props}>
+    <TableHeader>
+      <TableColumn key="id" allowsSorting>Invoice</TableColumn>
+      <TableColumn key="client" isRowHeader allowsSorting>Client</TableColumn>
+      <TableColumn key="amount" align="end" allowsSorting>Amount</TableColumn>
+    </TableHeader>
+    <TableBody items={rows}>
+      {(r) => (
+        <TableRow key={r.id}>
+          <TableCell>{r.id}</TableCell>
+          <TableCell>{r.client}</TableCell>
+          <TableCell>{`$${r.amount.toFixed(2)}`}</TableCell>
+        </TableRow>
+      )}
+    </TableBody>
+  </Table>
+);
 /** A fixture with states: the checker loads each variant on its own page. */
 const states = (variants: string[], render: (variant: string) => ReactNode, deep = false) =>
   Object.assign(({ variant = 0 }: { variant?: number }) => <InFixture deep={deep}>{render(variants[variant])}</InFixture>, { variants });
@@ -1047,4 +1098,165 @@ export const fixtures: Record<string, Fixture> = {
         <div style={box}><FileUpload label="On a surface" size="sm" /></div>
       </>
     ), true),
+
+  // ---------------------------------------------------------------- AI
+  Message: states(["user and assistant", "streaming"], (v) => (
+    <div style={{ maxWidth: 640 }}>
+      <MessageList>
+        <Message author="system" name="System">Conversation started today</Message>
+        <Message author="user" name="Ada" avatar={<Avatar name="Ada Lovelace" size="sm" />} metadata="2:41 PM">How do I pin a chat to the bottom?</Message>
+        <Message
+          author="assistant"
+          name="Datum"
+          metadata="2:41 PM"
+          streaming={v === "streaming"}
+          actions={<><Button intent="neutral" appearance="ghost" size="sm" iconOnly label="Copy"><Copy /></Button><Button intent="neutral" appearance="ghost" size="sm">Retry</Button></>}
+        >
+          Wrap the transcript in a MessageScroller: it follows new content until the reader scrolls up.
+        </Message>
+        <Message author="assistant" name="Datum" grouped>It shows a jump button while they read back.</Message>
+      </MessageList>
+    </div>
+  ), true),
+  MessageScroller: states(["pinned", "scrolled up"], (v) => (
+    <MessageScroller maxHeight={240} defaultPinned={v === "pinned"} style={{ maxWidth: 520, border: "1px solid var(--color-border-default)", borderRadius: "var(--radius-card)" }}>
+      <MessageList>
+        {Array.from({ length: 8 }, (_, i) => (
+          <Message key={i} author={i % 2 ? "assistant" : "user"} name={i % 2 ? "Datum" : "Ada"}>Message number {i + 1} in a long conversation.</Message>
+        ))}
+      </MessageList>
+    </MessageScroller>
+  ), true),
+  Composer: states(["empty", "draft", "thinking", "thinking with stop", "disabled"], (v) => (
+    <div style={{ maxWidth: 520, display: "grid", gap: 16 }}>
+      <Composer
+        label="Message"
+        defaultValue={v === "empty" || v === "disabled" ? "" : "Summarise this thread in three bullet points"}
+        thinking={v.startsWith("thinking")}
+        onStop={v === "thinking with stop" ? noop : undefined}
+        disabled={v === "disabled"}
+        onSubmit={noop}
+      />
+      <div style={box}><Composer label="On a surface" defaultValue="Draft" onSubmit={noop} /></div>
+    </div>
+  ), true),
+  Suggestion: () => (
+    <Stack gap="md">
+      <Suggestion label="Suggested prompts">
+        <SuggestionItem>Summarise this page</SuggestionItem>
+        <SuggestionItem prefix={<Search />}>Find related docs</SuggestionItem>
+        <SuggestionItem>Draft a reply</SuggestionItem>
+      </Suggestion>
+      <div style={box}><Suggestion label="On a surface"><SuggestionItem>Explain like I’m new</SuggestionItem></Suggestion></div>
+    </Stack>
+  ),
+  Reasoning: states(["closed", "open", "streaming"], (v) => (
+    <div style={{ maxWidth: 520 }}>
+      <Reasoning title="Thought for 12 seconds" streaming={v === "streaming"} defaultOpen={v === "open"}>
+        The user wants the chat to stay at the bottom. A scroll container can tell whether the reader is at the end.
+      </Reasoning>
+    </div>
+  ), true),
+  ThinkingIndicator: () => (
+    <Stack gap="md">
+      <ThinkingIndicator data-check-text="deep" />
+      <div style={box}><ThinkingIndicator label="Searching the web" data-check-text="deep" /></div>
+    </Stack>
+  ),
+  ToolCall: states(["pending", "running", "success", "error"], (v) => (
+    <div style={{ maxWidth: 520 }}>
+      <ToolCall
+        name="search_web"
+        status={v as "pending"}
+        defaultOpen={v !== "pending"}
+        input={'{ "query": "datum design system" }'}
+        output={v === "success" ? "3 results: datum.dev, github.com/datum, npm" : undefined}
+        error={v === "error" ? "Request timed out after 30s" : undefined}
+      />
+    </div>
+  ), true),
+  AgentActivity: () => (
+    <div style={{ maxWidth: 520 }} data-check-text="deep">
+      <AgentActivity
+        items={[
+          { kind: "reasoning", status: "success", label: "Planned the change", children: "Read the scroller, then the tests." },
+          { kind: "search", status: "success", label: "Searched the docs" },
+          { kind: "tool", status: "error", label: "run_tests", children: "2 failing: MessageScroller" },
+          { kind: "trace", status: "running", label: "Fixing the scroller" },
+          { kind: "tool", status: "pending", label: "npm run build" },
+        ]}
+      />
+    </div>
+  ),
+  TodoList: () => (
+    <div style={{ maxWidth: 520 }} data-check-text="deep">
+      <TodoList title="Plan">
+        <TodoItem status="done">Read DESIGN.md</TodoItem>
+        <TodoItem status="active" metadata="packages/react/src">Rebuild the AI parts</TodoItem>
+        <TodoItem status="error" metadata="Contrast 2.9:1 on hover">Pass the checker</TodoItem>
+        <TodoItem>Commit and push</TodoItem>
+      </TodoList>
+    </div>
+  ),
+  Sources: () => (
+    <div style={{ maxWidth: 520, display: "grid", gap: 16 }} data-check-text="deep">
+      <Text>
+        Datum ships two themes<Citation number={1} href="#source-1" /> and checks each in light and dark<Citation number={2} href="#source-2" />.
+      </Text>
+      <Sources>
+        <Source number={1} title="Datum design guide" href="#" />
+        <Source number={2} title="Checking contrast in four combinations" description="datum.dev · 4 min read" href="#" />
+      </Sources>
+    </div>
+  ),
+  CodeBlock: () => (
+    <div style={{ maxWidth: 520, display: "grid", gap: 16 }} data-check-text="deep">
+      <CodeBlock title="Composer.tsx" language="tsx" lines={codeLines} />
+      <CodeBlock code={"npm install @datum-design/react @datum-design/styles --save && npm run check -- --all-the-flags"} lineNumbers={false} language="bash" />
+    </div>
+  ),
+  FileDiff: states(["closed", "open", "streaming"], (v) => (
+    <div style={{ maxWidth: 520 }}>
+      <FileDiff path="src/Composer.tsx" rows={diffRows} defaultOpen={v === "open"} streaming={v === "streaming"} />
+    </div>
+  ), true),
+
+  // ---------------------------------------------------------------- Data
+  Table: states(["default", "sorted", "selected", "single select", "empty", "loading", "error", "narrow"], (v) => (
+    <div style={{ maxWidth: v === "narrow" ? 320 : 640 }}>
+      {v === "empty" ? (
+        <InvoiceTable rows={[]} emptyState="No invoices yet." />
+      ) : v === "loading" ? (
+        <InvoiceTable rows={[]} loading />
+      ) : v === "error" ? (
+        <InvoiceTable rows={[]} error="Couldn’t load invoices. Try again." />
+      ) : (
+        <InvoiceTable
+          defaultSortDescriptor={v === "sorted" ? { column: "amount", direction: "descending" } : undefined}
+          selectionMode={v === "selected" ? "multiple" : v === "single select" ? "single" : "none"}
+          defaultSelectedKeys={v === "selected" || v === "single select" ? new Set(["INV-105"]) : undefined}
+          disabledKeys={v === "selected" ? ["INV-107"] : undefined}
+        />
+      )}
+    </div>
+  ), true),
+  DataTable: states(["default", "searched", "selected", "paged", "loading"], (v) => (
+    <div style={{ maxWidth: 720 }}>
+      <DataTable
+        label="Invoices"
+        columns={invoiceColumns}
+        rows={invoices}
+        rowKey={(r) => r.id}
+        searchable
+        defaultSearch={v === "searched" ? "paid" : ""}
+        selectionMode={v === "selected" ? "multiple" : "none"}
+        defaultSelectedKeys={v === "selected" ? new Set(["INV-104", "INV-106"]) : undefined}
+        defaultSortDescriptor={{ column: "amount", direction: "ascending" }}
+        pageSize={v === "paged" ? 2 : undefined}
+        defaultPage={v === "paged" ? 2 : undefined}
+        loading={v === "loading"}
+        toolbar={<Button intent="neutral" appearance="outline" size="sm">Export</Button>}
+      />
+    </div>
+  ), true),
 };

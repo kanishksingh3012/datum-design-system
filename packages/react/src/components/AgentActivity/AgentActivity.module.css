@@ -1,61 +1,36 @@
 .root {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: var(--space-compact);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.step {
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-card);
-  padding: 0 var(--space-default);
+.item {
+  min-width: 0;
 }
-.summary {
+/* a step with no detail lines up with a disclosure's trigger */
+.line {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  min-height: var(--interaction-minTarget);
-  font-size: var(--type-body-sm-size);
-  cursor: pointer;
-}
-.summary:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
-}
-.content {
-  padding: 0 0 var(--space-default);
-  font-size: var(--type-body-sm-size);
-  color: var(--color-text-secondary);
-}
-.plainStep {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
+  gap: var(--space-compact);
   min-height: var(--interaction-minTarget);
   padding: 0 var(--space-default);
+  font-family: var(--type-body-sm-family);
   font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+  color: var(--color-text-primary);
+}
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
   color: var(--color-text-secondary);
 }
-.status {
-  font-size: var(--type-ui-caption-size);
-  font-weight: 600;
-  padding: 0.1rem 0.5rem;
-  border-radius: 999px;
-  color: var(--color-text-secondary);
-  background: var(--color-bg-surface);
+.icon svg {
+  width: var(--icon-inline);
+  height: var(--icon-inline);
 }
-.status[data-status="running"] {
-  color: var(--color-text-onAccent);
-  background: var(--color-bg-accent);
-}
-.status[data-status="complete"] {
-  color: var(--color-text-success);
-  background: var(--color-bg-successSubtle);
-}
-.status[data-status="error"] {
-  color: var(--color-text-danger);
-  background: var(--color-bg-dangerSubtle);
+.label {
+  flex: 1;
+  min-width: 0;
 }

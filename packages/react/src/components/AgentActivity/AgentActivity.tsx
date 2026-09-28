@@ -1,73 +1,74 @@
 import type { ReactNode } from "react";
+import { Disclosure } from "../../lib/Disclosure";
+import { StatusBadge, type RunStatus } from "../../lib/aiStatus";
 import { Reasoning } from "../Reasoning/Reasoning";
-import { ToolCall, type ToolCallStatus } from "../ToolCall/ToolCall";
+import { ToolCall } from "../ToolCall/ToolCall";
 import styles from "./AgentActivity.module.css";
 
 export type AgentActivityStepKind = "reasoning" | "search" | "tool" | "trace";
 
 export interface AgentActivityItemDef {
   kind: AgentActivityStepKind;
-  status: ToolCallStatus;
+  status: RunStatus;
   label: string;
+  /** The step's detail, behind a disclosure. A step without it is a single status line. */
   children?: ReactNode;
 }
 
 export interface AgentActivityOwnProps {
-  /** @default "Agent activity" */
+  /** Names the list for assistive tech. @default "Agent activity" */
   label?: string;
   items: AgentActivityItemDef[];
 }
 
 export type AgentActivityProps = AgentActivityOwnProps;
 
-const STATUS_LABEL: Record<ToolCallStatus, string> = {
-  pending: "Pending",
-  running: "Running",
-  complete: "Complete",
-  error: "Error",
+const icon = (d: string) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d={d} />
+  </svg>
+);
+const ICONS: Record<AgentActivityStepKind, ReactNode> = {
+  reasoning: icon("M9 18h6 M10 22h4 M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"),
+  search: icon("M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z M21 21l-4.3-4.3"),
+  tool: icon("M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9l-3.8 3.8Z"),
+  trace: icon("M4 6h16 M4 12h10 M4 18h13"),
 };
 
 /**
- * One chronological stream of reasoning, searches, tool calls, and
- * traces. Reasoning and tool steps delegate their body to the existing
- * Reasoning and ToolCall components rather than reimplementing
- * disclosure and status behavior, so those two stay the single source
- * of truth for that behavior and stay usable standalone. Search and
- * trace steps get their own plain disclosure. A step with no children is
- * just a status line - there's nothing to disclose.
+ * One chronological list of an agent's steps. Reasoning and tool steps are the
+ * Reasoning and ToolCall components themselves; search and trace steps use the
+ * same disclosure. A step with nothing to disclose is a plain status line.
  */
 export function AgentActivity({ label = "Agent activity", items }: AgentActivityProps) {
   return (
     <ol aria-label={label} className={styles.root}>
       {items.map((item, index) => (
-        <li key={index}>
-          <AgentActivityItem {...item} />
+        <li key={index} className={styles.item}>
+          <Step {...item} />
         </li>
       ))}
     </ol>
   );
 }
 
-function AgentActivityItem({ kind, status, label, children }: AgentActivityItemDef) {
-  if (!children) {
+function Step({ kind, status, label, children }: AgentActivityItemDef) {
+  if (children === undefined || children === null) {
     return (
-      <div className={styles.plainStep}>
-        <span>{label}</span>
-        <span className={styles.status} data-status={status}>
-          {STATUS_LABEL[status]}
-        </span>
+      <div className={styles.line} data-status={status}>
+        <span className={styles.icon}>{ICONS[kind]}</span>
+        <span className={styles.label}>{label}</span>
+        <StatusBadge status={status} />
       </div>
     );
   }
-
   if (kind === "reasoning") {
     return (
-      <Reasoning title={label} streaming={status === "running"}>
+      <Reasoning title={label} streamingTitle={label} streaming={status === "running"}>
         {children}
       </Reasoning>
     );
   }
-
   if (kind === "tool") {
     return (
       <ToolCall name={label} status={status}>
@@ -75,16 +76,9 @@ function AgentActivityItem({ kind, status, label, children }: AgentActivityItemD
       </ToolCall>
     );
   }
-
   return (
-    <details className={styles.step}>
-      <summary className={styles.summary}>
-        <span>{label}</span>
-        <span className={styles.status} data-status={status}>
-          {STATUS_LABEL[status]}
-        </span>
-      </summary>
-      <div className={styles.content}>{children}</div>
-    </details>
+    <Disclosure title={label} icon={ICONS[kind]} meta={<StatusBadge status={status} />}>
+      {children}
+    </Disclosure>
   );
 }

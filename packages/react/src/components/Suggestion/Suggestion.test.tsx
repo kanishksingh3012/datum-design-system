@@ -4,26 +4,18 @@ import userEvent from "@testing-library/user-event";
 import { Suggestion, SuggestionItem } from "./Suggestion";
 
 describe("Suggestion", () => {
-  it("renders a real list of real buttons", () => {
-    render(
-      <Suggestion>
-        <SuggestionItem>Summarize this</SuggestionItem>
-        <SuggestionItem>Explain like I'm five</SuggestionItem>
-      </Suggestion>
-    );
-    expect(screen.getByRole("list")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Summarize this" })).toBeInTheDocument();
-  });
-
-  it("fires onClick when a suggestion chip is activated", async () => {
-    const user = userEvent.setup();
+  it("is a labelled list of buttons", async () => {
     const onClick = vi.fn();
     render(
-      <Suggestion>
-        <SuggestionItem onClick={onClick}>Summarize this</SuggestionItem>
+      <Suggestion label="Suggested prompts">
+        <SuggestionItem onClick={onClick}>Summarise</SuggestionItem>
+        <SuggestionItem>Translate</SuggestionItem>
       </Suggestion>
     );
-    await user.click(screen.getByRole("button", { name: "Summarize this" }));
-    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("list", { name: "Suggested prompts" })).toBeInTheDocument();
+    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+    await userEvent.click(screen.getByRole("button", { name: "Summarise" }));
+    expect(onClick).toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Translate" })).toHaveAttribute("type", "button");
   });
 });

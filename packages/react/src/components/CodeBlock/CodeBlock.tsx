@@ -1,68 +1,98 @@
-import { useState } from "react";
+import { forwardRef, useEffect, useRef, useState, type HTMLAttributes, type ReactNode } from "react";
 import { linesFromCode, linesText, type CodeLine } from "../../lib/codeTokens";
+import { SyntaxTokens } from "../../lib/SyntaxTokens";
+import { Button } from "../Button/Button";
+import { ScrollArea } from "../ScrollArea/ScrollArea";
 import styles from "./CodeBlock.module.css";
 
 export interface CodeBlockOwnProps {
-  /** Pre-tokenized lines from a highlighter (Shiki, Prism, your own). Use `code` instead for plain, un-highlighted source. */
+  /** Pre-tokenized lines, each token tagged with its `kind`. Use `code` for plain source. */
   lines?: CodeLine[];
-  /** Plain source text - an alternative to `lines` when there's no highlighter available. */
+  /** Plain source text, when there's no tokenizer. */
   code?: string;
-  /** Shown in the figure's caption, e.g. "typescript" or "src/index.ts". */
+  /** Shown in the header, e.g. "tsx". */
   language?: string;
+  /** Shown in the header before the language, e.g. "src/index.ts". */
+  title?: ReactNode;
+  /** @default true */
+  lineNumbers?: boolean;
+  /** Show the copy button. @default true */
+  copyable?: boolean;
 }
 
-export type CodeBlockProps = CodeBlockOwnProps;
+export type CodeBlockProps = CodeBlockOwnProps & Omit<HTMLAttributes<HTMLElement>, "title">;
+
+const CopyIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="9" y="9" width="12" height="12" rx="2" />
+    <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
+  </svg>
+);
+const CheckIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M20 6 9 17l-5-5" />
+  </svg>
+);
 
 /**
- * Highlights nothing itself - pass pre-tokenised lines from a real
- * highlighter, or a plain string. Lines are keyed by index, so appending
- * streamed output updates only the last line instead of remounting the
- * ones above it (no flicker, no lost text selection). Line numbers are
- * aria-hidden and unselectable so a copy contains code, never the gutter.
+ * A figure of code: a header with the file and language and a copy button,
+ * over lines that scroll sideways inside their own box. Syntax is monochrome —
+ * tokens are styled by kind with weight, style and the two text colors. Line
+ * numbers are aria-hidden and unselectable, so a copy is only the code. Lines
+ * are keyed by index, so streamed output updates only the last line.
  */
-export function CodeBlock({ lines, code, language }: CodeBlockOwnProps) {
+export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>(function CodeBlock(
+  { lines, code, language, title, lineNumbers = true, copyable = true, className, ...rest },
+  ref
+) {
   const [copied, setCopied] = useState(false);
-  const resolvedLines = lines ?? linesFromCode(code ?? "");
+  const timer = useRef<ReturnType<typeof setTimeout>>();
+  useEffect(() => () => clearTimeout(timer.current), []);
+  const resolved = lines ?? linesFromCode(code ?? "");
+  const label = [typeof title === "string" ? title : undefined, language].filter(Boolean).join(", ") || "Code";
 
-  async function handleCopy() {
-    const text = linesText(resolvedLines);
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      await navigator.clipboard.writeText(text);
+  async function copy() {
+    try {
+      await navigator.clipboard?.writeText(linesText(resolved));
+    } catch {
+      return;
     }
     setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setCopied(false), 2000);
   }
 
   return (
-    <figure className={styles.root}>
-      <figcaption className={styles.caption}>
-        <span>{language}</span>
-        <button type="button" className={styles.copy} onClick={handleCopy}>
-          {copied ? "Copied" : "Copy"}
-        </button>
+    <figure ref={ref} className={[styles.root, className].filter(Boolean).join(" ")} {...rest}>
+      <figcaption className={styles.header}>
+        <span className={styles.meta}>
+          {title ? <span className={styles.title}>{title}</span> : null}
+          {language ? <span className={styles.language}>{language}</span> : null}
+        </span>
+        {copyable ? (
+          <Button intent="neutral" appearance="ghost" size="sm" prefix={copied ? <CheckIcon /> : <CopyIcon />} onClick={copy}>
+            {copied ? "Copied" : "Copy"}
+          </Button>
+        ) : null}
+        <span className={styles.srOnly} role="status">{copied ? "Copied to clipboard" : ""}</span>
       </figcaption>
-      <pre className={styles.pre}>
-        <code className={styles.code}>
-          {resolvedLines.map((line, index) => (
-            <span key={index} className={styles.line}>
-              <span className={styles.lineNumber} aria-hidden="true">
-                {index + 1}
+      <ScrollArea orientation="horizontal" padding="none" label={label} className={styles.scroll}>
+        <pre className={styles.pre} data-numbers={lineNumbers || undefined}>
+          <code className={styles.code}>
+            {resolved.map((line, i) => (
+              <span key={i} className={styles.line}>
+                {lineNumbers ? <span className={styles.number} aria-hidden="true">{i + 1}</span> : null}
+                <span className={styles.content}>
+                  <SyntaxTokens tokens={line.tokens} />
+                  {"\n"}
+                </span>
               </span>
-              <span className={styles.lineContent}>
-                {line.tokens.map((token, tokenIndex) => (
-                  <span
-                    key={tokenIndex}
-                    className={token.className}
-                    style={token.color ? { color: token.color } : undefined}
-                  >
-                    {token.text}
-                  </span>
-                ))}
-              </span>
-            </span>
-          ))}
-        </code>
-      </pre>
+            ))}
+          </code>
+        </pre>
+      </ScrollArea>
     </figure>
   );
-}
+});
+
+CodeBlock.displayName = "CodeBlock";

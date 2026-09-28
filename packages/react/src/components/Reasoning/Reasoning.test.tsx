@@ -1,38 +1,51 @@
-import { describe, expect, it } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Reasoning } from "./Reasoning";
 
-function getDetails() {
-  return screen.getByText("Reasoning").closest("details")!;
-}
+const trigger = () => screen.getByRole("button");
 
 describe("Reasoning", () => {
-  it("renders as a real <details>/<summary> disclosure, closed by default", () => {
-    render(<Reasoning>Working through the steps...</Reasoning>);
-    expect(getDetails()).not.toHaveAttribute("open");
+  it("is a disclosure button, closed by default", () => {
+    render(<Reasoning>Steps</Reasoning>);
+    expect(trigger()).toHaveAttribute("aria-expanded", "false");
+    expect(trigger()).toHaveTextContent("Reasoning");
   });
 
-  it("opens automatically while streaming", () => {
-    render(<Reasoning streaming>Working through the steps...</Reasoning>);
-    expect(getDetails()).toHaveAttribute("open");
+  it("opens while streaming, with the streaming title and a busy polite region", () => {
+    render(<Reasoning streaming>Steps</Reasoning>);
+    expect(trigger()).toHaveAttribute("aria-expanded", "true");
+    expect(trigger()).toHaveTextContent("Thinking…");
+    const region = screen.getByText("Steps").closest("[aria-live]")!;
+    expect(region).toHaveAttribute("aria-live", "polite");
+    expect(region).toHaveAttribute("aria-busy", "true");
   });
 
-  it("settles closed shortly after streaming ends", async () => {
-    const { rerender } = render(<Reasoning streaming>Working...</Reasoning>);
-    expect(getDetails()).toHaveAttribute("open");
-    rerender(<Reasoning streaming={false}>Working...</Reasoning>);
-    await waitFor(() => expect(getDetails()).not.toHaveAttribute("open"), { timeout: 1500 });
+  it("settles closed after streaming ends", () => {
+    vi.useFakeTimers();
+    const { rerender } = render(<Reasoning streaming>Steps</Reasoning>);
+    rerender(<Reasoning streaming={false}>Steps</Reasoning>);
+    expect(trigger()).toHaveAttribute("aria-expanded", "true");
+    act(() => vi.advanceTimersByTime(700));
+    expect(trigger()).toHaveAttribute("aria-expanded", "false");
+    vi.useRealTimers();
   });
 
-  it("never overrides a manual toggle with the auto-collapse timer", async () => {
+  it("never overrides a manual toggle", async () => {
     const user = userEvent.setup();
-    const { rerender } = render(<Reasoning streaming>Working...</Reasoning>);
-    rerender(<Reasoning streaming={false}>Working...</Reasoning>);
-    // Reader manually keeps it open before the auto-collapse timer fires.
-    await user.click(screen.getByText("Reasoning"));
-    await user.click(screen.getByText("Reasoning"));
-    await new Promise((resolve) => setTimeout(resolve, 700));
-    expect(getDetails()).toHaveAttribute("open");
+    const { rerender } = render(<Reasoning streaming>Steps</Reasoning>);
+    await user.click(trigger());
+    await user.click(trigger());
+    rerender(<Reasoning streaming={false}>Steps</Reasoning>);
+    await new Promise((r) => setTimeout(r, 700));
+    expect(trigger()).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("supports the open trio", async () => {
+    const onOpenChange = vi.fn();
+    render(<Reasoning open={false} onOpenChange={onOpenChange}>Steps</Reasoning>);
+    await userEvent.click(trigger());
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+    expect(trigger()).toHaveAttribute("aria-expanded", "false");
   });
 });

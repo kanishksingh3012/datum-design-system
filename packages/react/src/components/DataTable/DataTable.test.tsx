@@ -1,62 +1,62 @@
-import { describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { DataTable } from "./DataTable";
+import { DataTable, type DataTableColumn } from "./DataTable";
 
-interface Person {
-  id: string;
-  name: string;
-  role: string;
-}
-
-const people: Person[] = [
-  { id: "1", name: "Bea", role: "Engineer" },
-  { id: "2", name: "Amir", role: "Designer" },
-  { id: "3", name: "Chloe", role: "Engineer" },
-  { id: "4", name: "Dev", role: "Manager" },
+type Person = { id: number; name: string; age: number };
+const rows: Person[] = [
+  { id: 1, name: "Grace", age: 85 },
+  { id: 2, name: "Ada", age: 36 },
+  { id: 3, name: "Linus", age: 54 },
 ];
-
-const columns = [
-  { key: "name", label: "Name", accessor: (p: Person) => p.name, sortable: true },
-  { key: "role", label: "Role", accessor: (p: Person) => p.role },
+const columns: DataTableColumn<Person>[] = [
+  { key: "name", label: "Name", sortable: true },
+  { key: "age", label: "Age", sortable: true, align: "end" },
 ];
+const names = () => within(screen.getByRole("grid")).getAllByRole("rowheader").map((c) => c.textContent);
 
 describe("DataTable", () => {
-  it("renders a real table with sortable and non-sortable columns", () => {
-    render(<DataTable caption="Team" columns={columns} rows={people} rowKey={(p) => p.id} />);
-    expect(screen.getByRole("table", { name: "Team" })).toBeInTheDocument();
-    expect(screen.getByRole("columnheader", { name: "Name" })).toHaveAttribute("aria-sort", "none");
-    expect(screen.getByRole("columnheader", { name: "Role" })).not.toHaveAttribute("aria-sort");
+  it("sorts by a column's value, numbers as numbers", async () => {
+    render(<DataTable label="People" columns={columns} rows={rows} rowKey={(r) => r.id} />);
+    expect(names()).toEqual(["Grace", "Ada", "Linus"]);
+    await userEvent.click(screen.getByRole("columnheader", { name: /Age/ }));
+    expect(names()).toEqual(["Ada", "Linus", "Grace"]);
+    await userEvent.click(screen.getByRole("columnheader", { name: /Age/ }));
+    expect(names()).toEqual(["Grace", "Linus", "Ada"]);
   });
 
-  it("sorts rows ascending then descending on repeated header clicks", async () => {
-    const user = userEvent.setup();
-    render(<DataTable caption="Team" columns={columns} rows={people} rowKey={(p) => p.id} />);
-    const nameHeaderButton = screen.getByRole("button", { name: "Name" });
-    await user.click(nameHeaderButton);
-    let cells = screen.getAllByRole("cell").filter((_, i) => i % 2 === 0);
-    expect(cells[0]).toHaveTextContent("Amir");
-    await user.click(nameHeaderButton);
-    cells = screen.getAllByRole("cell").filter((_, i) => i % 2 === 0);
-    expect(cells[0]).toHaveTextContent("Dev");
+  it("filters with the search trio and announces the count", async () => {
+    const onSearchChange = vi.fn();
+    render(<DataTable label="People" columns={columns} rows={rows} rowKey={(r) => r.id} searchable onSearchChange={onSearchChange} />);
+    await userEvent.type(screen.getByRole("searchbox", { name: "Search people" }), "li");
+    expect(onSearchChange).toHaveBeenLastCalledWith("li");
+    expect(names()).toEqual(["Linus"]);
+    expect(screen.getByRole("status")).toHaveTextContent("1 row match");
+    await userEvent.type(screen.getByRole("searchbox"), "zz");
+    expect(screen.getByText("Nothing matches “lizz”.")).toBeInTheDocument();
   });
 
-  it("filters rows across every column as the user types", async () => {
-    const user = userEvent.setup();
-    render(<DataTable caption="Team" columns={columns} rows={people} rowKey={(p) => p.id} />);
-    await user.type(screen.getByLabelText("Filter Team"), "Engineer");
-    expect(screen.getByText("Bea")).toBeInTheDocument();
-    expect(screen.getByText("Chloe")).toBeInTheDocument();
-    expect(screen.queryByText("Amir")).not.toBeInTheDocument();
+  it("pages through rows with the page trio", async () => {
+    const onPageChange = vi.fn();
+    render(<DataTable label="People" columns={columns} rows={rows} rowKey={(r) => r.id} pageSize={2} onPageChange={onPageChange} />);
+    expect(names()).toEqual(["Grace", "Ada"]);
+    await userEvent.click(screen.getByRole("button", { name: /page 2/i }));
+    expect(onPageChange).toHaveBeenCalledWith(2);
+    expect(names()).toEqual(["Linus"]);
   });
 
-  it("paginates rows and lets you page forward with real page controls", async () => {
-    const user = userEvent.setup();
-    render(<DataTable caption="Team" columns={columns} rows={people} rowKey={(p) => p.id} pageSize={2} />);
-    expect(screen.getByText("Bea")).toBeInTheDocument();
-    expect(screen.queryByText("Dev")).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Page 2" }));
-    expect(screen.getByText("Dev")).toBeInTheDocument();
-    expect(screen.queryByText("Bea")).not.toBeInTheDocument();
+  it("selects rows through the selection trio", async () => {
+    const onSelectionChange = vi.fn();
+    render(<DataTable label="People" columns={columns} rows={rows} rowKey={(r) => r.id} selectionMode="multiple" defaultSelectedKeys={new Set([2])} onSelectionChange={onSelectionChange} />);
+    expect(screen.getByRole("checkbox", { name: "Select Ada" })).toBeChecked();
+    await userEvent.click(screen.getByRole("checkbox", { name: "Select Grace" }));
+    expect([...onSelectionChange.mock.calls[0][0]].sort()).toEqual([1, 2]);
+  });
+
+  it("passes loading and error through", () => {
+    const { rerender } = render(<DataTable label="People" columns={columns} rows={rows} rowKey={(r) => r.id} loading />);
+    expect(screen.getByRole("grid")).toHaveAttribute("aria-busy", "true");
+    rerender(<DataTable label="People" columns={columns} rows={[]} rowKey={(r) => r.id} error="Failed to load." />);
+    expect(screen.getByRole("alert")).toHaveTextContent("Failed to load.");
   });
 });

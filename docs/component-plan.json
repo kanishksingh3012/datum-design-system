@@ -1761,6 +1761,430 @@
           "note": "Wave 2. Navbar's pattern: links as pill rows, Sheet below the breakpoint."
         }
       ]
+    },
+    {
+      "name": "AI",
+      "items": [
+        {
+          "n": "Message",
+          "st": "rework",
+          "why": "One turn in a conversation, in a MessageList.",
+          "props": [
+            [
+              "author",
+              "user · assistant · system",
+              "—",
+              ""
+            ],
+            [
+              "streaming",
+              "boolean",
+              "false",
+              "aria-busy until it settles; a caret, still under reduced motion"
+            ],
+            [
+              "grouped",
+              "boolean",
+              "false",
+              ""
+            ],
+            [
+              "actions",
+              "ReactNode",
+              "—",
+              "Hidden while streaming"
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. User turns are an accentSubtle bubble (radius.card); assistant turns are plain text; system notes are centered captions. MessageBubble removed."
+        },
+        {
+          "n": "MessageScroller",
+          "st": "rework",
+          "why": "Keeps a transcript pinned to the latest message.",
+          "props": [
+            [
+              "label",
+              "string",
+              "Conversation",
+              ""
+            ],
+            [
+              "maxHeight",
+              "number | string",
+              "—",
+              ""
+            ],
+            [
+              "defaultPinned / onPinnedChange",
+              "boolean",
+              "true",
+              "Read from the DOM"
+            ],
+            [
+              "jumpLabel",
+              "string",
+              "Jump to latest",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. A ScrollArea around role=\"log\"; follows growth while pinned, holds still once the reader scrolls up and shows an ink Jump to latest button."
+        },
+        {
+          "n": "Composer",
+          "st": "rework",
+          "why": "The chat input.",
+          "props": [
+            [
+              "label",
+              "string",
+              "—",
+              "Visually hidden"
+            ],
+            [
+              "value / defaultValue / onValueChange",
+              "string",
+              "\"\"",
+              ""
+            ],
+            [
+              "onSubmit",
+              "(value) => void",
+              "—",
+              ""
+            ],
+            [
+              "thinking / onStop",
+              "boolean / fn",
+              "false",
+              "Send loads, or becomes Stop"
+            ],
+            [
+              "disabled",
+              "boolean",
+              "false",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. Datum's field box grown to radius.card; textarea with field-sizing: content; icon-only accent Send."
+        },
+        {
+          "n": "Suggestion",
+          "st": "rework",
+          "why": "Prompt chips that seed the next message.",
+          "props": [
+            [
+              "label",
+              "string",
+              "—",
+              ""
+            ],
+            [
+              "SuggestionItem",
+              "ButtonProps",
+              "neutral · outline · sm",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. A list of Buttons."
+        },
+        {
+          "n": "Reasoning",
+          "st": "rework",
+          "why": "The model's reasoning trace, collapsed.",
+          "props": [
+            [
+              "title / streamingTitle",
+              "ReactNode",
+              "Reasoning / Thinking…",
+              ""
+            ],
+            [
+              "streaming / collapseOnComplete",
+              "boolean",
+              "false / true",
+              ""
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "false",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. Shared AI disclosure (useDisclosure + useButton); polite, busy while streaming."
+        },
+        {
+          "n": "ThinkingIndicator",
+          "st": "rework",
+          "why": "Shows the assistant is working.",
+          "props": [
+            [
+              "label",
+              "string",
+              "Thinking…",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. role=\"status\"; dots static under reduced motion."
+        },
+        {
+          "n": "ToolCall",
+          "st": "rework",
+          "why": "One tool call and its result.",
+          "props": [
+            [
+              "name",
+              "string",
+              "—",
+              ""
+            ],
+            [
+              "status",
+              "pending · running · success · error",
+              "pending",
+              "A word in a soft Badge"
+            ],
+            [
+              "input / output / error",
+              "ReactNode",
+              "—",
+              ""
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "false",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. status complete → success."
+        },
+        {
+          "n": "AgentActivity",
+          "st": "rework",
+          "why": "An agent's steps in order.",
+          "props": [
+            [
+              "items",
+              "{ kind, status, label, children? }[]",
+              "—",
+              ""
+            ],
+            [
+              "label",
+              "string",
+              "Agent activity",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. Reuses Reasoning and ToolCall."
+        },
+        {
+          "n": "TodoList",
+          "st": "rework",
+          "why": "An agent's plan as a checklist.",
+          "props": [
+            [
+              "title",
+              "ReactNode",
+              "Plan",
+              ""
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "true",
+              ""
+            ],
+            [
+              "TodoItem status",
+              "pending · active · done · error",
+              "pending",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. Marks are icons plus a spoken word."
+        },
+        {
+          "n": "Sources",
+          "st": "rework",
+          "why": "The sources behind an answer, and inline citations.",
+          "props": [
+            [
+              "title / headingLevel",
+              "string / 2–6",
+              "Sources / 3",
+              ""
+            ],
+            [
+              "Source",
+              "number, title, description?, href",
+              "—",
+              ""
+            ],
+            [
+              "Citation",
+              "number, href",
+              "—",
+              "44px hit area on touch"
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2."
+        },
+        {
+          "n": "CodeBlock",
+          "st": "rework",
+          "why": "Code with a copy button.",
+          "props": [
+            [
+              "lines / code",
+              "CodeLine[] / string",
+              "—",
+              "Tokens carry kind, not color"
+            ],
+            [
+              "title / language",
+              "ReactNode / string",
+              "—",
+              ""
+            ],
+            [
+              "lineNumbers / copyable",
+              "boolean",
+              "true",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. Monochrome syntax from type and the two text colors; scrolls inside a ScrollArea."
+        },
+        {
+          "n": "FileDiff",
+          "st": "rework",
+          "why": "A file's changes.",
+          "props": [
+            [
+              "path / rows",
+              "string / DiffRow[]",
+              "—",
+              ""
+            ],
+            [
+              "streaming / collapseOnComplete",
+              "boolean",
+              "false / true",
+              ""
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "false",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. Added/removed rows on successSubtle / dangerSubtle; +/− real text, spoken as Added/Removed."
+        }
+      ]
+    },
+    {
+      "name": "Data",
+      "items": [
+        {
+          "n": "Table",
+          "st": "rework",
+          "why": "Rows and columns of data, sortable and selectable.",
+          "props": [
+            [
+              "aria-label",
+              "string",
+              "—",
+              ""
+            ],
+            [
+              "selectionMode",
+              "none · single · multiple",
+              "none",
+              ""
+            ],
+            [
+              "selectedKeys / defaultSelectedKeys / onSelectionChange",
+              "Selection",
+              "—",
+              ""
+            ],
+            [
+              "sortDescriptor / defaultSortDescriptor / onSortChange",
+              "SortDescriptor",
+              "—",
+              ""
+            ],
+            [
+              "emptyState / loading / error",
+              "ReactNode / boolean / ReactNode",
+              "—",
+              ""
+            ],
+            [
+              "maxHeight",
+              "number | string",
+              "—",
+              "Sticky header"
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useTable + useTableState: role=grid, arrow-key cell navigation, sortable headers, Datum Checkbox selection. Scrolls inside its own box (ScrollArea). TableCaption / TableHead removed: columns are React Stately collection elements."
+        },
+        {
+          "n": "DataTable",
+          "st": "rework",
+          "why": "A Table with sorting, search, pagination and selection wired up.",
+          "props": [
+            [
+              "label / columns / rows / rowKey",
+              "—",
+              "—",
+              ""
+            ],
+            [
+              "page / defaultPage / onPageChange",
+              "number",
+              "1",
+              ""
+            ],
+            [
+              "search / defaultSearch / onSearchChange",
+              "string",
+              "\"\"",
+              ""
+            ],
+            [
+              "selection and sort trios",
+              "as Table",
+              "—",
+              ""
+            ],
+            [
+              "toolbar",
+              "ReactNode",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. Built on Table, TextField and Pagination; announces the matching row count."
+        }
+      ]
     }
   ],
   "wave2": [
@@ -1865,6 +2289,14 @@
     [
       "Wave 2 layout + rich inputs",
       "Sidebar, ScrollArea, Resizable, Carousel, ColorPicker and FileUpload rebuilt to the phase-1 standard and added to the review under Navigation, Layout, Content and Forms. Resizable's handle is a Slider thumb; ColorPicker runs on React Aria's color hooks inside a Popover; FileUpload drops through useDrop. HoverCard keeps open while focus is in the card."
+    ],
+    [
+      "Wave 2 AI primitives",
+      "Message, MessageScroller, Composer, Suggestion, Reasoning, ThinkingIndicator, ToolCall, AgentActivity, TodoList, Sources, CodeBlock and FileDiff rebuilt to the phase-1 standard and added to the review under AI. Expandable parts share one disclosure (lib/Disclosure) built on useDisclosure + useButton with the open trio; statuses are soft Badges; code syntax is monochrome."
+    ],
+    [
+      "Wave 2 tables",
+      "Table rebuilt on useTable + useTableState (grid keyboard navigation, sorting, selection with the selectedKeys and sortDescriptor trios, empty / loading / error bodies) and DataTable on top of it with page and search trios; both added to the review under Data."
     ]
   ]
 }

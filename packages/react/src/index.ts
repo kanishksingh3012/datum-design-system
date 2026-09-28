@@ -211,21 +211,15 @@ export type { InputOTPProps, InputOTPOwnProps, InputOTPSize } from "./components
 export { TagInput } from "./components/TagInput/TagInput";
 export type { TagInputProps, TagInputOwnProps } from "./components/TagInput/TagInput";
 
-export {
-  Table,
-  TableCaption,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "./components/Table/Table";
+export { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "./components/Table/Table";
 export type {
   TableProps,
   TableOwnProps,
-  TableHeadProps,
-  TableHeadOwnProps,
-  TableSortDirection,
+  TableColumnProps,
+  TableSelectionMode,
+  TableAlign,
+  Selection,
+  SortDescriptor,
 } from "./components/Table/Table";
 
 export { ColorPicker } from "./components/ColorPicker/ColorPicker";
@@ -265,7 +259,7 @@ export { Carousel } from "./components/Carousel/Carousel";
 export type { CarouselProps, CarouselOwnProps, CarouselSlide } from "./components/Carousel/Carousel";
 
 export { DataTable } from "./components/DataTable/DataTable";
-export type { DataTableOwnProps, DataTableColumn } from "./components/DataTable/DataTable";
+export type { DataTableOwnProps, DataTableProps, DataTableColumn } from "./components/DataTable/DataTable";
 
 export { Sheet } from "./components/Sheet/Sheet";
 export type { SheetProps, SheetOwnProps, SheetSide, SheetSize } from "./components/Sheet/Sheet";
@@ -274,51 +268,39 @@ export { Tooltip } from "./components/Tooltip/Tooltip";
 export type { TooltipProps, TooltipOwnProps, TooltipPlacement } from "./components/Tooltip/Tooltip";
 
 export { ThinkingIndicator } from "./components/ThinkingIndicator/ThinkingIndicator";
-export type { ThinkingIndicatorOwnProps } from "./components/ThinkingIndicator/ThinkingIndicator";
+export type { ThinkingIndicatorOwnProps, ThinkingIndicatorProps } from "./components/ThinkingIndicator/ThinkingIndicator";
 
 export { Suggestion, SuggestionItem } from "./components/Suggestion/Suggestion";
-export type { SuggestionOwnProps, SuggestionItemProps } from "./components/Suggestion/Suggestion";
+export type { SuggestionOwnProps, SuggestionProps, SuggestionItemProps } from "./components/Suggestion/Suggestion";
 
 export { Reasoning } from "./components/Reasoning/Reasoning";
-export type { ReasoningOwnProps } from "./components/Reasoning/Reasoning";
+export type { ReasoningOwnProps, ReasoningProps } from "./components/Reasoning/Reasoning";
 
 export { ToolCall } from "./components/ToolCall/ToolCall";
-export type { ToolCallOwnProps, ToolCallStatus } from "./components/ToolCall/ToolCall";
+export type { ToolCallOwnProps, ToolCallProps, ToolCallStatus } from "./components/ToolCall/ToolCall";
 
 export { TodoList, TodoItem } from "./components/TodoList/TodoList";
-export type {
-  TodoListOwnProps,
-  TodoItemOwnProps,
-  TodoItemStatus,
-} from "./components/TodoList/TodoList";
+export type { TodoListOwnProps, TodoListProps, TodoItemOwnProps, TodoItemProps, TodoItemStatus } from "./components/TodoList/TodoList";
 
 export { Sources, Source, Citation } from "./components/Sources/Sources";
-export type { SourcesOwnProps, SourceOwnProps, CitationOwnProps } from "./components/Sources/Sources";
+export type { SourcesOwnProps, SourcesProps, SourceOwnProps, SourceProps, CitationOwnProps, CitationProps } from "./components/Sources/Sources";
 
 export { Composer } from "./components/Composer/Composer";
-export type { ComposerOwnProps } from "./components/Composer/Composer";
+export type { ComposerOwnProps, ComposerProps } from "./components/Composer/Composer";
 
 export { CodeBlock } from "./components/CodeBlock/CodeBlock";
-export type { CodeBlockOwnProps } from "./components/CodeBlock/CodeBlock";
+export type { CodeBlockOwnProps, CodeBlockProps } from "./components/CodeBlock/CodeBlock";
 export { linesFromCode, linesText } from "./lib/codeTokens";
-export type { CodeToken, CodeLine } from "./lib/codeTokens";
+export type { CodeToken, CodeTokenKind, CodeLine } from "./lib/codeTokens";
 
 export { FileDiff } from "./components/FileDiff/FileDiff";
-export type { FileDiffOwnProps, DiffRow, DiffRowKind } from "./components/FileDiff/FileDiff";
+export type { FileDiffOwnProps, FileDiffProps, DiffRow, DiffRowKind } from "./components/FileDiff/FileDiff";
 
-export { MessageScroller, useStickToBottom, StickToBottomController } from "./components/MessageScroller/MessageScroller";
-export type { MessageScrollerOwnProps } from "./components/MessageScroller/MessageScroller";
-export type { UseStickToBottomOptions } from "./lib/useStickToBottom";
+export { MessageScroller } from "./components/MessageScroller/MessageScroller";
+export type { MessageScrollerOwnProps, MessageScrollerProps } from "./components/MessageScroller/MessageScroller";
 
-export { MessageList, Message, MessageBubble } from "./components/Message/Message";
-export type {
-  MessageListOwnProps,
-  MessageOwnProps,
-  MessageAuthor,
-  MessageBubbleOwnProps,
-  MessageTone,
-  MessageAlign,
-} from "./components/Message/Message";
+export { MessageList, Message } from "./components/Message/Message";
+export type { MessageListProps, MessageOwnProps, MessageProps, MessageAuthor } from "./components/Message/Message";
 
 export { AgentActivity } from "./components/AgentActivity/AgentActivity";
-export type { AgentActivityOwnProps, AgentActivityItemDef, AgentActivityStepKind } from "./components/AgentActivity/AgentActivity";
+export type { AgentActivityOwnProps, AgentActivityProps, AgentActivityItemDef, AgentActivityStepKind } from "./components/AgentActivity/AgentActivity";

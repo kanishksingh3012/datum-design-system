@@ -1,47 +1,37 @@
-.root {
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-card);
-  padding: 0 var(--space-default);
-}
-.summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  min-height: var(--interaction-minTarget);
-  cursor: pointer;
-}
-.summary:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
-}
 .name {
-  font-family: var(--font-mono);
-  font-size: var(--type-body-sm-size);
+  font-family: var(--type-code-sm-family);
+  font-size: var(--type-code-sm-size);
+  font-weight: var(--type-ui-label-weight);
+}
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-tight);
+}
+.label {
+  margin: 0 0 calc(var(--space-compact) / 2);
+  font-family: var(--type-ui-overline-family);
+  font-size: var(--type-ui-overline-size);
+  font-weight: var(--type-ui-overline-weight);
+  line-height: var(--type-ui-overline-lineHeight);
+  letter-spacing: var(--type-ui-overline-tracking);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.code {
+  margin: 0;
+  padding: var(--space-compact) var(--space-tight);
+  overflow-x: auto;
+  font-family: var(--type-code-sm-family);
+  font-size: var(--type-code-sm-size);
+  line-height: var(--type-code-sm-lineHeight);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   color: var(--color-text-primary);
-}
-.status {
-  font-size: var(--type-ui-caption-size);
-  font-weight: 600;
-  padding: 0.1rem 0.5rem;
-  border-radius: 999px;
-  color: var(--color-text-secondary);
   background: var(--color-bg-surface);
+  border-radius: var(--radius-subtle);
 }
-.status[data-status="running"] {
-  color: var(--color-text-onAccent);
-  background: var(--color-bg-accent);
-}
-.status[data-status="complete"] {
-  color: var(--color-text-success);
-  background: var(--color-bg-successSubtle);
-}
-.status[data-status="error"] {
-  color: var(--color-text-danger);
-  background: var(--color-bg-dangerSubtle);
-}
-.content {
-  padding: 0 0 var(--space-default);
-  font-size: var(--type-body-sm-size);
-  color: var(--color-text-secondary);
+/* an error reads by its heading and a danger edge, not by colored text alone */
+.code[data-error] {
+  box-shadow: inset 2px 0 0 var(--color-border-danger);
 }

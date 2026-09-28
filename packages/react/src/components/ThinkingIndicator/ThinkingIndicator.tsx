@@ -2,20 +2,18 @@ import { forwardRef, type HTMLAttributes } from "react";
 import styles from "./ThinkingIndicator.module.css";
 
 export interface ThinkingIndicatorOwnProps {
-  /** @default "Thinking..." - always rendered as real visible text, never dots alone. */
+  /** Always shown as real text beside the dots. @default "Thinking…" */
   label?: string;
 }
 
 export type ThinkingIndicatorProps = ThinkingIndicatorOwnProps & Omit<HTMLAttributes<HTMLDivElement>, "role">;
 
 /**
- * role="status" carries an implicit aria-live="polite" - the universal
- * typing-indicator dots are decorative (aria-hidden), the actual
- * announcement is the real visible label text next to them. Dots alone
- * would tell a screen reader user nothing.
+ * role="status" (a polite live region): the label is what is announced; the
+ * three dots are decorative. Under reduced motion the dots hold still.
  */
 export const ThinkingIndicator = forwardRef<HTMLDivElement, ThinkingIndicatorProps>(function ThinkingIndicator(
-  { label = "Thinking...", className, ...rest },
+  { label = "Thinking…", className, ...rest },
   ref
 ) {
   return (

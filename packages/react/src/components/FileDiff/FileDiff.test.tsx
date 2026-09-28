@@ -1,34 +1,29 @@
 import { describe, expect, it } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { FileDiff, type DiffRow } from "./FileDiff";
 
 const rows: DiffRow[] = [
   { kind: "hunk", content: "@@ -1,2 +1,2 @@" },
-  { kind: "remove", oldLine: 1, content: "const x = 1;" },
-  { kind: "add", newLine: 1, content: "const x = 2;" },
-  { kind: "context", oldLine: 2, newLine: 2, content: "console.log(x);" },
+  { kind: "context", oldLine: 1, newLine: 1, content: "a" },
+  { kind: "remove", oldLine: 2, content: "b" },
+  { kind: "add", newLine: 2, content: "c" },
 ];
 
 describe("FileDiff", () => {
-  it("renders as a real <table> inside a <details> disclosure, with real +/- marker text", () => {
-    render(<FileDiff path="src/index.ts" rows={rows} />);
-    expect(screen.getByText("src/index.ts").closest("details")).toBeInTheDocument();
-    expect(screen.getByRole("table", { name: "Changes to src/index.ts" })).toBeInTheDocument();
-    const removedRow = screen.getByText("const x = 1;").closest("tr")!;
-    expect(removedRow).toHaveTextContent("-");
+  it("summarises the counts in its trigger", () => {
+    render(<FileDiff path="src/a.ts" rows={rows} />);
+    expect(screen.getByRole("button")).toHaveAccessibleName(/src\/a\.ts 1 added 1 removed/);
   });
 
-  it("shows live +/- counts derived from the rows", () => {
-    render(<FileDiff path="src/index.ts" rows={rows} />);
-    expect(screen.getByText("+1")).toBeInTheDocument();
-    expect(screen.getByText("-1")).toBeInTheDocument();
+  it("is a table whose markers are spoken as words", () => {
+    render(<FileDiff path="src/a.ts" rows={rows} defaultOpen />);
+    expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(screen.getByText("Added").closest("tr")).toHaveAttribute("data-kind", "add");
+    expect(screen.getByText("Removed").closest("tr")).toHaveAttribute("data-kind", "remove");
   });
 
-  it("stays open while streaming and settles closed shortly after", async () => {
-    const { rerender } = render(<FileDiff path="src/index.ts" rows={rows} streaming />);
-    const details = screen.getByText("src/index.ts").closest("details")!;
-    expect(details).toHaveAttribute("open");
-    rerender(<FileDiff path="src/index.ts" rows={rows} streaming={false} />);
-    await waitFor(() => expect(details).not.toHaveAttribute("open"), { timeout: 1500 });
+  it("stays open while streaming", () => {
+    render(<FileDiff path="a" rows={rows} streaming />);
+    expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "true");
   });
 });

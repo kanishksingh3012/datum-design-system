@@ -1,74 +1,43 @@
-import { beforeAll, describe, expect, it, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MessageScroller } from "./MessageScroller";
 
-// jsdom has no real scroll geometry (scrollHeight/scrollTop/clientHeight
-// always read 0) and no scrollTo at all - confirmed directly, the same
-// class of gap as PointerEvent/matchMedia/showModal elsewhere in this
-// project. Geometry is faked via defineProperty per test and scrollTo is
-// polyfilled here so the pin-detection and scroll-to-bottom logic can
-// actually be exercised.
-beforeAll(() => {
-  if (!Element.prototype.scrollTo) {
-    Element.prototype.scrollTo = vi.fn();
-  }
-});
-
-function setGeometry(el: HTMLElement, { scrollHeight, scrollTop, clientHeight }: Record<string, number>) {
-  Object.defineProperty(el, "scrollHeight", { value: scrollHeight, configurable: true });
-  Object.defineProperty(el, "scrollTop", { value: scrollTop, configurable: true });
-  Object.defineProperty(el, "clientHeight", { value: clientHeight, configurable: true });
+/** jsdom has no layout: give the viewport a scroll geometry. */
+function geometry(el: HTMLElement, scrollHeight: number, clientHeight = 100) {
+  Object.defineProperty(el, "scrollHeight", { configurable: true, get: () => scrollHeight });
+  Object.defineProperty(el, "clientHeight", { configurable: true, get: () => clientHeight });
 }
 
 describe("MessageScroller", () => {
-  it("renders a real role=log container", () => {
-    render(
-      <MessageScroller>
-        <p>Message one</p>
-      </MessageScroller>
-    );
-    expect(screen.getByRole("log")).toBeInTheDocument();
+  it("is a labelled region around a log", () => {
+    render(<MessageScroller label="Chat">x</MessageScroller>);
+    expect(screen.getByRole("region", { name: "Chat" })).toBeInTheDocument();
+    expect(screen.getByRole("log")).toHaveTextContent("x");
   });
 
-  it("scrolls to the live edge when new content arrives while pinned", () => {
-    const scrollToSpy = vi.spyOn(Element.prototype, "scrollTo");
-    const { rerender } = render(
-      <MessageScroller>
-        <p key="1">Message one</p>
-      </MessageScroller>
-    );
-    scrollToSpy.mockClear();
-    rerender(
-      <MessageScroller>
-        <p key="1">Message one</p>
-        <p key="2">Message two</p>
-      </MessageScroller>
-    );
-    expect(scrollToSpy).toHaveBeenCalled();
-    scrollToSpy.mockRestore();
-  });
-
-  it("stops following once the reader scrolls away, and calls onPinnedChange", () => {
+  it("follows new content while pinned, and lets go when the reader scrolls up", () => {
     const onPinnedChange = vi.fn();
-    const scrollToSpy = vi.spyOn(Element.prototype, "scrollTo");
-    const { rerender } = render(
-      <MessageScroller onPinnedChange={onPinnedChange}>
-        <p key="1">Message one</p>
-      </MessageScroller>
-    );
-    const log = screen.getByRole("log");
-    setGeometry(log, { scrollHeight: 1000, scrollTop: 0, clientHeight: 400 });
-    fireEvent.scroll(log);
-    expect(onPinnedChange).toHaveBeenCalledWith(false);
+    const { rerender } = render(<MessageScroller onPinnedChange={onPinnedChange}><p>1</p></MessageScroller>);
+    const viewport = screen.getByRole("region");
+    geometry(viewport, 500);
+    rerender(<MessageScroller onPinnedChange={onPinnedChange}><p>1</p><p>2</p></MessageScroller>);
+    expect(viewport.scrollTop).toBe(500);
 
-    scrollToSpy.mockClear();
-    rerender(
-      <MessageScroller onPinnedChange={onPinnedChange}>
-        <p key="1">Message one</p>
-        <p key="2">Message two</p>
-      </MessageScroller>
-    );
-    expect(scrollToSpy).not.toHaveBeenCalled();
-    scrollToSpy.mockRestore();
+    viewport.scrollTop = 100;
+    fireEvent.scroll(viewport);
+    expect(onPinnedChange).toHaveBeenCalledWith(false);
+    geometry(viewport, 800);
+    rerender(<MessageScroller onPinnedChange={onPinnedChange}><p>1</p><p>2</p><p>3</p></MessageScroller>);
+    expect(viewport.scrollTop).toBe(100);
+
+    fireEvent.click(screen.getByRole("button", { name: "Jump to latest" }));
+    expect(viewport.scrollTop).toBe(800);
+    expect(onPinnedChange).toHaveBeenLastCalledWith(true);
+    expect(screen.queryByRole("button")).toBeNull();
+  });
+
+  it("can start unpinned, with the jump button showing", () => {
+    render(<MessageScroller defaultPinned={false}>x</MessageScroller>);
+    expect(screen.getByRole("button", { name: "Jump to latest" })).toBeInTheDocument();
   });
 });

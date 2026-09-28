@@ -1,35 +1,56 @@
 .root {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: var(--space-compact);
+  min-width: 0;
 }
 .heading {
-  font-size: var(--type-ui-caption-size);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-weight: 600;
-  color: var(--color-text-secondary);
   margin: 0;
+  font-family: var(--type-ui-overline-family);
+  font-size: var(--type-ui-overline-size);
+  font-weight: var(--type-ui-overline-weight);
+  line-height: var(--type-ui-overline-lineHeight);
+  letter-spacing: var(--type-ui-overline-tracking);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
 }
 .list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: calc(var(--space-compact) / 2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 .link {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-tight);
+  box-sizing: border-box;
+  min-height: var(--interaction-minTarget);
+  padding: calc(var(--space-compact) / 2) var(--space-tight) calc(var(--space-compact) / 2) calc(var(--space-compact) / 2 + 2px);
+  font-family: var(--type-body-sm-family);
   font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
   color: var(--color-text-primary);
   text-decoration: none;
-  min-height: var(--interaction-minTarget);
+  border-radius: var(--radius-control);
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+/* two lines make a tall box: never a pill */
+.link[data-lines="2"] {
+  border-radius: var(--radius-card);
 }
 .link:hover {
+  background: color-mix(in oklab, var(--color-text-primary) 6%, transparent);
+}
+.link:hover .title {
   text-decoration: underline;
+}
+.link:active {
+  transform: scale(0.98);
 }
 .link:focus-visible {
   outline: 2px solid var(--color-border-focus);
@@ -37,37 +58,81 @@
 }
 .number {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  background: var(--color-bg-surface);
-  color: var(--color-text-secondary);
+  min-width: 28px;
+  height: 28px;
+  font-family: var(--type-numeric-sm-family);
   font-size: var(--type-ui-caption-size);
+  font-weight: var(--type-ui-label-weight);
+  color: var(--color-text-primary);
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-pill);
 }
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.title {
+  overflow-wrap: anywhere;
+}
+.description {
+  font-family: var(--type-ui-caption-family);
+  font-size: var(--type-ui-caption-size);
+  line-height: var(--type-ui-caption-lineHeight);
+  color: var(--color-text-secondary);
+}
+
 .citation {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 0.3rem;
-  border-radius: 999px;
-  background: var(--color-bg-surface);
-  color: var(--color-text-secondary);
-  font-size: 10px;
-  font-weight: 600;
+  min-width: 1.5em;
+  height: 1.5em;
+  margin-inline: 0.15em;
+  padding: 0 0.35em;
+  box-sizing: border-box;
+  font-family: var(--type-numeric-sm-family);
+  font-size: var(--type-ui-caption-size);
+  font-weight: var(--type-ui-label-weight);
+  line-height: 1;
+  vertical-align: 0.15em;
+  color: var(--color-text-accent);
   text-decoration: none;
-  vertical-align: super;
-  margin-left: 0.15rem;
+  background: var(--color-bg-accentSubtle);
+  border-radius: var(--radius-pill);
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
 }
 .citation:hover {
-  background: var(--color-bg-accent);
-  color: var(--color-text-onAccent);
+  background: var(--color-bg-accentSubtleHover);
+}
+.citation:active {
+  transform: scale(0.98);
 }
 .citation:focus-visible {
   outline: 2px solid var(--color-border-focus);
-  outline-offset: 1px;
+  outline-offset: 2px;
+}
+/* touch: an invisible 44px hit area around the chip */
+@media (pointer: coarse) {
+  .citation::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--interaction-minTarget);
+    height: var(--interaction-minTarget);
+    transform: translate(-50%, -50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .link:active,
+  .citation:active {
+    transform: none;
+  }
 }

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { AiSection } from "./AiSection";
+import { DataSection } from "./DataSection";
 import {
   Accordion, AccordionItem, Alert, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CardMedia,
   Checkbox, CheckboxGroup, Container, Field, Grid, Heading, Label, Link, ProgressBar, Radio, RadioGroup, Section, Select, Separator,
@@ -651,6 +653,9 @@ export function App() {
         <a href="#footer">Footer</a>
         <a href="#navbar">Navbar</a>
         <a href="#sidebar">Sidebar</a>
+        <a href="#table">Table</a>
+        <a href="#data-table">Data Table</a>
+        <a href="#ai">AI</a>
       </nav>
       <Toaster position={toastPosition} />
 
@@ -3253,6 +3258,12 @@ export function App() {
           />
         </div>
       </section>
+
+      {/* ============ TABLE, DATA TABLE ============ */}
+      <DataSection />
+
+      {/* ============ AI ============ */}
+      <AiSection />
     </div>
   );
 }

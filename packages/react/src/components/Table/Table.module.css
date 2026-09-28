@@ -1,44 +1,175 @@
+/* A surface-edged box; the grid scrolls inside it (ScrollArea) and never widens the page. */
 .root {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--type-body-md-size);
-}
-.caption {
-  text-align: left;
-  color: var(--color-text-secondary);
-  font-size: var(--type-body-sm-size);
-  padding-bottom: var(--space-compact);
-}
-.row {
-  border-bottom: 1px solid var(--color-border-default);
-}
-.head {
-  text-align: left;
-  color: var(--color-text-secondary);
-  font-weight: var(--type-ui-label-weight);
-  padding: var(--space-compact) var(--space-default);
-}
-.cell {
-  padding: var(--space-compact) var(--space-default);
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
   color: var(--color-text-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
 }
-.sortButton {
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--type-body-sm-family);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+}
+
+/* ---------- header ---------- */
+.columnHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  box-sizing: border-box;
+  height: var(--interaction-minTarget);
+  padding: var(--space-compact) var(--space-default);
+  font-family: var(--type-ui-label-family);
+  font-size: var(--type-ui-label-size);
+  font-weight: var(--type-ui-label-weight);
+  line-height: var(--type-ui-label-lineHeight);
+  text-align: start;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border-default);
+  outline: none;
+  transition: background var(--motion-fast) var(--motion-easing);
+}
+.columnHeader[data-align="center"] {
+  text-align: center;
+}
+.columnHeader[data-align="end"] {
+  text-align: end;
+}
+.headerContent {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  background: none;
-  border: none;
-  font: inherit;
-  font-weight: inherit;
-  color: inherit;
+  gap: calc(var(--space-compact) / 2);
+  transition: transform var(--motion-fast) var(--motion-easing);
+}
+.columnHeader[data-sortable] {
   cursor: pointer;
-  padding: 0;
-  min-height: var(--interaction-minTarget);
 }
-.sortButton:focus-visible {
+.columnHeader[data-sortable]:hover {
+  background: color-mix(in oklab, var(--color-bg-surface), var(--color-text-primary) 6%);
+}
+.columnHeader[data-sortable]:active .headerContent {
+  transform: scale(0.98);
+}
+.columnHeader[data-sorted] {
+  color: var(--color-text-primary);
+}
+.sortIcon {
+  flex-shrink: 0;
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+}
+.columnHeader:not([data-sorted]) .sortIcon {
+  color: var(--color-text-secondary);
+}
+
+/* ---------- body ---------- */
+.row {
+  outline: none;
+  transition: background var(--motion-fast) var(--motion-easing);
+}
+.cell {
+  box-sizing: border-box;
+  height: var(--interaction-minTarget);
+  padding: var(--space-compact) var(--space-default);
+  vertical-align: middle;
+  text-align: start;
+  border-bottom: 1px solid var(--color-border-subtle);
+  outline: none;
+}
+.row:last-child > .cell {
+  border-bottom: 0;
+}
+.cell[data-align="center"] {
+  text-align: center;
+}
+.cell[data-align="end"] {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+.table:not([data-selection="none"]) .row:not([data-disabled]) {
+  cursor: pointer;
+}
+.row[data-hovered] {
+  background: color-mix(in oklab, var(--color-text-primary) 4%, transparent);
+}
+.row[data-selected] {
+  background: var(--color-bg-accentSubtle);
+}
+.row[data-selected][data-hovered] {
+  background: var(--color-bg-accentSubtleHover);
+}
+.row[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* keyboard focus in the grid: an inset ring, so the scroll box never clips it */
+.columnHeader[data-focus-visible],
+.row[data-focus-visible] > .cell,
+.cell[data-focus-visible] {
   outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
+  outline-offset: -2px;
 }
-.sortIndicator {
-  font-size: 0.75em;
+.row[data-focus-visible] > .cell {
+  outline: none;
+  box-shadow: inset 0 2px 0 var(--color-border-focus), inset 0 -2px 0 var(--color-border-focus);
+}
+.row[data-focus-visible] > .cell:first-child {
+  box-shadow: inset 0 2px 0 var(--color-border-focus), inset 0 -2px 0 var(--color-border-focus), inset 2px 0 0 var(--color-border-focus);
+}
+.row[data-focus-visible] > .cell:last-child {
+  box-shadow: inset 0 2px 0 var(--color-border-focus), inset 0 -2px 0 var(--color-border-focus), inset -2px 0 0 var(--color-border-focus);
+}
+
+.checkboxCell {
+  width: 1%;
+  padding-inline-end: 0;
+}
+.checkbox {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+/* ---------- empty, loading, error ---------- */
+.message {
+  padding: var(--space-section) var(--space-default);
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+.message[data-status="error"] {
+  color: var(--color-text-danger);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .columnHeader[data-sortable]:active .headerContent {
+    transform: none;
+  }
+}
+
+/* touch: the checkbox's label row is its hit area; it grows to 44 × 44 */
+@media (pointer: coarse) {
+  .checkbox > label {
+    justify-content: center;
+    min-width: var(--interaction-minTarget);
+    min-height: var(--interaction-minTarget);
+  }
 }

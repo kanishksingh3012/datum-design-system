@@ -1,36 +1,26 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { TodoList, TodoItem } from "./TodoList";
+import { TodoItem, TodoList } from "./TodoList";
 
 describe("TodoList", () => {
-  it("renders as a real <details>/<summary> disclosure wrapping a real <ol>", () => {
-    render(
-      <TodoList title="Migration plan">
-        <TodoItem status="done">Read the spec</TodoItem>
-        <TodoItem status="active">Write the tests</TodoItem>
-      </TodoList>
-    );
-    expect(screen.getByText("Migration plan").closest("details")).toBeInTheDocument();
-    expect(screen.getByText("Read the spec").closest("ol")).toBeInTheDocument();
-  });
-
-  it("derives the completion count from direct TodoItem children", () => {
-    render(
-      <TodoList title="Migration plan">
-        <TodoItem status="done">One</TodoItem>
-        <TodoItem status="done">Two</TodoItem>
-        <TodoItem status="pending">Three</TodoItem>
-      </TodoList>
-    );
-    expect(screen.getByText("2 of 3 done")).toBeInTheDocument();
-  });
-
-  it("carries each item's status as real, visually hidden text - never a mark alone", () => {
+  it("counts done items and is open by default", () => {
     render(
       <TodoList>
-        <TodoItem status="error">Deploy</TodoItem>
+        <TodoItem status="done">Read</TodoItem>
+        <TodoItem status="active">Write</TodoItem>
+        <TodoItem>Ship</TodoItem>
       </TodoList>
     );
-    expect(screen.getByText("Deploy").closest("li")).toHaveTextContent("Deploy (Error)");
+    expect(screen.getByRole("button")).toHaveTextContent("1 of 3 done");
+    expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("says each item's state in words", () => {
+    render(
+      <TodoList>
+        <TodoItem status="error" metadata="Timed out">Deploy</TodoItem>
+      </TodoList>
+    );
+    expect(screen.getByRole("listitem")).toHaveTextContent("Deploy (failed)Timed out");
   });
 });

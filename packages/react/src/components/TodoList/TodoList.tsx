@@ -1,74 +1,90 @@
 import { Children, isValidElement, type ReactElement, type ReactNode } from "react";
+import { Disclosure, type DisclosureProps } from "../../lib/Disclosure";
 import styles from "./TodoList.module.css";
 
 export type TodoItemStatus = "pending" | "active" | "done" | "error";
 
 export interface TodoListOwnProps {
   /** @default "Plan" */
-  title?: string;
-  /** @default false */
+  title?: ReactNode;
+  /** Whether the list is shown (controlled). */
+  open?: boolean;
+  /** @default true */
   defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** TodoItem elements. */
   children?: ReactNode;
 }
 
-export type TodoListProps = TodoListOwnProps;
+export type TodoListProps = TodoListOwnProps & Omit<DisclosureProps, keyof TodoListOwnProps | "icon" | "meta" | "streaming" | "live">;
 
 /**
- * An agent's task plan. The completion count is derived from direct
- * TodoItem children by default - the same convenience Kernel UI's
- * version offers - since that's the common case; pass total/completed
- * explicitly if items are nested inside other wrappers where counting
- * children wouldn't see them.
+ * An agent's plan: a checklist behind one line that counts what's done
+ * ("2 of 5 done", counted from the direct TodoItem children).
  */
-export function TodoList({ title = "Plan", defaultOpen = false, children }: TodoListProps) {
-  const items = Children.toArray(children).filter(
-    (child): child is ReactElement<TodoItemOwnProps> => isValidElement(child)
-  );
-  const total = items.length;
-  const completed = items.filter((item) => item.props.status === "done").length;
+export function TodoList({ title = "Plan", defaultOpen = true, children, ...rest }: TodoListProps) {
+  const items = Children.toArray(children).filter((c): c is ReactElement<TodoItemOwnProps> => isValidElement(c));
+  const done = items.filter((item) => item.props.status === "done").length;
 
   return (
-    <details className={styles.root} open={defaultOpen}>
-      <summary className={styles.summary}>
-        <span>{title}</span>
-        <span className={styles.count}>
-          {completed} of {total} done
-        </span>
-      </summary>
+    <Disclosure {...rest} defaultOpen={defaultOpen} title={title} meta={<span className={styles.count}>{done} of {items.length} done</span>}>
       <ol className={styles.list}>{children}</ol>
-    </details>
+    </Disclosure>
   );
 }
 
 const STATUS_LABEL: Record<TodoItemStatus, string> = {
-  pending: "Pending",
-  active: "In progress",
-  done: "Done",
-  error: "Error",
+  pending: "to do",
+  active: "in progress",
+  done: "done",
+  error: "failed",
+};
+
+const MARK: Record<TodoItemStatus, ReactNode> = {
+  pending: <circle cx="12" cy="12" r="9" />,
+  active: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="4" data-fill="" />
+    </>
+  ),
+  done: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m8 12.5 2.5 2.5 5.5-6" />
+    </>
+  ),
+  error: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m9 9 6 6 M15 9l-6 6" />
+    </>
+  ),
 };
 
 export interface TodoItemOwnProps {
-  status: TodoItemStatus;
+  /** @default "pending" */
+  status?: TodoItemStatus;
+  /** A second line: a file, a duration, why it failed. */
+  metadata?: ReactNode;
   children?: ReactNode;
-  metadata?: string;
 }
 
 export type TodoItemProps = TodoItemOwnProps;
 
-/** All four status marks render at once and cross-fade on data-status, so a status change is one attribute write. */
-export function TodoItem({ status, children, metadata }: TodoItemProps) {
+/** One task. Its state is a mark and a word for assistive tech, never color alone. */
+export function TodoItem({ status = "pending", metadata, children }: TodoItemProps) {
   return (
     <li className={styles.item} data-status={status}>
-      <span className={styles.marks} aria-hidden="true">
-        <span className={styles.mark} data-mark="pending" />
-        <span className={styles.mark} data-mark="active" />
-        <span className={styles.mark} data-mark="done" />
-        <span className={styles.mark} data-mark="error" />
-      </span>
-      <span className={styles.label}>
-        {children}
-        <span className={styles.visuallyHidden}> ({STATUS_LABEL[status]})</span>
-        {metadata ? <span className={styles.metadata}> {metadata}</span> : null}
+      <svg className={styles.mark} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {MARK[status]}
+      </svg>
+      <span className={styles.text}>
+        <span className={styles.label}>
+          {children}
+          <span className={styles.srOnly}> ({STATUS_LABEL[status]})</span>
+        </span>
+        {metadata ? <span className={styles.metadata}>{metadata}</span> : null}
       </span>
     </li>
   );

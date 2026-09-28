@@ -1,30 +1,31 @@
-import { forwardRef, type ButtonHTMLAttributes, type HTMLAttributes } from "react";
+import { forwardRef, type HTMLAttributes } from "react";
+import { Button, type ButtonProps } from "../Button/Button";
 import styles from "./Suggestion.module.css";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface SuggestionOwnProps {}
+export interface SuggestionOwnProps {
+  /** Names the list for assistive tech, e.g. "Suggested prompts". */
+  label?: string;
+}
 
 export type SuggestionProps = SuggestionOwnProps & Omit<HTMLAttributes<HTMLUListElement>, "role">;
 
-/** Prompt suggestion chips that seed the next composer message - a real list of real buttons. */
-export const Suggestion = forwardRef<HTMLUListElement, SuggestionProps>(function Suggestion(
-  { className, ...rest },
-  ref
-) {
-  return <ul ref={ref} role="list" className={[styles.root, className].filter(Boolean).join(" ")} {...rest} />;
+/** Prompt chips that seed the next message: a real list of neutral outline Buttons. */
+export const Suggestion = forwardRef<HTMLUListElement, SuggestionProps>(function Suggestion({ label, className, ...rest }, ref) {
+  return <ul ref={ref} role="list" aria-label={label} className={[styles.root, className].filter(Boolean).join(" ")} {...rest} />;
 });
 
 Suggestion.displayName = "Suggestion";
 
-export type SuggestionItemProps = ButtonHTMLAttributes<HTMLButtonElement>;
+export type SuggestionItemProps = ButtonProps;
 
+/** One chip. Any Button prop works (`prefix` for an icon, `size`). */
 export const SuggestionItem = forwardRef<HTMLButtonElement, SuggestionItemProps>(function SuggestionItem(
-  { className, type = "button", ...rest },
+  { intent = "neutral", appearance = "outline", size = "sm", ...rest },
   ref
 ) {
   return (
-    <li>
-      <button ref={ref} type={type} className={[styles.item, className].filter(Boolean).join(" ")} {...rest} />
+    <li className={styles.item}>
+      <Button ref={ref} type="button" intent={intent} appearance={appearance} size={size} {...rest} />
     </li>
   );
 });

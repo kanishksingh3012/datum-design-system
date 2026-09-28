@@ -1,0 +1,17 @@
+/* Monochrome syntax: hierarchy from weight, style and the two text colors — no hue. */
+.token[data-kind="keyword"] {
+  font-weight: 600;
+}
+.token[data-kind="function"] {
+  font-weight: 500;
+}
+.token[data-kind="string"] {
+  font-style: italic;
+}
+.token[data-kind="comment"],
+.token[data-kind="punctuation"] {
+  color: var(--color-text-secondary);
+}
+.token[data-kind="comment"] {
+  font-style: italic;
+}

@@ -1,7 +1,24 @@
 .root {
-  overflow-y: auto;
-  scrollbar-gutter: stable;
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-compact);
+  min-height: 0;
+}
+.scroll {
+  flex: 1 1 auto;
+}
+.log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-default);
+}
+/* floats over the bottom edge, centered; ink (neutral solid) reads on any content */
+.jump {
+  position: absolute;
+  bottom: var(--space-tight);
+  left: 50%;
+  z-index: 1;
+  transform: translateX(-50%);
+  border-radius: var(--radius-control);
+  box-shadow: var(--elevation-overlay);
 }

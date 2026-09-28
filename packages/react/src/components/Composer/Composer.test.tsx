@@ -1,41 +1,47 @@
-import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Composer } from "./Composer";
 
-function Harness({ onSubmit, thinking = false }: { onSubmit: (v: string) => void; thinking?: boolean }) {
-  const [value, setValue] = useState("");
-  return <Composer label="Message" value={value} onChange={setValue} onSubmit={onSubmit} thinking={thinking} />;
-}
-
 describe("Composer", () => {
-  it("renders a real, labeled textarea", () => {
-    render(<Harness onSubmit={() => {}} />);
-    expect(screen.getByLabelText("Message").tagName).toBe("TEXTAREA");
-  });
-
-  it("submits on Enter and inserts a newline on Shift+Enter", async () => {
+  it("sends the trimmed draft on Enter and clears it; Shift+Enter adds a line", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<Harness onSubmit={onSubmit} />);
-    const input = screen.getByLabelText("Message");
-    await user.type(input, "line one{Shift>}{Enter}{/Shift}line two");
-    expect(input).toHaveValue("line one\nline two");
-    expect(onSubmit).not.toHaveBeenCalled();
-    await user.type(input, "{Enter}");
-    expect(onSubmit).toHaveBeenCalledWith("line one\nline two");
+    render(<Composer label="Message" onSubmit={onSubmit} />);
+    const field = screen.getByRole("textbox", { name: "Message" });
+    await user.type(field, "hi{Shift>}{Enter}{/Shift}there ");
+    expect(field).toHaveValue("hi\nthere ");
+    await user.keyboard("{Enter}");
+    expect(onSubmit).toHaveBeenCalledWith("hi\nthere");
+    expect(field).toHaveValue("");
   });
 
-  it("disables the input and shows real 'Thinking...' status text instead of the send button while thinking", () => {
-    render(<Harness onSubmit={() => {}} thinking />);
-    expect(screen.getByLabelText("Message")).toBeDisabled();
-    expect(screen.getByRole("status")).toHaveTextContent("Thinking...");
-    expect(screen.queryByRole("button", { name: "Send" })).not.toBeInTheDocument();
-  });
-
-  it("disables Send when the input is empty", () => {
-    render(<Harness onSubmit={() => {}} />);
+  it("disables Send while the draft is empty", () => {
+    render(<Composer label="Message" onSubmit={() => {}} />);
     expect(screen.getByRole("button", { name: "Send" })).toBeDisabled();
+  });
+
+  it("follows the value trio", async () => {
+    const onValueChange = vi.fn();
+    render(<Composer label="Message" value="a" onValueChange={onValueChange} onSubmit={() => {}} />);
+    await userEvent.type(screen.getByRole("textbox"), "b");
+    expect(onValueChange).toHaveBeenCalledWith("ab");
+    expect(screen.getByRole("textbox")).toHaveValue("a");
+  });
+
+  it("while thinking: stays editable, won't send, and offers Stop", async () => {
+    const onSubmit = vi.fn();
+    const onStop = vi.fn();
+    render(<Composer label="Message" defaultValue="next" thinking onStop={onStop} onSubmit={onSubmit} />);
+    expect(screen.getByRole("textbox")).toBeEnabled();
+    await userEvent.type(screen.getByRole("textbox"), "{Enter}");
+    expect(onSubmit).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole("button", { name: "Stop" }));
+    expect(onStop).toHaveBeenCalled();
+  });
+
+  it("shows Send as loading while thinking without onStop", () => {
+    render(<Composer label="Message" thinking onSubmit={() => {}} />);
+    expect(screen.getByRole("button", { name: "Send" })).toHaveAttribute("aria-busy", "true");
   });
 });
