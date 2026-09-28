@@ -15,7 +15,7 @@ const names = (n: string) => n.split(" + ").reverse().filter((c) => fixtures[c])
 // modal overlays are fixed to the frame's viewport, so they add nothing to its scroll height:
 // give their frames room to hug the full panel instead of hitting the viewport cap
 const OVERLAY_ROOM = 600;
-const needsRoom = (name: string, label: string) => ["Dialog", "Sheet"].includes(name) || label === "mobile menu";
+const needsRoom = (name: string, label: string) => ["Dialog", "Sheet"].includes(name) || label === "mobile menu open";
 
 function Frame({ name, theme, mode, variant, room }: { name: string; theme: string; mode: string; variant: number; room: boolean }) {
   const fit = (el: HTMLIFrameElement) => {

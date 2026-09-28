@@ -26,7 +26,12 @@
 //    as is hover on anything a scrim or popover covers. [data-check-skip] marks a
 //    control measured in another variant (a menu's trigger, while the menu holds focus).
 //    Visually hidden controls (React Aria's screen-reader DismissButton) are skipped, and so are
-//    controls that aren't rendered (display: none — a navbar's menu button above its breakpoint).
+//    controls that aren't rendered (display: none). A variant named "mobile menu…" is the one
+//    exception to that: it renders at a narrow (390×844) viewport instead of the usual
+//    1400×1000, so a control that only exists below its breakpoint (a navbar's menu trigger) is
+//    actually visible and measured there, rather than silently skipped everywhere. Any other
+//    display:none control is still skipped outright — real screen coverage of anything
+//    breakpoint-hidden needs its own "mobile menu"-style variant, not a blanket assumption.
 //    backdrop-filter is allowed (a translucent bar blurring what's behind it); filter is not.
 //
 // Needs a built @datum-design/react (the gallery imports dist); `npm run check` builds first.
@@ -223,7 +228,13 @@ try {
 } catch {
   browser = await chromium.launch();
 }
-const page = await browser.newPage({ viewport: { width: 1400, height: 1000 } });
+const DESKTOP = { width: 1400, height: 1000 };
+const MOBILE = { width: 390, height: 844 };
+// A variant named this renders below its component's mobile breakpoint instead of at DESKTOP,
+// so a control that only exists there (a navbar's menu trigger) is actually visible and measured,
+// rather than silently skipped by the display:none check below.
+const isMobileVariant = (label) => typeof label === "string" && label.startsWith("mobile menu");
+const page = await browser.newPage({ viewport: DESKTOP });
 
 try {
   for (const name of targets) {
@@ -240,6 +251,7 @@ try {
       for (const mode of MODES) {
       for (let v = 0; v < variants.length; v++) {
         const label = variants[v] ? ` [${variants[v]}]` : "";
+        await page.setViewportSize(isMobileVariant(variants[v]) ? MOBILE : DESKTOP);
         await page.goto(url(theme, mode, v));
         await page.waitForSelector("body[data-fixture=ready] #fixture > *", { state: "attached" });
         await page.evaluate(() => document.fonts.ready);
@@ -306,10 +318,11 @@ try {
       }
     }
     // Touch targets: colors don't matter here, so one theme/mode is enough.
-    const touch = await browser.newContext({ viewport: { width: 1400, height: 1000 }, hasTouch: true, isMobile: true });
+    const touch = await browser.newContext({ viewport: DESKTOP, hasTouch: true, isMobile: true });
     const tp = await touch.newPage();
     const touchResult = { coarse: true, small: [], count: 0 };
     for (let v = 0; v < variants.length; v++) {
+    await tp.setViewportSize(isMobileVariant(variants[v]) ? MOBILE : DESKTOP);
     await tp.goto(url("orange", "light", v));
     await tp.waitForSelector("body[data-fixture=ready] #fixture > *", { state: "attached" });
     const r = await tp.evaluate((selector) => {

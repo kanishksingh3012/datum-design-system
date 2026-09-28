@@ -722,7 +722,7 @@ export const fixtures: Record<string, Fixture> = {
       ))}
     </div>
   ),
-  Navbar: states(["layouts", "appearances", "mobile menu"], (v) =>
+  Navbar: states(["layouts", "appearances", "mobile menu", "mobile menu open"], (v) =>
     v === "layouts" ? (
       <>
         {navbar()}
@@ -735,8 +735,11 @@ export const fixtures: Record<string, Fixture> = {
         {navbar({ appearance: "transparent" })}
         {navbar({ appearance: "inverse", layout: "start" })}
       </>
+    ) : v === "mobile menu" ? (
+      // the collapsed bar and its menu trigger only exist below the breakpoint — their one real coverage
+      navbar({ activeHref: "/blog" })
     ) : (
-      // the bar behind the open Sheet is measured in the other states
+      // an open Sheet traps focus, so it gets its own state; its contents are Sheet's coverage
       <div data-check-skip="">{navbar({ defaultOpen: true, activeHref: "/blog" })}</div>
     ), true),
   Dialog: states(["closed", "open", "alertdialog", "full"], (v) =>
