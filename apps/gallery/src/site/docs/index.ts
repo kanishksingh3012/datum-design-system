@@ -13,4 +13,10 @@ export const docPages: Record<string, ComponentType> = {
   "resizable": lazy(() => import("./Resizable")),
   "heading": lazy(() => import("./Heading")),
   "text": lazy(() => import("./Text")),
+  "card": lazy(() => import("./Card")),
+  "badge": lazy(() => import("./Badge")),
+  "avatar": lazy(() => import("./Avatar")),
+  "separator": lazy(() => import("./Separator")),
+  "accordion": lazy(() => import("./Accordion")),
+  "carousel": lazy(() => import("./Carousel")),
 };
