@@ -54,4 +54,6 @@ export const docPages: Record<string, ComponentType> = {
   "footer": lazy(() => import("./Footer")),
   "navbar": lazy(() => import("./Navbar")),
   "sidebar": lazy(() => import("./Sidebar")),
+  "table": lazy(() => import("./Table")),
+  "data-table": lazy(() => import("./DataTable")),
 };
