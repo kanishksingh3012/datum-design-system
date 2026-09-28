@@ -1,64 +1,13 @@
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  max-width: 280px;
-  width: 100%;
+/* The shared field box with a text input and a chevron button at the end;
+   the list is Select's (lib/listBox.module.css). */
+.box {
+  composes: control from "../Field/control.module.css";
+  composes: withButton from "../../lib/fieldParts.module.css";
+  cursor: text;
 }
-.label {
-  font-size: var(--type-ui-label-size);
-  font-weight: var(--type-ui-label-weight);
-  color: var(--color-text-primary);
-}
-.wrap {
-  position: relative;
-}
-.input {
-  width: 100%;
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  color: var(--color-text-primary);
-  background: var(--color-bg-page);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-control);
-  padding: 0 var(--space-default);
-  min-height: var(--interaction-minTarget);
-}
-.input:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 1px;
-  border-color: var(--color-border-focus);
-}
-.input:disabled {
-  opacity: 0.5;
+.box[data-disabled] {
   cursor: not-allowed;
 }
-.listbox {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  z-index: 20;
-  max-height: 240px;
-  overflow-y: auto;
-  margin: 0;
-  padding: 0.3rem;
-  list-style: none;
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-card);
-  box-shadow: var(--elevation-overlay);
-}
-.option {
-  padding: 0 var(--space-compact);
-  min-height: var(--interaction-minTarget);
-  display: flex;
-  align-items: center;
-  border-radius: var(--radius-control);
-  font-size: var(--type-body-md-size);
-  color: var(--color-text-primary);
-  cursor: pointer;
-}
-.optionActive {
-  background: var(--color-bg-page);
+.box[data-readonly] {
+  cursor: default;
 }

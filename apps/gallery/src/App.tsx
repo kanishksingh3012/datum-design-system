@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AiSection } from "./AiSection";
 import { DataSection } from "./DataSection";
+import { CommandPaletteDoc, PickerFormDocs } from "./PickersSection";
 import {
   Accordion, AccordionItem, Alert, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CardMedia,
   Checkbox, CheckboxGroup, Container, Field, Grid, Heading, Label, Link, ProgressBar, Radio, RadioGroup, Section, Select, Separator,
@@ -640,6 +641,10 @@ export function App() {
         <a href="#input-otp">Input OTP</a>
         <a href="#color-picker">Color Picker</a>
         <a href="#file-upload">File Upload</a>
+        <a href="#combobox">Combobox</a>
+        <a href="#tag-input">Tag Input</a>
+        <a href="#date-picker">Date Picker</a>
+        <a href="#date-range-picker">Date Range Picker</a>
         <a href="#dialog">Dialog</a>
         <a href="#sheet">Sheet</a>
         <a href="#dropdown-menu">Dropdown Menu</a>
@@ -647,6 +652,7 @@ export function App() {
         <a href="#popover">Popover</a>
         <a href="#hover-card">Hover Card</a>
         <a href="#context-menu">Context Menu</a>
+        <a href="#command-palette">Command Palette</a>
         <a href="#tabs">Tabs</a>
         <a href="#breadcrumbs">Breadcrumbs</a>
         <a href="#pagination">Pagination</a>
@@ -2678,6 +2684,8 @@ export function App() {
           />
         </div>
       </section>
+      <PickerFormDocs />
+
       {/* ============ DIALOG ============ */}
       <section className="component-doc" id="dialog">
         <h1>Dialog</h1>
@@ -2988,6 +2996,8 @@ export function App() {
           />
         </div>
       </section>
+
+      <CommandPaletteDoc />
 
       {/* ============ TABS ============ */}
       <section className="component-doc" id="tabs">

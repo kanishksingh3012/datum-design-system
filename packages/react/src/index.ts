@@ -209,7 +209,7 @@ export { InputOTP } from "./components/InputOTP/InputOTP";
 export type { InputOTPProps, InputOTPOwnProps, InputOTPSize } from "./components/InputOTP/InputOTP";
 
 export { TagInput } from "./components/TagInput/TagInput";
-export type { TagInputProps, TagInputOwnProps } from "./components/TagInput/TagInput";
+export type { TagInputProps, TagInputOwnProps, TagInputSize } from "./components/TagInput/TagInput";
 
 export { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "./components/Table/Table";
 export type {
@@ -244,16 +244,16 @@ export { ContextMenu } from "./components/ContextMenu/ContextMenu";
 export type { ContextMenuProps, ContextMenuOwnProps, ContextMenuItem } from "./components/ContextMenu/ContextMenu";
 
 export { Combobox } from "./components/Combobox/Combobox";
-export type { ComboboxOwnProps, ComboboxOption } from "./components/Combobox/Combobox";
+export type { ComboboxProps, ComboboxOwnProps, ComboboxOption, ComboboxSize } from "./components/Combobox/Combobox";
 
 export { CommandPalette } from "./components/CommandPalette/CommandPalette";
-export type { CommandPaletteOwnProps, CommandPaletteItem } from "./components/CommandPalette/CommandPalette";
+export type { CommandPaletteProps, CommandPaletteOwnProps, CommandPaletteItem } from "./components/CommandPalette/CommandPalette";
 
 export { DatePicker } from "./components/DatePicker/DatePicker";
-export type { DatePickerOwnProps } from "./components/DatePicker/DatePicker";
+export type { DatePickerProps, DatePickerOwnProps, DatePickerSize, DateConstraintProps } from "./components/DatePicker/DatePicker";
 
 export { DateRangePicker } from "./components/DateRangePicker/DateRangePicker";
-export type { DateRangePickerOwnProps, DateRange } from "./components/DateRangePicker/DateRangePicker";
+export type { DateRangePickerProps, DateRangePickerOwnProps, DateRange } from "./components/DateRangePicker/DateRangePicker";
 
 export { Carousel } from "./components/Carousel/Carousel";
 export type { CarouselProps, CarouselOwnProps, CarouselSlide } from "./components/Carousel/Carousel";

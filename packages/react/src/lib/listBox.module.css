@@ -1,0 +1,121 @@
+/* ---------- the list: an overlay surface with pill options ---------- */
+.popover {
+  --_inset: calc(var(--space-compact) / 2);
+  box-sizing: border-box;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: var(--_inset);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-overlay);
+}
+
+.listbox,
+.group {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  outline: none;
+}
+
+.heading {
+  display: block;
+  padding: var(--space-compact) var(--space-tight) calc(var(--space-compact) / 2);
+  font-family: var(--type-ui-overline-family);
+  font-size: var(--type-ui-overline-size);
+  font-weight: var(--type-ui-overline-weight);
+  line-height: var(--type-ui-overline-lineHeight);
+  letter-spacing: var(--type-ui-overline-tracking);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.divider {
+  height: 1px;
+  margin: var(--_inset) calc(var(--_inset) * -1);
+  background: var(--color-border-default);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-compact);
+  min-height: 36px;
+  padding: calc(var(--space-compact) * 0.75) var(--space-tight);
+  box-sizing: border-box;
+  font-family: var(--type-body-md-family);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-lineHeight);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  outline: none;
+  transition: background var(--motion-fast) var(--motion-easing);
+}
+.listbox[data-size="sm"] .option {
+  min-height: 32px;
+  font-size: var(--type-body-sm-size);
+}
+.listbox[data-size="lg"] .option {
+  min-height: 44px;
+  font-size: var(--type-body-lg-size);
+}
+/* two lines are never a pill: the card radius, minus the popover's inset */
+.option[data-description] {
+  border-radius: calc(var(--radius-card) - var(--_inset));
+}
+.option[data-hovered]:not([data-disabled]),
+.option:hover:not([data-disabled]),
+.option[data-focused] {
+  background: color-mix(in oklab, var(--color-bg-surfaceRaised), var(--color-text-primary) 8%);
+}
+/* keyboard focus (React Aria's modality-aware focus-visible) also gets the ring, inset so the popover never clips it */
+.option[data-focus-visible] {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: -2px;
+}
+.option[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.optionDescription {
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+  color: var(--color-text-secondary);
+}
+
+.check {
+  flex-shrink: 0;
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+  color: var(--color-text-accent);
+}
+
+@media (pointer: coarse) {
+  .option {
+    min-height: var(--interaction-minTarget);
+  }
+}
+
+/* nothing matches: a quiet line in the list's place */
+.empty {
+  padding: var(--space-compact) var(--space-tight);
+  font-family: var(--type-body-md-family);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-lineHeight);
+  color: var(--color-text-secondary);
+}
+.empty[data-size="sm"] {
+  font-size: var(--type-body-sm-size);
+}
+.empty[data-size="lg"] {
+  font-size: var(--type-body-lg-size);
+}

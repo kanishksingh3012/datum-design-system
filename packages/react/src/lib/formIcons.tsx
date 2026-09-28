@@ -1,10 +1,10 @@
 // Stroke icons for form controls, drawn in currentColor on a 24px grid.
-type IconProps = { className?: string };
+type IconProps = { className?: string; "data-chevron"?: string };
 
 const icon = (d: string, strokeWidth = 2) =>
-  function Icon({ className }: IconProps) {
+  function Icon({ className, ...data }: IconProps) {
     return (
-      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg {...data} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d={d} />
       </svg>
     );
@@ -19,3 +19,7 @@ export const EyeOffIcon = icon(
 );
 export const MinusIcon = icon("M5 12h14");
 export const PlusIcon = icon("M12 5v14 M5 12h14");
+export const SearchIcon = icon("M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z M20 20l-4-4");
+export const ChevronLeftIcon = icon("M15 6l-6 6 6 6");
+export const ChevronRightIcon = icon("M9 6l6 6-6 6");
+export const CalendarIcon = icon("M8 3v4 M16 3v4 M4 10h16 M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z");

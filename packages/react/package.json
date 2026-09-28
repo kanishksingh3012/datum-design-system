@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "@datum-design/styles": "^0.1.0",
+    "@internationalized/date": "^3.12.4",
     "react-aria": "^3.52.1",
     "react-stately": "^3.50.0"
   },

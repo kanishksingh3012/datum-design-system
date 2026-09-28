@@ -1,0 +1,90 @@
+/* Parts that sit inside the shared field box (Field/control.module.css):
+   a borderless text input, and a round button nested in the pill's end
+   (4px inside the edge, so the curves stay concentric). Used by Combobox,
+   TagInput, DatePicker and DateRangePicker. */
+.input {
+  flex: 1;
+  min-width: 0;
+  height: calc(var(--_height) - 2px);
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+.input::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 1;
+}
+
+/* the box's end padding shrinks so the button sits 3px inside the edge */
+.withButton.withButton {
+  padding-inline-end: 3px;
+}
+
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: calc(var(--_height) - 8px);
+  height: calc(var(--_height) - 8px);
+  margin: 0;
+  padding: 0;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    color var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+.button:hover:not(:disabled) {
+  color: var(--color-text-primary);
+  background: color-mix(in oklab, var(--color-text-primary) 8%, transparent);
+}
+.button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.button:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.button:disabled {
+  cursor: inherit;
+}
+.button svg {
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+  transition: transform var(--motion-normal) var(--motion-easing);
+}
+[data-open] > .button svg[data-chevron] {
+  transform: rotate(180deg);
+}
+
+@media (pointer: coarse) {
+  .button::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--interaction-minTarget);
+    height: var(--interaction-minTarget);
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button:active:not(:disabled) {
+    transform: none;
+  }
+  .button svg {
+    transition: none;
+  }
+}

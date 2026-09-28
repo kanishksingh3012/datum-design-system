@@ -1,73 +1,116 @@
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  max-width: 320px;
-  width: 100%;
+/* The shared field box, holding the tags (soft neutral Badges) and a text
+   input after them. It wraps as tags fill it; once it's more than one line
+   it is no longer a pill, so it takes the card radius. */
+.box {
+  composes: control from "../Field/control.module.css";
+  cursor: text;
 }
-.label {
-  font-size: var(--type-ui-label-size);
-  font-weight: var(--type-ui-label-weight);
-  color: var(--color-text-primary);
-}
-.field {
-  display: flex;
+.box.box {
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem;
-  min-height: var(--interaction-minTarget);
-  padding: 0.3rem var(--space-compact);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-control);
-  background: var(--color-bg-page);
+  gap: calc(var(--space-compact) / 2) var(--space-compact);
+  padding-block: calc(var(--space-compact) / 2);
+  padding-inline-start: calc(var(--_pad) - var(--space-compact) / 2);
 }
-.field:focus-within {
-  border-color: var(--color-border-focus);
+.box[data-multiline] {
+  border-radius: var(--radius-card);
+}
+.box[data-disabled] {
+  cursor: not-allowed;
+}
+.box[data-readonly] {
+  cursor: default;
+}
+.box > input {
+  flex-basis: 6em;
+  height: calc(var(--_height) - 2px - var(--space-compact));
+}
+
+.tags {
+  display: contents;
+}
+
+.tag {
+  position: relative;
+  max-width: 100%;
+  outline: none;
+  transition: background var(--motion-fast) var(--motion-easing);
+}
+.tag[data-focus-visible] {
+  z-index: 1;
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.tagCell {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--space-compact) / 2);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* the × sits flush with the badge's end */
+.tag:has(.remove) {
+  padding-inline-end: 2px;
+}
+
+.remove {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: calc(var(--_height, 20px) - 4px);
+  height: calc(var(--_height, 20px) - 4px);
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+.remove:hover {
+  background: color-mix(in oklab, var(--color-text-primary) 12%, transparent);
+}
+.remove:active {
+  transform: scale(0.98);
+}
+.remove:focus-visible {
   outline: 2px solid var(--color-border-focus);
   outline-offset: 1px;
 }
-.tags {
-  display: contents;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  background: var(--color-bg-surface);
-  color: var(--color-text-primary);
-  font-size: var(--type-body-sm-size);
-  padding: 0.15rem 0.4rem;
-  border-radius: 999px;
-}
-.remove {
-  display: inline-flex;
-  background: none;
-  border: none;
-  color: inherit;
-  opacity: 0.6;
-  cursor: pointer;
-  padding: 0;
-}
 .remove svg {
-  width: 10px;
-  height: 10px;
+  width: 75%;
+  height: 75%;
 }
-.remove:hover {
-  opacity: 1;
+
+.counter {
+  margin-left: auto;
+  font-family: var(--type-ui-caption-family);
+  font-size: var(--type-ui-caption-size);
+  line-height: var(--type-ui-caption-lineHeight);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
 }
-.input {
-  flex: 1 1 80px;
-  min-width: 80px;
-  border: none;
-  background: none;
-  font-family: var(--font-body);
-  font-size: var(--type-body-md-size);
-  color: var(--color-text-primary);
-  padding: 0.3rem 0;
+
+@media (pointer: coarse) {
+  .remove::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--interaction-minTarget);
+    height: var(--interaction-minTarget);
+    transform: translate(-50%, -50%);
+  }
 }
-.input:focus {
-  outline: none;
+
+@media (prefers-reduced-motion: reduce) {
+  .remove:active {
+    transform: none;
+  }
 }

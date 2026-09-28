@@ -1,0 +1,258 @@
+/* The date pickers' shared parts: date segments inside the field box, and
+   the calendar panel. Day cells are circles (radius.control on a square);
+   a range is a continuous accentSubtle band with accent circles at its ends. */
+
+/* ---------- segments ---------- */
+.segments {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.segment {
+  box-sizing: border-box;
+  padding: 0 1px;
+  border-radius: var(--radius-subtle);
+  outline: none;
+  caret-color: transparent;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    color var(--motion-fast) var(--motion-easing);
+}
+.segment[data-placeholder] {
+  color: var(--color-text-secondary);
+}
+.segment[data-segment="literal"] {
+  padding: 0;
+  color: var(--color-text-secondary);
+}
+/* the focused segment takes the accent fill; the field box carries the ring */
+.segment[data-focused] {
+  color: var(--color-text-onAccent);
+  background: var(--color-bg-accent);
+}
+
+/* ---------- popover ---------- */
+.popover {
+  outline: none;
+}
+.dialog {
+  box-sizing: border-box;
+  max-width: calc(100vw - 2 * var(--space-default));
+  padding: var(--space-tight);
+  color: var(--color-text-primary);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-overlay);
+  outline: none;
+}
+
+/* ---------- calendar ---------- */
+.calendar {
+  --_day: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+  width: max-content;
+  font-family: var(--type-body-md-family);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-compact);
+}
+.title {
+  margin: 0;
+  font-family: var(--type-ui-label-family);
+  font-size: var(--type-ui-label-size);
+  font-weight: var(--type-ui-label-weight);
+  line-height: var(--type-ui-label-lineHeight);
+  color: var(--color-text-primary);
+}
+
+.nav {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--_day);
+  height: var(--_day);
+  margin: 0;
+  padding: 0;
+  color: var(--color-text-primary);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+.nav:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--color-bg-surfaceRaised), var(--color-text-primary) 8%);
+}
+.nav:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.nav:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: -2px;
+}
+.nav:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.nav svg {
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+}
+
+.grid {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.weekday {
+  width: var(--_day);
+  padding: 0 0 calc(var(--space-compact) / 2);
+  font-family: var(--type-ui-caption-family);
+  font-size: var(--type-ui-caption-size);
+  font-weight: var(--type-ui-caption-weight);
+  line-height: var(--type-ui-caption-lineHeight);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+/* the band is painted on the cell, clipped to the circle's height */
+.cell {
+  padding: 1px 0;
+  background-clip: content-box;
+}
+.cell[data-in-range] {
+  background-color: var(--color-bg-accentSubtle);
+}
+.cell[data-range-start] {
+  background-image: linear-gradient(to right, transparent 50%, var(--color-bg-accentSubtle) 50%);
+}
+.cell[data-range-end] {
+  background-image: linear-gradient(to left, transparent 50%, var(--color-bg-accentSubtle) 50%);
+}
+/* a range that starts on the last day of a week, or ends on the first, has no band beside it in that row */
+.cell[data-range-start]:last-child,
+.cell[data-range-end]:first-child {
+  background-image: none;
+}
+/* the band's ends at the edges of a week are round, like the days */
+.cell[data-in-range]:first-child {
+  border-start-start-radius: var(--radius-control);
+  border-end-start-radius: var(--radius-control);
+}
+.cell[data-in-range]:last-child {
+  border-start-end-radius: var(--radius-control);
+  border-end-end-radius: var(--radius-control);
+}
+
+.day {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--_day);
+  height: var(--_day);
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  font-size: var(--type-body-md-size);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--color-text-primary);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  outline: none;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    color var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+.day:hover:not([data-disabled]):not([data-unavailable]):not([data-selected]) {
+  background: color-mix(in oklab, var(--color-bg-surfaceRaised), var(--color-text-primary) 8%);
+}
+.cell[data-in-range] .day:hover:not([data-disabled]):not([data-unavailable]) {
+  background: var(--color-bg-accentSubtleHover);
+}
+.day:active:not([data-disabled]):not([data-unavailable]) {
+  transform: scale(0.98);
+}
+/* keyboard focus is Button's ring, outside the circle (the panel's padding
+   leaves room for it), raised above the neighbouring days */
+.day:focus-visible,
+.day[data-focus-visible] {
+  z-index: 1;
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* today: accent text and a dot under the number */
+.day[data-today] {
+  font-weight: 600;
+  color: var(--color-text-accent);
+}
+.day[data-today]::after {
+  content: "";
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: currentColor;
+  border-radius: var(--radius-pill);
+  transform: translateX(-50%);
+}
+
+/* selected, and a range's two ends: the accent fill, like a solid Button */
+.day[data-selected] {
+  color: var(--color-text-onAccent);
+  background: var(--color-bg-accent);
+}
+.day[data-selected]:hover:not([data-disabled]) {
+  background: var(--color-bg-accentHover);
+}
+
+/* unavailable: readable and focusable, but struck through and not selectable */
+.day[data-unavailable] {
+  color: var(--color-text-secondary);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+/* outside the month: the neighbouring days, quieter and inert */
+.day[data-outside] {
+  color: var(--color-text-secondary);
+  cursor: default;
+}
+.day[data-outside]::after {
+  content: none;
+}
+/* outside min / max */
+.day[data-disabled]:not([data-outside]) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (pointer: coarse) {
+  .calendar {
+    --_day: var(--interaction-minTarget);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav:active:not(:disabled),
+  .day:active:not([data-disabled]):not([data-unavailable]) {
+    transform: none;
+  }
+}

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { UNSAFE_PortalProvider } from "react-aria";
+import { getLocalTimeZone, startOfMonth, today, type DateValue } from "@internationalized/date";
 import {
   Accordion, AccordionItem, Alert, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader,
   Checkbox, CheckboxGroup, Container, Field, Grid, Heading, Label, Link, ProgressBar, Radio, RadioGroup, Section, Select, Separator,
@@ -7,6 +8,7 @@ import {
   Dialog, DialogBody, DialogFooter, DialogHeader, DropdownMenu, Sheet, Tooltip, type DropdownMenuItem,
   Breadcrumbs, BreadcrumbItem, Footer, Navbar, Pagination, Tabs, type NavbarLink, type TabItem,
   ContextMenu, HoverCard, InputOTP, NumberField, Popover, Slider, type ContextMenuItem,
+  Combobox, TagInput, CommandPalette, DatePicker, DateRangePicker, type CommandPaletteItem,
   Carousel, ColorPicker, FileUpload, Resizable, ScrollArea, Sidebar, type CarouselSlide, type SidebarSection,
   AgentActivity, Citation, CodeBlock, Composer, FileDiff, Message, MessageList, MessageScroller, Reasoning, Source, Sources,
   Suggestion, SuggestionItem, ThinkingIndicator, TodoItem, TodoList, ToolCall, type DiffRow, type CodeLine,
@@ -36,6 +38,49 @@ const countries: SelectOption[] = [
   { value: "us", label: "United States", group: "Americas" },
   { value: "ca", label: "Canada", group: "Americas" },
   { value: "fr", label: "France", group: "Europe" },
+];
+const commands: CommandPaletteItem[] = [
+  { id: "new", label: "New project", group: "Projects", icon: <Plus />, shortcut: "⌘N" },
+  { id: "open", label: "Open recent", group: "Projects", icon: <FolderOpen />, description: "Datum gallery · edited today" },
+  { id: "inbox", label: "Go to inbox", group: "Navigate", icon: <Inbox />, shortcut: "G I" },
+  { id: "settings", label: "Settings", group: "Navigate", icon: <Settings />, shortcut: "⌘," },
+  { id: "delete", label: "Delete project", group: "Projects", icon: <Trash2 />, disabled: true },
+];
+/** Opens a range calendar and presses a start day, then moves focus on, so the band is mid-selection. */
+function MidRange({ first, steps }: { first: DateValue; steps: number }) {
+  // React Aria commits a half-made range when focus leaves the calendar, so focusing each control
+  // would end the selection: the controls are skipped here (measured in "complete range"); the text is still measured
+  const [el, setEl] = useState<HTMLDivElement | null>(null);
+  // in a layout effect once the calendar is in, so the selection is made before the first paint
+  useLayoutEffect(() => {
+    const day = el?.querySelector<HTMLElement>(`[role="grid"] td:not([aria-disabled]) button[aria-label$=" ${first.day}, ${first.year}"]`);
+    day?.click();
+    for (let i = 0; i < steps; i++) day?.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
+  }, [el, first, steps]);
+  return (
+    <div ref={setEl} data-check-skip="">
+      {el ? (
+        <UNSAFE_PortalProvider getContainer={() => el}>
+          <DateRangePicker label="Trip" defaultOpen minValue={monthStart.add({ days: 1 })} isDateUnavailable={unavailable} style={narrow} />
+        </UNSAFE_PortalProvider>
+      ) : null}
+    </div>
+  );
+}
+// dates around today, so "today" is always in the month shown
+const now = today(getLocalTimeZone());
+const picked = now.day > 15 ? now.subtract({ days: 4 }) : now.add({ days: 4 });
+const monthStart = startOfMonth(now);
+// a five-night range inside the month, on the side of today that has room
+const rangeStart = now.day > 15 ? picked.subtract({ days: 5 }) : picked;
+const stay = { start: rangeStart, end: rangeStart.add({ days: 5 }) };
+// every ninth day is unavailable, away from today and the picked dates
+const unavailable = (d: DateValue) => d.month === now.month && d.day % 9 === 0 && Math.abs(d.day - now.day) > 8;
+const cities: SelectOption[] = [
+  { value: "nyc", label: "New York", group: "Americas" },
+  { value: "tor", label: "Toronto", group: "Americas", description: "Eastern time" },
+  { value: "par", label: "Paris", group: "Europe" },
+  { value: "ber", label: "Berlin", group: "Europe", disabled: true },
 ];
 
 
@@ -1259,4 +1304,112 @@ export const fixtures: Record<string, Fixture> = {
       />
     </div>
   ), true),
+  Combobox: states(["closed", "open grouped", "filtered", "empty"], (v) =>
+    v === "closed" ? (
+      <div style={{ ...narrow, display: "grid", gap: "var(--space-default)" }}>
+        {sizes.map((size) => (
+          <Combobox key={size} size={size} label={`City ${size}`} options={cities} defaultValue="par" helpText="Start typing to filter." />
+        ))}
+        <Combobox label="Placeholder" options={cities} placeholder="Search cities" required />
+        <Combobox label="Invalid" options={cities} errorText="Choose a city." />
+        <Combobox label="Read-only" options={cities} defaultValue="tor" readOnly />
+        <Combobox label="Disabled" options={cities} defaultValue="nyc" disabled />
+        <div style={box}><Combobox label="On a surface" options={cities} /></div>
+      </div>
+    ) : (
+      <div style={narrow}>
+        <Combobox
+          label="City"
+          options={cities}
+          defaultValue={v === "open grouped" ? "par" : undefined}
+          defaultInputValue={v === "filtered" ? "o" : v === "empty" ? "Lisbon" : undefined}
+          defaultOpen
+          data-check-skip=""
+        />
+      </div>
+    ), true),
+  TagInput: states(["empty", "with tags", "at limit"], (v) => {
+    const grid = { ...narrow, display: "grid", gap: "var(--space-default)" };
+    if (v === "empty")
+      return (
+        <div style={grid}>
+          <TagInput label="Topics" placeholder="Add a topic" helpText="Press Enter or comma to add." required />
+          <TagInput label="Invalid" placeholder="Add a topic" errorText="Add at least one topic." />
+          <div style={box}><TagInput label="On a surface" placeholder="Add a topic" /></div>
+        </div>
+      );
+    if (v === "at limit")
+      return (
+        <div style={grid}>
+          <TagInput label="Reviewers" defaultValue={["Ada", "Grace", "Alan"]} maxTags={3} helpText="Up to three." />
+          <TagInput label="Keywords" defaultValue={["accessibility", "design tokens", "typography", "motion", "color"]} maxTags={5} />
+        </div>
+      );
+    return (
+      <div style={grid}>
+        {sizes.map((size) => (
+          <TagInput key={size} size={size} label={`Topics ${size}`} defaultValue={["react", "aria"]} placeholder="Add a topic" />
+        ))}
+        <TagInput label="Invalid" defaultValue={["react"]} errorText="Remove duplicates." />
+        <TagInput label="Read-only" defaultValue={["react", "aria"]} readOnly />
+        <TagInput label="Disabled" defaultValue={["react", "aria"]} disabled />
+      </div>
+    );
+  }, true),
+  CommandPalette: states(["closed", "open grouped", "filtered", "empty", "mobile menu open"], (v) =>
+    v === "closed" ? (
+      <div className="row">
+        <CommandPalette items={commands} trigger={<Button intent="neutral" appearance="outline"><Search /> Search… ⌘K</Button>} />
+      </div>
+    ) : (
+      <CommandPalette items={commands} defaultOpen defaultSearch={v === "filtered" ? "go" : v === "empty" ? "invoices" : undefined} />
+    ), true),
+  DatePicker: states(["closed", "calendar", "mobile menu calendar"], (v) =>
+    v === "closed" ? (
+      <div style={{ ...narrow, display: "grid", gap: "var(--space-default)" }}>
+        {sizes.map((size) => (
+          <DatePicker key={size} size={size} label={`Start ${size}`} defaultValue={picked} helpText="The first day of the project." />
+        ))}
+        <DatePicker label="Placeholder" required />
+        <DatePicker label="Invalid" defaultValue={picked} errorText="Choose a weekday." />
+        <DatePicker label="Read-only" defaultValue={picked} readOnly />
+        <DatePicker label="Disabled" defaultValue={picked} disabled />
+        <div style={box}><DatePicker label="On a surface" /></div>
+      </div>
+    ) : (
+      <DatePicker
+        label="Start"
+        defaultValue={picked}
+        minValue={monthStart.add({ days: 1 })}
+        isDateUnavailable={unavailable}
+        defaultOpen
+        data-check-skip=""
+        style={narrow}
+      />
+    ), true),
+  DateRangePicker: states(["closed", "complete range", "mid-selection", "mobile menu range"], (v) =>
+    v === "closed" ? (
+      <div style={{ ...narrow, display: "grid", gap: "var(--space-default)" }}>
+        {sizes.map((size) => (
+          <DateRangePicker key={size} size={size} label={`Trip ${size}`} defaultValue={stay} helpText="Check-in to check-out." />
+        ))}
+        <DateRangePicker label="Placeholder" required />
+        <DateRangePicker label="Invalid" defaultValue={stay} errorText="Stays are at most 14 nights." />
+        <DateRangePicker label="Read-only" defaultValue={stay} readOnly />
+        <DateRangePicker label="Disabled" defaultValue={stay} disabled />
+        <div style={box}><DateRangePicker label="On a surface" /></div>
+      </div>
+    ) : v === "mid-selection" ? (
+      <MidRange first={rangeStart} steps={2} />
+    ) : (
+      <DateRangePicker
+        label="Trip"
+        defaultValue={stay}
+        minValue={monthStart.add({ days: 1 })}
+        isDateUnavailable={unavailable}
+        defaultOpen
+        data-check-skip=""
+        style={narrow}
+      />
+    ), true),
 };

@@ -1,34 +1,15 @@
-import { forwardRef, useMemo, useRef, type HTMLAttributes, type ReactNode, type RefObject } from "react";
-import {
-  DismissButton,
-  HiddenSelect,
-  Overlay,
-  mergeProps,
-  useButton,
-  useListBox,
-  useListBoxSection,
-  useObjectRef,
-  useOption,
-  usePopover,
-  useSelect,
-} from "react-aria";
-import { Item, Section, useSelectState, type Node, type SelectState } from "react-stately";
-import { CheckIcon, ChevronDownIcon } from "../../lib/formIcons";
+import { forwardRef, useMemo, type HTMLAttributes } from "react";
+import { HiddenSelect, useButton, useObjectRef, useSelect } from "react-aria";
+import { useSelectState } from "react-stately";
+import { ChevronDownIcon } from "../../lib/formIcons";
+import { ListBox, ListPopover, listChildren, type ListOption } from "../../lib/ListBox";
 import { useControllableState } from "../../lib/useControllableState";
 import { FieldFrame, type FieldProps } from "../Field/Field";
 import styles from "./Select.module.css";
 
 export type SelectSize = "sm" | "md" | "lg";
 
-export interface SelectOption {
-  value: string;
-  label: string;
-  /** A second line under the label. */
-  description?: string;
-  disabled?: boolean;
-  /** Options with the same group are listed together under that heading, with a divider between groups. */
-  group?: string;
-}
+export type SelectOption = ListOption;
 
 export interface SelectOwnProps extends FieldProps {
   /** 32 / 40 / 48px tall with a precise pointer, +4px on touch screens. @default "md" */
@@ -53,16 +34,6 @@ export interface SelectOwnProps extends FieldProps {
 
 /** `className` and other props go on the field's root; `ref` goes on the trigger button. */
 export type SelectProps = SelectOwnProps & Omit<HTMLAttributes<HTMLDivElement>, "children" | "defaultValue" | "onChange" | "placeholder">;
-
-/** Options in first-appearance order of their group; ungrouped options form an untitled section. */
-function toSections(options: SelectOption[]) {
-  const sections = new Map<string, SelectOption[]>();
-  for (const option of options) {
-    const key = option.group ?? "";
-    sections.set(key, [...(sections.get(key) ?? []), option]);
-  }
-  return [...sections];
-}
 
 export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select(
   {
@@ -90,24 +61,6 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
   const triggerRef = useObjectRef(forwardedRef);
   const [value, setValue] = useControllableState<string | null>(valueProp, defaultValue, onValueChange as (value: string | null) => void);
   const byValue = useMemo(() => new Map(options.map((o) => [o.value, o])), [options]);
-  const sections = useMemo(() => toSections(options), [options]);
-  const grouped = sections.length > 1 || sections[0]?.[0] !== "";
-
-  const children = sections.map(([group, items], i) => {
-    const rows = items.map((o) => (
-      <Item key={o.value} textValue={o.label}>
-        {o.label}
-      </Item>
-    ));
-    return grouped ? (
-      <Section key={`section-${i}`} title={group || undefined} aria-label={group || "Options"}>
-        {rows}
-      </Section>
-    ) : (
-      rows
-    );
-  });
-
   const selectProps = {
     label,
     placeholder,
@@ -126,7 +79,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
     defaultOpen,
     onOpenChange,
     name,
-    children: children.flat(),
+    children: listChildren(options),
   };
   const state = useSelectState(selectProps);
   const { labelProps, triggerProps, valueProps, menuProps, descriptionProps, errorMessageProps } = useSelect(selectProps, state, triggerRef);
@@ -171,103 +124,12 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
         <ChevronDownIcon className={styles.chevron} />
       </button>
       {state.isOpen && (
-        <Popover state={state} triggerRef={triggerRef}>
-          <ListBox menuProps={menuProps} state={state} byValue={byValue} size={size} />
-        </Popover>
+        <ListPopover state={state} triggerRef={triggerRef}>
+          <ListBox listProps={menuProps} state={state} byValue={byValue} size={size} />
+        </ListPopover>
       )}
     </FieldFrame>
   );
 });
 
 Select.displayName = "Select";
-
-function Popover({ state, triggerRef, children }: { state: SelectState<unknown>; triggerRef: RefObject<HTMLButtonElement | null>; children: ReactNode }) {
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const { popoverProps } = usePopover({ triggerRef, popoverRef, placement: "bottom start", offset: 4 }, state);
-  return (
-    <Overlay>
-      <div
-        {...popoverProps}
-        ref={popoverRef}
-        className={styles.popover}
-        style={{ ...popoverProps.style, minWidth: triggerRef.current?.offsetWidth }}
-      >
-        <DismissButton onDismiss={state.close} />
-        {children}
-        <DismissButton onDismiss={state.close} />
-      </div>
-    </Overlay>
-  );
-}
-
-interface ListBoxProps {
-  menuProps: object;
-  state: SelectState<unknown>;
-  byValue: Map<string, SelectOption>;
-  size: SelectSize;
-}
-
-function ListBox({ menuProps, state, byValue, size }: ListBoxProps) {
-  const ref = useRef<HTMLUListElement>(null);
-  const { listBoxProps } = useListBox(menuProps, state, ref);
-  const nodes = [...state.collection];
-  return (
-    <ul {...listBoxProps} ref={ref} className={styles.listbox} data-size={size}>
-      {nodes.map((node, i) =>
-        node.type === "section" ? (
-          <ListSection key={node.key} section={node} state={state} byValue={byValue} divider={i > 0} />
-        ) : (
-          <Option key={node.key} item={node} state={state} option={byValue.get(String(node.key))} />
-        )
-      )}
-    </ul>
-  );
-}
-
-function ListSection({ section, state, byValue, divider }: { section: Node<unknown>; state: SelectState<unknown>; byValue: Map<string, SelectOption>; divider: boolean }) {
-  const { itemProps, headingProps, groupProps } = useListBoxSection({ heading: section.rendered, "aria-label": section["aria-label"] });
-  return (
-    <>
-      {divider && <li role="presentation" className={styles.divider} />}
-      <li {...itemProps}>
-        {section.rendered && (
-          <span {...headingProps} className={styles.heading}>
-            {section.rendered}
-          </span>
-        )}
-        <ul {...groupProps} className={styles.group}>
-          {[...state.collection.getChildren!(section.key)].map((node) => (
-            <Option key={node.key} item={node} state={state} option={byValue.get(String(node.key))} />
-          ))}
-        </ul>
-      </li>
-    </>
-  );
-}
-
-function Option({ item, state, option }: { item: Node<unknown>; state: SelectState<unknown>; option?: SelectOption }) {
-  const ref = useRef<HTMLLIElement>(null);
-  const { optionProps, labelProps, descriptionProps, isSelected, isFocused, isFocusVisible, isDisabled } = useOption({ key: item.key }, state, ref);
-  return (
-    <li
-      {...mergeProps(optionProps)}
-      ref={ref}
-      className={styles.option}
-      data-selected={isSelected || undefined}
-      data-focused={isFocused || undefined}
-      data-focus-visible={isFocusVisible || undefined}
-      data-disabled={isDisabled || undefined}
-      data-description={option?.description ? "" : undefined}
-    >
-      <span className={styles.optionText}>
-        <span {...labelProps}>{item.rendered}</span>
-        {option?.description && (
-          <span {...descriptionProps} className={styles.optionDescription}>
-            {option.description}
-          </span>
-        )}
-      </span>
-      {isSelected && <CheckIcon className={styles.check} />}
-    </li>
-  );
-}

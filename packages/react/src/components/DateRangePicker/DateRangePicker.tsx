@@ -1,193 +1,155 @@
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
-import { getCalendarWeeks, getWeekdayLabels, formatMonthYear, toISODate } from "../../lib/calendarMonth";
+import { forwardRef, useRef, type HTMLAttributes } from "react";
+import { createCalendar, type DateValue } from "@internationalized/date";
+import { useButton, useDateRangePicker, useLocale, useObjectRef, useRangeCalendar, type AriaRangeCalendarProps } from "react-aria";
+import { useDateRangePickerState, useRangeCalendarState } from "react-stately";
+import { CalendarIcon } from "../../lib/formIcons";
+import { CalendarPopover, CalendarView } from "../../lib/Calendar";
+import { DateField, type DateConstraintProps, type DatePickerSize } from "../DatePicker/DatePicker";
+import { FieldFrame, type FieldProps } from "../Field/Field";
+import parts from "../../lib/fieldParts.module.css";
 import styles from "./DateRangePicker.module.css";
 
+/** A start and end date, both @internationalized/date values. */
 export interface DateRange {
-  start: string | null;
-  end: string | null;
+  start: DateValue;
+  end: DateValue;
 }
 
-export interface DateRangePickerOwnProps {
-  /** Never substitute with placeholder - placeholder-as-label is banned. */
-  label: string;
-  value: DateRange;
-  onChange: (range: DateRange) => void;
-  disabled?: boolean;
+export interface DateRangePickerOwnProps extends FieldProps, Omit<DateConstraintProps, "name"> {
+  /** 32 / 40 / 48px tall with a precise pointer, +4px on touch screens. @default "md" */
+  size?: DatePickerSize;
+  /** The range (controlled); null for none. */
+  value?: DateRange | null;
+  /** @default null */
+  defaultValue?: DateRange | null;
+  onValueChange?: (value: DateRange | null) => void;
+  /** Whether the calendar is open (controlled). */
+  open?: boolean;
+  /** @default false */
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** Form field names for the two dates. */
+  startName?: string;
+  endName?: string;
 }
 
-export type DateRangePickerProps = DateRangePickerOwnProps;
+/** `className` and other props go on the field's root; `ref` goes on the field box. */
+export type DateRangePickerProps = DateRangePickerOwnProps & Omit<HTMLAttributes<HTMLDivElement>, "children" | "defaultValue" | "onChange">;
 
 /**
- * The same calendar grid as DatePicker, with two-click range selection
- * layered on: the first click sets `start` (clearing `end`), the second
- * click sets `end` (swapping the two if it lands before `start`, so the
- * range is always chronological regardless of click order).
+ * Two dates typed segment by segment, or picked as a range from a calendar:
+ * the first press sets the start, the second the end, with the days between
+ * shown as a band. Arrows move through the grid, Enter picks, Escape closes.
  */
-export function DateRangePicker({ label, value, onChange, disabled }: DateRangePickerProps) {
-  const headingId = useId();
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const dayRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
-  const [open, setOpen] = useState(false);
-  const [viewMonth, setViewMonth] = useState(() => (value.start ? new Date(`${value.start}T00:00:00`) : new Date()));
-  const [focusedISO, setFocusedISO] = useState(() => toISODate(viewMonth));
-
-  const weeks = getCalendarWeeks(viewMonth);
-
-  function openPicker() {
-    const base = value.start ? new Date(`${value.start}T00:00:00`) : new Date();
-    setViewMonth(base);
-    setFocusedISO(toISODate(base));
-    setOpen(true);
-  }
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
-    else if (!open && dialog.open) dialog.close();
-  }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
-    dayRefs.current.get(focusedISO)?.focus();
-  }, [open, focusedISO, viewMonth]);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    function handleClose() {
-      setOpen(false);
-      triggerRef.current?.focus();
-    }
-    dialog.addEventListener("close", handleClose);
-    return () => dialog.removeEventListener("close", handleClose);
-  }, []);
-
-  function pickDay(iso: string) {
-    if (!value.start || value.end) {
-      onChange({ start: iso, end: null });
-      return;
-    }
-    if (iso < value.start) {
-      onChange({ start: iso, end: value.start });
-    } else {
-      onChange({ start: value.start, end: iso });
-    }
-    dialogRef.current?.close();
-  }
-
-  function moveFocus(deltaDays: number) {
-    const current = new Date(`${focusedISO}T00:00:00`);
-    current.setDate(current.getDate() + deltaDays);
-    const nextISO = toISODate(current);
-    setFocusedISO(nextISO);
-    if (current.getMonth() !== viewMonth.getMonth() || current.getFullYear() !== viewMonth.getFullYear()) {
-      setViewMonth(current);
-    }
-  }
-
-  function handleDayKeyDown(event: KeyboardEvent<HTMLButtonElement>, iso: string) {
-    if (event.key === "ArrowRight") {
-      event.preventDefault();
-      moveFocus(1);
-    } else if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      moveFocus(-1);
-    } else if (event.key === "ArrowDown") {
-      event.preventDefault();
-      moveFocus(7);
-    } else if (event.key === "ArrowUp") {
-      event.preventDefault();
-      moveFocus(-7);
-    } else if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      pickDay(iso);
-    }
-  }
-
-  function changeMonth(offset: number) {
-    setViewMonth((month) => new Date(month.getFullYear(), month.getMonth() + offset, 1));
-  }
-
-  function isInRange(iso: string) {
-    if (!value.start || !value.end) return false;
-    return iso > value.start && iso < value.end;
-  }
-
-  const triggerLabel =
-    value.start && value.end
-      ? `Change dates, ${value.start} to ${value.end}`
-      : value.start
-        ? `Change dates, ${value.start} to end date`
-        : "Choose dates";
+export const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(function DateRangePicker(
+  {
+    label,
+    helpText,
+    errorText,
+    required = false,
+    disabled = false,
+    readOnly = false,
+    size = "md",
+    value,
+    defaultValue,
+    onValueChange,
+    open,
+    defaultOpen,
+    onOpenChange,
+    minValue,
+    maxValue,
+    isDateUnavailable,
+    startName,
+    endName,
+    className,
+    ...rest
+  },
+  forwardedRef
+) {
+  const groupRef = useObjectRef(forwardedRef);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const pickerProps = {
+    label,
+    description: errorText ? undefined : helpText,
+    errorMessage: errorText,
+    isInvalid: errorText ? true : undefined,
+    isDisabled: disabled,
+    isReadOnly: readOnly,
+    isRequired: required,
+    value,
+    defaultValue,
+    onChange: onValueChange as (value: DateRange | null) => void,
+    isOpen: open,
+    defaultOpen,
+    onOpenChange,
+    minValue,
+    maxValue,
+    isDateUnavailable,
+    granularity: "day" as const,
+    startName,
+    endName,
+  };
+  const state = useDateRangePickerState(pickerProps);
+  const { groupProps, labelProps, startFieldProps, endFieldProps, buttonProps, dialogProps, calendarProps, descriptionProps, errorMessageProps } =
+    useDateRangePicker(pickerProps, state, groupRef);
+  const { buttonProps: calendarButtonProps } = useButton(buttonProps, buttonRef);
 
   return (
-    <div className={styles.root}>
-      <span className={styles.label}>{label}</span>
-      <div className={styles.controls}>
-        <button ref={triggerRef} type="button" disabled={disabled} className={styles.trigger} onClick={openPicker}>
-          {triggerLabel}
+    <FieldFrame
+      label={label}
+      labelAs="span"
+      labelProps={labelProps}
+      helpText={helpText}
+      errorText={errorText}
+      required={required}
+      disabled={disabled}
+      readOnly={readOnly}
+      descriptionProps={descriptionProps}
+      errorMessageProps={errorMessageProps}
+      rootProps={rest}
+      className={className}
+    >
+      <div
+        {...groupProps}
+        ref={groupRef}
+        className={styles.box}
+        data-control=""
+        data-size={size}
+        data-disabled={disabled || undefined}
+        data-readonly={readOnly || undefined}
+        data-invalid={errorText || state.isInvalid ? true : undefined}
+        data-open={state.isOpen || undefined}
+      >
+        <span className={styles.dates}>
+          <DateField {...startFieldProps} />
+          <span className={styles.dash} aria-hidden="true">
+            –
+          </span>
+          <DateField {...endFieldProps} />
+        </span>
+        <button {...calendarButtonProps} ref={buttonRef} className={parts.button}>
+          <CalendarIcon />
         </button>
       </div>
-      <dialog ref={dialogRef} className={styles.dialog} aria-label={`${label} calendar`}>
-        <div className={styles.header}>
-          <button
-            type="button"
-            aria-label="Previous month"
-            className={styles.navButton}
-            onClick={() => changeMonth(-1)}
-          >
-            &#8249;
-          </button>
-          <h2 id={headingId} className={styles.heading} aria-live="polite">
-            {formatMonthYear(viewMonth)}
-          </h2>
-          <button type="button" aria-label="Next month" className={styles.navButton} onClick={() => changeMonth(1)}>
-            &#8250;
-          </button>
-        </div>
-        <table role="grid" aria-labelledby={headingId} className={styles.grid}>
-          <thead>
-            <tr>
-              {getWeekdayLabels().map((day) => (
-                <th key={day} scope="col" className={styles.weekday}>
-                  {day}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {weeks.map((week) => (
-              <tr key={week[0].iso} role="row">
-                {week.map((day) => {
-                  const isEndpoint = day.iso === value.start || day.iso === value.end;
-                  return (
-                    <td key={day.iso} role="gridcell">
-                      <button
-                        ref={(node) => {
-                          if (node) dayRefs.current.set(day.iso, node);
-                          else dayRefs.current.delete(day.iso);
-                        }}
-                        type="button"
-                        tabIndex={day.iso === focusedISO ? 0 : -1}
-                        aria-selected={isEndpoint}
-                        data-outside={day.isOutsideMonth || undefined}
-                        data-in-range={isInRange(day.iso) || undefined}
-                        className={styles.day}
-                        onClick={() => pickDay(day.iso)}
-                        onKeyDown={(event) => handleDayKeyDown(event, day.iso)}
-                      >
-                        {day.label}
-                      </button>
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </dialog>
+      {state.isOpen && (
+        <CalendarPopover state={state} triggerRef={groupRef} dialogProps={dialogProps}>
+          <RangeCalendar {...(calendarProps as AriaRangeCalendarProps<DateValue>)} />
+        </CalendarPopover>
+      )}
+    </FieldFrame>
+  );
+});
+
+DateRangePicker.displayName = "DateRangePicker";
+
+function RangeCalendar(props: AriaRangeCalendarProps<DateValue>) {
+  const { locale } = useLocale();
+  const ref = useRef<HTMLDivElement>(null);
+  const state = useRangeCalendarState({ ...props, locale, createCalendar });
+  const { calendarProps, prevButtonProps, nextButtonProps, title } = useRangeCalendar(props, state, ref);
+  return (
+    <div ref={ref}>
+      <CalendarView state={state} calendarProps={calendarProps} prevButtonProps={prevButtonProps} nextButtonProps={nextButtonProps} title={title} />
     </div>
   );
 }

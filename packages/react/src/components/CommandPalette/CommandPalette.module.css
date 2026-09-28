@@ -1,46 +1,185 @@
-.root {
-  border: none;
-  padding: 0;
-  background: transparent;
-  width: min(480px, calc(100vw - 2 * var(--space-default)));
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  box-shadow: var(--elevation-overlay);
+/* Dialog's scrim and layer, with the panel near the top of the screen so
+   the list grows downward as it fills. */
+.overlay {
+  composes: overlay from "../Dialog/Dialog.module.css";
 }
-.root::backdrop {
-  background: rgba(0, 0, 0, 0.45);
+.overlay.overlay {
+  place-items: start center;
+  padding-top: max(var(--space-default), 12vh);
+}
+
+/* Dialog's surface (card radius, overlay elevation), tighter */
+.panel {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: min(640px, 100%);
+  max-height: min(520px, calc(100dvh - 2 * var(--space-default)));
+  padding: var(--space-compact);
+  color: var(--color-text-primary);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-overlay);
+  outline: none;
+  animation: datum-palette-rise var(--motion-normal) var(--motion-easing);
+}
+@keyframes datum-palette-rise {
+  from {
+    transform: translateY(calc(var(--space-compact) * -1)) scale(0.98);
+  }
+}
+
+/* the search is the shared field box, lg */
+.search {
+  composes: control from "../Field/control.module.css";
+  --_height: 48px;
+  flex-shrink: 0;
+  font-size: var(--type-body-lg-size);
+  cursor: text;
+}
+.searchIcon {
+  flex-shrink: 0;
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+  color: var(--color-text-secondary);
 }
 .input {
-  width: 100%;
-  font-family: var(--font-body);
-  font-size: var(--type-heading-md-size);
-  color: var(--color-text-primary);
-  background: var(--color-bg-surface);
-  border: none;
-  border-bottom: 1px solid var(--color-border-default);
-  padding: var(--space-default);
-}
-.input:focus {
+  flex: 1;
+  min-width: 0;
+  height: calc(var(--_height) - 2px);
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
   outline: none;
 }
-.listbox {
-  margin: 0;
-  padding: 0.3rem;
-  list-style: none;
-  max-height: 320px;
-  overflow-y: auto;
-  background: var(--color-bg-surface);
+.input::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 1;
 }
-.option {
-  padding: 0 var(--space-compact);
-  min-height: var(--interaction-minTarget);
+.input::-webkit-search-cancel-button {
+  display: none;
+}
+
+/* shortcuts as in DropdownMenu: plain code text, no keycap border */
+.kbd {
+  flex-shrink: 0;
+  font-family: var(--type-code-sm-family);
+  font-size: var(--type-code-sm-size);
+  line-height: var(--type-code-sm-lineHeight);
+  color: var(--color-text-secondary);
+}
+
+.results {
+  min-height: 0;
+  margin-top: var(--space-compact);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  outline: none;
+}
+
+.heading {
+  display: block;
+  padding: var(--space-compact) var(--space-tight) calc(var(--space-compact) / 2);
+  font-family: var(--type-ui-overline-family);
+  font-size: var(--type-ui-overline-size);
+  font-weight: var(--type-ui-overline-weight);
+  line-height: var(--type-ui-overline-lineHeight);
+  letter-spacing: var(--type-ui-overline-tracking);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.divider {
+  height: 1px;
+  margin: calc(var(--space-compact) / 2) 0;
+  background: var(--color-border-default);
+}
+
+/* rows as in DropdownMenu: pill, hover and arrow focus look the same */
+.item {
   display: flex;
   align-items: center;
-  border-radius: var(--radius-control);
+  gap: var(--space-tight);
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: 0 var(--space-tight);
+  font-family: var(--type-body-md-family);
   font-size: var(--type-body-md-size);
-  color: var(--color-text-primary);
+  line-height: 1.2;
+  border-radius: var(--radius-control);
   cursor: pointer;
+  outline: none;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
 }
-.optionActive {
-  background: var(--color-bg-page);
+.item[data-focused]:not([data-disabled]) {
+  background: color-mix(in oklab, var(--color-bg-surfaceRaised), var(--color-text-primary) 8%);
+}
+.item[data-pressed]:not([data-disabled]) {
+  transform: scale(0.98);
+}
+.item[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* two lines are never a pill */
+.item[data-described] {
+  padding-block: var(--space-compact);
+  border-radius: calc(var(--radius-card) - var(--space-compact));
+}
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+}
+.icon svg {
+  width: 100%;
+  height: 100%;
+}
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.description {
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lineHeight);
+  color: var(--color-text-secondary);
+}
+
+.empty {
+  margin: 0;
+  padding: var(--space-section) var(--space-default);
+  text-align: center;
+  font-family: var(--type-body-md-family);
+  font-size: var(--type-body-md-size);
+  color: var(--color-text-secondary);
+}
+
+@media (pointer: coarse) {
+  .item {
+    min-height: var(--interaction-minTarget);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    animation: none;
+  }
+  .item[data-pressed]:not([data-disabled]) {
+    transform: none;
+  }
 }

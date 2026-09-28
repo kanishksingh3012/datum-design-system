@@ -1334,6 +1334,168 @@
           ],
           "beh": "React Aria",
           "note": "Wave 2. useDrop; a Button opens the native dialog."
+        },
+        {
+          "n": "Combobox",
+          "st": "rework",
+          "why": "Type to filter a long list and pick one option.",
+          "props": [
+            [
+              "size",
+              "sm · md · lg",
+              "md",
+              ""
+            ],
+            [
+              "options",
+              "Select's option shape (value, label, description, disabled, group)",
+              "—",
+              "Groups, dividers, empty state"
+            ],
+            [
+              "value / defaultValue / onValueChange",
+              "string | null",
+              "null",
+              ""
+            ],
+            [
+              "inputValue / defaultInputValue / onInputChange",
+              "string",
+              "label or \"\"",
+              "Filters the list"
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "false",
+              ""
+            ],
+            [
+              "emptyState",
+              "ReactNode",
+              "\"No results\"",
+              ""
+            ],
+            [
+              "…Field props",
+              "—",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useComboBox + useComboBoxState; shares Select's list (lib/ListBox)."
+        },
+        {
+          "n": "TagInput",
+          "st": "rework",
+          "why": "Several short values in one field.",
+          "props": [
+            [
+              "size",
+              "sm · md · lg",
+              "md",
+              ""
+            ],
+            [
+              "value / defaultValue / onValueChange",
+              "string[]",
+              "[]",
+              "Trimmed, no duplicates"
+            ],
+            [
+              "maxTags",
+              "number",
+              "—",
+              "Counter at the limit"
+            ],
+            [
+              "…Field props",
+              "—",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useTagGroup + a text input; Enter or comma adds, Backspace in an empty input removes the last tag; tags are soft Badges."
+        },
+        {
+          "n": "DatePicker",
+          "st": "rework",
+          "why": "Type a date or pick it from a calendar.",
+          "props": [
+            [
+              "size",
+              "sm · md · lg",
+              "md",
+              ""
+            ],
+            [
+              "value / defaultValue / onValueChange",
+              "DateValue | null",
+              "null",
+              "@internationalized/date, as-is"
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "false",
+              ""
+            ],
+            [
+              "minValue / maxValue / isDateUnavailable",
+              "DateValue / (date) => boolean",
+              "—",
+              ""
+            ],
+            [
+              "…Field props",
+              "—",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useDatePicker, useDateField, useCalendar; day cells are circles, 44px on touch."
+        },
+        {
+          "n": "DateRangePicker",
+          "st": "rework",
+          "why": "Type or pick a start and end date.",
+          "props": [
+            [
+              "size",
+              "sm · md · lg",
+              "md",
+              ""
+            ],
+            [
+              "value / defaultValue / onValueChange",
+              "{ start, end } | null",
+              "null",
+              "@internationalized/date, as-is"
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "false",
+              ""
+            ],
+            [
+              "minValue / maxValue / isDateUnavailable",
+              "DateValue / (date) => boolean",
+              "—",
+              ""
+            ],
+            [
+              "…Field props",
+              "—",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. useDateRangePicker + useRangeCalendar; the range is a continuous accentSubtle band with accent ends."
         }
       ]
     },
@@ -1530,6 +1692,51 @@
           ],
           "beh": "React Aria",
           "note": "Wave 2. Right-click at the pointer or Shift+F10; shares DropdownMenu's list and popover."
+        },
+        {
+          "n": "CommandPalette",
+          "st": "rework",
+          "why": "Search and run commands from anywhere (⌘K).",
+          "props": [
+            [
+              "items",
+              "id, label, description, icon, shortcut, group, keywords, disabled, onSelect",
+              "—",
+              ""
+            ],
+            [
+              "onAction",
+              "(id) => void",
+              "—",
+              ""
+            ],
+            [
+              "open / defaultOpen / onOpenChange",
+              "boolean",
+              "false",
+              ""
+            ],
+            [
+              "search / defaultSearch / onSearchChange",
+              "string",
+              "\"\"",
+              "Clears on close"
+            ],
+            [
+              "hotkey",
+              "boolean",
+              "true",
+              "⌘K / Ctrl+K"
+            ],
+            [
+              "trigger",
+              "ReactElement",
+              "—",
+              ""
+            ]
+          ],
+          "beh": "React Aria",
+          "note": "Wave 2. Dialog's modal frame around a search pill and a virtual-focus useListBox; near full width at 390px."
         }
       ]
     },
@@ -2209,6 +2416,7 @@
     "Resizable",
     "AI primitives (12)"
   ],
+  "wave2Status": "complete 2026-09-28",
   "decisions": [
     [
       "Button shape",
@@ -2297,6 +2505,10 @@
     [
       "Wave 2 tables",
       "Table rebuilt on useTable + useTableState (grid keyboard navigation, sorting, selection with the selectedKeys and sortDescriptor trios, empty / loading / error bodies) and DataTable on top of it with page and search trios; both added to the review under Data."
+    ],
+    [
+      "Wave 2 search fields + dates",
+      "Combobox, TagInput, CommandPalette, DatePicker and DateRangePicker rebuilt to the phase-1 standard and added to the review under Forms and Overlays. Combobox shares Select's list (lib/ListBox); date values are @internationalized/date objects, exposed as-is; day cells are circles with Button's outside focus ring; a range is a continuous band. Wave 2 is complete."
     ]
   ]
 }
