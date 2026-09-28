@@ -10,7 +10,8 @@ Handoff for the next chat. Read this file only.
 - [ ] M5 — retire old single page
 
 ## M3 commits
-- Layout: see `git log --grep 'M3: Layout'`
+- Typography: see `git log --grep 'M3: Typography'`
+- Layout: `4d85915`
 
 ## Layout of the site
 - `apps/gallery/src/main.tsx`: BrowserRouter. `/`, `/docs`, `/docs/theming`, `/docs/components/:slug`, `/blocks`; the old one-page gallery is kept at `/gallery` until M5.
@@ -19,8 +20,8 @@ Handoff for the next chat. Read this file only.
 - `vercel.json` (repo root): builds styles → react → gallery, output `apps/gallery/dist`, SPA rewrite (excludes `assets/`, `check.html`, `review.html`).
 
 ## Categories
-Migrated: Actions (Button incl. icon-only/toggle/FAB, ButtonGroup, Link), Layout.
-Left: Typography, Content, Feedback, Forms, Overlays, Navigation, Data, AI.
+Migrated: Actions (Button incl. icon-only/toggle/FAB, ButtonGroup, Link), Layout, Typography.
+Left: Content, Feedback, Forms, Overlays, Navigation, Data, AI.
 
 ## Next step
 M3, one category per commit, in order: Layout, Typography, Content, Feedback, Forms, Overlays, Navigation, Data, AI.

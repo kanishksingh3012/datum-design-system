@@ -11,4 +11,6 @@ export const docPages: Record<string, ComponentType> = {
   "section": lazy(() => import("./Section")),
   "scroll-area": lazy(() => import("./ScrollArea")),
   "resizable": lazy(() => import("./Resizable")),
+  "heading": lazy(() => import("./Heading")),
+  "text": lazy(() => import("./Text")),
 };
