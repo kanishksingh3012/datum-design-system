@@ -1,10 +1,12 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { UNSAFE_PortalProvider } from "react-aria";
 import {
   Accordion, AccordionItem, Alert, Avatar, AvatarGroup, Badge, Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader,
   Checkbox, CheckboxGroup, Container, Field, Grid, Heading, Label, Link, ProgressBar, Radio, RadioGroup, Section, Select, Separator,
   Skeleton, Spinner, Stack, Switch, Text, TextField, Textarea, Toaster, toast, type SelectOption,
+  Dialog, DialogBody, DialogFooter, DialogHeader, DropdownMenu, Sheet, Tooltip, type DropdownMenuItem,
 } from "@datum-design/react";
-import { AlignCenter, AlignLeft, AlignRight, Mail, Plus, Search } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, Copy, Mail, Pencil, Plus, Search, Trash2 } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
 const appearances = ["solid", "soft", "outline", "ghost"] as const;
@@ -29,7 +31,57 @@ const countries: SelectOption[] = [
 ];
 
 /** Every state the combo checker renders, keyed by component name. */
-export const fixtures: Record<string, () => ReactNode> = {
+/** Renders overlays inside #fixture instead of <body>, so the checker finds them. */
+function InFixture({ deep, children }: { deep?: boolean; children: ReactNode }) {
+  const [el, setEl] = useState<HTMLDivElement | null>(null);
+  return (
+    <div ref={setEl} data-check-text={deep ? "deep" : undefined}>
+      {el ? <UNSAFE_PortalProvider getContainer={() => el}>{children}</UNSAFE_PortalProvider> : null}
+    </div>
+  );
+}
+/** A fixture with states: the checker loads each variant on its own page. */
+const states = (variants: string[], render: (variant: string) => ReactNode, deep = false) =>
+  Object.assign(({ variant = 0 }: { variant?: number }) => <InFixture deep={deep}>{render(variants[variant])}</InFixture>, { variants });
+
+const dialogContent = (danger = false) => (
+  <>
+    <DialogHeader data-check-text="deep" description="Changes apply to everyone on the team.">{danger ? "Delete project?" : "Edit project"}</DialogHeader>
+    <DialogBody data-check-text="deep">
+      <Text>Body copy sits in text.primary on the raised surface. <Link href="#">A link</Link> in running text.</Text>
+    </DialogBody>
+    <DialogFooter>
+      <Button intent="neutral" appearance="outline">Cancel</Button>
+      <Button intent={danger ? "danger" : "accent"}>{danger ? "Delete" : "Save"}</Button>
+    </DialogFooter>
+  </>
+);
+
+function menuItems(): DropdownMenuItem[] {
+  return [
+    { label: "Edit", icon: <Pencil />, shortcut: "⌘E" },
+    { label: "Duplicate", icon: <Copy />, shortcut: "⌘D" },
+    { label: "Archive", disabled: true },
+    { type: "separator" },
+    { type: "checkbox", label: "Show grid", checked: true, onCheckedChange: noop },
+    { type: "checkbox", label: "Show rulers", checked: false, onCheckedChange: noop },
+    {
+      type: "section",
+      label: "Sort by",
+      items: [
+        { type: "radio", label: "Name", checked: true, onSelect: noop },
+        { type: "radio", label: "Date", checked: false, onSelect: noop },
+        { type: "radio", label: "Size", checked: false, onSelect: noop, disabled: true },
+      ],
+    },
+    { type: "separator" },
+    { label: "Delete", intent: "danger", icon: <Trash2 />, shortcut: "⌫" },
+  ];
+}
+
+type Fixture = ((props: { variant?: number }) => ReactNode) & { variants?: string[] };
+
+export const fixtures: Record<string, Fixture> = {
   Container: () => (
     <>
       {(["sm", "md", "lg", "xl", "full"] as const).map((size) => (
@@ -552,4 +604,52 @@ export const fixtures: Record<string, () => ReactNode> = {
       </div>
     </>
   ),
+  Dialog: states(["closed", "open", "alertdialog", "full"], (v) =>
+    v === "closed" ? (
+      <div className="row">
+        <Dialog trigger={<Button>Edit project</Button>}>{dialogContent()}</Dialog>
+        <Dialog trigger={<Button intent="danger" appearance="outline">Delete project</Button>} role="alertdialog">{dialogContent(true)}</Dialog>
+      </div>
+    ) : (
+      <Dialog
+        defaultOpen
+        size={v === "full" ? "full" : "md"}
+        role={v === "alertdialog" ? "alertdialog" : "dialog"}
+        dismissible={v !== "alertdialog"}
+      >
+        {dialogContent(v === "alertdialog")}
+      </Dialog>
+    )
+  ),
+  Sheet: states(["closed", "right", "left", "top", "bottom"], (v) =>
+    v === "closed" ? (
+      <Sheet trigger={<Button intent="neutral" appearance="outline">Filters</Button>}>{dialogContent()}</Sheet>
+    ) : (
+      <Sheet defaultOpen side={v as "right"}>
+        {dialogContent()}
+      </Sheet>
+    )
+  ),
+  DropdownMenu: states(["closed", "open md", "open sm"], (v) => (
+    <div className="row">
+      <DropdownMenu
+        trigger={<Button intent="neutral" appearance="outline" data-check-skip={v === "closed" ? undefined : ""}>Options</Button>}
+        items={menuItems()}
+        size={v === "open sm" ? "sm" : "md"}
+        defaultOpen={v !== "closed"}
+      />
+    </div>
+  ), true),
+  Tooltip: states(["closed", "open"], (v) => (
+    <div className="row" style={{ gap: 160, padding: "80px 160px" }}>
+      {(["top", "right", "bottom", "left"] as const).map((placement) => (
+        <Tooltip key={placement} content={`Tooltip on the ${placement}`} placement={placement} open={v === "open" ? true : undefined} data-check-text="">
+          <Button intent="neutral" appearance="outline">{placement}</Button>
+        </Tooltip>
+      ))}
+      <Tooltip content="Search the docs">
+        <Button iconOnly label="Search" intent="neutral" appearance="ghost"><Search /></Button>
+      </Tooltip>
+    </div>
+  )),
 };

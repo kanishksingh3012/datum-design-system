@@ -20,6 +20,12 @@
 //    on the box that draws them ([data-control]); a checkbox, radio or switch
 //    on its drawn indicator, whose edge or fill must reach 3:1 against what is
 //    behind it. A border is measured whenever the fill alone doesn't reach 3:1.
+//    Menu items count as controls. A fixture can show several states (a closed
+//    trigger, an open dialog, …) as variants; each is loaded and measured on its own.
+//    Overlays render into the fixture, so what a modal hides (aria-hidden) is skipped,
+//    as is hover on anything a scrim or popover covers. [data-check-skip] marks a
+//    control measured in another variant (a menu's trigger, while the menu holds focus).
+//    Visually hidden controls (React Aria's screen-reader DismissButton) are skipped.
 //
 // Needs a built @datum-design/react (the gallery imports dist); `npm run check` builds first.
 // The gallery is built into a temp folder and served statically.
@@ -34,12 +40,12 @@ const GALLERY = join(ROOT, "apps/gallery");
 const COMPONENTS = join(ROOT, "packages/react/src/components");
 const THEMES = ["orange", "navy"];
 // Everything the checker treats as a control (hidden inputs such as React Aria's HiddenSelect are skipped).
-const CONTROLS = ["button", "a", 'input:not([type=hidden]):not([tabindex="-1"])', 'textarea:not([tabindex="-1"])']
+const CONTROLS = ["button", "a", 'input:not([type=hidden]):not([tabindex="-1"])', 'textarea:not([tabindex="-1"])', '[role^="menuitem"]']
   .map((s) => `#fixture ${s}`)
   .join(", ");
 const MODES = ["light", "dark"];
 
-const registered = [...readFileSync(join(GALLERY, "src/check/fixtures.tsx"), "utf8").matchAll(/^  (\w+): \(\) =>/gm)].map((m) => m[1]);
+const registered = [...readFileSync(join(GALLERY, "src/check/fixtures.tsx"), "utf8").matchAll(/^  (\w+): (?:\(\) =>|states\()/gm)].map((m) => m[1]);
 const requested = process.argv.slice(2).filter((a) => !a.startsWith("-"));
 const targets = requested.length ? requested : registered;
 
@@ -224,15 +230,25 @@ try {
       fail(`${name}: no fixture registered in apps/gallery/src/check/fixtures.tsx`);
       continue;
     }
+    const url = (theme, mode, v) => `${base}check.html?component=${name}&theme=${theme}&mode=${mode}&variant=${v}`;
+    await page.goto(url("orange", "light", 0));
+    await page.waitForSelector("body[data-fixture=ready] #fixture > *", { state: "attached" });
+    const variants = await page.evaluate(() => JSON.parse(document.body.dataset.variants || "[null]"));
     for (const theme of THEMES) {
       for (const mode of MODES) {
-        await page.goto(`${base}check.html?component=${name}&theme=${theme}&mode=${mode}`);
-        await page.waitForSelector("body[data-fixture=ready] #fixture > *");
+      for (let v = 0; v < variants.length; v++) {
+        const label = variants[v] ? ` [${variants[v]}]` : "";
+        await page.goto(url(theme, mode, v));
+        await page.waitForSelector("body[data-fixture=ready] #fixture > *", { state: "attached" });
         await page.evaluate(() => document.fonts.ready);
         await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; }" });
+        // let entry animations (a sheet sliding in) land; looping ones (spinners) never finish
+        await page.evaluate(() =>
+          Promise.all(document.getAnimations().filter((x) => x.effect?.getComputedTiming().iterations !== Infinity).map((x) => x.finished))
+        );
         const count = await page.evaluate((selector) => {
           const els = [...document.querySelectorAll(selector)].filter(
-            (el) => !el.matches(":disabled, [data-disabled]") && !el.closest('[aria-hidden="true"]')
+            (el) => !el.matches(":disabled, [data-disabled]") && !el.closest('[aria-hidden="true"], [data-check-skip]') && ![el, el.parentElement].some((n) => n && getComputedStyle(n).clipPath === "inset(50%)")
           );
           els.forEach((el, i) => {
             el.setAttribute("data-check-id", String(i));
@@ -246,13 +262,26 @@ try {
         const report = (state, res) => {
           for (const c of res.checks) {
             if (c.ratio + 1e-9 < c.min) {
-              fail(`${theme}/${mode} ${state} "${res.label}" ${c.kind} ${c.ratio.toFixed(2)}:1 < ${c.min}:1 (${c.fg} on ${c.bg})`);
+              fail(`${theme}/${mode}${label} ${state} "${res.label}" ${c.kind} ${c.ratio.toFixed(2)}:1 < ${c.min}:1 (${c.fg} on ${c.bg})`);
             }
           }
         };
         // Rest + focus ring (no pointer has touched the page, so focus() shows :focus-visible).
         for (let i = 0; i < count; i++) report("rest", await page.evaluate(measure, { id: i, focus: true }));
+        let covered = 0;
         for (let i = 0; i < count; i++) {
+          // a control under a scrim or popover can't be hovered, so it has no hover state to measure
+          const reachable = await page.evaluate((i) => {
+            const el = document.querySelector(`[data-check-hover="${i}"]`);
+            el.scrollIntoView({ block: "center" });
+            const r = el.getBoundingClientRect();
+            const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+            return !!hit && (el === hit || el.contains(hit));
+          }, i);
+          if (!reachable) {
+            covered++;
+            continue;
+          }
           await page.hover(`[data-check-hover="${i}"]`);
           report("hover", await page.evaluate(measure, { id: i, focus: false }));
         }
@@ -269,20 +298,23 @@ try {
         });
         for (let i = 0; i < texts; i++) report("rest", await page.evaluate(measure, { id: `text-${i}`, focus: false }));
         const n = failures - before;
-        const what = [count && `${count} controls × rest, focus, hover`, texts && `${texts} text styles`].filter(Boolean).join(", ");
-        console.log(`${n ? "✗" : "✓"} ${name} ${theme}/${mode}: ${what || "nothing to measure"} — ${n} failure${n === 1 ? "" : "s"}`);
+        const what = [count && `${count} controls × rest, focus, hover${covered ? ` (${covered} covered, no hover)` : ""}`, texts && `${texts} text styles`].filter(Boolean).join(", ");
+        console.log(`${n ? "✗" : "✓"} ${name}${label} ${theme}/${mode}: ${what || "nothing to measure"} — ${n} failure${n === 1 ? "" : "s"}`);
+      }
       }
     }
     // Touch targets: colors don't matter here, so one theme/mode is enough.
     const touch = await browser.newContext({ viewport: { width: 1400, height: 1000 }, hasTouch: true, isMobile: true });
     const tp = await touch.newPage();
-    await tp.goto(`${base}check.html?component=${name}&theme=orange&mode=light`);
-    await tp.waitForSelector("body[data-fixture=ready] #fixture > *");
-    const touchResult = await tp.evaluate((selector) => {
+    const touchResult = { coarse: true, small: [], count: 0 };
+    for (let v = 0; v < variants.length; v++) {
+    await tp.goto(url("orange", "light", v));
+    await tp.waitForSelector("body[data-fixture=ready] #fixture > *", { state: "attached" });
+    const r = await tp.evaluate((selector) => {
       if (!matchMedia("(pointer: coarse)").matches) return { coarse: false, small: [], count: 0 };
       const els = [...document.querySelectorAll(selector)].filter(
         // Links in running text (underline="always") are exempt, as in WCAG 2.5.8.
-        (el) => !el.matches(':disabled, [data-disabled], [data-underline="always"]') && !el.closest('[aria-hidden="true"]')
+        (el) => !el.matches(':disabled, [data-disabled], [data-underline="always"]') && !el.closest('[aria-hidden="true"], [data-check-skip]') && ![el, el.parentElement].some((n) => n && getComputedStyle(n).clipPath === "inset(50%)")
       );
       const small = [];
       for (const control of els) {
@@ -296,6 +328,10 @@ try {
       }
       return { coarse: true, small, count: els.length };
     }, CONTROLS);
+    touchResult.coarse &&= r.coarse;
+    touchResult.small.push(...r.small.map((m) => (variants[v] ? `[${variants[v]}] ${m}` : m)));
+    touchResult.count += r.count;
+    }
     await touch.close();
     if (!touchResult.coarse) fail(`${name}: could not emulate a touch screen (pointer: coarse)`);
     touchResult.small.forEach((m) => fail(`touch target under 44×44: ${m}`));
