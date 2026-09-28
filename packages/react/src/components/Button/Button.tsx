@@ -132,6 +132,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     "data-floating": floating || undefined,
     "data-full-width": fullWidth || undefined,
     "data-group": group?.attached ? "attached" : undefined,
+    "data-toggle": isToggle || undefined,
     "data-pressed": isToggle && pressed ? true : undefined,
     "aria-busy": loading || undefined,
     "aria-pressed": isToggle ? pressed : undefined,

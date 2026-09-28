@@ -31,6 +31,11 @@
 .root > * {
   position: relative;
 }
+/* attached segments share the track equally, so a stretched group (a Field, a full-width form) fills edge to edge */
+.root[data-attached][data-orientation="horizontal"] > :not(.thumb) {
+  flex: 1 1 0;
+  min-width: max-content;
+}
 
 /* ---------- the sliding thumb (attached only), painted under the segments ---------- */
 .root[data-attached] {

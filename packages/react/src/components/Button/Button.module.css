@@ -167,6 +167,26 @@
   --_fg: var(--color-text-danger);
 }
 
+/* ---------- toggle off in solid: the soft treatment, so off and on never share one fill ---------- */
+.root[data-toggle][data-appearance="solid"]:not([data-pressed]):not([data-group="attached"]) {
+  --_shadow: none;
+}
+.root[data-toggle][data-appearance="solid"][data-intent="accent"]:not([data-pressed]):not([data-group="attached"]) {
+  --_bg: var(--color-bg-accentSubtle);
+  --_bg-hover: var(--color-bg-accentSubtleHover);
+  --_fg: var(--color-text-accent);
+}
+.root[data-toggle][data-appearance="solid"][data-intent="neutral"]:not([data-pressed]):not([data-group="attached"]) {
+  --_bg: var(--color-bg-tertiary);
+  --_bg-hover: color-mix(in oklab, var(--color-bg-tertiary), var(--color-text-primary) 8%);
+  --_fg: var(--color-text-primary);
+}
+.root[data-toggle][data-appearance="solid"][data-intent="danger"]:not([data-pressed]):not([data-group="attached"]) {
+  --_bg: var(--color-bg-dangerSubtle);
+  --_bg-hover: color-mix(in oklab, var(--color-bg-dangerSubtle), var(--color-text-danger) 10%);
+  --_fg: var(--color-text-danger);
+}
+
 /* ---------- pressed: the solid treatment of its own intent ---------- */
 .root[data-pressed][data-appearance] {
   --_border: transparent;

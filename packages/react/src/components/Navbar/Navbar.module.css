@@ -211,14 +211,23 @@
 @media (max-width: 639.98px) {
   .root[data-breakpoint="sm"] .nav { display: none; }
   .root[data-breakpoint="sm"] .menu { display: contents; }
+  /* collapsed, a centered brand floats off-center between uneven sides: it returns to the start */
+  .root[data-breakpoint="sm"][data-layout="centered"] .bar { grid-template-areas: "logo nav end"; }
+  .root[data-breakpoint="sm"][data-layout="centered"] .logo { justify-self: start; }
 }
 @media (max-width: 767.98px) {
   .root[data-breakpoint="md"] .nav { display: none; }
   .root[data-breakpoint="md"] .menu { display: contents; }
+  /* collapsed, a centered brand floats off-center between uneven sides: it returns to the start */
+  .root[data-breakpoint="md"][data-layout="centered"] .bar { grid-template-areas: "logo nav end"; }
+  .root[data-breakpoint="md"][data-layout="centered"] .logo { justify-self: start; }
 }
 @media (max-width: 1023.98px) {
   .root[data-breakpoint="lg"] .nav { display: none; }
   .root[data-breakpoint="lg"] .menu { display: contents; }
+  /* collapsed, a centered brand floats off-center between uneven sides: it returns to the start */
+  .root[data-breakpoint="lg"][data-layout="centered"] .bar { grid-template-areas: "logo nav end"; }
+  .root[data-breakpoint="lg"][data-layout="centered"] .logo { justify-self: start; }
 }
 .mobileNav {
   margin-inline: calc(var(--space-tight) * -1);

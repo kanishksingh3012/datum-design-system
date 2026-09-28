@@ -102,6 +102,8 @@
 .option[data-description] {
   border-radius: calc(var(--radius-card) - var(--_inset));
 }
+.option[data-hovered]:not([data-disabled]),
+.option:hover:not([data-disabled]),
 .option[data-focused] {
   background: color-mix(in oklab, var(--color-bg-surfaceRaised), var(--color-text-primary) 8%);
 }

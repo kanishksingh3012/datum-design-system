@@ -13,6 +13,8 @@ const intents = ["accent", "neutral", "danger"] as const;
 const appearances = ["solid", "soft", "outline", "ghost"] as const;
 const sizes = ["sm", "md", "lg"] as const;
 const noop = () => {};
+/** Sentence case for generated labels. */
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const headingSizes = ["display-lg", "display-md", "display-sm", "xl", "lg", "md", "sm"] as const;
 const textVariants = [
   "body-lg", "body-md", "body-sm", "paragraph-lg", "paragraph-md", "label",
@@ -93,9 +95,9 @@ const states = (variants: string[], render: (variant: string) => ReactNode, deep
 
 const dialogContent = (danger = false) => (
   <>
-    <DialogHeader data-check-text="deep" description="Changes apply to everyone on the team.">{danger ? "Delete project?" : "Edit project"}</DialogHeader>
+    <DialogHeader data-check-text="deep" description={danger ? "This affects everyone on the team." : "Changes apply to everyone on the team."}>{danger ? "Delete project?" : "Edit project"}</DialogHeader>
     <DialogBody data-check-text="deep">
-      <Text>Body copy sits in text.primary on the raised surface. <Link href="#">A link</Link> in running text.</Text>
+      <Text>{danger ? "This removes the project and its history. You can’t undo this." : "Rename the project or move it to another team."} <Link href="#">Learn more</Link></Text>
     </DialogBody>
     <DialogFooter>
       <Button intent="neutral" appearance="outline">Cancel</Button>
@@ -124,6 +126,32 @@ function menuItems(): DropdownMenuItem[] {
     { type: "separator" },
     { label: "Delete", intent: "danger", icon: <Trash2 />, shortcut: "⌫" },
   ];
+}
+
+function SegmentedFields() {
+  const [period, setPeriod] = useState("Monthly");
+  const [seats, setSeats] = useState<string | null>(null);
+  const segment = (value: string, current: string | null, set: (v: string) => void) => (
+    <Button key={value} pressed={current === value} onPressedChange={() => set(value)}>{value}</Button>
+  );
+  return (
+    <>
+      <Field label="Billing period" helpText="Change it any time." required data-check-text="deep" style={narrow}>
+        {(control) => (
+          <ButtonGroup attached aria-labelledby={control["aria-labelledby"]} aria-describedby={control["aria-describedby"]}>
+            {["Monthly", "Yearly"].map((v) => segment(v, period, setPeriod))}
+          </ButtonGroup>
+        )}
+      </Field>
+      <Field label="Seats" errorText={seats ? undefined : "Choose at least one seat."} data-check-text="deep" style={narrow}>
+        {(control) => (
+          <ButtonGroup attached aria-labelledby={control["aria-labelledby"]} aria-describedby={control["aria-describedby"]}>
+            {["1", "5", "10", "25"].map((v) => segment(v, seats, setSeats))}
+          </ButtonGroup>
+        )}
+      </Field>
+    </>
+  );
 }
 
 type Fixture = ((props: { variant?: number }) => ReactNode) & { variants?: string[] };
@@ -176,10 +204,10 @@ export const fixtures: Record<string, Fixture> = {
         <Section key={tone} tone={tone} spacing="sm">
           <Container>
             <Stack gap="sm">
-              <Text variant="overline" tone="accent" data-check-text>{`${tone} tone`}</Text>
+              <Text variant="overline" tone="accent" data-check-text>{cap(`${tone} tone`)}</Text>
               <Heading data-check-text>A section heading</Heading>
               <Text tone="secondary" data-check-text>Secondary text on this band.</Text>
-              <Stack direction="horizontal" gap="sm">
+              <Stack direction="horizontal" gap="sm" align="center">
                 <Button>Primary</Button>
                 <Button intent="neutral" appearance="outline">Secondary</Button>
                 <Link href="#check">A link</Link>
@@ -197,7 +225,7 @@ export const fixtures: Record<string, Fixture> = {
       ))}
       {(["secondary", "accent"] as const).map((tone) =>
         (["display-sm", "sm"] as const).map((size) => (
-          <Heading key={`${tone}-${size}`} size={size} tone={tone} data-check-text>{`${tone} ${size}`}</Heading>
+          <Heading key={`${tone}-${size}`} size={size} tone={tone} data-check-text>{cap(`${tone} ${size}`)}</Heading>
         ))
       )}
     </>
@@ -207,13 +235,13 @@ export const fixtures: Record<string, Fixture> = {
       {textVariants.map((variant) => (
         <Stack key={variant} direction="horizontal" gap="md" wrap>
           {textTones.map((tone) => (
-            <Text key={tone} variant={variant} tone={tone} data-check-text>{`${variant} ${tone}`}</Text>
+            <Text key={tone} variant={variant} tone={tone} data-check-text>{cap(`${variant} ${tone}`)}</Text>
           ))}
         </Stack>
       ))}
       <div style={box}>
         {textTones.map((tone) => (
-          <Text key={tone} variant="body-sm" tone={tone} data-check-text>{`${tone} on surface`}</Text>
+          <Text key={tone} variant="body-sm" tone={tone} data-check-text>{cap(`${tone} on surface`)}</Text>
         ))}
       </div>
       <Text truncate style={{ maxWidth: 200 }} data-check-text>A single line that is far too long to fit</Text>
@@ -227,7 +255,7 @@ export const fixtures: Record<string, Fixture> = {
           <div className="row" key={`${intent}-${appearance}`}>
             {sizes.map((size) => (
               <Button key={size} intent={intent} appearance={appearance} size={size}>
-                {`${intent} ${appearance} ${size}`}
+                {cap(`${intent} ${appearance} ${size}`)}
               </Button>
             ))}
             <Button intent={intent} appearance={appearance} iconOnly label={`${intent} ${appearance} icon`}>
@@ -315,7 +343,7 @@ export const fixtures: Record<string, Fixture> = {
               <p key={`${tone}-${underline}`} style={{ margin: 0, color: "var(--color-text-secondary)" }}>
                 Text with a{" "}
                 <Link href="#check" tone={tone} underline={underline}>
-                  {`${tone} ${underline}`}
+                  {cap(`${tone} ${underline}`)}
                 </Link>
               </p>
             ))
@@ -378,7 +406,7 @@ export const fixtures: Record<string, Fixture> = {
           <div key={appearance + size} className="row">
             {(["accent", "neutral", "danger", "success", "warning", "info"] as const).map((intent) => (
               <Badge key={intent} intent={intent} appearance={appearance} size={size} dot={size === "md"} data-check-text>
-                {`${intent} ${appearance}`}
+                {cap(`${intent} ${appearance}`)}
               </Badge>
             ))}
           </div>
@@ -443,8 +471,8 @@ export const fixtures: Record<string, Fixture> = {
             key={appearance + intent}
             intent={intent}
             appearance={appearance}
-            title={`${intent} ${appearance}`}
-            description="Detail under the title, in the same text color."
+            title={cap(`${intent} ${appearance}`)}
+            description="Details appear under the title in the same color."
             dismissible
             action={
               appearance === "solid" ? (
@@ -464,7 +492,7 @@ export const fixtures: Record<string, Fixture> = {
           intent={intent}
           appearance="solid"
           fullBleed
-          title={`${intent} full bleed`}
+          title={cap(`${intent} full bleed`)}
           action={<Link href="#" tone="inherit">Retry</Link>}
           data-check-text
         />
@@ -476,7 +504,7 @@ export const fixtures: Record<string, Fixture> = {
     if (!toastsSeeded) {
       toastsSeeded = true;
       (["neutral", "success", "danger", "warning", "info"] as const).forEach((intent) =>
-        toast({ intent, title: `${intent} toast`, description: "Detail text.", action: { label: "Undo", onAction: noop }, duration: null })
+        toast({ intent, title: cap(`${intent} toast`), description: "Your changes were saved.", action: { label: "Undo", onAction: noop }, duration: null })
       );
     }
     return (
@@ -531,26 +559,7 @@ export const fixtures: Record<string, Fixture> = {
       <Label htmlFor="check-label-b" required data-check-text="deep">Required label</Label>
     </div>
   ),
-  Field: () => (
-    <>
-      <Field label="Billing period" helpText="Change it any time." required data-check-text="deep" style={narrow}>
-        {(control) => (
-          <ButtonGroup attached aria-labelledby={control["aria-labelledby"]} aria-describedby={control["aria-describedby"]}>
-            <Button pressed>Monthly</Button>
-            <Button pressed={false}>Yearly</Button>
-          </ButtonGroup>
-        )}
-      </Field>
-      <Field label="Seats" errorText="Choose at least one seat." data-check-text="deep" style={narrow}>
-        {(control) => (
-          <ButtonGroup attached aria-labelledby={control["aria-labelledby"]}>
-            <Button pressed={false}>1</Button>
-            <Button pressed={false}>5</Button>
-          </ButtonGroup>
-        )}
-      </Field>
-    </>
-  ),
+  Field: () => <SegmentedFields />,
   TextField: () => (
     <>
       {sizes.map((size) => (
