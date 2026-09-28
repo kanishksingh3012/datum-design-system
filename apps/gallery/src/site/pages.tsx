@@ -1,5 +1,6 @@
+import { Suspense } from "react";
 import { useParams } from "react-router-dom";
-import { Badge, Heading, Link, Text } from "@datum-design/react";
+import { Badge, Heading, Link, Spinner, Text } from "@datum-design/react";
 import { components } from "./nav";
 import { docPages } from "./docs";
 
@@ -16,7 +17,7 @@ export function ComponentPage() {
   const { slug = "" } = useParams();
   const meta = components.find((c) => c.slug === slug);
   const Doc = docPages[slug];
-  if (Doc) return <Doc />;
+  if (Doc) return <Suspense fallback={<Spinner label="Loading" />}><Doc /></Suspense>;
   if (!meta) {
     return (
       <Placeholder title="Not found">

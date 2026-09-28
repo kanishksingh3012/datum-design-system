@@ -15,3 +15,6 @@
   .site-sidebar { position: static; height: auto; }
   .site-main { padding-inline: var(--space-default); }
 }
+.site-demo { margin-block: var(--space-tight); }
+.site-demo .sample-box, .site-demo .example-box { margin: 0; }
+.site-demo:has(> div > .example-box), .site-demo:first-of-type { margin-bottom: var(--space-section); }
