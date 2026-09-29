@@ -29,7 +29,7 @@ Datum ships two themes as a set — **orange** (warm, high-energy) and **navy** 
 
 ### Fill vs. text color tokens
 
-`color.bg.accent`, `color.bg.danger`, `color.bg.warning`, `color.bg.success`, and `color.bg.info` are **fills**, always paired with their `color.text.on*` token — never with page text. The pairing differs by theme: orange's accent carries **dark** text (`#1B1B1B` on `#FC6E20`), navy's carries white in light mode and near-black in dark mode. Never hardcode white on an accent fill. For colored text on the page, use the `color.text.*` role instead (e.g. `color.text.accent`, `color.text.danger`), which is chosen for text-on-page contrast in both modes.
+`color.bg.accent`, `color.bg.danger`, `color.bg.warning`, `color.bg.success`, and `color.bg.info` are **fills**, always paired with their `color.text.on*` token — never with page text. Orange's accent fill is orange-700 (`#B34210`) with **white** text in both modes (5.67:1); bright orange-500 `#FC6E20` stays the brand color for tints, focus and illustration. Navy's fill is navy-700 (`#355695`) with white text in light mode, and navy-300 with near-black text in dark mode. Never hardcode white on an accent fill. For colored text on the page, use the `color.text.*` role instead (e.g. `color.text.accent`, `color.text.danger`), which is chosen for text-on-page contrast in both modes.
 
 ## License
 

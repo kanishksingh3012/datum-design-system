@@ -6,7 +6,7 @@ Handoff for the next chat. Read this file only.
 - [x] M1 — real per-file blocks: (this commit, see `git log --grep 'Blocks M1'`)
 - [x] M2 — checker coverage: see `git log --grep 'Blocks M2'`
 - [x] M3 — marketing core: see `git log --grep 'Blocks M3'`
-- [ ] M4 — README accent fix + gallery typecheck
+- [x] M4 — README accent fix + gallery typecheck: see `git log --grep 'Blocks M4'`
 
 ## How blocks work
 - One file per block: `apps/gallery/src/site/blocks/<Name>.tsx`, one default export, no props, imports only `@datum-design/react` and `lucide-react`. Each wraps itself in `Section` + `Container padded`.
@@ -34,4 +34,4 @@ Left in this plan: none. Ideas for later: contact form, footer CTA, app header/s
 - No icon-tile primitive: FeatureGrid draws the icon square with a token-only inline style.
 
 ## Next step
-M4: correct packages/styles/README.md (orange accent = orange-700 + white text, per DESIGN.md); add apps/gallery/tsconfig.json + `typecheck` script.
+All four milestones are done. `npm run typecheck -w @datum-design/gallery` is clean (one fix: check/main.tsx treated a Record lookup as always defined). Next: more blocks (contact form, footer, app shell) or wire typecheck into CI.

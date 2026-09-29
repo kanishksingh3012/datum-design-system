@@ -33,8 +33,8 @@ Left: none.
 ## Next step
 S1 is done. Open follow-ups:
 - Connect the repo to Vercel (import the GitHub repo; vercel.json already sets the build and SPA rewrite) and check a deep link such as /docs/components/button on the deployed URL.
-- /blocks is still a placeholder.
-- Reconcile the DESIGN.md vs styles README conflict below.
+- /blocks: see docs/blocks-progress.md.
+- DESIGN.md vs styles README accent conflict: fixed (README now matches DESIGN.md).
 - The Code tab is generated from JSX at runtime (`toJsx` in kit.tsx): handlers show as `() => …` and state-driven values show their current value. Hand-written snippets would read better for the busiest demos.
 
 ## Doc file shape (M2)
@@ -43,7 +43,7 @@ A doc file keeps the legacy markup (`section.component-doc`, `h1`, `p.dek`, `.do
 
 ## Problems / notes
 - Root `npm run build` builds only styles + react; build the site with `npm run build -w @datum-design/gallery`.
-- Gallery has no tsconfig, so there's no typecheck; Vite only transpiles. Check pages in the browser.
+- Gallery typecheck: `npm run typecheck -w @datum-design/gallery`.
 - Switch takes `label` + `defaultChecked` (not children/defaultSelected).
 - migrate-section.py overwrites the doc file, so re-running it drops hand-added A11y notes. Don't re-run on a finished page.
 - Conflict in the sources: DESIGN.md says orange's accent fill is orange-700 with white text; packages/styles/README.md says orange's accent carries dark text (#1B1B1B on #FC6E20). The Theming page avoids both and points at `text.onAccent`. Someone should reconcile the two docs.

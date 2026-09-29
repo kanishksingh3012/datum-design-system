@@ -18,7 +18,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-const Fixture = fixtures[name];
+const Fixture = fixtures[name] as (typeof fixtures)[string] | undefined;
 const variant = Number(params.get("variant") ?? 0);
 document.body.dataset.fixture = Fixture ? "ready" : "missing";
 // a fixture with states lists them; the checker loads each one as ?variant=n
