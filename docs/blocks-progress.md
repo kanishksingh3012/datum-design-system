@@ -35,3 +35,8 @@ Left in this plan: none. Ideas for later: contact form, footer CTA, app header/s
 
 ## Next step
 All four milestones are done. `npm run typecheck -w @datum-design/gallery` is clean (one fix: check/main.tsx treated a Record lookup as always defined). Next: more blocks (contact form, footer, app shell) or wire typecheck into CI.
+
+## Final verification (d9ee8ad)
+- `npm run check`: all passed, 79 fixtures (12 blocks), 701 passing result lines.
+- React tests: 69 files, 402 tests passed (includes another session's uncommitted charts tests in the tree).
+- Gallery build and `typecheck` clean.
