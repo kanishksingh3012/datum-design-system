@@ -53,6 +53,17 @@
       "success": ["{color.emerald.600}","{color.emerald.400}"],
       "info": ["{color.azure.600}","{color.azure.400}"],
       "disabled": ["{color.stone.200}","{color.stone.800}"]
+    },
+    "chart": {
+      "1": ["{color.azure.600}","{color.azure.500}"],
+      "2": ["{color.magenta.600}","{color.magenta.400}"],
+      "3": ["{color.orange.600}","{color.orange.500}"],
+      "4": ["{color.violet.600}","{color.violet.400}"],
+      "5": ["{color.yellow.600}","{color.yellow.500}"],
+      "6": ["{color.cyan.600}","{color.cyan.500}"],
+      "seq": {"1": ["{color.orange.200}","{color.orange.900}"], "2": ["{color.orange.400}","{color.orange.700}"], "3": ["{color.orange.600}","{color.orange.500}"], "4": ["{color.orange.800}","{color.orange.300}"], "5": ["{color.orange.950}","{color.orange.100}"]},
+      "grid": ["{color.stone.200}","{color.stone.700}"],
+      "axis": ["{color.stone.700}","{color.stone.300}"]
     }
   },
   "elevation": {
