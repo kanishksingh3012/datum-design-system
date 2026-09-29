@@ -7,3 +7,5 @@ node_modules/
 # Build output for the real npm packages only - packages/styles/tokens/dist/
 # is deliberately NOT ignored, it's the token pipeline's tracked, real output.
 packages/react/dist/
+.vercel
+.env*
