@@ -11,18 +11,25 @@ const groups: { title: string; blocks: [name: string, title: string, purpose: st
     title: "Marketing",
     blocks: [
       ["Hero", "Hero", "A centered headline with a primary and a secondary action."],
+      ["LogoCloud", "Logo cloud", "Customer wordmarks under a one-line trust statement."],
+      ["FeatureGrid", "Feature grid", "Six features with an icon each, three across on wide screens."],
+      ["FeatureSplit", "Feature split", "One feature told in text beside a product mock drawn from components."],
+      ["Stats", "Stats", "Four headline numbers on a muted band."],
+      ["CtaBand", "Call to action band", "A closing pitch with two actions on an accent band."],
     ],
   },
   {
     title: "Pricing & contact",
     blocks: [
       ["Pricing", "Pricing", "Three plans side by side; the recommended one is raised and marked."],
+      ["Faq", "FAQ", "Common questions in an accordion, with a route to support."],
     ],
   },
   {
     title: "Content",
     blocks: [
       ["Testimonial", "Testimonial", "A single quote with the person behind it."],
+      ["Testimonials", "Testimonials", "Three customer quotes in cards."],
     ],
   },
   {

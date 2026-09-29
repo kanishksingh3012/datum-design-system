@@ -5,7 +5,7 @@ Handoff for the next chat. Read this file only.
 ## Milestones
 - [x] M1 — real per-file blocks: (this commit, see `git log --grep 'Blocks M1'`)
 - [x] M2 — checker coverage: see `git log --grep 'Blocks M2'`
-- [ ] M3 — marketing core
+- [x] M3 — marketing core: see `git log --grep 'Blocks M3'`
 - [ ] M4 — README accent fix + gallery typecheck
 
 ## How blocks work
@@ -22,12 +22,16 @@ Handoff for the next chat. Read this file only.
 One fictional product across blocks: **Loomwork**, a planning workspace for product teams. Invented customers: Fernhill Labs, etc. No real names.
 
 ## Blocks
-Done: Hero, Pricing, Testimonial, SignIn, DashboardStats.
-Left: LogoCloud, FeatureGrid, FeatureSplit, Stats, Testimonials, CtaBand, Faq.
+Done (12): Hero, LogoCloud, FeatureGrid, FeatureSplit, Stats, CtaBand, Pricing, Faq, Testimonial, Testimonials, SignIn, DashboardStats.
+Left in this plan: none. Ideas for later: contact form, footer CTA, app header/sidebar shell.
 
 ## Missing component props (not patched around)
 - Container has no size below `sm` (640px); SignIn's card sits in `sm`, wider than the old 400px.
 - Text / Heading have no `align` prop; blocks use inline `textAlign` (a keyword, not a token).
+- Text `as` allows only p / span / div / label: Testimonials wraps a `<blockquote style={{ margin: 0 }}>` around Text.
+- Grid has no item `span` prop and no `align` prop (FeatureSplit uses inline `alignItems: "center"`).
+- Section `tone` has no solid/inverse band (only default / muted / accent-subtle), so CtaBand sits on accentSubtle; a solid ink band would need text + focus-ring re-pointing the component doesn't offer.
+- No icon-tile primitive: FeatureGrid draws the icon square with a token-only inline style.
 
 ## Next step
-M3: build LogoCloud, FeatureGrid, FeatureSplit, Stats, Testimonials, CtaBand, Faq; add each to `groups` in Blocks.tsx; `npm run check -- <Name>`.
+M4: correct packages/styles/README.md (orange accent = orange-700 + white text, per DESIGN.md); add apps/gallery/tsconfig.json + `typecheck` script.
