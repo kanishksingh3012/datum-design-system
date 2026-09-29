@@ -278,6 +278,18 @@ try {
 } catch {
   browser = await chromium.launch();
 }
+// The static preview server now and then answers a request with an error status
+// (seen with several servers running at once); retry a navigation before failing the run.
+async function goto(p, href, tries = 3) {
+  for (let i = 1; ; i++) {
+    try {
+      return await p.goto(href);
+    } catch (e) {
+      if (i >= tries || !String(e.message).includes("ERR_HTTP_RESPONSE_CODE_FAILURE")) throw e;
+      await new Promise((r) => setTimeout(r, 500));
+    }
+  }
+}
 const DESKTOP = { width: 1400, height: 1000 };
 const MOBILE = { width: 390, height: 844 };
 // A variant whose name starts with "mobile" renders below its component's mobile breakpoint instead of at DESKTOP,
@@ -294,7 +306,7 @@ try {
       continue;
     }
     const url = (theme, mode, v) => `${base}check.html?component=${name}&theme=${theme}&mode=${mode}&variant=${v}`;
-    await page.goto(url("orange", "light", 0));
+    await goto(page, url("orange", "light", 0));
     await page.waitForSelector("body[data-fixture=ready] #fixture > *", { state: "attached" });
     const variants = await page.evaluate(() => JSON.parse(document.body.dataset.variants || "[null]"));
     for (const theme of THEMES) {
@@ -302,7 +314,7 @@ try {
       for (let v = 0; v < variants.length; v++) {
         const label = variants[v] ? ` [${variants[v]}]` : "";
         await page.setViewportSize(isMobileVariant(variants[v]) ? MOBILE : DESKTOP);
-        await page.goto(url(theme, mode, v));
+        await goto(page, url(theme, mode, v));
         await page.waitForSelector("body[data-fixture=ready] #fixture > *", { state: "attached" });
         await page.evaluate(() => document.fonts.ready);
         await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; }" });
@@ -388,7 +400,7 @@ try {
     const touchResult = { coarse: true, small: [], count: 0 };
     for (let v = 0; v < variants.length; v++) {
     await tp.setViewportSize(isMobileVariant(variants[v]) ? MOBILE : DESKTOP);
-    await tp.goto(url("orange", "light", v));
+    await goto(tp, url("orange", "light", v));
     await tp.waitForSelector("body[data-fixture=ready] #fixture > *", { state: "attached" });
     const r = await tp.evaluate((selector) => {
       if (!matchMedia("(pointer: coarse)").matches) return { coarse: false, small: [], count: 0 };
