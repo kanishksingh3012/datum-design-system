@@ -38,6 +38,11 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
+    "./charts": {
+      "types": "./dist/charts.d.ts",
+      "import": "./dist/charts.js",
+      "require": "./dist/charts.cjs"
+    },
     "./styles.css": "./dist/datum.css"
   },
   "files": [
@@ -51,7 +56,8 @@
     "@datum-design/styles": "^0.1.0",
     "@internationalized/date": "^3.12.4",
     "react-aria": "^3.52.1",
-    "react-stately": "^3.50.0"
+    "react-stately": "^3.50.0",
+    "recharts": "^3.10.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",

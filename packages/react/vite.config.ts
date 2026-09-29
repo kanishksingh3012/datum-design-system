@@ -21,12 +21,13 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
+      // "charts" is the @datum-design/react/charts subpath: the only entry that imports Recharts.
+      entry: { index: resolve(__dirname, "src/index.ts"), charts: resolve(__dirname, "src/charts.ts") },
       formats: ["es", "cjs"],
-      fileName: (format) => (format === "es" ? "index.js" : "index.cjs"),
+      fileName: (format, entryName) => `${entryName}.${format === "es" ? "js" : "cjs"}`,
     },
     rollupOptions: {
-      external: ["react", "react-dom", "react/jsx-runtime", /^react-aria(\/|$)/, /^react-stately(\/|$)/, /^@internationalized\/date(\/|$)/],
+      external: ["react", "react-dom", "react/jsx-runtime", /^react-aria(\/|$)/, /^react-stately(\/|$)/, /^@internationalized\/date(\/|$)/, /^recharts(\/|$)/],
       output: {
         assetFileNames: (assetInfo) =>
           assetInfo.name?.endsWith(".css") ? "datum.css" : (assetInfo.name ?? "[name][extname]"),

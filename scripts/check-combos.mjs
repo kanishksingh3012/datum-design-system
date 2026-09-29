@@ -20,7 +20,9 @@
 //    Charts: every SVG <text> in a fixture is measured on its fill (4.5:1, or 3:1 when large)
 //    against what is painted behind the <svg>. Series marks a fixture flags with data-check-graphic
 //    (the shape itself, or a group: then every path/rect/circle/… inside it) are measured at 3:1,
-//    on their fill, or their stroke when unfilled (a line), including fill/stroke opacity.
+//    on fill or stroke, including fill/stroke opacity. Shapes that share one data-check-graphic value
+//    in one svg are one series mark (an area's translucent tint and its line; every bar of a series),
+//    measured once on its strongest paint.
 //    Form controls count as controls too: text inputs and textareas are measured
 //    on the box that draws them ([data-control]); a checkbox, radio or switch
 //    on its drawn indicator, whose edge or fill must reach 3:1 against what is
@@ -177,23 +179,39 @@ function measure({ id, focus }) {
 
   // SVG (charts): text is painted with fill, marks with fill or stroke; both sit on the HTML behind the <svg>.
   if (el instanceof SVGElement) {
-    const scs = getComputedStyle(el);
     const behind = backdrop(el.closest("svg").parentElement);
     const paint = (p) => (p && p !== "none" && !p.startsWith("url(") ? rgba(p) : null);
-    const alpha = (c, o) => c && [c[0], c[1], c[2], c[3] * o * parseFloat(scs.opacity)];
-    const fillC = alpha(paint(scs.fill), parseFloat(scs.fillOpacity));
-    const strokeC = parseFloat(scs.strokeWidth) > 0 ? alpha(paint(scs.stroke), parseFloat(scs.strokeOpacity)) : null;
+    const paints = (node) => {
+      const scs = getComputedStyle(node);
+      const alpha = (c, o) => c && [c[0], c[1], c[2], c[3] * o * parseFloat(scs.opacity)];
+      const fill = alpha(paint(scs.fill), parseFloat(scs.fillOpacity));
+      const stroke = parseFloat(scs.strokeWidth) > 0 ? alpha(paint(scs.stroke), parseFloat(scs.strokeOpacity)) : null;
+      return { scs, fill, stroke };
+    };
+    const { scs, fill: fillC } = paints(el);
     if (el.matches("text")) {
       const c = over(fillC ?? [0, 0, 0, 1], behind);
       const size = parseFloat(scs.fontSize);
       const large = size >= 24 || (size >= 18.66 && Number(scs.fontWeight) >= 700);
       return { label: el.textContent.trim(), checks: [{ kind: "svg text", ratio: ratio(c, behind), min: large ? 3 : 4.5, fg: hex(c), bg: hex(behind) }] };
     }
-    // a series mark: its fill if it has one, else its stroke (a line)
-    const mark = fillC && fillC[3] > 0 ? fillC : strokeC;
-    const c = mark ? over(mark, behind) : behind;
-    const label = el.closest("[data-check-graphic]")?.getAttribute("data-check-graphic") || el.tagName;
-    return { label, checks: [{ kind: "graphic", ratio: mark ? ratio(c, behind) : 0, min: 3, fg: mark ? hex(c) : "no paint", bg: hex(behind) }] };
+    // A series mark: every shape carrying the same data-check-graphic value in this svg (an area's tint
+    // and its line; a line and its dots) is one mark, and its strongest paint, fill or stroke, must reach 3:1.
+    const label = el.getAttribute("data-check-graphic") || el.closest("[data-check-graphic]")?.getAttribute("data-check-graphic") || el.tagName;
+    const group = el.hasAttribute("data-check-graphic")
+      ? [...el.closest("svg").querySelectorAll("[data-check-graphic]")].filter((g) => g.getAttribute("data-check-graphic") === label)
+      : [el];
+    let best = { r: 0, c: null };
+    for (const g of group) {
+      const { fill, stroke } = paints(g);
+      for (const p of [fill, stroke]) {
+        if (!p || p[3] === 0) continue;
+        const c = over(p, behind);
+        const r = ratio(c, behind);
+        if (r > best.r) best = { r, c };
+      }
+    }
+    return { label, checks: [{ kind: "graphic", ratio: best.r, min: 3, fg: best.c ? hex(best.c) : "no paint", bg: hex(behind) }] };
   }
 
   // A form input is drawn by another element: the box around it, or the indicator beside it.
@@ -380,7 +398,9 @@ try {
           const SHAPES = "path, rect, circle, ellipse, line, polyline, polygon";
           const graphics = [...new Set([...document.querySelectorAll("#fixture [data-check-graphic]")].flatMap((el) =>
             el.matches(SHAPES) ? [el] : [...el.querySelectorAll(SHAPES)]
-          ))].filter((g) => { const r = g.getBoundingClientRect(); return r.width > 0 || r.height > 0; });
+          ))].filter((g) => { const r = g.getBoundingClientRect(); return r.width > 0 || r.height > 0; })
+            // shapes sharing one data-check-graphic value in one svg are one mark: measure it once
+            .filter((g, i, all) => !g.hasAttribute("data-check-graphic") || all.findIndex((o) => o.hasAttribute("data-check-graphic") && o.closest("svg") === g.closest("svg") && o.getAttribute("data-check-graphic") === g.getAttribute("data-check-graphic")) === i);
           const all = [...els, ...svgText, ...graphics];
           all.forEach((el, i) => el.setAttribute("data-check-id", `text-${i}`));
           window.__checkSvgCounts = [svgText.length, graphics.length];
