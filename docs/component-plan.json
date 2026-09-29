@@ -2392,6 +2392,41 @@
           "note": "Wave 2. Built on Table, TextField and Pagination; announces the matching row count."
         }
       ]
+    },
+    {
+      "name": "Charts",
+      "items": [
+        {
+          "n": "LineChart",
+          "st": "new",
+          "why": "Change over time for one to six series.",
+          "props": []
+        },
+        {
+          "n": "AreaChart",
+          "st": "new",
+          "why": "Volume over time; stacked shows the total.",
+          "props": []
+        },
+        {
+          "n": "BarChart",
+          "st": "new",
+          "why": "Amounts across categories: grouped, stacked or horizontal.",
+          "props": []
+        },
+        {
+          "n": "DonutChart",
+          "st": "new",
+          "why": "Part-to-whole for a handful of slices (PieChart included).",
+          "props": []
+        },
+        {
+          "n": "Sparkline",
+          "st": "new",
+          "why": "Word-sized trend line for stat tiles and table cells.",
+          "props": []
+        }
+      ]
     }
   ],
   "wave2": [
