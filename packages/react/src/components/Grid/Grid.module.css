@@ -1,5 +1,7 @@
 .root {
-  --_cols: 1;
+  /* The inline style sets --_cols-base / -md / -lg, never --_cols itself: an inline
+     --_cols would beat these media queries and pin the grid to its base count. */
+  --_cols: var(--_cols-base, 1);
 
   display: grid;
   grid-template-columns: repeat(var(--_cols), minmax(0, 1fr));
@@ -8,10 +10,10 @@
 
 /* breakpoint.md / breakpoint.lg (media queries can't read custom properties) */
 @media (min-width: 768px) {
-  .root { --_cols: var(--_cols-md); }
+  .root { --_cols: var(--_cols-md, var(--_cols-base, 1)); }
 }
 @media (min-width: 1024px) {
-  .root { --_cols: var(--_cols-lg); }
+  .root { --_cols: var(--_cols-lg, var(--_cols-md, var(--_cols-base, 1))); }
 }
 
 /* min() keeps a single item from overflowing a container narrower than --_min */

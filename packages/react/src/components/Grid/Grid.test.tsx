@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { Grid } from "./Grid";
 
 const vars = (el: HTMLElement) => ({
-  base: el.style.getPropertyValue("--_cols"),
+  base: el.style.getPropertyValue("--_cols-base"),
   md: el.style.getPropertyValue("--_cols-md"),
   lg: el.style.getPropertyValue("--_cols-lg"),
 });
@@ -34,7 +34,7 @@ describe("Grid", () => {
     const a = screen.getByTestId("a");
     expect(a).toHaveAttribute("data-auto-fit", "true");
     expect(a.style.getPropertyValue("--_min")).toBe("240px");
-    expect(a.style.getPropertyValue("--_cols")).toBe("");
+    expect(a.style.getPropertyValue("--_cols-base")).toBe("");
     render(<Grid minItemWidth="16rem" data-testid="b" />);
     expect(screen.getByTestId("b").style.getPropertyValue("--_min")).toBe("16rem");
   });
@@ -43,7 +43,9 @@ describe("Grid", () => {
     render(<Grid columns={2} style={{ marginTop: 8 }} data-testid="g" />);
     const el = screen.getByTestId("g");
     expect(el.style.marginTop).toBe("8px");
-    expect(el.style.getPropertyValue("--_cols")).toBe("2");
+    expect(el.style.getPropertyValue("--_cols-base")).toBe("2");
+    // --_cols is derived in CSS per breakpoint; setting it inline would override the media queries.
+    expect(el.style.getPropertyValue("--_cols")).toBe("");
   });
 
   it("forwards its ref and merges className", () => {

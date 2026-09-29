@@ -31,7 +31,7 @@ export const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
   const vars =
     minItemWidth !== undefined
       ? { "--_min": typeof minItemWidth === "number" ? `${minItemWidth}px` : minItemWidth }
-      : { "--_cols": base, "--_cols-md": md ?? base, "--_cols-lg": lg ?? md ?? base };
+      : { "--_cols-base": base, "--_cols-md": md ?? base, "--_cols-lg": lg ?? md ?? base };
 
   return (
     <div
