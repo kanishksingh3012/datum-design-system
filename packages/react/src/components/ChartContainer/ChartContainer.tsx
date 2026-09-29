@@ -198,7 +198,7 @@ export const ChartContainer = forwardRef<HTMLElement, ChartContainerProps>(funct
               <tr key={r}>
                 {xKey && <th scope="row">{xFormatter(d[xKey])}</th>}
                 {columns.map((s) => (
-                  <td key={s.key}>{typeof d[s.key] === "number" ? valueFormatter(d[s.key] as number) : "—"}</td>
+                  <td key={s.key}>{typeof d[s.key] === "number" ? valueFormatter(d[s.key] as number) : d[s.key] ?? "—"}</td>
                 ))}
               </tr>
             ))}

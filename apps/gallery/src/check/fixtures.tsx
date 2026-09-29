@@ -14,6 +14,7 @@ import {
   Suggestion, SuggestionItem, ThinkingIndicator, TodoItem, TodoList, ToolCall, type DiffRow, type CodeLine,
   DataTable, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, type DataTableColumn,
 } from "@datum-design/react";
+import { CHART_VARIANTS, ChartFixture } from "./chartFixtures";
 import { AlignCenter, AlignLeft, AlignRight, Copy, FolderOpen, Home, Inbox, Mail, Pencil, Plus, Search, Settings, Star, Trash2 } from "lucide-react";
 
 const intents = ["accent", "neutral", "danger"] as const;
@@ -1421,4 +1422,9 @@ export const fixtures: Record<string, Fixture> = {
         style={narrow}
       />
     ), true),
+  LineChart: states(CHART_VARIANTS.LineChart, (v) => <ChartFixture chart="LineChart" variant={v} />, true),
+  AreaChart: states(CHART_VARIANTS.AreaChart, (v) => <ChartFixture chart="AreaChart" variant={v} />, true),
+  BarChart: states(CHART_VARIANTS.BarChart, (v) => <ChartFixture chart="BarChart" variant={v} />, true),
+  DonutChart: states(CHART_VARIANTS.DonutChart, (v) => <ChartFixture chart="DonutChart" variant={v} />, true),
+  Sparkline: states(CHART_VARIANTS.Sparkline, (v) => <ChartFixture chart="Sparkline" variant={v} />, true),
 };

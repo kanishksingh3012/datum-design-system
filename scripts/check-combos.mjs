@@ -384,6 +384,18 @@ try {
           report("hover", await page.evaluate(measure, { id: i, focus: false }));
         }
         await page.mouse.move(0, 0);
+        // Charts animate by redrawing their shapes: wait until the fixture has been still for 300ms
+        // (4s at most), so the elements tagged below are the ones still on screen when measured.
+        await page.evaluate(() => new Promise((done) => {
+          const root = document.querySelector("#fixture");
+          if (!root?.querySelector("svg text, [data-check-graphic]")) return done();
+          let quiet;
+          const finish = () => { mo.disconnect(); clearTimeout(quiet); done(); };
+          const mo = new MutationObserver(() => { clearTimeout(quiet); quiet = setTimeout(finish, 300); });
+          mo.observe(root, { subtree: true, childList: true, attributes: true });
+          quiet = setTimeout(finish, 300);
+          setTimeout(finish, 4000);
+        }));
         const texts = await page.evaluate(() => {
           const hasText = (el) => [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
           // a Set: text marked inside a deep container would otherwise be listed (and id'd) twice
