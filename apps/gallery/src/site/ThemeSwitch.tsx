@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, ButtonGroup } from "@datum-design/react";
+import { Moon, Palette, Sun } from "lucide-react";
 
 export function ThemeSwitch() {
   const [theme, setTheme] = useState(() => document.documentElement.dataset.theme ?? "orange");
@@ -29,8 +30,21 @@ export function ThemeSwitch() {
     setMode(next);
   }
 
+  const otherTheme = theme === "orange" ? "navy" : "orange";
+  const otherMode = mode === "light" ? "dark" : "light";
+
   return (
     <>
+      {/* Small screens: two icon toggles; wider screens: the labelled segmented groups. */}
+      <div className="site-switch-compact">
+        <Button iconOnly size="sm" intent="neutral" appearance="ghost" label={`Switch to ${otherTheme} theme`} onClick={() => switchTheme(otherTheme)}>
+          <Palette />
+        </Button>
+        <Button iconOnly size="sm" intent="neutral" appearance="ghost" label={`Switch to ${otherMode} mode`} onClick={() => switchMode(otherMode)}>
+          {mode === "light" ? <Moon /> : <Sun />}
+        </Button>
+      </div>
+      <div className="site-switch-full">
       <ButtonGroup attached size="sm" aria-label="Theme">
         {["orange", "navy"].map((t) => (
           <Button key={t} pressed={theme === t} onPressedChange={() => switchTheme(t)}>{t}</Button>
@@ -41,6 +55,7 @@ export function ThemeSwitch() {
           <Button key={m} pressed={mode === m} onPressedChange={() => switchMode(m)}>{m}</Button>
         ))}
       </ButtonGroup>
+      </div>
     </>
   );
 }
