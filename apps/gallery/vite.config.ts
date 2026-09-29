@@ -11,6 +11,7 @@ export default defineConfig({
         main: resolve(__dirname, "index.html"),
         check: resolve(__dirname, "check.html"),
         review: resolve(__dirname, "review.html"),
+        block: resolve(__dirname, "block.html"),
       },
     },
   },

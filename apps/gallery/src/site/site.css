@@ -202,15 +202,19 @@
   display: flex;
   flex-direction: column;
   gap: calc(var(--space-section) * 2);
-  max-width: 1120px;
+  max-width: 1400px;
   margin-inline: auto;
   padding: calc(var(--space-section) * 2) var(--space-section) calc(var(--space-section) * 3);
 }
 .site-block { display: flex; flex-direction: column; gap: var(--space-default); scroll-margin-top: 96px; }
-.block-hero { padding: var(--space-section) 0; text-align: center; }
-.block-narrow { max-width: 400px; margin-inline: auto; }
-.block-quote { max-width: 60ch; margin-inline: auto; text-align: center; }
-.block-check { width: 16px; height: 16px; flex: none; color: var(--color-text-accent); }
+/* the iframe keeps its chosen width; a narrow docs page scrolls it sideways instead of squeezing it */
+.block-viewport {
+  overflow-x: auto;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-card);
+  background: var(--color-bg-page);
+}
+.block-viewport iframe { display: block; max-width: none; margin-inline: auto; border: 0; }
 
 /* ---------- small screens ---------- */
 @media (max-width: 767px) {
