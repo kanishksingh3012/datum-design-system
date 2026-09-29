@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
 import { UNSAFE_PortalProvider } from "react-aria";
 import { getLocalTimeZone, startOfMonth, today, type DateValue } from "@internationalized/date";
 import {
@@ -330,7 +330,16 @@ function Dragging({ children }: { children: ReactNode }) {
 
 type Fixture = ((props: { variant?: number }) => ReactNode) & { variants?: string[] };
 
+// Every block in site/blocks, at desktop and mobile width (the checker renders "mobile…" variants at 390px).
+const blockFixtures = Object.fromEntries(
+  Object.entries(import.meta.glob<{ default: ComponentType }>("../site/blocks/*.tsx", { eager: true })).map(([path, mod]) => {
+    const Block = mod.default;
+    return [path.slice(path.lastIndexOf("/") + 1, -4), states(["desktop", "mobile"], () => <Block />, true)];
+  })
+);
+
 export const fixtures: Record<string, Fixture> = {
+  ...blockFixtures,
   Container: () => (
     <>
       {(["sm", "md", "lg", "xl", "full"] as const).map((size) => (

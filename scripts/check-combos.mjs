@@ -17,6 +17,10 @@
 //    Static text a fixture marks with data-check-text (type tones, text on
 //    section backgrounds) is measured too, at rest: 4.5:1, or 3:1 when large;
 //    data-check-text="deep" also measures every element inside it that holds text.
+//    Charts: every SVG <text> in a fixture is measured on its fill (4.5:1, or 3:1 when large)
+//    against what is painted behind the <svg>. Series marks a fixture flags with data-check-graphic
+//    (the shape itself, or a group: then every path/rect/circle/… inside it) are measured at 3:1,
+//    on their fill, or their stroke when unfilled (a line), including fill/stroke opacity.
 //    Form controls count as controls too: text inputs and textareas are measured
 //    on the box that draws them ([data-control]); a checkbox, radio or switch
 //    on its drawn indicator, whose edge or fill must reach 3:1 against what is
@@ -27,12 +31,16 @@
 //    as is hover on anything a scrim or popover covers. [data-check-skip] marks a
 //    control measured in another variant (a menu's trigger, while the menu holds focus).
 //    Visually hidden controls (React Aria's screen-reader DismissButton) are skipped, and so are
-//    controls that aren't rendered (display: none). A variant named "mobile menu…" is the one
-//    exception to that: it renders at a narrow (390×844) viewport instead of the usual
-//    1400×1000, so a control that only exists below its breakpoint (a navbar's menu trigger) is
-//    actually visible and measured there, rather than silently skipped everywhere. Any other
-//    display:none control is still skipped outright — real screen coverage of anything
-//    breakpoint-hidden needs its own "mobile menu"-style variant, not a blanket assumption.
+//    controls that aren't rendered (display: none). A variant whose name starts with "mobile"
+//    ("mobile", "mobile menu", "mobile menu open") is the one exception to that: it renders at a
+//    narrow (390×844) viewport instead of the usual 1400×1000, so a control that only exists below
+//    its breakpoint (a navbar's menu trigger) is actually visible and measured there, rather than
+//    silently skipped everywhere. Any other display:none control is still skipped outright — real
+//    screen coverage of anything breakpoint-hidden needs its own "mobile…" variant.
+//    Blocks (apps/gallery/src/site/blocks/<Name>.tsx) are fixtures too, each with a "desktop" and a
+//    "mobile" variant. They are copy-paste source, so the static scan also fails a block that imports
+//    anything but @datum-design/react and lucide-react, and the render fails a block that scrolls
+//    sideways at either width.
 //    Focus is a ring (an outline) at 3:1. The one opt-out is a control marked
 //    data-check-focus="fill" (today only Resizable's grip, too small to ring well): it may
 //    instead show focus with a fill that changes on focus and reaches 3:1 against what is
@@ -50,6 +58,8 @@ import { fileURLToPath } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const GALLERY = join(ROOT, "apps/gallery");
 const COMPONENTS = join(ROOT, "packages/react/src/components");
+const BLOCKS = join(GALLERY, "src/site/blocks");
+const blockNames = readdirSync(BLOCKS).filter((f) => f.endsWith(".tsx")).map((f) => f.slice(0, -4));
 const THEMES = ["orange", "navy"];
 // Everything the checker treats as a control (hidden inputs such as React Aria's HiddenSelect are skipped).
 const CONTROLS = ["button", "a", 'input:not([type=hidden]):not([tabindex="-1"])', 'textarea:not([tabindex="-1"])', '[role^="menuitem"]']
@@ -57,7 +67,7 @@ const CONTROLS = ["button", "a", 'input:not([type=hidden]):not([tabindex="-1"])'
   .join(", ");
 const MODES = ["light", "dark"];
 
-const registered = [...readFileSync(join(GALLERY, "src/check/fixtures.tsx"), "utf8").matchAll(/^  (\w+): (?:\(\) =>|states\()/gm)].map((m) => m[1]);
+const registered = [...readFileSync(join(GALLERY, "src/check/fixtures.tsx"), "utf8").matchAll(/^  (\w+): (?:\(\) =>|states\()/gm)].map((m) => m[1]).concat(blockNames);
 const requested = process.argv.slice(2).filter((a) => !a.startsWith("-"));
 const targets = requested.length ? requested : registered;
 
@@ -106,6 +116,11 @@ function scanComponent(name, dir = join(COMPONENTS, name)) {
       if (found) {
         hits++;
         fail(`hardcoded color "${found}" at ${where}`);
+      }
+      const from = dir === BLOCKS && line.match(/\bfrom\s+["']([^"']+)["']|\bimport\s+["']([^"']+)["']/);
+      if (from && !["@datum-design/react", "lucide-react", "react"].includes(from[1] ?? from[2])) {
+        hits++;
+        fail(`block import: "${from[1] ?? from[2]}" at ${where} — blocks import only @datum-design/react and lucide-react`);
       }
       if (file.endsWith(".css")) {
         const rule =
@@ -159,6 +174,27 @@ function measure({ id, focus }) {
     return bg;
   };
   const hex = (c) => "#" + c.slice(0, 3).map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
+
+  // SVG (charts): text is painted with fill, marks with fill or stroke; both sit on the HTML behind the <svg>.
+  if (el instanceof SVGElement) {
+    const scs = getComputedStyle(el);
+    const behind = backdrop(el.closest("svg").parentElement);
+    const paint = (p) => (p && p !== "none" && !p.startsWith("url(") ? rgba(p) : null);
+    const alpha = (c, o) => c && [c[0], c[1], c[2], c[3] * o * parseFloat(scs.opacity)];
+    const fillC = alpha(paint(scs.fill), parseFloat(scs.fillOpacity));
+    const strokeC = parseFloat(scs.strokeWidth) > 0 ? alpha(paint(scs.stroke), parseFloat(scs.strokeOpacity)) : null;
+    if (el.matches("text")) {
+      const c = over(fillC ?? [0, 0, 0, 1], behind);
+      const size = parseFloat(scs.fontSize);
+      const large = size >= 24 || (size >= 18.66 && Number(scs.fontWeight) >= 700);
+      return { label: el.textContent.trim(), checks: [{ kind: "svg text", ratio: ratio(c, behind), min: large ? 3 : 4.5, fg: hex(c), bg: hex(behind) }] };
+    }
+    // a series mark: its fill if it has one, else its stroke (a line)
+    const mark = fillC && fillC[3] > 0 ? fillC : strokeC;
+    const c = mark ? over(mark, behind) : behind;
+    const label = el.closest("[data-check-graphic]")?.getAttribute("data-check-graphic") || el.tagName;
+    return { label, checks: [{ kind: "graphic", ratio: mark ? ratio(c, behind) : 0, min: 3, fg: mark ? hex(c) : "no paint", bg: hex(behind) }] };
+  }
 
   // A form input is drawn by another element: the box around it, or the indicator beside it.
   const isField = el.matches("input, textarea");
@@ -222,9 +258,11 @@ const { chromium } = await import("playwright");
 
 console.log(`\nDatum combo check — ${targets.join(", ") || "(nothing registered)"}\n`);
 console.log("Static scan");
-targets.forEach((name) => scanComponent(name));
+targets.filter((name) => !blockNames.includes(name)).forEach((name) => scanComponent(name));
 // shared internals (the AI disclosure, status badge, syntax styles) are held to the same rules
 scanComponent("lib", join(ROOT, "packages/react/src/lib"));
+// blocks are pasted into other projects: same color rules, plus the import rule
+scanComponent("blocks", BLOCKS);
 
 // A static build, not the dev server: the dev server can reload the page
 // mid-run when it discovers a dependency, which destroys the measurement.
@@ -242,10 +280,10 @@ try {
 }
 const DESKTOP = { width: 1400, height: 1000 };
 const MOBILE = { width: 390, height: 844 };
-// A variant named this renders below its component's mobile breakpoint instead of at DESKTOP,
+// A variant whose name starts with "mobile" renders below its component's mobile breakpoint instead of at DESKTOP,
 // so a control that only exists there (a navbar's menu trigger) is actually visible and measured,
 // rather than silently skipped by the display:none check below.
-const isMobileVariant = (label) => typeof label === "string" && label.startsWith("mobile menu");
+const isMobileVariant = (label) => typeof label === "string" && label.startsWith("mobile");
 const page = await browser.newPage({ viewport: DESKTOP });
 
 try {
@@ -268,6 +306,10 @@ try {
         await page.waitForSelector("body[data-fixture=ready] #fixture > *", { state: "attached" });
         await page.evaluate(() => document.fonts.ready);
         await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; }" });
+        if (blockNames.includes(name)) {
+          const [scroll, view] = await page.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
+          if (scroll > view) fail(`${theme}/${mode}${label} ${name} scrolls sideways: ${scroll}px wide in a ${view}px viewport`);
+        }
         // let entry animations (a sheet sliding in) land; looping ones (spinners) never finish
         await page.evaluate(() =>
           Promise.all(document.getAnimations().filter((x) => x.effect?.getComputedTiming().iterations !== Infinity).map((x) => x.finished))
@@ -320,12 +362,22 @@ try {
               ? [el, ...[...el.querySelectorAll("*")].filter((d) => hasText(d) && !d.closest('button, a, option, [aria-hidden="true"]'))]
               : [el]
           ))];
-          els.forEach((el, i) => el.setAttribute("data-check-id", `text-${i}`));
-          return els.length;
+          // chart text: every <text> inside an <svg> in the fixture, measured on its fill
+          const svgText = [...document.querySelectorAll("#fixture svg text")].filter((t) => t.textContent.trim() && !t.closest('[aria-hidden="true"]'));
+          // series marks: an element marked data-check-graphic, or every drawn shape inside a marked group
+          const SHAPES = "path, rect, circle, ellipse, line, polyline, polygon";
+          const graphics = [...new Set([...document.querySelectorAll("#fixture [data-check-graphic]")].flatMap((el) =>
+            el.matches(SHAPES) ? [el] : [...el.querySelectorAll(SHAPES)]
+          ))].filter((g) => { const r = g.getBoundingClientRect(); return r.width > 0 || r.height > 0; });
+          const all = [...els, ...svgText, ...graphics];
+          all.forEach((el, i) => el.setAttribute("data-check-id", `text-${i}`));
+          window.__checkSvgCounts = [svgText.length, graphics.length];
+          return all.length;
         });
         for (let i = 0; i < texts; i++) report("rest", await page.evaluate(measure, { id: `text-${i}`, focus: false }));
+        const svgCounts = await page.evaluate(() => window.__checkSvgCounts);
         const n = failures - before;
-        const what = [count && `${count} controls × rest, focus, hover${covered ? ` (${covered} covered, no hover)` : ""}`, texts && `${texts} text styles`].filter(Boolean).join(", ");
+        const what = [count && `${count} controls × rest, focus, hover${covered ? ` (${covered} covered, no hover)` : ""}`, texts && `${texts} text styles${svgCounts[0] + svgCounts[1] ? ` (${svgCounts[0]} chart text, ${svgCounts[1]} chart marks)` : ""}`].filter(Boolean).join(", ");
         console.log(`${n ? "✗" : "✓"} ${name}${label} ${theme}/${mode}: ${what || "nothing to measure"} — ${n} failure${n === 1 ? "" : "s"}`);
       }
       }

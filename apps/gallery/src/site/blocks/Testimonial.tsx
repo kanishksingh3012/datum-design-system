@@ -6,13 +6,13 @@ export default function Testimonial() {
       <Container size="sm" padded>
         <Stack gap="md" align="center" style={{ textAlign: "center" }}>
           <Text as="p" variant="paragraph-lg">
-            “We replaced three internal libraries with Datum. Theming a new product now takes an afternoon, not a sprint.”
+            “We moved planning, specs and releases into Loomwork. Our Monday sync went from an hour to fifteen minutes.”
           </Text>
           <Stack direction="horizontal" gap="sm" align="center" style={{ textAlign: "start" }}>
             <Avatar name="Priya Raman" />
             <Stack gap="none">
               <Text weight="semibold">Priya Raman</Text>
-              <Text variant="caption" tone="secondary">Design lead, Northwind</Text>
+              <Text variant="caption" tone="secondary">Head of product, Fernhill Labs</Text>
             </Stack>
           </Stack>
         </Stack>
