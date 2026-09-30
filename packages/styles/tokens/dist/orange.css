@@ -124,11 +124,11 @@
   --type-code-sm-lineHeight: 1.5;
   --type-code-sm-tracking: 0em;
   --color-bg-page: light-dark(#FDF9F6, #1B1B1B);
-  --color-bg-surface: light-dark(#F6F1EC, #424140);
-  --color-bg-surfaceRaised: light-dark(#FFFFFF, #323232);
-  --color-bg-surfaceSunken: light-dark(#F6F1EC, #101010);
+  --color-bg-surface: light-dark(#F6F1EC, #323232);
+  --color-bg-surfaceRaised: light-dark(#FFFFFF, #424140);
+  --color-bg-surfaceSunken: light-dark(#E7E2DD, #101010);
   --color-bg-tertiary: light-dark(#E7E2DD, #545250);
-  --color-bg-disabled: light-dark(#F6F1EC, #323232);
+  --color-bg-disabled: light-dark(#F6F1EC, #424140);
   --color-bg-scrim: light-dark(rgba(27,27,27,0.48), rgba(0,0,0,0.64));
   --color-bg-accent: #B34210;
   --color-bg-accentHover: #8C3413;

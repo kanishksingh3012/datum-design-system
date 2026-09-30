@@ -551,7 +551,20 @@ export const fixtures: Record<string, Fixture> = {
       ))}
     </>
   ),
-  Card: () => (
+  Card: states(["appearances", "nested"], (v) => v === "nested" ? (
+    // a card inside a card: the inner one must never repeat the outer fill without a border
+    <div className="row">
+      {(["soft", "elevated", "outline"] as const).map((appearance) => (
+        <Card key={appearance} appearance={appearance} style={{ width: 280 }}>
+          <Heading level={3} size="sm" data-check-text>{`Outer ${appearance}`}</Heading>
+          <Card appearance="soft" padding="sm">
+            <Text tone="secondary" data-check-text>Inner soft card</Text>
+            <Button size="sm">Action</Button>
+          </Card>
+        </Card>
+      ))}
+    </div>
+  ) : (
     <>
       <div className="row">
         {(["elevated", "outline", "soft"] as const).map((appearance) => (
@@ -582,7 +595,7 @@ export const fixtures: Record<string, Fixture> = {
         ))}
       </div>
     </>
-  ),
+  )),
   Badge: () => (
     <>
       {(["solid", "soft", "outline"] as const).map((appearance) =>

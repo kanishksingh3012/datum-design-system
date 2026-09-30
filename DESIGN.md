@@ -115,6 +115,23 @@ Four roles, named by where they apply:
 
 Light-mode shadows are tinted with the theme's own neutral (warm brown for orange, slate-navy for navy). In dark mode every layer turns plain black at higher opacity plus a 1px inset highlight. Never a colored glow.
 
+## Surfaces and elevation
+
+One fill ladder. Each step is visibly different from the step below it, in both modes. Pick a fill by the step, never by "it looked right here". (Ramp steps: stone for orange, slate for navy.)
+
+| Step | Token | Use | Light | Dark |
+|---|---|---|---|---|
+| sunken | `bg.surfaceSunken` | wells: input tracks, code blocks | 200 | 975 |
+| page | `bg.page` | the page itself | 50 | 950 |
+| container | `bg.surface` | cards, panels, table headers, tool calls, sidebars | 100 | 900 |
+| raised | `bg.surfaceRaised` | fields, popovers, menus, toasts, dialogs, sheets | white | 800 |
+
+- **Direction:** in dark, each step up gets lighter. In light, container is tinted a shade darker than the page (Material 3's tonal containers), and raised is white; its shadow carries the lift.
+- **Nesting:** a container on a container of the same step either uses the **next step's fill plus a `border.default` border**, or has **no fill at all**. It never repeats its parent's fill without a border. Card does this automatically for a filled card inside a filled card.
+- **Text never clips:** inline highlighted text (inline `code`, badges, marks) uses `box-decoration-break: clone`, so a chip that wraps keeps its padding and radius on every line. Text chips never get a fixed height with `overflow: hidden`. Badges are `white-space: nowrap` unless `truncate` is asked for.
+- **Fill container:** block-level components (Table, DataTable, Tabs with `fullWidth`, charts, FileUpload, Composer, MessageScroller, CodeBlock, Alert) fill their parent's width by default (`width: 100%; min-width: 0; box-sizing: border-box`), like Auto Layout "fill". Inline controls hug their content.
+- **Known:** in dark, `border.default` equals the raised fill, so a raised panel's hairline border blends into its own fill. The step up in fill and the shadow still separate it. In light, `bg.disabled` equals the container fill.
+
 ## Shapes & space
 
 Datum is **pill-first**: nothing has a sharp corner.

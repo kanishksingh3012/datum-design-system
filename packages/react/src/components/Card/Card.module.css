@@ -11,6 +11,7 @@
   flex-direction: column;
   gap: var(--space-default);
   box-sizing: border-box;
+  min-width: 0;
   padding: var(--_pad);
   font-family: var(--type-body-md-family);
   font-size: var(--type-body-md-size);
@@ -42,6 +43,13 @@
   --_shadow-hover: var(--elevation-surface);
 }
 /* soft: the surface fill alone */
+
+/* nesting (DESIGN.md "Surfaces and elevation"): a filled card inside a filled card
+   steps up to the raised fill and draws a border, so it never repeats its parent's fill */
+.root:not([data-appearance="outline"]) .root:not([data-appearance="outline"]) {
+  --_bg: var(--color-bg-surfaceRaised);
+  --_border: var(--color-border-default);
+}
 
 /* ---------- interactive: the whole card is the target ---------- */
 .root[data-interactive] {

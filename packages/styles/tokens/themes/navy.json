@@ -3,11 +3,11 @@
   "color": {
     "bg": {
       "page": ["{color.slate.50}","{color.slate.950}"],
-      "surface": ["{color.slate.100}","{color.slate.800}"],
-      "surfaceRaised": ["{color.white}","{color.slate.900}"],
-      "surfaceSunken": ["{color.slate.100}","{color.slate.975}"],
+      "surface": ["{color.slate.100}","{color.slate.900}"],
+      "surfaceRaised": ["{color.white}","{color.slate.800}"],
+      "surfaceSunken": ["{color.slate.200}","{color.slate.975}"],
       "tertiary": ["{color.slate.200}","{color.slate.700}"],
-      "disabled": ["{color.slate.100}","{color.slate.900}"],
+      "disabled": ["{color.slate.100}","{color.slate.800}"],
       "scrim": ["rgba(28,33,38,0.48)","rgba(0,0,0,0.64)"],
       "accent": ["{color.navy.700}","{color.navy.300}"],
       "accentHover": ["{color.navy.600}","{color.navy.200}"],

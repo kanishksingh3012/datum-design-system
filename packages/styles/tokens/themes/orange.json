@@ -3,11 +3,11 @@
   "color": {
     "bg": {
       "page": ["{color.stone.50}","{color.stone.950}"],
-      "surface": ["{color.stone.100}","{color.stone.800}"],
-      "surfaceRaised": ["{color.white}","{color.stone.900}"],
-      "surfaceSunken": ["{color.stone.100}","{color.stone.975}"],
+      "surface": ["{color.stone.100}","{color.stone.900}"],
+      "surfaceRaised": ["{color.white}","{color.stone.800}"],
+      "surfaceSunken": ["{color.stone.200}","{color.stone.975}"],
       "tertiary": ["{color.stone.200}","{color.stone.700}"],
-      "disabled": ["{color.stone.100}","{color.stone.900}"],
+      "disabled": ["{color.stone.100}","{color.stone.800}"],
       "scrim": ["rgba(27,27,27,0.48)","rgba(0,0,0,0.64)"],
       "accent": "{color.orange.700}",
       "accentHover": "{color.orange.800}",
