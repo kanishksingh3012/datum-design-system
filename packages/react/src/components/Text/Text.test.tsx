@@ -47,6 +47,18 @@ describe("Text", () => {
     expect(three.style.getPropertyValue("--_lines")).toBe("3");
   });
 
+  it("renders inline code as a span inside running text", () => {
+    render(
+      <Text>
+        Import <Text as="span" variant="code">themes.css</Text> once.
+      </Text>
+    );
+    const chip = screen.getByText("themes.css");
+    expect(chip.tagName).toBe("SPAN");
+    expect(chip).toHaveAttribute("data-variant", "code");
+    expect(chip.parentElement?.tagName).toBe("P");
+  });
+
   it("renders as span, div or label, passing htmlFor to a label", () => {
     render(
       <>

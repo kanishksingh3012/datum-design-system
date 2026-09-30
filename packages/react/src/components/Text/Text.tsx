@@ -19,7 +19,11 @@ export type TextWeight = "regular" | "medium" | "semibold";
 export type TextElement = "p" | "span" | "div" | "label";
 
 export interface TextOwnProps {
-  /** The type role, picked by purpose. Numeric variants use tabular figures. @default "body-md" */
+  /**
+   * The type role, picked by purpose. Numeric variants use tabular figures.
+   * `code` with `as="span"` is an inline code chip that keeps its padding on
+   * every line when it wraps. @default "body-md"
+   */
   variant?: TextVariant;
   /** @default "primary" */
   tone?: TextTone;

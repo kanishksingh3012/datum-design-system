@@ -93,6 +93,17 @@
   --_role-tracking: var(--type-code-md-tracking);
 }
 
+/* inline code (as="span") is a chip: the sunken well of a code block, so it stands apart
+   from page, container and raised fills alike. clone keeps its padding and radius on
+   every line when it wraps, so the chip is never cut open at a line break. */
+span.root[data-variant="code"] {
+  padding: 0.125em calc(var(--space-compact) * 0.75);
+  border-radius: var(--radius-subtle);
+  background: var(--color-bg-surfaceSunken);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
 .root[data-variant="overline"] { text-transform: uppercase; }
 /* numeric is tabular by construction, so columns of figures line up */
 .root[data-variant^="numeric"] { font-variant-numeric: tabular-nums; }

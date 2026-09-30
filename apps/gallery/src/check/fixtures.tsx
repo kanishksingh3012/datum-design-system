@@ -428,6 +428,15 @@ export const fixtures: Record<string, Fixture> = {
           <Text key={tone} variant="body-sm" tone={tone} data-check-text>{cap(`${tone} on surface`)}</Text>
         ))}
       </div>
+      {([["page", undefined], ["container", box], ["raised", { background: "var(--color-bg-surfaceRaised)", padding: "var(--space-compact)" }]] as const).map(([where, fill]) => (
+        <div key={where} style={{ ...fill, maxWidth: 240 }}>
+          <Text>
+            {`Inline code on ${where}: import `}
+            <Text as="span" variant="code" data-check-text>@datum-design/styles/themes.css</Text>
+            {" once at the root."}
+          </Text>
+        </div>
+      ))}
       <Text truncate style={{ maxWidth: 200 }} data-check-text>A single line that is far too long to fit</Text>
       <Text truncate={2} style={{ maxWidth: 200 }} data-check-text>Two lines at most, then an ellipsis cuts off whatever is left over here.</Text>
     </>
