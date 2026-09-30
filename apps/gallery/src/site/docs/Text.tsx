@@ -89,6 +89,14 @@ export default function TextDoc() {
       </div>
 
       <div className="doc-section">
+        <h2>Inline code</h2>
+        <p className="lead"><b>variant="code"</b> with <b>as="span"</b> is a chip inside running text, on the sunken fill. When it wraps, each line keeps its padding and rounded ends, so it is never cut open.</p>
+        <Demo style={{ display: "block", maxWidth: 360 }}>
+          <Text as="p">Import <Text as="span" variant="code">@datum-design/styles/themes.css</Text> once, then <Text as="span" variant="code">@datum-design/react/styles.css</Text> for the components.</Text>
+        </Demo>
+      </div>
+
+      <div className="doc-section">
         <h2>Properties</h2>
         <PropsTable rows={textProps} />
       </div>

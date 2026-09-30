@@ -30,8 +30,8 @@ export function Theming() {
       <Stack gap="sm">
         <Heading level={2}>Switching themes and modes</Heading>
         <Text as="p">
-          <code>data-theme="orange"</code> or <code>data-theme="navy"</code> on <code>&lt;html&gt;</code> picks the theme.
-          Light and dark follow <code>color-scheme</code> through CSS <code>light-dark()</code>, so the same tokens serve both modes.
+          <Text as="span" variant="code">data-theme="orange"</Text> or <Text as="span" variant="code">data-theme="navy"</Text> on <Text as="span" variant="code">&lt;html&gt;</Text> picks the theme.
+          Light and dark follow <Text as="span" variant="code">color-scheme</Text> through CSS <Text as="span" variant="code">light-dark()</Text>, so the same tokens serve both modes.
         </Text>
         <CodeBlock code={`document.documentElement.dataset.theme = "navy";\ndocument.documentElement.style.colorScheme = "dark";`} language="ts" copyable />
       </Stack>
@@ -39,8 +39,8 @@ export function Theming() {
       <Stack gap="sm">
         <Heading level={2}>Token layers</Heading>
         <Text as="p">
-          Components only reference semantic tokens (<code>--color-bg-accent</code>, <code>--type-body-md-size</code>,{" "}
-          <code>--elevation-overlay</code>), never a primitive or a hex value. Both themes define the same 175 tokens.
+          Components only reference semantic tokens (<Text as="span" variant="code">--color-bg-accent</Text>, <Text as="span" variant="code">--type-body-md-size</Text>,{" "}
+          <Text as="span" variant="code">--elevation-overlay</Text>), never a primitive or a hex value. Both themes define the same 175 tokens.
         </Text>
         <CodeBlock code={layers} language="text" title="packages/styles/tokens" />
         <Text as="p">Your own CSS can use the same custom properties:</Text>
@@ -80,7 +80,7 @@ export function Theming() {
         <Text as="p">
           Three families shared by both themes: Barlow for display and headings, Instrument Sans for reading and interface,
           IBM Plex Mono for numbers and code. Twenty roles, picked by purpose rather than size; each defines family, size,
-          weight, line height and tracking (e.g. <code>--type-heading-lg-size</code>).
+          weight, line height and tracking (e.g. <Text as="span" variant="code">--type-heading-lg-size</Text>).
         </Text>
         <DocTable
           label="Type roles"

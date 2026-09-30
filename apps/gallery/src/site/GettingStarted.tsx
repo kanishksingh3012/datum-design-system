@@ -24,7 +24,7 @@ export function GettingStarted() {
         <Heading level={2}>Install</Heading>
         <CodeBlock code="npm install @datum-design/react @datum-design/styles" language="bash" copyable />
         <Text as="p" tone="secondary">
-          <code>react</code> and <code>react-dom</code> (18 or later) are peer dependencies; install them if your project
+          <Text as="span" variant="code">react</Text> and <Text as="span" variant="code">react-dom</Text> (18 or later) are peer dependencies; install them if your project
           doesn't have them yet.
         </Text>
       </Stack>
@@ -34,18 +34,18 @@ export function GettingStarted() {
         <Text as="p">Import the two stylesheets once, near your app's root, then use any component.</Text>
         <CodeBlock code={usage} language="tsx" copyable />
         <Text as="p" tone="secondary">
-          <code>@datum-design/styles/themes.css</code> holds the design tokens for both themes as CSS custom properties.
-          <code> @datum-design/react/styles.css</code> holds the components' own styles, which only reference those tokens.
+          <Text as="span" variant="code">@datum-design/styles/themes.css</Text> holds the design tokens for both themes as CSS custom properties.
+          <Text as="span" variant="code"> @datum-design/react/styles.css</Text> holds the components' own styles, which only reference those tokens.
         </Text>
       </Stack>
 
       <Stack gap="sm">
         <Heading level={2}>Pick a theme</Heading>
-        <Text as="p">Set <code>data-theme</code> on <code>&lt;html&gt;</code>. Light and dark follow the page's <code>color-scheme</code>.</Text>
+        <Text as="p">Set <Text as="span" variant="code">data-theme</Text> on <Text as="span" variant="code">&lt;html&gt;</Text>. Light and dark follow the page's <Text as="span" variant="code">color-scheme</Text>.</Text>
         <CodeBlock code={`<html data-theme="orange"> <!-- or data-theme="navy" -->`} language="html" copyable />
         <Text as="p" tone="secondary">
-          To ship only one theme, import <code>@datum-design/styles/orange.css</code> or <code>@datum-design/styles/navy.css</code> instead
-          of <code>themes.css</code>. <Link href="/docs/theming">Theming</Link> covers the tokens in detail.
+          To ship only one theme, import <Text as="span" variant="code">@datum-design/styles/orange.css</Text> or <Text as="span" variant="code">@datum-design/styles/navy.css</Text> instead
+          of <Text as="span" variant="code">themes.css</Text>. <Link href="/docs/theming">Theming</Link> covers the tokens in detail.
         </Text>
       </Stack>
 
