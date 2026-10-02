@@ -1,8 +1,12 @@
+/* fills its parent's width, like every block-level component */
 .root {
-  max-width: 480px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
 }
 
-/* the drop area holds content, so card radius; dashed because it is a target, not a field */
+/* The drop area holds content, so card radius; dashed because it is a target, not a field.
+   It sits on the raised step of the ladder (white in light), with neutral content on top. */
 .zone {
   position: relative;
   box-sizing: border-box;
@@ -14,7 +18,7 @@
   padding: var(--space-section) var(--space-default);
   text-align: center;
   color: var(--color-text-secondary);
-  background: var(--color-bg-surface);
+  background: var(--color-bg-surfaceRaised);
   border: 1px dashed var(--color-border-strong);
   border-radius: var(--radius-card);
   cursor: pointer;
@@ -30,16 +34,18 @@
   padding: var(--space-compact) var(--space-compact);
   text-align: start;
 }
-.zone:hover:not([data-disabled]) {
-  background: color-mix(in oklab, var(--color-bg-surface), var(--color-text-primary) 4%);
-}
-.zone[data-invalid] {
-  border-color: var(--color-border-danger);
-}
+/* hover and drag-over share one look: an accent edge on the accent tint (solid while dragging) */
+.zone:hover:not([data-disabled]),
 .zone[data-drop-target] {
   background: var(--color-bg-accentSubtle);
-  border-style: solid;
   border-color: var(--color-border-accent);
+}
+.zone[data-drop-target] {
+  border-style: solid;
+}
+/* an error keeps its danger edge until a file is actually dragged over */
+.zone.zone[data-invalid]:not([data-drop-target]) {
+  border-color: var(--color-border-danger);
 }
 .zone[data-disabled] {
   opacity: 0.5;
@@ -51,18 +57,25 @@
   place-items: center;
   width: 40px;
   height: 40px;
+  box-sizing: border-box;
   color: var(--color-text-primary);
-  background: var(--color-bg-tertiary);
+  background: transparent;
+  /* a neutral hairline from the text color: border.default equals the raised fill in dark */
+  border: 1px solid color-mix(in oklab, var(--color-text-primary) 16%, transparent);
   border-radius: var(--radius-pill);
+  transition:
+    color var(--motion-fast) var(--motion-easing),
+    border-color var(--motion-fast) var(--motion-easing);
 }
 .icon svg,
 .fileIcon svg {
   width: 20px;
   height: 20px;
 }
+.zone:hover:not([data-disabled]) .icon,
 .zone[data-drop-target] .icon {
   color: var(--color-text-accent);
-  background: var(--color-bg-surface);
+  border-color: var(--color-border-accent);
 }
 
 .prompt {
@@ -84,6 +97,8 @@
   line-height: var(--type-ui-caption-lineHeight);
   color: var(--color-text-secondary);
 }
+.zone:hover:not([data-disabled]) .or,
+.zone:hover:not([data-disabled]) .hint,
 .zone[data-drop-target] .or,
 .zone[data-drop-target] .hint {
   color: var(--color-text-primary);
@@ -119,8 +134,8 @@
   gap: var(--space-compact);
   min-height: 48px;
   padding: 0 var(--space-compact) 0 var(--space-tight);
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius-card);
 }
 .fileIcon {
