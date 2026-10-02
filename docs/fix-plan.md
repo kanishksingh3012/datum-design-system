@@ -107,3 +107,5 @@ Run once at the end: `npm run check` (all combos), full `npm test`, `npm run bui
 <!-- one line per component: chat · component · commit · notes -->
 - PARENT · P0 elevation ladder (dark surface/raised swapped so raised is always the lighter step), Card nesting rule, DESIGN.md "Surfaces and elevation" · see git log "Fix round 3: P0" · group chats migrate their own components
 - LAYOUT+TYPO · Text inline code chip (clone, sunken fill) `2f1cd62` · gallery uses it on Getting started / Theming + Text doc demo `5ddd228` · Container/Stack/Grid/Section already fill
+- LAYOUT and RICH INPUTS · FileUpload `c2da670` · raised drop zone + rows, neutral icon ring (text-color hairline, since border.default vanishes on raised in dark), accent hover/drag-over, fills parent width · docs page updated, not screenshotted
+- LAYOUT and RICH INPUTS · ScrollArea, Resizable, ColorPicker · no commit · checked against the ladder in the CSS, nothing to change (no container fills of their own; grip, thumbs, trigger and panel are on raised)
