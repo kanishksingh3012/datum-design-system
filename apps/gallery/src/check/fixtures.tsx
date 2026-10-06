@@ -1124,7 +1124,7 @@ export const fixtures: Record<string, Fixture> = {
     v === "layouts" ? (
       <div className="row" style={{ alignItems: "stretch" }}>
         {sidebar()}
-        {sidebar({ size: "sm", header: undefined, footer: undefined, activeHref: "/p/datum" })}
+        {sidebar({ size: "sm", appearance: "flush", header: undefined, footer: undefined, activeHref: "/p/datum" })}
       </div>
     ) : v === "mobile menu" ? (
       // the collapsed bar and its menu trigger only exist below the breakpoint — their one real coverage

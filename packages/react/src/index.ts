@@ -169,7 +169,7 @@ export { Footer } from "./components/Footer/Footer";
 export type { FooterProps, FooterOwnProps, FooterColumn, FooterLink, FooterTone } from "./components/Footer/Footer";
 
 export { Sidebar } from "./components/Sidebar/Sidebar";
-export type { SidebarProps, SidebarOwnProps, SidebarLink, SidebarSection, SidebarSize, SidebarBreakpoint } from "./components/Sidebar/Sidebar";
+export type { SidebarProps, SidebarOwnProps, SidebarLink, SidebarSection, SidebarSize, SidebarBreakpoint, SidebarAppearance } from "./components/Sidebar/Sidebar";
 
 export { Breadcrumbs, BreadcrumbItem } from "./components/Breadcrumbs/Breadcrumbs";
 export type {

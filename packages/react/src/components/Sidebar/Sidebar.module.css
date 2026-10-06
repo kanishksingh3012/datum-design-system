@@ -10,7 +10,13 @@
   font-family: var(--type-body-md-family);
   color: var(--color-text-primary);
   background: var(--color-bg-surface);
-  border-right: 1px solid var(--color-border-subtle);
+  border-right: 1px solid var(--color-border-default);
+}
+/* floating: a rounded card set in from the page edge (the page supplies the gap around it) */
+.root[data-appearance="floating"] {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-surface);
 }
 .root[data-size="sm"] {
   width: 240px;
@@ -46,13 +52,11 @@
 /* doubled class: these resets must beat a host page's own `ul` / `h2` rules */
 .title.title {
   margin: 0;
-  padding: var(--space-compact) var(--space-tight);
-  font-family: var(--type-ui-overline-family);
-  font-size: var(--type-ui-overline-size);
-  font-weight: var(--type-ui-overline-weight);
-  letter-spacing: var(--type-ui-overline-tracking);
-  line-height: var(--type-ui-overline-lineHeight);
-  text-transform: uppercase;
+  padding: calc(var(--space-compact) / 2) var(--space-tight);
+  font-family: var(--type-ui-caption-family);
+  font-size: var(--type-ui-caption-size);
+  font-weight: var(--type-ui-label-weight);
+  line-height: var(--type-ui-caption-lineHeight);
   color: var(--color-text-secondary);
 }
 .list.list {
@@ -64,36 +68,33 @@
   list-style: none;
 }
 
-/* a pill row, as in the Navbar's mobile menu; the current page gets a fill and an accent bar */
+/* a pill row: secondary text until it is hovered or current */
 .link {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   gap: var(--space-compact);
   box-sizing: border-box;
-  min-height: 40px;
+  min-height: 36px;
   padding: 0 var(--space-tight);
-  font-size: var(--type-body-md-size);
+  font-size: var(--type-body-sm-size);
   font-weight: var(--type-ui-label-weight);
-  line-height: var(--type-body-md-lineHeight);
-  color: var(--color-text-primary);
+  line-height: var(--type-body-sm-lineHeight);
+  color: var(--color-text-secondary);
   text-decoration: none;
   border-radius: var(--radius-control);
   transition:
     background var(--motion-fast) var(--motion-easing),
+    color var(--motion-fast) var(--motion-easing),
     transform var(--motion-fast) var(--motion-easing);
 }
 .link:hover {
-  background: color-mix(in oklab, var(--color-text-primary) 8%, transparent);
+  color: var(--color-text-primary);
+  background: color-mix(in oklab, var(--color-text-primary) 6%, transparent);
 }
 .link:active {
   transform: scale(0.98);
-}
-.link[data-active] {
-  background: color-mix(in oklab, var(--color-text-primary) 8%, transparent);
-  box-shadow: inset 3px 0 0 var(--color-bg-accent);
-}
-.link[data-active]:hover {
-  background: color-mix(in oklab, var(--color-text-primary) 12%, transparent);
 }
 .link:focus-visible {
   z-index: 1;
@@ -103,14 +104,45 @@
 .icon {
   display: grid;
   flex: none;
-  color: var(--color-text-secondary);
-}
-.link[data-active] .icon {
-  color: var(--color-text-primary);
 }
 .icon svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
+}
+
+/* The current page is a dark pill in both modes. The fill and the row's
+   contents opt into the dark scheme, so the same tokens resolve to their dark
+   values: a dark fill, light text and the light accent on the icon. The link
+   itself stays in the page's scheme, so its focus ring is still measured
+   against the panel. */
+.link[data-active] {
+  font-weight: 600;
+  background: none;
+}
+.link[data-active]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color-scheme: dark;
+  border-radius: inherit;
+  background: var(--color-bg-tertiary);
+  transition: background var(--motion-fast) var(--motion-easing);
+}
+.link[data-active]:hover::before {
+  background: color-mix(in oklab, var(--color-bg-tertiary), var(--color-text-primary) 8%);
+}
+.link[data-active] > * {
+  color-scheme: dark;
+  color: var(--color-text-primary);
+}
+.link[data-active] > .icon {
+  color: var(--color-text-accent);
+}
+/* doubled class: this must beat Badge's own fill */
+.link[data-active] > .badge.badge {
+  color: var(--color-text-primary);
+  background: color-mix(in oklab, var(--color-text-primary) 18%, transparent);
 }
 .label {
   flex: 1;

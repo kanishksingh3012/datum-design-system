@@ -8,6 +8,7 @@ import styles from "./Sidebar.module.css";
 
 export type SidebarSize = "sm" | "md";
 export type SidebarBreakpoint = "sm" | "md" | "lg";
+export type SidebarAppearance = "floating" | "flush";
 
 export interface SidebarLink {
   label: string;
@@ -35,6 +36,8 @@ export interface SidebarOwnProps {
   header?: ReactNode;
   /** Bottom slot: an account row, settings. */
   footer?: ReactNode;
+  /** `floating` is a rounded card set in from the page edge; `flush` runs edge to edge with a hairline on the right. @default "floating" */
+  appearance?: SidebarAppearance;
   /** 240 / 288px wide. @default "md" */
   size?: SidebarSize;
   /** Below it (640 / 768 / 1024px) the sidebar folds into a bar with a menu button that opens a Sheet. @default "md" */
@@ -68,6 +71,7 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(function Sidebar
     label = "Sidebar",
     header,
     footer,
+    appearance = "floating",
     size = "md",
     mobileBreakpoint = "md",
     open,
@@ -93,6 +97,7 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(function Sidebar
     <div
       ref={ref}
       className={[styles.root, className].filter(Boolean).join(" ")}
+      data-appearance={appearance}
       data-size={size}
       data-breakpoint={mobileBreakpoint}
       {...rest}
@@ -152,7 +157,7 @@ function Nav({ sections, activeHref, label, onNavigate }: { sections: SidebarSec
                     {link.icon ? <span className={styles.icon} aria-hidden="true">{link.icon}</span> : null}
                     <span className={styles.label}>{link.label}</span>
                     {link.badge !== undefined ? (
-                      <Badge size="sm" intent="neutral" appearance={active ? "solid" : "soft"} className={styles.badge}>
+                      <Badge size="sm" intent="neutral" appearance="soft" className={styles.badge}>
                         {link.badge}
                       </Badge>
                     ) : null}
