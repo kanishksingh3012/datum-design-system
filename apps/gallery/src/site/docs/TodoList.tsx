@@ -29,7 +29,7 @@ function Part({ id, title, dek, rows, a11y, children }: { id: string; title: str
 export default function TodoListDoc() {
   return (
     <>
-    <Part a11y={[["Enter / Space", "Collapses or expands the plan."], ["Status", "Each item's state is a mark and a word, never color alone."]]} id="todo-list" title="TodoList" dek="The agent's plan, counting what's done. Each item's state is a mark and a word." rows={[["title", "ReactNode", "Plan", ""], ["open / defaultOpen / onOpenChange", "boolean", "true", ""], ["TodoItem status", "pending · active · done · error", "pending", ""], ["TodoItem metadata", "ReactNode", "—", "Second line"]]}>
+    <Part a11y={[["Enter / Space", "Collapses or expands the plan."], ["Status", "Each item's state is a mark and a word, never color alone."]]} id="todo-list" title="TodoList" dek="The agent's plan, counting what's done. Each item's state is a mark and a word. The card is a container (bg.surface with a border); items have no fill of their own." rows={[["title", "ReactNode", "Plan", ""], ["open / defaultOpen / onOpenChange", "boolean", "true", ""], ["TodoItem status", "pending · active · done · error", "pending", ""], ["TodoItem metadata", "ReactNode", "—", "Second line"]]}>
       <TodoList><TodoItem status="done">Read the plan</TodoItem><TodoItem status="active">Build the parts</TodoItem><TodoItem>Ship</TodoItem></TodoList>
     </Part>
     </>
