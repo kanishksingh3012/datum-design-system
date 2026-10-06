@@ -31,7 +31,8 @@
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: var(--space-section) var(--space-default);
 }
-.title {
+/* doubled class: these resets must beat a host page's own `ul` / `h2` rules */
+.title.title {
   margin: 0 0 var(--space-tight);
   font-family: var(--type-ui-label-family);
   font-size: var(--type-ui-label-size);
@@ -39,13 +40,17 @@
   line-height: var(--type-ui-label-lineHeight);
   color: var(--color-text-primary);
 }
-.links {
+.links.links {
   display: flex;
   flex-direction: column;
   gap: var(--space-compact);
   margin: 0;
   padding: 0;
   list-style: none;
+}
+.links.links > li {
+  margin: 0;
+  padding: 0;
 }
 .link {
   position: relative;

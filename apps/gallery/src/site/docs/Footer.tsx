@@ -34,7 +34,7 @@ export default function FooterDoc() {
 
       <div className="doc-section">
         <h2>Tones</h2>
-        <p className="lead"><b>muted</b> (the default) sits on bg.surface; <b>default</b> stays on the page with a hairline above.</p>
+        <p className="lead"><b>muted</b> (the default) sits on the container step, <b>bg.surface</b>; <b>default</b> stays on the page step with a hairline above. Link lists start on the same edge as their column title, on any host page.</p>
         <Demo className="stack" style={{ padding: 0, overflow: "hidden" }}>
           <Footer tone="default" bottom={<span>© 2026 Datum</span>} columns={footerColumns.slice(0, 2)} />
         </Demo>
