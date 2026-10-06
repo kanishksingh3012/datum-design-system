@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useRef, useState, type HTMLAttributes, type ReactNode } from "react";
-import { mergeProps, useFocusWithin, useHover, useMove } from "react-aria";
+import { mergeProps, useFocusVisible, useFocusWithin, useHover, useMove } from "react-aria";
 import { useControlledState } from "react-stately/useControlledState";
 import { Button } from "../Button/Button";
 import styles from "./Carousel.module.css";
@@ -68,7 +68,8 @@ function useReducedMotion() {
  * (motion.normal; instant under reduced motion) and can be swiped. Hidden
  * slides are inert, so their links are out of the tab order. Autoplay is
  * opt-in, has a pause button first in the tab order, pauses while the
- * pointer or focus is inside, and never runs under reduced motion.
+ * pointer is over a slide or keyboard focus is inside, and never runs under
+ * reduced motion. Pressing Start rotates again whatever is hovered or focused.
  */
 export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel(
   { label, slides, value, defaultValue = 0, onValueChange, autoplay, loop = true, className, ...rest },
@@ -78,10 +79,15 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
   const [index, setIndex] = useControlledState(value, defaultValue, onValueChange);
   const [paused, setPaused] = useState(false);
   const [hovered, setHovered] = useState(false);
-  const [focused, setFocused] = useState(false);
+  const [focusWithin, setFocusWithin] = useState(false);
+  // keyboard focus only: a mouse click leaves focus on the button it hit, which must not stop rotation for good
+  const { isFocusVisible } = useFocusVisible();
+  const focused = focusWithin && isFocusVisible;
   const reduced = useReducedMotion();
   const rotating = autoplay !== undefined && !reduced && !paused;
-  const running = rotating && !hovered && !focused;
+  // Start was pressed: rotate even though focus (and likely the pointer) is still inside
+  const [resumed, setResumed] = useState(false);
+  const running = rotating && (resumed || (!hovered && !focused));
 
   const go = (next: number) => {
     const target = loop ? (next + count) % count : Math.min(count - 1, Math.max(0, next));
@@ -97,7 +103,7 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
   }, [running, autoplay, index, count]);
 
   const { hoverProps } = useHover({ onHoverChange: setHovered });
-  const { focusWithinProps } = useFocusWithin({ onFocusWithinChange: setFocused });
+  const { focusWithinProps } = useFocusWithin({ onFocusWithinChange: setFocusWithin });
   // a horizontal swipe of a quarter of the slide turns it
   const swipe = useRef(0);
   const viewport = useRef<HTMLDivElement>(null);
@@ -120,13 +126,13 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
 
   return (
     <section
-      {...mergeProps(rest, hoverProps, focusWithinProps)}
+      {...mergeProps(rest, focusWithinProps)}
       ref={ref}
       className={[styles.root, className].filter(Boolean).join(" ")}
       aria-roledescription="carousel"
       aria-label={label}
     >
-      <div ref={viewport} className={styles.viewport} {...pointerProps}>
+      <div ref={viewport} className={styles.viewport} {...mergeProps(pointerProps, hoverProps)}>
         <div
           className={styles.track}
           style={{ transform: `translateX(${-index * 100}%)` }}
@@ -155,12 +161,16 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
             size="sm"
             iconOnly
             label={paused ? "Start slide rotation" : "Stop slide rotation"}
-            onClick={() => setPaused(!paused)}
+            onClick={() => {
+              setResumed(paused);
+              setPaused(!paused);
+            }}
             className={styles.pause}
           >
             {paused ? PlayIcon : PauseIcon}
           </Button>
         ) : null}
+        <div className={styles.nav}>
         <Button intent="neutral" appearance="outline" size="sm" iconOnly label="Previous slide" disabled={atStart} onClick={() => go(index - 1)}>
           <Arrow back />
         </Button>
@@ -179,6 +189,7 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
         <Button intent="neutral" appearance="outline" size="sm" iconOnly label="Next slide" disabled={atEnd} onClick={() => go(index + 1)}>
           <Arrow />
         </Button>
+        </div>
       </div>
     </section>
   );

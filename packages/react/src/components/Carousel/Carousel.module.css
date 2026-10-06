@@ -20,32 +20,38 @@
   min-width: 0;
 }
 
+/* [pause] … [‹] ●●● [›]: the nav group is centred under the slide whether or not
+   there is a pause button, which sits at the slide's start edge */
 .controls {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+/* first in the tab order (APG) */
+.pause {
+  grid-column: 1;
+  justify-self: start;
+}
+.nav {
+  grid-column: 2;
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--space-compact);
 }
-/* the pause button sits first in the tab order (APG) but at the far start of the row */
-.pause {
-  margin-inline-end: auto;
-}
-.pause ~ :last-child {
-  margin-inline-end: auto;
-}
 
-/* each slide button is a full 44px target around a small drawn dot */
+/* the dots sit close together: an 8px dot with 4px of button either side */
 .dots {
   display: flex;
+  align-items: center;
 }
 .dot {
   position: relative;
   display: grid;
   place-items: center;
-  width: var(--interaction-minTarget);
-  height: var(--interaction-minTarget);
+  box-sizing: content-box;
+  height: 32px;
   margin: 0;
-  padding: 0;
+  padding: 0 calc(var(--space-compact) / 2);
   color: var(--color-text-primary);
   background: none;
   border: 0;
@@ -75,7 +81,19 @@
 .dot:focus-visible {
   z-index: 1;
   outline: 2px solid var(--color-border-focus);
-  outline-offset: -6px;
+  outline-offset: 0;
+}
+
+/* touch: every slide button is a full 44px target, so the dots spread out */
+@media (pointer: coarse) {
+  .dot {
+    min-width: var(--interaction-minTarget);
+    height: var(--interaction-minTarget);
+    padding: 0;
+  }
+  .dot:focus-visible {
+    outline-offset: -6px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

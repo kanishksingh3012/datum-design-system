@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Carousel } from "./Carousel";
 
@@ -65,6 +65,35 @@ describe("Carousel", () => {
     act(() => vi.advanceTimersByTime(3000));
     expect(onValueChange).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("button", { name: "Start slide rotation" })).toBeInTheDocument();
+  });
+
+  it("keeps rotating after a mouse click inside, and Start overrides hover and focus", async () => {
+    vi.useFakeTimers();
+    const onValueChange = vi.fn();
+    render(<Carousel label="Featured" slides={slides} autoplay={1000} onValueChange={onValueChange} />);
+    // a pointer click leaves focus on the button; that is not keyboard focus, so rotation goes on
+    const next = screen.getByRole("button", { name: "Next slide" });
+    act(() => {
+      fireEvent.pointerDown(next);
+      fireEvent.mouseDown(next);
+      next.focus();
+      next.click();
+    });
+    expect(onValueChange).toHaveBeenLastCalledWith(1);
+    act(() => vi.advanceTimersByTime(1000));
+    expect(onValueChange).toHaveBeenLastCalledWith(2);
+    // Stop, then Start: focus is on the pause button, and it still rotates
+    const stop = screen.getByRole("button", { name: "Stop slide rotation" });
+    act(() => stop.click());
+    act(() => vi.advanceTimersByTime(3000));
+    expect(onValueChange).toHaveBeenCalledTimes(2);
+    act(() => {
+      fireEvent.keyDown(document.body, { key: "Tab" });
+      screen.getByRole("button", { name: "Start slide rotation" }).focus();
+      screen.getByRole("button", { name: "Start slide rotation" }).click();
+    });
+    act(() => vi.advanceTimersByTime(1000));
+    expect(onValueChange).toHaveBeenCalledTimes(3);
   });
 
   it("never autoplays under reduced motion", () => {
