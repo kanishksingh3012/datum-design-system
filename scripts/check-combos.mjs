@@ -17,6 +17,7 @@
 //    Static text a fixture marks with data-check-text (type tones, text on
 //    section backgrounds) is measured too, at rest: 4.5:1, or 3:1 when large;
 //    data-check-text="deep" also measures every element inside it that holds text.
+//    Only its text is measured: a border around static text is decoration, not a control's edge.
 //    Charts: every SVG <text> in a fixture is measured on its fill (4.5:1, or 3:1 when large)
 //    against what is painted behind the <svg>. Series marks a fixture flags with data-check-graphic
 //    (the shape itself, or a group: then every path/rect/circle/… inside it) are measured at 3:1,
@@ -215,6 +216,7 @@ function measure({ id, focus }) {
   }
 
   // A form input is drawn by another element: the box around it, or the indicator beside it.
+  const isStaticText = String(id).startsWith("text-");
   const isField = el.matches("input, textarea");
   const isChoice = el.matches("input[type=checkbox], input[type=radio]");
   const vis = isField ? (el.closest("[data-control]") ?? el.parentElement.querySelector(":scope > [data-control]") ?? el) : el;
@@ -251,7 +253,9 @@ function measure({ id, focus }) {
     const edge = hasBorder ? ratio(b, outer) : 1;
     const best = edge >= fillRatio ? { r: edge, c: b } : { r: fillRatio, c: fill };
     out.checks.push({ kind: "boundary", ratio: best.r, min: 3, fg: hex(best.c), bg: hex(outer) });
-  } else if (hasBorder && fillRatio < 3) {
+  } else if (!isStaticText && hasBorder && fillRatio < 3) {
+    // a control's edge identifies it, so it must reach 3:1; a border around static text
+    // (a message bubble, a code well, an inline code chip) is decoration and is not measured
     out.checks.push({ kind: "border", ratio: ratio(b, outer), min: 3, fg: hex(b), bg: hex(outer) });
   }
   if (focus) {
