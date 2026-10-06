@@ -50,6 +50,11 @@ export default function DateRangePickerDoc() {
       <Demo box="example" style={{ display: "block" }}>
         <DateRangePicker label="Trip" value={trip} onValueChange={setTrip} helpText="Check-in to check-out." style={{ maxWidth: 360, margin: "0 auto" }} />
       </Demo>
+      <Section title="Months and years" lead={<>The caption is a button. Press it for a month grid, press again for a year grid (twelve to a page); picking a year returns to the months, picking a month returns to the days. Previous and next step a month, a year or a page of years to match. Months and years outside <b>minValue</b> / <b>maxValue</b> are disabled.</>}>
+        <Demo>
+          <DateRangePicker label="Report period" minValue={now.subtract({ years: 2 })} maxValue={now} helpText="The last two years." style={{ width: 320 }} />
+        </Demo>
+      </Section>
       <Section title="Sizes and states" lead="The same sizes and states as DatePicker.">
         <Demo className="demo-on-page">
           <div className="form-grid">
@@ -67,6 +72,7 @@ export default function DateRangePickerDoc() {
       <A11y items={[
           ["Date fields", "Start and end are separate segmented fields; \u2191 / \u2193 change a segment."],
           ["Calendar", "Enter picks the start, a second Enter the end; arrow keys move between days."],
+          ["Months and years", "The caption says what it opens. In the grids, arrow keys, Home and End move; Enter picks; Escape returns to the days and keeps the calendar open."],
         ]} />
     </section>
     </>

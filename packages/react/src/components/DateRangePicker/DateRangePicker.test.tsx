@@ -61,4 +61,15 @@ describe("DateRangePicker", () => {
     rerender(<Trip disabled />);
     expect(within(group()).getAllByRole("spinbutton")[0]).toHaveAttribute("aria-disabled", "true");
   });
+
+  it("jumps months and years from the caption", async () => {
+    render(<Trip defaultValue={range} defaultOpen />);
+    const caption = () => within(screen.getByRole("heading", { hidden: true })).getByRole("button");
+    await userEvent.click(caption());
+    await userEvent.click(caption());
+    await userEvent.click(screen.getByRole("button", { name: "2025" }));
+    await userEvent.click(screen.getByRole("button", { name: "Jan" }));
+    expect(caption()).toHaveTextContent("January 2025");
+    expect(screen.getByRole("grid")).toBeInTheDocument();
+  });
 });
