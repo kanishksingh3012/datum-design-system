@@ -1,4 +1,5 @@
-.list {
+/* doubled class: these resets must beat a host page's own `ul` / `h2` rules */
+.list.list {
   display: flex;
   flex-wrap: wrap;
   align-items: center;

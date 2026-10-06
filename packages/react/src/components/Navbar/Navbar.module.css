@@ -169,7 +169,8 @@
 }
 
 /* ---------- links ---------- */
-.links {
+/* doubled class: these resets must beat a host page's own `ul` / `h2` rules */
+.links.links {
   display: flex;
   align-items: center;
   gap: calc(var(--space-compact) / 2);
@@ -265,7 +266,7 @@
 .mobileNav {
   margin-inline: calc(var(--space-tight) * -1);
 }
-.mobileList {
+.mobileList.mobileList {
   display: flex;
   flex-direction: column;
   gap: 2px;
