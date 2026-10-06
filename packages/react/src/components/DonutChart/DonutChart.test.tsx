@@ -33,7 +33,8 @@ describe("DonutChart", () => {
     const sectors = [...container.querySelectorAll("path.recharts-sector")];
     expect(sectors.map((s) => s.getAttribute("data-check-graphic"))).toEqual(["Chrome", "Safari", "Firefox"]);
     expect(sectors[1]).toHaveAttribute("fill", "var(--series-safari)");
-    expect(container.querySelector(".recharts-label")?.textContent).toBe("600");
+    expect(sectors[0]).toHaveAttribute("stroke", "none");
+    expect(container.querySelector("text[data-center]")?.textContent).toBe("600");
   });
 
   it("tables slices by label and always shows the legend", () => {
@@ -48,6 +49,12 @@ describe("DonutChart", () => {
     setupChartDom({ reducedMotion: true });
     const { container } = render(<PieChart {...props} />);
     expect(screen.getByRole("figure")).toHaveAttribute("data-variant", "pie");
-    expect(container.querySelector(".recharts-label")).toBeNull();
+    expect(container.querySelector("text[data-center]")).toBeNull();
+  });
+
+  it("adds a caption under the total", () => {
+    setupChartDom({ reducedMotion: true });
+    const { container } = render(<DonutChart {...props} centerCaption="Visitors" />);
+    expect([...container.querySelectorAll("text[data-center] tspan")].map((t) => t.textContent)).toEqual(["600", "Visitors"]);
   });
 });

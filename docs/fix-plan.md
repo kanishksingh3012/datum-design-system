@@ -112,3 +112,4 @@ Run once at the end: `npm run check` (all combos), full `npm test`, `npm run bui
 - CHARTS · LineChart + shared ChartContainer foundation · see git log "Fix round 3: LineChart" · fills parent width, `aspectRatio`, auto y-axis width, tabular ticks, tooltip indicator (line/dot), centered legend with round markers, `natural` curve · review.html gained `?only=Name`
 - CHARTS · AreaChart · see git log "Fix round 3: AreaChart" · vertical gradient fill (40%→0%; stacked 50%→15%), round caps
 - CHARTS · BarChart · see git log "Fix round 3: BarChart" · 6px data-end radius, a stack shares one rounded end (per category, via Cell), 28% category gap, auto axis width
+- CHARTS · DonutChart/PieChart · see git log "Fix round 3: DonutChart" · no strokes (paddingAngle + corner radius), `centerCaption` under the total · slices appear late in review.html frames (entrance animation), not investigated

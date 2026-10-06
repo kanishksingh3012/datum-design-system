@@ -82,7 +82,7 @@ export function ChartFixture({ chart, variant }: { chart: string; variant: strin
     );
   } else if (chart === "DonutChart") {
     const Comp = variant === "pie" ? PieChart : DonutChart;
-    body = <Comp data={browsers} series={browserSeries} nameKey="browser" valueKey="visitors" nameLabel="Browser" valueLabel="Visitors" label="Visitors by browser" size="lg" />;
+    body = <Comp data={browsers} series={browserSeries} nameKey="browser" valueKey="visitors" nameLabel="Browser" valueLabel="Visitors" label="Visitors by browser" size="lg" {...(variant === "pie" ? {} : { centerCaption: "Visitors" })} />;
   } else if (chart === "Sparkline") {
     body = (
       <div style={{ display: "grid", gap: 16, maxWidth: 240 }}>
