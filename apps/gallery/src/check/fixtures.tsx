@@ -877,6 +877,16 @@ export const fixtures: Record<string, Fixture> = {
         </div>
       ))}
       <Tabs items={tabItems.slice(0, 3)} appearance="segmented" fullWidth aria-label="Full width" />
+      {/* nested: the inner Tabs keep their own appearance inside an underline panel */}
+      <Tabs
+        aria-label="Nested"
+        items={[{ value: "outer", label: "Outer underline", content: (
+          <div className="row">
+            <Tabs items={tabItems.slice(1)} appearance="pill" aria-label="Nested pill" />
+            <Tabs items={tabItems.slice(1)} appearance="segmented" aria-label="Nested segmented" />
+          </div>
+        ) }, { value: "other", label: "Other" }]}
+      />
       <div style={box}>
         <Tabs items={tabItems.slice(1)} appearance="segmented" aria-label="On a surface" />
         <Tabs items={tabItems.slice(1)} appearance="pill" aria-label="Pill on a surface" />

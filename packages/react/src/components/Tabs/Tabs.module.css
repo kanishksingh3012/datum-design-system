@@ -1,4 +1,6 @@
-/* Each appearance only sets the local --_* variables; .tab consumes them. */
+/* Each appearance only sets the local --_* variables; .tab consumes them.
+   Selectors use child combinators so a Tabs nested in another Tabs panel
+   never inherits the outer appearance. */
 .root {
   --_height: 40px;
   --_pad: var(--space-default);
@@ -24,13 +26,13 @@
   display: flex;
   gap: var(--space-compact);
 }
-.root[data-orientation="vertical"] .list {
+.root[data-orientation="vertical"] > .list {
   flex-direction: column;
 }
-.root[data-full-width] .list {
+.root[data-full-width] > .list {
   width: 100%;
 }
-.root[data-full-width] .tab {
+.root[data-full-width] > .list > .tab {
   flex: 1;
 }
 
@@ -94,17 +96,17 @@
 }
 
 /* ---------- underline: a hairline under the row, the selected tab carries an accent bar ---------- */
-.root[data-appearance="underline"] .list {
+.root[data-appearance="underline"] > .list {
   gap: 0;
   box-shadow: inset 0 -1px 0 var(--color-border-default);
 }
-.root[data-appearance="underline"][data-orientation="vertical"] .list {
+.root[data-appearance="underline"][data-orientation="vertical"] > .list {
   box-shadow: inset 1px 0 0 var(--color-border-default);
 }
-.root[data-appearance="underline"] .tab {
+.root[data-appearance="underline"] > .list > .tab {
   border-radius: var(--radius-subtle);
 }
-.root[data-appearance="underline"] .tab::before {
+.root[data-appearance="underline"] > .list > .tab::before {
   content: "";
   position: absolute;
   left: var(--_pad);
@@ -115,10 +117,10 @@
   background: transparent;
   transition: background var(--motion-fast) var(--motion-easing);
 }
-.root[data-appearance="underline"][data-orientation="vertical"] .tab {
+.root[data-appearance="underline"][data-orientation="vertical"] > .list > .tab {
   justify-content: flex-start;
 }
-.root[data-appearance="underline"][data-orientation="vertical"] .tab::before {
+.root[data-appearance="underline"][data-orientation="vertical"] > .list > .tab::before {
   left: 0;
   right: auto;
   top: var(--space-compact);
@@ -126,42 +128,42 @@
   width: 2px;
   height: auto;
 }
-.root[data-appearance="underline"] .tab[data-selected]::before {
+.root[data-appearance="underline"] > .list > .tab[data-selected]::before {
   background: var(--color-bg-accent);
 }
 
 /* ---------- pill: the selected tab is ink, like a pressed neutral Button ---------- */
-.root[data-appearance="pill"] .tab[data-selected] {
+.root[data-appearance="pill"] > .list > .tab[data-selected] {
   --_bg: var(--color-bg-inverse);
   --_bg-hover: var(--color-bg-inverseHover);
   --_fg: var(--color-text-onInverse);
   --_fg-hover: var(--color-text-onInverse);
 }
-.root[data-appearance="pill"][data-orientation="vertical"] .tab {
+.root[data-appearance="pill"][data-orientation="vertical"] > .list > .tab {
   justify-content: flex-start;
 }
 
 /* ---------- segmented: one tinted track, the selected tab is a raised thumb ---------- */
-.root[data-appearance="segmented"] .list {
+.root[data-appearance="segmented"] > .list {
   --_inset: calc(var(--space-compact) / 2);
   gap: 0;
   padding: var(--_inset);
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-control);
 }
-.root[data-appearance="segmented"]:not([data-full-width]) .list {
+.root[data-appearance="segmented"]:not([data-full-width]) > .list {
   align-self: flex-start;
 }
-.root[data-appearance="segmented"][data-orientation="vertical"] .list {
+.root[data-appearance="segmented"][data-orientation="vertical"] > .list {
   border-radius: var(--radius-card);
 }
-.root[data-appearance="segmented"][data-orientation="vertical"] .tab {
+.root[data-appearance="segmented"][data-orientation="vertical"] > .list > .tab {
   border-radius: calc(var(--radius-card) - var(--_inset));
 }
-.root[data-appearance="segmented"] .tab {
+.root[data-appearance="segmented"] > .list > .tab {
   --_fg: var(--color-text-primary);
 }
-.root[data-appearance="segmented"] .tab[data-selected] {
+.root[data-appearance="segmented"] > .list > .tab[data-selected] {
   --_bg: var(--color-bg-surfaceRaised);
   --_bg-hover: var(--color-bg-surfaceRaised);
   --_shadow: var(--elevation-raised);

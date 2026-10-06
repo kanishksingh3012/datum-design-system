@@ -60,6 +60,21 @@ export default function TabsDoc() {
       </div>
 
       <div className="doc-section">
+        <h2>Nested</h2>
+        <p className="lead">Each Tabs draws one selection mark: the accent bar (underline), the ink fill (pill) or the raised thumb (segmented). A Tabs inside another's panel keeps its own appearance.</p>
+        <Demo>
+          <Tabs
+            aria-label="Report"
+            style={{ width: "100%" }}
+            items={[
+              { value: "traffic", label: "Traffic", content: <Tabs items={plainTabs.slice(0, 3)} appearance="segmented" size="sm" aria-label="Range" /> },
+              { value: "sales", label: "Sales", content: <Tabs items={plainTabs.slice(0, 3)} appearance="pill" size="sm" aria-label="Channel" /> },
+            ]}
+          />
+        </Demo>
+      </div>
+
+      <div className="doc-section">
         <h2>Properties</h2>
         <PropsTable rows={tabsProps} />
       </div>
@@ -68,7 +83,7 @@ export default function TabsDoc() {
         <h2>Usage guidelines</h2>
         <Usage
           dos={["Keep labels to a word or two.", "Use segmented for two to four views of the same thing."]}
-          donts={["Use tabs to move between pages — use the Navbar or links.", "Use tabs for steps in a sequence."]}
+          donts={["Use tabs to move between pages — use the Navbar or links.", "Use tabs for steps in a sequence.", "Nest two Tabs of the same appearance."]}
         />
       </div>
       <A11y items={[
