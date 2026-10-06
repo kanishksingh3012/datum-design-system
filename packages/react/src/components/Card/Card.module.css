@@ -45,10 +45,21 @@
 /* soft: the surface fill alone */
 
 /* nesting (DESIGN.md "Surfaces and elevation"): a filled card inside a filled card
-   steps up to the raised fill and draws a border, so it never repeats its parent's fill */
+   steps up to the raised fill. In light the two fills are the same white, so it also draws
+   a border; in dark the lighter fill separates it on its own and only the outer card is outlined */
 .root:not([data-appearance="outline"]) .root:not([data-appearance="outline"]) {
   --_bg: var(--color-bg-surfaceRaised);
-  --_border: var(--color-border-default);
+  --_border: light-dark(var(--color-border-default), transparent);
+}
+
+/* What a filled card tells its content (inherited; read with a fallback for "on the page"):
+   --datum-surface       the fill behind it, for rings that must match their background
+   --datum-nested-fill   the fill a container inside must step up to
+   --datum-nested-border the border that container must draw (light only; see nesting above) */
+.root:not([data-appearance="outline"]) {
+  --datum-surface: var(--_bg);
+  --datum-nested-fill: var(--color-bg-surfaceRaised);
+  --datum-nested-border: light-dark(var(--color-border-default), transparent);
 }
 
 /* ---------- interactive: the whole card is the target ---------- */

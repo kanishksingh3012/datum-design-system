@@ -583,6 +583,23 @@ export const fixtures: Record<string, Fixture> = {
           </Card>
         </Card>
       ))}
+      {/* content on a card: avatar rings take the card's fill; a separated accordion steps up and draws a border */}
+      {(["elevated", "outline"] as const).map((appearance) => (
+        <Card key={`content-${appearance}`} appearance={appearance} style={{ width: 280 }}>
+          <div className="row">
+            <AvatarGroup max={3} aria-label="Members">
+              {["Ada Lovelace", "Grace Hopper", "Alan Turing", "Katherine Johnson"].map((n) => <Avatar key={n} name={n} />)}
+            </AvatarGroup>
+            <Avatar name="Ada Lovelace" status="online" />
+            <Avatar name="Grace Hopper" status="offline" />
+            <Badge data-check-text>Neutral</Badge>
+          </div>
+          <Accordion appearance="separated" defaultValue="one">
+            <AccordionItem value="one" title={`On ${appearance}`}><span data-check-text>Panel text on the item.</span></AccordionItem>
+            <AccordionItem value="two" title="Second item">More.</AccordionItem>
+          </Accordion>
+        </Card>
+      ))}
     </div>
   ) : (
     <>

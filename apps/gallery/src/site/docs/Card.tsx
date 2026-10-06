@@ -36,7 +36,7 @@ export default function CardDoc() {
 
       <div className="doc-section">
         <h2>Appearance</h2>
-        <p className="lead"><b>elevated</b> lifts off the page with the surface shadow. <b>outline</b> is a border and no fill, for dense grids. <b>soft</b> is the surface fill alone, for cards on a busy page. All use <b>radius.card</b> (20px).</p>
+        <p className="lead"><b>elevated</b> lifts off the page with the surface shadow. <b>outline</b> is a border and no fill, for dense grids. <b>soft</b> is the surface fill alone, for cards on a busy page. All use <b>radius.card</b> (20px). A filled card inside a filled card steps up to the raised fill; in light it also draws a border (both fills are white), in dark only the outer card is outlined.</p>
         <Demo className="demo-on-page">
           {(["elevated", "outline", "soft"] as const).map((appearance) => (
             <Card key={appearance} appearance={appearance} style={{ width: 200 }}>
