@@ -1,8 +1,15 @@
-/* The expandable card behind Reasoning, ToolCall, TodoList, FileDiff and AgentActivity steps. */
+/* The expandable card behind Reasoning, ToolCall, TodoList, FileDiff and AgentActivity steps.
+   A container on the ladder (DESIGN.md "Surfaces and elevation"): bg.surface plus a border. */
 .root {
+  box-sizing: border-box;
+  min-width: 0;
+  background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-card);
-  min-width: 0;
+}
+/* nesting: a disclosure inside a disclosure steps up to the raised fill, never repeating its parent's */
+.root .root {
+  background: var(--color-bg-surfaceRaised);
 }
 
 .trigger {

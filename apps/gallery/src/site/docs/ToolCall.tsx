@@ -29,7 +29,7 @@ function Part({ id, title, dek, rows, a11y, children }: { id: string; title: str
 export default function ToolCallDoc() {
   return (
     <>
-    <Part a11y={[["Enter / Space", "Expands the call to show input, output or error."], ["Status", "Shown as a word as well as an icon."]]} id="tool-call" title="ToolCall" dek="One tool call: its name and status, with input, output or error behind it." rows={[
+    <Part a11y={[["Enter / Space", "Expands the call to show input, output or error."], ["Status", "Shown as a word as well as an icon."]]} id="tool-call" title="ToolCall" dek={<>One tool call: its name and status, with input, output or error behind it. The card is a container (<b>bg.surface</b> with a border); input, output and error sit in wells one step down (<b>bg.surfaceSunken</b>), and a call nested in another expandable card steps up to <b>bg.surfaceRaised</b>.</>} rows={[
       ["name", "string", "—", ""], ["status", "pending · running · success · error", "pending", "Shown as a word"], ["input / output / error", "ReactNode", "—", "error shows only with status error"], ["open / defaultOpen / onOpenChange", "boolean", "false", ""],
     ]}>
       <div style={{ display: "grid", gap: "var(--space-compact)" }}>
