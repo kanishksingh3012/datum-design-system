@@ -30,6 +30,15 @@ describe("Sparkline", () => {
   it("area variant adds a tint", () => {
     setupChartDom({ reducedMotion: true });
     const { container } = render(<Sparkline data={[1, 2, 3]} label="Load" variant="area" />);
-    expect(container.querySelector("path.recharts-area-area")).toHaveAttribute("fill-opacity", "0.16");
+    expect(container.querySelector("path.recharts-area-area")?.getAttribute("fill")).toMatch(/^url\(#/);
+    expect(container.querySelector("linearGradient stop")).toHaveAttribute("stop-opacity", "0.4");
+  });
+
+  it("marks the latest value with one dot, unless endDot is off", () => {
+    setupChartDom({ reducedMotion: true });
+    const { container, rerender } = render(<Sparkline data={[1, 2, 3]} label="Load" />);
+    expect(container.querySelectorAll("figure svg circle")).toHaveLength(1);
+    rerender(<Sparkline data={[1, 2, 3]} label="Load" endDot={false} />);
+    expect(container.querySelectorAll("figure svg circle")).toHaveLength(0);
   });
 });

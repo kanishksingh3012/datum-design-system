@@ -10,6 +10,6 @@ export default function SparklineDoc() {
           <Sparkline data={[30, 28, 31, 26, 22, 24, 19]} label="Churn, last 7 days" color="trend" variant="area" />
         </div>],
       ]}
-      props={[["data", "number[]", "—", "Values, oldest first (replaces the shared data/series props)."], ["color", "1–6 | up | down | neutral | trend", "1", "trend: up or down from first to last."], ["variant", "line | area", "line", "Area adds a tint."], ["height", "number", "40", "Plot height in px."]]} />
+      props={[["data", "number[]", "—", "Values, oldest first (replaces the shared data/series props)."], ["color", "1–6 | up | down | neutral | trend", "1", "trend: up or down from first to last."], ["variant", "line | area", "line", "Area adds a gradient under the line."], ["endDot", "boolean", "true", "A dot on the latest value, ringed in the surface color."], ["height", "number", "40", "Plot height in px."]]} />
   );
 }

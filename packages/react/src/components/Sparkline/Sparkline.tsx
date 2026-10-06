@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, type HTMLAttributes } from "react";
+import { forwardRef, useId, useMemo, type HTMLAttributes } from "react";
 import { Area, Line, AreaChart as RAreaChart, LineChart as RLineChart, YAxis } from "recharts";
 import {
   ChartContainer,
@@ -21,6 +21,8 @@ export interface SparklineOwnProps {
   variant?: "line" | "area";
   /** Plot height in px. @default 40 */
   height?: number;
+  /** A dot on the latest value, ringed in the surface color. @default true */
+  endDot?: boolean;
   /** Formats values in the summary and data table. */
   valueFormatter?: ChartFormatter;
 }
@@ -32,7 +34,7 @@ export type SparklineProps = SparklineOwnProps & Omit<HTMLAttributes<HTMLElement
  * legend or tooltip. The summary and data table still carry the numbers.
  */
 export const Sparkline = forwardRef<HTMLElement, SparklineProps>(function Sparkline(
-  { data, label, summary, color = 1, variant = "line", height = 40, valueFormatter = defaultFormat, ...rest },
+  { data, label, summary, color = 1, variant = "line", height = 40, endDot = true, valueFormatter = defaultFormat, ...rest },
   ref
 ) {
   const reduced = usePrefersReducedMotion();
@@ -47,8 +49,19 @@ export const Sparkline = forwardRef<HTMLElement, SparklineProps>(function Sparkl
       ? `${label}. Starts at ${valueFormatter(first)}, ends at ${valueFormatter(last)}. Low ${valueFormatter(Math.min(...data))}, high ${valueFormatter(Math.max(...data))}.`
       : `${label}. No data.`);
   const stroke = "var(--series-value)";
-  const common = { dataKey: "value", name: label, type: "monotone" as const, stroke, strokeWidth: 2, isAnimationActive: !reduced, "data-check-graphic": label };
+  const gradientId = `${useId().replace(/:/g, "")}-spark`;
+  // only the latest point gets a dot
+  const dot = endDot
+    ? ({ cx, cy, index }: { cx?: number; cy?: number; index?: number }) =>
+        index === rows.length - 1 && cx != null && cy != null ? (
+          <circle key="end" cx={cx} cy={cy} r={3.5} fill={stroke} stroke="var(--chart-surface)" strokeWidth={2} />
+        ) : (
+          <g key={index} />
+        )
+    : false;
+  const common = { dataKey: "value", name: label, type: "monotone" as const, stroke, strokeWidth: 2, strokeLinecap: "round" as const, dot, activeDot: false, isAnimationActive: !reduced, "data-check-graphic": label };
   const domain = ["dataMin", "dataMax"] as const;
+  const margin = { top: 5, right: 6, bottom: 5, left: 2 };
 
   return (
     <ChartContainer
@@ -65,14 +78,20 @@ export const Sparkline = forwardRef<HTMLElement, SparklineProps>(function Sparkl
       {...rest}
     >
       {variant === "area" ? (
-        <RAreaChart data={rows} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
+        <RAreaChart data={rows} margin={margin}>
+          <defs>
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={stroke} stopOpacity={0.4} />
+              <stop offset="100%" stopColor={stroke} stopOpacity={0} />
+            </linearGradient>
+          </defs>
           <YAxis hide domain={[...domain]} />
-          <Area {...common} fill={stroke} fillOpacity={0.16} dot={false} activeDot={false} />
+          <Area {...common} fill={`url(#${gradientId})`} fillOpacity={1} />
         </RAreaChart>
       ) : (
-        <RLineChart data={rows} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
+        <RLineChart data={rows} margin={margin}>
           <YAxis hide domain={[...domain]} />
-          <Line {...common} dot={false} activeDot={false} />
+          <Line {...common} />
         </RLineChart>
       )}
     </ChartContainer>
