@@ -116,8 +116,14 @@
 }
 .root[data-appearance="separated"] > .item {
   --_pad-x: calc(var(--space-default) + var(--space-compact) / 2);
-  --_hover: color-mix(in oklab, var(--color-bg-surface), var(--color-text-primary) 6%);
-  background: var(--color-bg-surface);
+  /* container step on the page; inside a filled card it steps up to the raised fill and
+     draws a border, so it never repeats its parent's fill (DESIGN.md "Surfaces and elevation") */
+  --_fill: var(--datum-nested-fill, var(--color-bg-surface));
+  --_hover: color-mix(in oklab, var(--_fill), var(--color-text-primary) 6%);
+  --_radius-top: calc(var(--radius-card) - 1px);
+  --_radius-bottom: calc(var(--radius-card) - 1px);
+  background: var(--_fill);
+  border: 1px solid var(--datum-nested-border, transparent);
   border-radius: var(--radius-card);
 }
 .root[data-appearance="separated"] > .item[data-expanded] {

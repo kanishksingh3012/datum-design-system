@@ -31,7 +31,7 @@ export default function AccordionDoc() {
 
       <div className="doc-section">
         <h2>Appearance</h2>
-        <p className="lead"><b>plain</b> is rows with no lines — only the rounded hover fill. <b>bordered</b> is one box with <b>radius.card</b>, only its outer corners rounded. <b>separated</b> is a surface card per item. Hover tints the trigger toward the text color; the chevron turns in <b>motion.normal</b>. The panel height is not animated, so the page below never slides.</p>
+        <p className="lead"><b>plain</b> is rows with no lines — only the rounded hover fill. <b>bordered</b> is one box with <b>radius.card</b>, only its outer corners rounded. <b>separated</b> is a surface card per item; inside a filled Card the items step up to the raised fill, with a border in light only. Hover tints the trigger toward the text color; the chevron turns in <b>motion.normal</b>. The panel height is not animated, so the page below never slides.</p>
         <Demo className="demo-on-page stack">
           {(["plain", "bordered", "separated"] as const).map((appearance) => (
             <Stack key={appearance} gap="xs" style={{ width: "100%", maxWidth: 560 }}>
