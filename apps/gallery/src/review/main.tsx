@@ -38,6 +38,9 @@ function Frame({ name, theme, mode, variant, room }: { name: string; theme: stri
   );
 }
 
+// review.html?only=LineChart,BarChart shows just those fixtures (the approval-gate screenshots).
+const only = new URLSearchParams(location.search).get("only")?.split(",");
+
 function Review() {
   return (
     <main className="review">
@@ -48,7 +51,7 @@ function Review() {
       {plan.groups.map((g) => (
         <section key={g.name} id={g.name}>
           <h2>{g.name}</h2>
-          {g.items.flatMap((item) => names(item.n)).map((name) =>
+          {g.items.flatMap((item) => names(item.n)).filter((name) => !only || only.includes(name)).map((name) =>
             (fixtures[name].variants ?? [""]).map((label, variant) => (
               <article key={`${name}-${variant}`} id={`${name}-${variant}`}>
                 <h3>{name}{label && <span> — {label}</span>}</h3>

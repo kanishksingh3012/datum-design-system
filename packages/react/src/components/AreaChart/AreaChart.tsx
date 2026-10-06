@@ -24,14 +24,14 @@ export type AreaChartProps = AreaChartOwnProps & Omit<HTMLAttributes<HTMLElement
  * under it is a translucent tint of the same token.
  */
 export const AreaChart = forwardRef<HTMLElement, AreaChartProps>(function AreaChart(
-  { data, series, stacked = false, curve = "monotone", grid, xAxis, yAxis, yAxisWidth, tooltip, defaultTooltipIndex, ...rest },
+  { data, series, stacked = false, curve = "monotone", grid, xAxis, yAxis, yAxisWidth, tooltip, tooltipIndicator, defaultTooltipIndex, ...rest },
   ref
 ) {
   const reduced = usePrefersReducedMotion();
   return (
     <ChartContainer ref={ref} data={data} series={series} {...rest}>
       <RAreaChart data={data} margin={CHART_MARGIN} accessibilityLayer>
-        {cartesianScaffold({ grid, xAxis, yAxis, yAxisWidth, tooltip, defaultTooltipIndex, ...rest })}
+        {cartesianScaffold({ grid, xAxis, yAxis, yAxisWidth, tooltip, tooltipIndicator, defaultTooltipIndex, ...rest })}
         {series.map((s) => (
           <Area
             key={s.key}

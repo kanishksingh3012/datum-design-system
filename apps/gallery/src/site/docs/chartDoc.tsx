@@ -8,6 +8,7 @@ const shared: PropRow[] = [
   ["summary", "string", "generated", "Replaces the spoken summary (range, each series' low and high)."],
   ["valueFormatter / xFormatter", "(v) => string", "toLocaleString / String", "Axis ticks, tooltip, table and summary."],
   ["size", "sm | md | lg", "md", "160 / 240 / 320px plot height."],
+  ["aspectRatio", "number", "—", "Width ÷ height of the plot (e.g. 16 / 9) instead of size; never shorter than 160px. The chart always fills its parent's width."],
   ["legend", "boolean", "2+ series", "Swatch + label list under the plot."],
 ];
 

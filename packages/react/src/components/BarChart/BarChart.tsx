@@ -28,7 +28,7 @@ const R = 4;
  * of a bar is rounded; stacked segments are split by a 2px surface gap.
  */
 export const BarChart = forwardRef<HTMLElement, BarChartProps>(function BarChart(
-  { data, series, stacked = false, orientation = "vertical", grid, xAxis, yAxis, yAxisWidth, tooltip, defaultTooltipIndex, ...rest },
+  { data, series, stacked = false, orientation = "vertical", grid, xAxis, yAxis, yAxisWidth, tooltip, tooltipIndicator, defaultTooltipIndex, ...rest },
   ref
 ) {
   const reduced = usePrefersReducedMotion();
@@ -44,7 +44,7 @@ export const BarChart = forwardRef<HTMLElement, BarChartProps>(function BarChart
         barCategoryGap="24%"
         accessibilityLayer
       >
-        {cartesianScaffold({ grid, xAxis, yAxis, yAxisWidth: yAxisWidth ?? (horizontal ? 96 : 48), tooltip, defaultTooltipIndex, ...rest }, { cursor: "band", horizontal })}
+        {cartesianScaffold({ grid, xAxis, yAxis, yAxisWidth: yAxisWidth ?? (horizontal ? 96 : 48), tooltip, tooltipIndicator, defaultTooltipIndex, ...rest }, { cursor: "band", horizontal })}
         {series.map((s, i) => (
           <Bar
             key={s.key}

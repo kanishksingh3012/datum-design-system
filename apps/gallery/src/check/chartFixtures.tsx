@@ -54,8 +54,8 @@ export const CHART_VARIANTS: Record<string, string[]> = {
 };
 
 function Surface({ on, children }: { on: boolean; children: ReactNode }) {
-  if (!on) return <div style={{ maxWidth: 720 }}>{children}</div>;
-  const style = { maxWidth: 720, padding: 16, borderRadius: 16, background: "var(--color-bg-surface)", "--chart-surface": "var(--color-bg-surface)" } as CSSProperties;
+  if (!on) return <div>{children}</div>;
+  const style = { padding: 16, borderRadius: 16, background: "var(--color-bg-surface)", "--chart-surface": "var(--color-bg-surface)" } as CSSProperties;
   return <div style={style}>{children}</div>;
 }
 
@@ -63,7 +63,7 @@ export function ChartFixture({ chart, variant }: { chart: string; variant: strin
   const surface = variant === "on surface";
   let body: ReactNode = null;
   if (chart === "LineChart") {
-    body = <LineChart data={traffic} series={variant === "mobile" ? three : six} xKey="month" label="Visits by channel" dots={variant === "dots"} defaultTooltipIndex={variant === "default" ? 2 : undefined} />;
+    body = <LineChart data={traffic} series={variant === "mobile" ? three : six} xKey="month" label="Visits by channel" valueFormatter={(v) => (v >= 1000 ? `${v / 1000}k` : String(v))} dots={variant === "dots"} defaultTooltipIndex={variant === "default" ? 2 : undefined} />;
   } else if (chart === "AreaChart") {
     body = <AreaChart data={traffic} series={variant === "stacked" ? three : two} stacked={variant === "stacked"} xKey="month" label="Visits" defaultTooltipIndex={variant === "default" ? 3 : undefined} />;
   } else if (chart === "BarChart") {

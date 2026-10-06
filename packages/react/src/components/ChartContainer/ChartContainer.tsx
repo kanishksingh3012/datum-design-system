@@ -116,6 +116,8 @@ export interface ChartContainerOwnProps {
   size?: ChartSize;
   /** Exact plot height in px (Sparkline). */
   height?: number;
+  /** Width ÷ height of the plot, e.g. `16 / 9`. Replaces `size`; the plot never gets shorter than 160px. */
+  aspectRatio?: number;
   /** Show the legend. @default true with two or more series */
   legend?: boolean;
   /** The Recharts chart. It is sized to the container. */
@@ -134,8 +136,10 @@ export interface CartesianChartOwnProps extends Omit<ChartContainerOwnProps, "ch
   xAxis?: boolean;
   /** Value axis. @default true */
   yAxis?: boolean;
-  /** Value axis width in px; widen it for long formatted values. @default 48 */
-  yAxisWidth?: number;
+  /** Value axis width in px. @default "auto": as wide as its longest tick */
+  yAxisWidth?: number | "auto";
+  /** Tooltip marker: a dot, or a short line (line charts). @default "dot" */
+  tooltipIndicator?: "dot" | "line";
   /** Hover / keyboard tooltip. @default true */
   tooltip?: boolean;
   /** Shows the tooltip at this row on first render (docs, screenshots). */
@@ -152,7 +156,7 @@ export type ChartContainerProps = ChartContainerOwnProps & Omit<HTMLAttributes<H
  * figure's name and a visually hidden data table.
  */
 export const ChartContainer = forwardRef<HTMLElement, ChartContainerProps>(function ChartContainer(
-  { data, series, xKey, label, summary, valueFormatter = defaultFormat, xFormatter = String, size = "md", height, legend, children, tableData, tableSeries, className, style, ...rest },
+  { data, series, xKey, label, summary, valueFormatter = defaultFormat, xFormatter = String, size = "md", height, aspectRatio, legend, children, tableData, tableSeries, className, style, ...rest },
   ref
 ) {
   const captionId = useId();
@@ -177,7 +181,7 @@ export const ChartContainer = forwardRef<HTMLElement, ChartContainerProps>(funct
         data-size={size}
         {...rest}
       >
-        <div className={styles.plot} style={{ height: height ?? CHART_HEIGHT[size] }}>
+        <div className={styles.plot} style={height == null && aspectRatio ? { aspectRatio: String(aspectRatio), minHeight: CHART_HEIGHT.sm } : { height: height ?? CHART_HEIGHT[size] }}>
           <ResponsiveContainer width="100%" height="100%">
             {children as never}
           </ResponsiveContainer>
@@ -232,7 +236,7 @@ interface TooltipContentProps {
   payload?: ReadonlyArray<{ dataKey?: unknown; value?: unknown; name?: unknown; payload?: ChartDatum }>;
 }
 
-function ChartTooltipContent({ active, label, payload }: TooltipContentProps) {
+function ChartTooltipContent({ active, label, payload, indicator = "dot" }: TooltipContentProps & { indicator?: "dot" | "line" }) {
   const { series, xKey, valueFormatter, xFormatter } = useChart();
   if (!active || !payload?.length) return null;
   const heading = xKey ? payload[0]?.payload?.[xKey] ?? label : null;
@@ -245,7 +249,7 @@ function ChartTooltipContent({ active, label, payload }: TooltipContentProps) {
           const key = s?.key ?? String(p.name ?? p.dataKey);
           return (
             <li key={key}>
-              <span className={styles.swatch} style={{ background: seriesVar(key) }} />
+              <span className={styles.swatch} data-indicator={indicator} style={{ background: seriesVar(key) }} />
               <span className={styles.tooltipName}>{s?.label ?? String(p.name ?? "")}</span>
               <span className={styles.tooltipValue}>{typeof p.value === "number" ? valueFormatter(p.value) : String(p.value ?? "—")}</span>
             </li>
@@ -266,14 +270,16 @@ export interface ChartTooltipProps {
   cursor?: "line" | "band" | false;
   /** Shows the tooltip at this row on first render. */
   defaultIndex?: number;
+  /** Marker beside each series name. @default "dot" */
+  indicator?: "dot" | "line";
 }
 
 /** Recharts Tooltip styled with Datum tokens; values use the container's formatter. */
-export function ChartTooltip({ cursor = "line", defaultIndex }: ChartTooltipProps) {
+export function ChartTooltip({ cursor = "line", defaultIndex, indicator }: ChartTooltipProps) {
   const reduced = usePrefersReducedMotion();
   return (
     <Tooltip
-      content={<ChartTooltipContent />}
+      content={<ChartTooltipContent indicator={indicator} />}
       cursor={cursor ? CURSOR[cursor] : false}
       defaultIndex={defaultIndex}
       isAnimationActive={!reduced}
@@ -287,7 +293,7 @@ export const axisProps = {
   tick: { fill: "var(--color-chart-axis)", fontSize: 12 },
   tickLine: false,
   axisLine: false,
-  tickMargin: 8,
+  tickMargin: 10,
 } as const;
 
 export const gridProps = { stroke: "var(--color-chart-grid)", strokeDasharray: "0", vertical: false } as const;
@@ -297,10 +303,10 @@ export const gridProps = { stroke: "var(--color-chart-grid)", strokeDasharray: "
  * `horizontal` swaps the axes (bars that run left to right).
  */
 export function cartesianScaffold(
-  p: Pick<CartesianChartOwnProps, "grid" | "xAxis" | "yAxis" | "yAxisWidth" | "tooltip" | "defaultTooltipIndex" | "xKey" | "valueFormatter" | "xFormatter">,
+  p: Pick<CartesianChartOwnProps, "grid" | "xAxis" | "yAxis" | "yAxisWidth" | "tooltip" | "tooltipIndicator" | "defaultTooltipIndex" | "xKey" | "valueFormatter" | "xFormatter">,
   { cursor = "line", horizontal = false }: { cursor?: "line" | "band"; horizontal?: boolean } = {}
 ) {
-  const { grid = true, xAxis = true, yAxis = true, yAxisWidth = 48, tooltip = true, defaultTooltipIndex, xKey, valueFormatter = defaultFormat, xFormatter = String } = p;
+  const { grid = true, xAxis = true, yAxis = true, yAxisWidth = "auto", tooltip = true, tooltipIndicator, defaultTooltipIndex, xKey, valueFormatter = defaultFormat, xFormatter = String } = p;
   const category = { dataKey: xKey, tickFormatter: (v: unknown) => xFormatter(v), minTickGap: 16 };
   const value = { tickFormatter: (v: number) => valueFormatter(v) };
   return [
@@ -311,6 +317,6 @@ export function cartesianScaffold(
     yAxis && (horizontal
       ? <XAxis key="val" type="number" {...axisProps} {...value} />
       : <YAxis key="val" width={yAxisWidth} {...axisProps} {...value} />),
-    tooltip && <ChartTooltip key="tip" cursor={cursor} defaultIndex={defaultTooltipIndex} />,
+    tooltip && <ChartTooltip key="tip" cursor={cursor} defaultIndex={defaultTooltipIndex} indicator={tooltipIndicator} />,
   ];
 }

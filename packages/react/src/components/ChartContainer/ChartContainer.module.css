@@ -5,8 +5,12 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-compact);
+  gap: var(--space-tight);
+  /* fill the parent, like Auto Layout "fill" */
+  width: 100%;
   min-width: 0;
+  box-sizing: border-box;
+  align-self: stretch;
   font-family: var(--type-body-sm-family);
   color: var(--color-text-primary);
 }
@@ -14,6 +18,11 @@
 .plot {
   width: 100%;
   min-width: 0;
+}
+
+.plot :global(text) {
+  font-family: var(--type-ui-caption-family);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Recharts' keyboard layer makes the chart surface focusable. */
@@ -32,6 +41,7 @@
 .legend {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-compact) var(--space-default);
   margin: 0;
   padding: 0;
@@ -48,9 +58,14 @@
 
 .swatch {
   flex: none;
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+}
+
+.swatch[data-indicator="line"] {
+  width: 12px;
+  height: 2px;
 }
 
 .tooltip {
@@ -75,7 +90,7 @@
 .tooltip li {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-compact);
 }
 
 .tooltipLabel {
@@ -91,6 +106,7 @@
   margin-left: auto;
   padding-left: var(--space-tight);
   font-family: var(--type-numeric-sm-family);
+  font-weight: var(--type-ui-label-weight);
   font-variant-numeric: tabular-nums;
 }
 
