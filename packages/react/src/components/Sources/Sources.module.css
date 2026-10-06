@@ -67,7 +67,10 @@
   font-size: var(--type-ui-caption-size);
   font-weight: var(--type-ui-label-weight);
   color: var(--color-text-primary);
+  /* a container chip with an edge, so it also reads inside a card of the same fill */
+  box-sizing: border-box;
   background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius-pill);
 }
 .text {
@@ -102,7 +105,9 @@
   vertical-align: 0.15em;
   color: var(--color-text-accent);
   text-decoration: none;
+  /* the accent tint is close to the page in dark, so the chip carries an accent edge too */
   background: var(--color-bg-accentSubtle);
+  border: 1px solid var(--color-border-accent);
   border-radius: var(--radius-pill);
   transition:
     background var(--motion-fast) var(--motion-easing),

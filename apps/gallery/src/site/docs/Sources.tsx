@@ -29,7 +29,7 @@ function Part({ id, title, dek, rows, a11y, children }: { id: string; title: str
 export default function SourcesDoc() {
   return (
     <>
-    <Part a11y={[["Semantics", "A headed, numbered list of links."], ["Citation", "Inline citations are links named \"Source n\" with a 44px hit area on touch."]]} id="sources" title="Sources + Citation" dek="Where an answer came from: numbered link rows, with inline citations that point at them (44px hit area on touch)." rows={[["title / headingLevel", "string / 2–6", "Sources / 3", ""], ["Source", "number, title, description?, href", "—", ""], ["Citation", "number, href", "—", "Named “Source n”"]]}>
+    <Part a11y={[["Semantics", "A headed, numbered list of links."], ["Citation", "Inline citations are links named \"Source n\" with a 44px hit area on touch."]]} id="sources" title="Sources + Citation" dek="Where an answer came from: numbered link rows, with inline citations that point at them (44px hit area on touch). Number and citation chips carry an edge, so they read on the page and inside a card." rows={[["title / headingLevel", "string / 2–6", "Sources / 3", ""], ["Source", "number, title, description?, href", "—", ""], ["Citation", "number, href", "—", "Named “Source n”"]]}>
       <Text>Datum ships two themes<Citation number={1} href="#source-1" />.</Text>
       <Sources><Source number={1} title="Datum design guide" description="datum.dev" href="#" /></Sources>
     </Part>
