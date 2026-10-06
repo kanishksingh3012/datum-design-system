@@ -66,16 +66,14 @@
   background: var(--color-bg-tertiary);
 }
 
-/* ---------- presence dot, ringed in the page color so it separates from the photo ---------- */
+/* ---------- presence dot: no ring; offline is the neutral dot ---------- */
 .status {
   position: absolute;
   right: 0;
   bottom: 0;
-  box-sizing: border-box;
   width: var(--_dot);
   height: var(--_dot);
   border-radius: var(--radius-pill);
-  box-shadow: 0 0 0 2px var(--color-bg-page);
 }
 .root[data-shape="square"] .status {
   right: -2px;
@@ -91,13 +89,10 @@
   background: var(--color-bg-danger);
 }
 .root[data-status="offline"] .status {
-  background: var(--color-bg-page);
-  box-shadow:
-    inset 0 0 0 2px var(--color-border-strong),
-    0 0 0 2px var(--color-bg-page);
+  background: var(--color-border-strong);
 }
 
-/* ---------- group: an overlapping stack, each avatar ringed in the page color ---------- */
+/* ---------- group: an overlapping stack, no rings; later avatars sit on top ---------- */
 .group {
   display: inline-flex;
   align-items: center;
@@ -109,9 +104,6 @@
 }
 .group[data-size="xl"] {
   --_overlap: -12px;
-}
-.group > .root {
-  box-shadow: 0 0 0 2px var(--color-bg-page);
 }
 .group > .root + .root {
   margin-left: var(--_overlap);

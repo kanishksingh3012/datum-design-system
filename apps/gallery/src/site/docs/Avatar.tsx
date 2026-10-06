@@ -49,7 +49,7 @@ export default function AvatarDoc() {
 
       <div className="doc-section">
         <h2>Status</h2>
-        <p className="lead">A presence dot, ringed in the page color. The status is added to the accessible name, e.g. "Ada Lovelace, busy".</p>
+        <p className="lead">A presence dot with no ring; offline is a neutral grey dot. The status is added to the accessible name, e.g. "Ada Lovelace, busy".</p>
         <Demo>
           {(["online", "away", "busy", "offline"] as const).map((status) => (
             <Stack key={status} gap="xs" align="center">
@@ -62,7 +62,7 @@ export default function AvatarDoc() {
 
       <div className="doc-section">
         <h2>AvatarGroup</h2>
-        <p className="lead">An overlapping stack. <b>max</b> collapses the rest into a neutral "+N" (read as "N more"); <b>size</b> and <b>shape</b> pass down to every avatar. Give the group an <b>aria-label</b>.</p>
+        <p className="lead">An overlapping stack with no rings; later avatars sit on top. <b>max</b> collapses the rest into a neutral "+N" (read as "N more"); <b>size</b> and <b>shape</b> pass down to every avatar. Give the group an <b>aria-label</b>.</p>
         <Demo className="stack">
           {(["sm", "md", "lg"] as const).map((size) => (
             <AvatarGroup key={size} size={size} max={4} aria-label="Reviewers">
