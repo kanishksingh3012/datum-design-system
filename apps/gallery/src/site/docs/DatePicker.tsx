@@ -48,6 +48,11 @@ export default function DatePickerDoc() {
           <DatePicker label="Due" defaultValue={now.add({ days: 2 })} minValue={now} isDateUnavailable={weekends} style={{ width: 260 }} />
         </Demo>
       </Section>
+      <Section title="Months and years" lead={<>The caption is a button. Press it for a month grid, press again for a year grid (twelve to a page); picking a year returns to the months, picking a month returns to the days. Previous and next step a month, a year or a page of years to match. Months and years outside <b>minValue</b> / <b>maxValue</b> are disabled.</>}>
+        <Demo>
+          <DatePicker label="Birthday" defaultValue={now.subtract({ years: 30 })} maxValue={now} helpText="Press the caption to jump years." style={{ width: 260 }} />
+        </Demo>
+      </Section>
       <Section title="Sizes and states" lead="Read-only keeps the date and disables the calendar button.">
         <Demo className="demo-on-page">
           <div className="form-grid">
@@ -60,11 +65,12 @@ export default function DatePickerDoc() {
       </Section>
       <div className="doc-section"><h2>Properties</h2><Props rows={dateProps} /></div>
       <div className="doc-section"><h2>Usage guidelines</h2>
-        <Usage dos={["Use for dates near today, where the calendar helps.", "Set minValue / maxValue rather than rejecting a date after the fact."]} donts={["Use for a birth date — three segments are quicker to type than paging back decades.", "Convert values to strings inside the component — keep @internationalized/date values until you store them."]} />
+        <Usage dos={["Use for dates near today, where the calendar helps.", "Set minValue / maxValue rather than rejecting a date after the fact."]} donts={["Make people page month by month to a far date — the caption jumps to any month or year.", "Convert values to strings inside the component — keep @internationalized/date values until you store them."]} />
       </div>
       <A11y items={[
           ["Date field", "Each segment (day, month, year) is focusable; \u2191 / \u2193 change it, typing enters it."],
           ["Calendar", "Arrow keys move by day, Page Up / Page Down by month; Enter selects, Escape closes."],
+          ["Months and years", "The caption says what it opens. In the grids, arrow keys, Home and End move; Enter picks; Escape returns to the days and keeps the calendar open."],
         ]} />
     </section>
 

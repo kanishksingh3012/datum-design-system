@@ -84,4 +84,63 @@ describe("DatePicker", () => {
     rerender(<Due disabled />);
     expect(within(group()).getAllByRole("spinbutton")[0]).toHaveAttribute("aria-disabled", "true");
   });
+
+  describe("month and year selection", () => {
+    const caption = () => within(screen.getByRole("heading", { hidden: true })).getByRole("button");
+    const option = (name: string) => screen.getByRole("button", { name });
+
+    it("picks a month from the caption's month grid", async () => {
+      render(<Due defaultValue={parseDate("2026-09-10")} defaultOpen />);
+      await userEvent.click(caption());
+      expect(screen.queryByRole("grid")).not.toBeInTheDocument();
+      expect(within(screen.getByRole("group", { name: "Months" })).getAllByRole("button")).toHaveLength(12);
+      expect(option("Sep")).toHaveAttribute("aria-pressed", "true");
+      expect(option("Sep")).toHaveFocus();
+      await userEvent.click(option("Dec"));
+      expect(caption()).toHaveTextContent("December 2026");
+      expect(screen.getByRole("grid")).toBeInTheDocument();
+    });
+
+    it("picks a year, then a month, and previous / next step years and pages", async () => {
+      render(<Due defaultValue={parseDate("2026-09-10")} defaultOpen />);
+      await userEvent.click(caption());
+      await userEvent.click(screen.getByRole("button", { name: "Next year" }));
+      expect(caption()).toHaveTextContent("2027");
+      await userEvent.click(caption());
+      expect(caption()).toHaveTextContent("2016 – 2027");
+      await userEvent.click(screen.getByRole("button", { name: "Next years" }));
+      await userEvent.click(option("2030"));
+      expect(caption()).toHaveTextContent("2030");
+      await userEvent.click(option("Feb"));
+      expect(caption()).toHaveTextContent("February 2030");
+    });
+
+    it("moves with arrows, picks with Enter, and Escape returns to the days without closing", async () => {
+      render(<Due defaultValue={parseDate("2026-09-10")} defaultOpen />);
+      await userEvent.click(caption());
+      await userEvent.keyboard("{ArrowRight}{ArrowDown}");
+      expect(option("Dec")).toHaveFocus();
+      await userEvent.keyboard("{ArrowUp}{ArrowLeft}{Enter}");
+      expect(caption()).toHaveTextContent("August 2026");
+      await userEvent.click(caption());
+      await userEvent.keyboard("{Escape}");
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
+      expect(screen.getByRole("grid")).toBeInTheDocument();
+    });
+
+    it("keeps months and years inside minValue and maxValue", async () => {
+      render(<Due defaultValue={parseDate("2026-09-10")} minValue={parseDate("2026-03-15")} maxValue={parseDate("2027-02-10")} defaultOpen />);
+      await userEvent.click(caption());
+      expect(option("Feb")).toBeDisabled();
+      expect(option("Mar")).toBeEnabled();
+      expect(screen.getByRole("button", { name: "Previous year" })).toBeDisabled();
+      await userEvent.click(caption());
+      expect(option("2025")).toBeDisabled();
+      expect(screen.getByRole("button", { name: "Next years" })).toBeDisabled();
+      await userEvent.click(option("2027"));
+      // September 2027 is past the max, so the calendar lands on the max's month
+      expect(option("Feb")).toHaveAttribute("aria-pressed", "true");
+      expect(option("Mar")).toBeDisabled();
+    });
+  });
 });

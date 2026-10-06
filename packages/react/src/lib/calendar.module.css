@@ -74,6 +74,105 @@
   color: var(--color-text-primary);
 }
 
+/* the caption is a button: it opens the month grid, then the year grid */
+.caption {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--space-compact) / 2);
+  height: var(--_day);
+  margin: 0;
+  padding: 0 var(--space-tight);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+.caption:hover {
+  background: color-mix(in oklab, var(--color-bg-surfaceRaised), var(--color-text-primary) 8%);
+}
+.caption:active {
+  transform: scale(0.98);
+}
+.caption:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: -2px;
+}
+.caption svg {
+  width: var(--icon-inline);
+  height: var(--icon-inline);
+  color: var(--color-text-secondary);
+  transition: transform var(--motion-normal) var(--motion-easing);
+}
+.caption[data-open] svg {
+  transform: rotate(180deg);
+}
+
+/* months and years: three columns of pills, in the space the days take */
+.options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-content: space-evenly;
+  gap: var(--space-compact);
+  box-sizing: border-box;
+  width: calc(7 * var(--_day));
+  min-height: calc(5 * var(--_day));
+  padding: var(--space-compact) 0;
+}
+.option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--_day);
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  font-size: var(--type-body-md-size);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    color var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+}
+.option:hover:not(:disabled):not([data-selected]) {
+  background: color-mix(in oklab, var(--color-bg-surfaceRaised), var(--color-text-primary) 8%);
+}
+.option:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.option:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.option[data-today] {
+  font-weight: 600;
+  color: var(--color-text-accent);
+}
+.option[data-selected] {
+  color: var(--color-text-onAccent);
+  background: var(--color-bg-accent);
+}
+.option[data-selected]:hover {
+  background: var(--color-bg-accentHover);
+}
+.option:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .nav {
   position: relative;
   display: inline-flex;
@@ -203,6 +302,11 @@
   font-weight: 600;
   color: var(--color-text-accent);
 }
+/* on the hover fill, accent text drops under 4.5:1 in dark, so it steps to the text color */
+.day[data-today]:hover:not([data-selected]):not([data-disabled]),
+.option[data-today]:hover:not([data-selected]):not(:disabled) {
+  color: var(--color-text-primary);
+}
 .day[data-today]::after {
   content: "";
   position: absolute;
@@ -251,8 +355,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .caption:active,
+  .option:active:not(:disabled),
   .nav:active:not(:disabled),
   .day:active:not([data-disabled]):not([data-unavailable]) {
     transform: none;
+  }
+  .caption svg {
+    transition: none;
   }
 }
