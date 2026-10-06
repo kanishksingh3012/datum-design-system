@@ -30,7 +30,7 @@ export default function MessageDoc() {
   const [streaming, setStreaming] = useState(false);
   return (
     <>
-    <Part a11y={[["Streaming", "aria-busy while streaming, so the finished message is announced once, not word by word."], ["Actions", "Hidden until streaming ends; each is a labelled Button."]]} id="message" title="Message + MessageList" dek={<>A user's turn sits in a tinted bubble at the end; an assistant's reads as plain text; <b>system</b> notes are centered captions. <b>streaming</b> adds a caret (still under reduced motion) and hides <b>actions</b> until done.</>} rows={[
+    <Part a11y={[["Streaming", "aria-busy while streaming, so the finished message is announced once, not word by word."], ["Actions", "Hidden until streaming ends, then shown at full strength; each is a labelled Button."]]} id="message" title="Message + MessageList" dek={<>A user's turn sits in a container bubble at the end (<b>bg.surface</b> with a border, so it also reads inside a card); an assistant's reads as plain text; <b>system</b> notes are centered captions. <b>streaming</b> adds a caret (still under reduced motion) and hides <b>actions</b> until done.</>} rows={[
       ["author", "user · assistant · system", "—", ""], ["name / avatar / metadata", "string / node / node", "—", "The header; hidden when grouped"], ["grouped", "boolean", "false", ""],
       ["streaming", "boolean", "false", "aria-busy until it settles"], ["actions", "ReactNode", "—", "Row under the message"], ["animateOnMount", "boolean", "false", "One-time enter"],
     ]}>

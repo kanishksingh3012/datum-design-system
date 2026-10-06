@@ -66,10 +66,12 @@
 .body > :last-child {
   margin-bottom: 0;
 }
-/* the user's turn: a tinted bubble; a tall box, so radius.card */
+/* the user's turn: a container on the ladder (bg.surface plus a border, so it also reads
+   inside a card or panel of the same fill); a tall box, so radius.card */
 .item[data-author="user"] .body {
   padding: var(--space-compact) var(--space-default);
-  background: var(--color-bg-accentSubtle);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius-card);
 }
 .item[data-author="system"] .body {
@@ -97,6 +99,7 @@
   }
 }
 
+/* always at full strength once the message has settled: never dimmed or shown on hover only */
 .actions {
   display: flex;
   flex-wrap: wrap;
