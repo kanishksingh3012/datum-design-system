@@ -35,7 +35,7 @@ export default function DataTableDoc() {
     <>
     <section className="component-doc" id="data-table">
       <h1>Data Table</h1>
-      <p className="dek">Table with the work done: sorting by each column's <b>value</b>, a search field, pagination and selection, each state a trio. The matching row count is announced politely as the search narrows it.</p>
+      <p className="dek">Table with the work done: sorting by each column's <b>value</b>, a search field, pagination and selection, each state a trio. Like Table, it fills its parent's width. The matching row count is announced politely as the search narrows it.</p>
       <Demo box="example" style={{ display: "block" }}>
         <DataTable label="Invoices" columns={columns} rows={invoices} rowKey={(r) => r.id} searchable selectionMode="multiple" pageSize={5} toolbar={<Button intent="neutral" appearance="outline" size="sm">Export</Button>} />
       </Demo>
