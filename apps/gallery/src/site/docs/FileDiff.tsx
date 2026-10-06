@@ -37,7 +37,7 @@ export default function FileDiffDoc() {
   const [streaming, setStreaming] = useState(false);
   return (
     <>
-    <Part a11y={[["Semantics", "A table; + / − are real text, so changes don't rely on the green and red fills."], ["Enter / Space", "Expands or collapses the file."]]} id="file-diff" title="FileDiff" dek="A file's changes as a table: added and removed lines on the success and danger subtle fills, with +/− as real text." rows={[["path / rows", "string / DiffRow[]", "—", "kind: add · remove · context · hunk"], ["streaming / collapseOnComplete", "boolean", "false / true", ""], ["open / defaultOpen / onOpenChange", "boolean", "false", ""]]}>
+    <Part a11y={[["Semantics", "A table; + / − are real text, so changes don't rely on the green and red fills."], ["Enter / Space", "Expands or collapses the file."]]} id="file-diff" title="FileDiff" dek="A file's changes as a table: added and removed lines on the success and danger subtle fills, with +/− as real text. The card is a container (bg.surface); the rows sit in a sunken well, and hunk lines are container-fill bands across it." rows={[["path / rows", "string / DiffRow[]", "—", "kind: add · remove · context · hunk"], ["streaming / collapseOnComplete", "boolean", "false / true", ""], ["open / defaultOpen / onOpenChange", "boolean", "false", ""]]}>
       <FileDiff path="src/Composer.tsx" rows={diff} defaultOpen />
     </Part>
     </>
