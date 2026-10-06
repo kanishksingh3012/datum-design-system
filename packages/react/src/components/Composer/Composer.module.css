@@ -1,7 +1,11 @@
+/* fills its parent's width (DESIGN.md "Fill container") */
 .root {
+  box-sizing: border-box;
+  width: 100%;
   min-width: 0;
 }
-/* Datum's field box, grown into a multi-line card (never a pill once it's tall) */
+/* Datum's field box — the raised step, with a border.strong edge, so it stands off the page and
+   off a container alike — grown into a multi-line card (never a pill once it's tall) */
 .box {
   composes: control from "../Field/control.module.css";
   align-items: flex-end;

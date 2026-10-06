@@ -29,7 +29,7 @@ function Part({ id, title, dek, rows, a11y, children }: { id: string; title: str
 export default function ComposerDoc() {
   return (
     <>
-    <Part a11y={[["Enter", "Sends; Shift + Enter adds a new line."], ["Thinking", "Send shows loading (or Stop, given onStop) and the field stays editable."]]} id="composer" title="Composer" dek={<>The chat input in Datum's field box; it grows with its content. While <b>thinking</b>, Send shows loading — or Stop, given <b>onStop</b> — and the field stays editable.</>} rows={[
+    <Part a11y={[["Enter", "Sends; Shift + Enter adds a new line."], ["Thinking", "Send shows loading (or Stop, given onStop) and the field stays editable."]]} id="composer" title="Composer" dek={<>The chat input in Datum's field box (the raised step, with a border.strong edge, so it stands off the page and off a container); it fills its parent's width and grows with its content. While <b>thinking</b>, Send shows loading — or Stop, given <b>onStop</b> — and the field stays editable.</>} rows={[
       ["label", "string", "—", "Visually hidden; never the placeholder"], ["value / defaultValue / onValueChange", "string", "\"\"", ""], ["onSubmit", "(value) => void", "—", "Trimmed; an uncontrolled draft clears"],
       ["thinking / onStop", "boolean / fn", "false", ""], ["placeholder", "string", "Message…", ""], ["disabled", "boolean", "false", ""],
     ]}><Composer label="Message" defaultValue="Draft a release note" onSubmit={() => {}} /></Part>
