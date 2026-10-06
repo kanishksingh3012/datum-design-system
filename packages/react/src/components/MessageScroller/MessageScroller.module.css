@@ -1,8 +1,17 @@
+/* fills its parent's width (DESIGN.md "Fill container"); no fill of its own, so it sits on any surface */
 .root {
   position: relative;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
   min-height: 0;
+}
+/* pinned to the latest message: nothing is hidden below it, so the bottom edge never fades —
+   the last message and its actions stay at full strength while content grows under them */
+.root[data-pinned] > .scroll > div {
+  --datum-scroll-fade-bottom: 0px;
 }
 .scroll {
   flex: 1 1 auto;

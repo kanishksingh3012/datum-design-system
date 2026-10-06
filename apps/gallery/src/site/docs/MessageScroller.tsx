@@ -83,7 +83,7 @@ export default function MessageScrollerDoc() {
   const [streaming, setStreaming] = useState(false);
   return (
     <>
-    <Part a11y={[["Semantics", "A role=\"log\" inside a labelled ScrollArea; new messages are announced politely."], ["Jump to latest", "Appears when the reader scrolls up; a real button, reachable with Tab."]]} id="message-scroller" title="MessageScroller" dek={<>A ScrollArea around a <b>role="log"</b>. Pinned to the bottom while content grows, until the reader scrolls up; then <b>Jump to latest</b> appears. Try it in the chat above.</>} rows={[
+    <Part a11y={[["Semantics", "A role=\"log\" inside a labelled ScrollArea; new messages are announced politely."], ["Jump to latest", "Appears when the reader scrolls up; a real button, reachable with Tab."]]} id="message-scroller" title="MessageScroller" dek={<>A ScrollArea around a <b>role="log"</b>. Pinned to the bottom while content grows, until the reader scrolls up; then <b>Jump to latest</b> appears. It fills its parent's width and has no fill of its own. While pinned, the bottom edge never fades, so the latest message and its actions stay at full strength. Try it in the chat above.</>} rows={[
       ["label", "string", "Conversation", ""], ["maxHeight", "number | string", "—", ""], ["defaultPinned / onPinnedChange", "boolean / fn", "true", "Read from the DOM, so not controlled"], ["jumpLabel", "string", "Jump to latest", ""],
     ]}><ChatDemo /></Part>
     </>
