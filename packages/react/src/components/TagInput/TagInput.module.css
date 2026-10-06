@@ -1,4 +1,4 @@
-/* The shared field box, holding the tags (soft neutral Badges) and a text
+/* The shared field box, holding the tags (bordered chips on the raised step) and a text
    input after them. It wraps as tags fill it; once it's more than one line
    it is no longer a pill, so it takes the card radius. */
 .box {
@@ -7,9 +7,9 @@
 }
 .box.box {
   flex-wrap: wrap;
-  gap: calc(var(--space-compact) / 2) var(--space-compact);
-  padding-block: calc(var(--space-compact) / 2);
-  padding-inline-start: calc(var(--_pad) - var(--space-compact) / 2);
+  gap: 6px var(--space-compact);
+  padding-block: 6px;
+  padding-inline-start: 6px;
 }
 .box[data-multiline] {
   border-radius: var(--radius-card);
@@ -20,20 +20,59 @@
 .box[data-readonly] {
   cursor: default;
 }
+/* no chips yet: the text starts where every other field's does */
+.box:not(:has(.tag)) {
+  padding-inline-start: var(--_pad);
+}
 .box > input {
   flex-basis: 6em;
-  height: calc(var(--_height) - 2px - var(--space-compact));
+  height: calc(var(--_height) - 14px);
+  margin-inline-start: calc(var(--space-compact) / 2);
+}
+.box:not(:has(.tag)) > input {
+  margin-inline-start: 0;
+}
+/* at the limit nothing more can be typed, so the input stops asking for a row of its own
+   (it stays focusable: Backspace still removes the last tag) */
+.box[data-full] > input {
+  flex: 0 0 1px;
+  margin-inline-start: 0;
 }
 
 .tags {
   display: contents;
 }
 
+/* a chip: the raised fill with a hairline edge. The edge is border.default stepped toward
+   the text color, because in dark border.default equals the raised fill and would vanish. */
 .tag {
+  --_chip: calc(var(--_height) - 14px);
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
   max-width: 100%;
+  min-height: var(--_chip);
+  padding: 0 10px;
+  font-family: var(--type-ui-label-family);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-ui-label-weight);
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--color-text-primary);
+  background: var(--color-bg-surfaceRaised);
+  border: 1px solid color-mix(in oklab, var(--color-border-default), var(--color-text-primary) 16%);
+  border-radius: var(--radius-control);
   outline: none;
   transition: background var(--motion-fast) var(--motion-easing);
+}
+.tag[data-size="sm"] {
+  padding: 0 8px;
+  font-size: var(--type-ui-caption-size);
+}
+.tag[data-size="lg"] {
+  padding: 0 12px;
+  font-size: var(--type-body-md-size);
 }
 .tag[data-focus-visible] {
   z-index: 1;
@@ -50,7 +89,7 @@
 }
 /* the × sits flush with the badge's end */
 .tag:has(.remove) {
-  padding-inline-end: 2px;
+  padding-inline-end: 3px;
 }
 
 .remove {
@@ -59,8 +98,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: calc(var(--_height, 20px) - 4px);
-  height: calc(var(--_height, 20px) - 4px);
+  width: calc(var(--_chip) - 6px);
+  height: calc(var(--_chip) - 6px);
   margin: 0;
   padding: 0;
   color: inherit;

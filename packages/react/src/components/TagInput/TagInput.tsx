@@ -2,7 +2,6 @@ import { forwardRef, useLayoutEffect, useRef, useState, type HTMLAttributes, typ
 import { mergeProps, useButton, useFocusRing, useObjectRef, useTag, useTagGroup, type AriaTagProps } from "react-aria";
 import { Item, useListState, type ListState } from "react-stately";
 import { useControllableState } from "../../lib/useControllableState";
-import { Badge } from "../Badge/Badge";
 import { FieldFrame, type FieldProps } from "../Field/Field";
 import parts from "../../lib/fieldParts.module.css";
 import styles from "./TagInput.module.css";
@@ -145,6 +144,7 @@ export const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function Tag
         data-readonly={readOnly || undefined}
         data-invalid={errorText ? true : undefined}
         data-multiline={multiline || undefined}
+        data-full={full || undefined}
         onClick={(e) => {
           if (e.target === e.currentTarget) inputRef.current?.focus();
         }}
@@ -197,11 +197,11 @@ function Tag({ item, state, size }: AriaTagProps<unknown> & { state: ListState<u
   const { focusProps, isFocusVisible } = useFocusRing({ within: false });
   const { buttonProps } = useButton(removeButtonProps, removeRef);
   return (
-    <Badge
+    <span
       {...mergeProps(rowProps, focusProps)}
       ref={ref}
       className={styles.tag}
-      size={size === "lg" ? "md" : "sm"}
+      data-size={size}
       data-focus-visible={isFocusVisible || undefined}
     >
       <span {...gridCellProps} className={styles.tagCell}>
@@ -217,6 +217,6 @@ function Tag({ item, state, size }: AriaTagProps<unknown> & { state: ListState<u
           </button>
         )}
       </span>
-    </Badge>
+    </span>
   );
 }

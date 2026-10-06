@@ -38,7 +38,7 @@ export default function TagInputDoc() {
       <Demo box="example" style={{ display: "block" }}>
         <TagInput label="Topics" value={topics} onValueChange={setTopics} placeholder="Add a topic" helpText="Press Enter or comma to add." style={{ maxWidth: 360, margin: "0 auto" }} />
       </Demo>
-      <Section title="Tags, limits and wrapping" lead={<>Tags are soft neutral Badges with a 44px touch area on their ×. <b>maxTags</b> stops new tags and shows a counter. When tags wrap to a second line the box is no longer a pill, so it takes <b>radius.card</b>.</>}>
+      <Section title="Tags, limits and wrapping" lead={<>Tags are chips on the raised fill with a hairline edge, and a 44px touch area on their ×. <b>maxTags</b> stops new tags and shows a counter; the input then stops taking a row of its own. When tags wrap to a second line the box is no longer a pill, so it takes <b>radius.card</b>.</>}>
         <Demo>
           <TagInput label="Reviewers" defaultValue={["Ada", "Grace", "Alan"]} maxTags={3} style={{ width: 300 }} />
           <TagInput label="Keywords" defaultValue={["accessibility", "design tokens", "typography", "motion"]} style={{ width: 300 }} />
