@@ -34,7 +34,7 @@ function Part({ id, title, dek, rows, a11y, children }: { id: string; title: str
 export default function CodeBlockDoc() {
   return (
     <>
-    <Part a11y={[["Copy", "The copy button is labelled and confirms when copied; line numbers aren't copied."], ["Scrolling", "Wide lines scroll inside the block, which is keyboard-focusable when it overflows."]]} id="code-block" title="CodeBlock" dek="Code in a card with a copy button; wide lines scroll inside it. Syntax is monochrome: tokens are styled by kind with weight, italics and the two text colors, so it holds in every theme." rows={[["lines / code", "CodeLine[] / string", "—", "Tokens carry a kind, not a color"], ["title / language", "ReactNode / string", "—", ""], ["lineNumbers", "boolean", "true", "Not copied"], ["copyable", "boolean", "true", ""]]}>
+    <Part a11y={[["Copy", "The copy button is labelled and confirms when copied; line numbers aren't copied."], ["Scrolling", "Wide lines scroll inside the block, which is keyboard-focusable when it overflows."]]} id="code-block" title="CodeBlock" dek="Code in a sunken well (bg.surfaceSunken with an edge) under a container header band with a copy button; it fills its parent's width, and wide lines scroll inside it. Syntax is monochrome: tokens are styled by kind with weight, italics and the two text colors, so it holds in every theme." rows={[["lines / code", "CodeLine[] / string", "—", "Tokens carry a kind, not a color"], ["title / language", "ReactNode / string", "—", ""], ["lineNumbers", "boolean", "true", "Not copied"], ["copyable", "boolean", "true", ""]]}>
       <CodeBlock title="App.tsx" language="tsx" lines={codeLines} />
     </Part>
     </>

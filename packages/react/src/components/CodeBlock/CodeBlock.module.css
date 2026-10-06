@@ -3,7 +3,11 @@
   margin: 0;
   overflow: hidden;
   color: var(--color-text-primary);
-  background: var(--color-bg-surface);
+  /* a well (DESIGN.md "Surfaces and elevation"): the sunken step with an edge, so the code
+     reads on the page and inside a container card alike; it fills its parent's width */
+  box-sizing: border-box;
+  width: 100%;
+  background: var(--color-bg-surfaceSunken);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-card);
 }
@@ -14,6 +18,8 @@
   gap: var(--space-compact);
   min-height: var(--interaction-minTarget);
   padding: calc(var(--space-compact) / 2) calc(var(--space-compact) / 2) calc(var(--space-compact) / 2) var(--space-default);
+  /* the header is a container band over the well */
+  background: var(--color-bg-surface);
   border-bottom: 1px solid var(--color-border-default);
 }
 .meta {
