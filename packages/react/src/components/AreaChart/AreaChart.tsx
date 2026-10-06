@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from "react";
+import { forwardRef, useId, type HTMLAttributes } from "react";
 import { Area, AreaChart as RAreaChart } from "recharts";
 import {
   CHART_MARGIN,
@@ -21,17 +21,29 @@ export type AreaChartProps = AreaChartOwnProps & Omit<HTMLAttributes<HTMLElement
 
 /**
  * Volume over time. The 2px line carries the series' identity; the fill
- * under it is a translucent tint of the same token.
+ * under it is a vertical gradient of the same token, fading into the surface.
  */
 export const AreaChart = forwardRef<HTMLElement, AreaChartProps>(function AreaChart(
   { data, series, stacked = false, curve = "monotone", grid, xAxis, yAxis, yAxisWidth, tooltip, tooltipIndicator, defaultTooltipIndex, ...rest },
   ref
 ) {
   const reduced = usePrefersReducedMotion();
+  const uid = useId().replace(/:/g, "");
+  const gradient = (key: string) => `${uid}-${key.replace(/[^\w-]/g, "_")}`;
+  // stacked bands sit on each other, so they keep some color at the bottom to stay distinct
+  const [top, bottom] = stacked ? [0.5, 0.15] : [0.4, 0];
   return (
     <ChartContainer ref={ref} data={data} series={series} {...rest}>
       <RAreaChart data={data} margin={CHART_MARGIN} accessibilityLayer>
         {cartesianScaffold({ grid, xAxis, yAxis, yAxisWidth, tooltip, tooltipIndicator, defaultTooltipIndex, ...rest })}
+        <defs>
+          {series.map((s) => (
+            <linearGradient key={s.key} id={gradient(s.key)} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={seriesVar(s.key)} stopOpacity={top} />
+              <stop offset="100%" stopColor={seriesVar(s.key)} stopOpacity={bottom} />
+            </linearGradient>
+          ))}
+        </defs>
         {series.map((s) => (
           <Area
             key={s.key}
@@ -41,8 +53,9 @@ export const AreaChart = forwardRef<HTMLElement, AreaChartProps>(function AreaCh
             stackId={stacked ? "stack" : undefined}
             stroke={seriesVar(s.key)}
             strokeWidth={2}
-            fill={seriesVar(s.key)}
-            fillOpacity={stacked ? 0.32 : 0.16}
+            strokeLinecap="round"
+            fill={`url(#${gradient(s.key)})`}
+            fillOpacity={1}
             activeDot={{ r: 5, fill: seriesVar(s.key), stroke: "var(--chart-surface)", strokeWidth: 2 }}
             isAnimationActive={!reduced}
             data-check-graphic={s.label}

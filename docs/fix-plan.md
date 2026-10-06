@@ -110,3 +110,4 @@ Run once at the end: `npm run check` (all combos), full `npm test`, `npm run bui
 - LAYOUT and RICH INPUTS · FileUpload `c2da670` · raised drop zone + rows, neutral icon ring (text-color hairline, since border.default vanishes on raised in dark), accent hover/drag-over, fills parent width · docs page updated, not screenshotted
 - LAYOUT and RICH INPUTS · ScrollArea, Resizable, ColorPicker · no commit · checked against the ladder in the CSS, nothing to change (no container fills of their own; grip, thumbs, trigger and panel are on raised)
 - CHARTS · LineChart + shared ChartContainer foundation · see git log "Fix round 3: LineChart" · fills parent width, `aspectRatio`, auto y-axis width, tabular ticks, tooltip indicator (line/dot), centered legend with round markers, `natural` curve · review.html gained `?only=Name`
+- CHARTS · AreaChart · see git log "Fix round 3: AreaChart" · vertical gradient fill (40%→0%; stacked 50%→15%), round caps
