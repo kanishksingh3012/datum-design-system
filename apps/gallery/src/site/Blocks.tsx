@@ -47,7 +47,10 @@ const widths = [
   { label: "Mobile", px: 390, icon: <Smartphone /> },
 ];
 
-/** The block in an iframe at a fixed width, so its media queries respond to that width, not the docs page's. */
+/**
+ * The block in an iframe, so its media queries respond to the frame's width, not the docs page's.
+ * Desktop fills the preview (never narrower than 1024px); Tablet and Mobile are fixed device widths.
+ */
 function Frame({ name, width }: { name: string; width: number }) {
   const ref = useRef<HTMLIFrameElement>(null);
   const [height, setHeight] = useState(360);
@@ -71,7 +74,7 @@ function Frame({ name, width }: { name: string; width: number }) {
   }, []);
   return (
     <div className="block-viewport">
-      <iframe ref={ref} src={`${import.meta.env.BASE_URL}block.html?name=${name}`} title={`${name} preview`} style={{ width, height }} />
+      <iframe ref={ref} src={`${import.meta.env.BASE_URL}block.html?name=${name}`} title={`${name} preview`} data-fill={width === 1280 || undefined} style={{ width: width === 1280 ? "100%" : width, height }} />
     </div>
   );
 }
