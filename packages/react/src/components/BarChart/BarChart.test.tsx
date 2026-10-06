@@ -34,6 +34,16 @@ describe("BarChart", () => {
     expect(bars(container)[0]).toHaveAttribute("stroke-width", "2");
   });
 
+  it("rounds only the segment on top of each stack", () => {
+    setupChartDom({ reducedMotion: true });
+    const gappy = [{ region: "North", q1: 40, q2: 55 }, { region: "South", q1: 30, q2: 0 }];
+    const { container } = render(<BarChart data={gappy} series={series} xKey="region" label="Sales" stacked />);
+    // a rounded rect path has arcs (A); a square one doesn't
+    const rounded = (label: string) => [...container.querySelectorAll(`path[data-check-graphic="${label}"]`)].map((p) => /A/.test(p.getAttribute("d") ?? ""));
+    expect(rounded("Q1")).toEqual([false, true]);
+    expect(rounded("Q2")[0]).toBe(true);
+  });
+
   it("runs bars left to right when horizontal", () => {
     setupChartDom({ reducedMotion: true });
     const { container } = render(<BarChart data={data} series={series} xKey="region" label="Sales" orientation="horizontal" />);
