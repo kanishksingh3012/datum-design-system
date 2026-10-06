@@ -1,6 +1,14 @@
 .root {
-  --_height: 72px;
+  --_height: 64px;
   --_bg: var(--color-bg-page);
+  /* kept under their own names so the inverse band can swap the ink tokens for what's inside it */
+  --_ink: var(--color-bg-inverse);
+  --_on-ink: var(--color-text-onInverse);
+
+  /* fills its parent, never exceeds it */
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
 
   position: sticky;
   top: 0;
@@ -24,7 +32,10 @@
   transform: translateY(-100%);
 }
 
+/* the band is the query container: the bar folds by its own width, so a
+   navbar in a narrow column collapses even on a wide screen */
 .band {
+  container: navbar / inline-size;
   background: var(--_bg);
   transition:
     background var(--motion-fast) var(--motion-easing),
@@ -48,18 +59,33 @@
 .root[data-appearance="transparent"]:not([data-scrolled]) .band {
   box-shadow: none;
 }
-/* inverse: an ink band. It re-points the text, surface, edge and focus
-   tokens for everything inside, so nested Buttons follow. */
+/* inverse: an ink band. Everything inside reads the same tokens as on the
+   page, re-pointed for ink: text, fills, edges and the focus ring flip, and
+   the ink tokens themselves swap, so a neutral solid Button becomes the
+   light button and never disappears into the band. */
 .root[data-appearance="inverse"] {
-  --_bg: var(--color-bg-inverse);
+  --_bg: var(--_ink);
 }
 .root[data-appearance="inverse"] .band {
-  --color-text-primary: var(--color-text-onInverse);
-  --color-text-secondary: color-mix(in oklab, var(--color-text-onInverse) 75%, var(--color-bg-inverse));
-  --color-bg-surface: color-mix(in oklab, var(--color-text-onInverse) 12%, var(--color-bg-inverse));
-  --color-border-strong: color-mix(in oklab, var(--color-text-onInverse) 60%, var(--color-bg-inverse));
-  --color-border-default: color-mix(in oklab, var(--color-text-onInverse) 20%, var(--color-bg-inverse));
-  --color-border-focus: var(--color-text-onInverse);
+  --color-text-primary: var(--_on-ink);
+  --color-text-secondary: color-mix(in oklab, var(--_on-ink) 72%, var(--_ink));
+  --color-text-accent: var(--_on-ink);
+  /* the accent fill is tuned for the page, not for ink (navy dark's pale blue on a pale band):
+     on the band the primary action is the light button, at full contrast in every theme */
+  --color-bg-accent: var(--_on-ink);
+  --color-bg-accentHover: color-mix(in oklab, var(--_on-ink) 88%, var(--_ink));
+  --color-text-onAccent: var(--_ink);
+  --color-bg-inverse: var(--_on-ink);
+  --color-bg-inverseHover: color-mix(in oklab, var(--_on-ink) 88%, var(--_ink));
+  --color-text-onInverse: var(--_ink);
+  --color-bg-surface: color-mix(in oklab, var(--_on-ink) 12%, var(--_ink));
+  --color-bg-tertiary: color-mix(in oklab, var(--_on-ink) 16%, var(--_ink));
+  --color-bg-accentSubtle: color-mix(in oklab, var(--_on-ink) 16%, var(--_ink));
+  --color-bg-accentSubtleHover: color-mix(in oklab, var(--_on-ink) 22%, var(--_ink));
+  --color-border-strong: color-mix(in oklab, var(--_on-ink) 60%, var(--_ink));
+  --color-border-accent: color-mix(in oklab, var(--_on-ink) 60%, var(--_ink));
+  --color-border-default: color-mix(in oklab, var(--_on-ink) 20%, var(--_ink));
+  --color-border-focus: var(--_on-ink);
   color: var(--color-text-primary);
 }
 
@@ -75,11 +101,18 @@
 /* ---------- layouts ---------- */
 .bar {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  /* the sides never shrink below their content, so links can't run under the
+     actions: they sit dead centre when there is room and shift when there isn't */
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, auto) minmax(max-content, 1fr);
   grid-template-areas: "logo nav end";
   align-items: center;
-  gap: var(--space-default);
+  column-gap: var(--space-section);
   min-height: var(--_height);
+}
+/* one gutter: the page gutter, measured on the bar's own width so it
+   matches grid.margin on a full-width bar and shrinks in a narrow one */
+.band .bar.bar {
+  --_pad: min(var(--grid-margin), max(var(--space-default), 5cqi));
 }
 .logo {
   grid-area: logo;
@@ -101,19 +134,26 @@
   outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
 }
+/* last resort above the breakpoint: links clip inside the bar rather than push it wider
+   (the padding keeps focus rings inside the clip) */
 .nav {
   grid-area: nav;
   justify-self: center;
+  min-width: 0;
+  max-width: 100%;
+  margin: -4px;
+  padding: 4px;
+  overflow: hidden;
 }
 .end {
   grid-area: end;
   justify-self: end;
   display: flex;
   align-items: center;
-  gap: var(--space-tight);
+  gap: var(--space-compact);
 }
 .root[data-layout="start"] .bar {
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
 }
 .root[data-layout="start"] .nav {
   justify-self: start;
@@ -143,10 +183,10 @@
   align-items: center;
   gap: var(--space-compact);
   box-sizing: border-box;
-  min-height: 40px;
+  min-height: 36px;
   padding: 0 var(--space-tight);
   font: inherit;
-  font-size: var(--type-body-md-size);
+  font-size: var(--type-body-sm-size);
   font-weight: var(--type-ui-label-weight);
   line-height: 1;
   white-space: nowrap;
@@ -174,20 +214,13 @@
 .link:active {
   transform: scale(0.98);
 }
-/* the current page: primary text and a short accent bar under the label */
+/* the current page: primary text on a soft pill — no second mark */
 .link[data-active] {
   color: var(--color-text-primary);
+  background: color-mix(in oklab, var(--color-text-primary) 6%, transparent);
 }
-.link[data-active]::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 4px;
-  width: 16px;
-  height: 2px;
-  border-radius: var(--radius-pill);
-  background: var(--color-bg-accent);
-  transform: translateX(-50%);
+.link[data-active]:hover {
+  background: color-mix(in oklab, var(--color-text-primary) 10%, transparent);
 }
 .icon {
   display: inline-flex;
@@ -204,25 +237,25 @@
   transform: rotate(180deg);
 }
 
-/* ---------- mobile: below the breakpoint the links move into a Sheet ---------- */
+/* ---------- mobile: when the bar is narrower than the breakpoint, the links move into a Sheet ---------- */
 .menu {
   display: none;
 }
-@media (max-width: 639.98px) {
+@container navbar (max-width: 639.98px) {
   .root[data-breakpoint="sm"] .nav { display: none; }
   .root[data-breakpoint="sm"] .menu { display: contents; }
   /* collapsed, a centered brand floats off-center between uneven sides: it returns to the start */
   .root[data-breakpoint="sm"][data-layout="centered"] .bar { grid-template-areas: "logo nav end"; }
   .root[data-breakpoint="sm"][data-layout="centered"] .logo { justify-self: start; }
 }
-@media (max-width: 767.98px) {
+@container navbar (max-width: 767.98px) {
   .root[data-breakpoint="md"] .nav { display: none; }
   .root[data-breakpoint="md"] .menu { display: contents; }
   /* collapsed, a centered brand floats off-center between uneven sides: it returns to the start */
   .root[data-breakpoint="md"][data-layout="centered"] .bar { grid-template-areas: "logo nav end"; }
   .root[data-breakpoint="md"][data-layout="centered"] .logo { justify-self: start; }
 }
-@media (max-width: 1023.98px) {
+@container navbar (max-width: 1023.98px) {
   .root[data-breakpoint="lg"] .nav { display: none; }
   .root[data-breakpoint="lg"] .menu { display: contents; }
   /* collapsed, a centered brand floats off-center between uneven sides: it returns to the start */

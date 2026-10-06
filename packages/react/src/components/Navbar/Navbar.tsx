@@ -55,7 +55,7 @@ export interface NavbarOwnProps {
   position?: NavbarPosition;
   /** Slides away scrolling down, returns scrolling up (or as soon as it takes focus). @default false */
   hideOnScroll?: boolean;
-  /** 56 / 72px tall. @default "default" */
+  /** 56 / 64px tall. @default "default" */
   size?: NavbarSize;
   /** A hairline under the bar. @default true */
   bordered?: boolean;
@@ -67,7 +67,7 @@ export interface NavbarOwnProps {
   actions?: ReactNode;
   /** A thin bar above the navbar. */
   announcement?: ReactNode;
-  /** Below it (640 / 768 / 1024px), links move into a Sheet with accordion groups. @default "md" */
+  /** When the bar is narrower than this (640 / 768 / 1024px), links move into a Sheet with accordion groups. It measures the bar, not the screen. @default "md" */
   mobileBreakpoint?: NavbarBreakpoint;
   /** Keeps the bar aligned with page content: a Container size. @default "xl" */
   maxWidth?: ContainerSize;
@@ -168,13 +168,15 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(function Navbar(
     return () => window.removeEventListener("scroll", onScroll);
   }, [tracksScroll, hideOnScroll]);
 
-  // the mobile menu has no place above the breakpoint: close it when the window grows past it
+  // the mobile menu has no place on a wide bar: close it when the bar grows past the breakpoint
   useEffect(() => {
-    if (!menuOpen || typeof matchMedia !== "function") return;
-    const query = matchMedia(`(min-width: ${BREAKPOINTS[mobileBreakpoint]}px)`);
-    const onChange = () => query.matches && setMenuOpen(false);
-    query.addEventListener("change", onChange);
-    return () => query.removeEventListener("change", onChange);
+    const root = rootRef.current;
+    if (!menuOpen || !root || typeof ResizeObserver !== "function") return;
+    const observer = new ResizeObserver(() => {
+      if (root.offsetWidth >= BREAKPOINTS[mobileBreakpoint]) setMenuOpen(false);
+    });
+    observer.observe(root);
+    return () => observer.disconnect();
   }, [menuOpen, mobileBreakpoint, setMenuOpen]);
 
   return (

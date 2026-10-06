@@ -29,15 +29,15 @@ const DemoNavbar = (props: Partial<Parameters<typeof Navbar>[0]>) => (
 const navbarAppearances: NavbarAppearance[] = ["solid", "blur", "transparent", "inverse"];
 const navbarProps: PropRow[] = [
   ["layout", "standard | start | centered", "standard", "Logo left, links center / logo and links left / logo in the middle."],
-  ["appearance", "solid | blur | transparent | inverse", "solid", "transparent turns solid on scroll; inverse is an ink band."],
+  ["appearance", "solid | blur | transparent | inverse", "solid", "transparent turns solid on scroll; inverse is an ink band that re-points text, fills and focus for everything inside."],
   ["position", "static | sticky | fixed", "sticky", ""],
   ["hideOnScroll", "boolean", "false", "Slides away scrolling down, returns scrolling up or on focus."],
-  ["size", "compact | default", "default", "56 / 72px tall."],
+  ["size", "compact | default", "default", "56 / 64px tall."],
   ["bordered", "boolean", "true", "Hairline under the bar."],
   ["links", "{ label, href, icon, badge, active, items, columns }[]", "—", "items opens a dropdown; columns opens a mega menu with descriptions."],
   ["activeHref", "string", "—", "Marks the current page (and the menu holding it) with aria-current."],
   ["logo / search / actions / announcement", "ReactNode", "—", "announcement is a thin bar above the navbar."],
-  ["mobileBreakpoint", "sm | md | lg", "md", "Below 640 / 768 / 1024px the links move into a Sheet with accordion groups."],
+  ["mobileBreakpoint", "sm | md | lg", "md", "When the bar itself is narrower than 640 / 768 / 1024px, the links move into a Sheet with accordion groups."],
   ["maxWidth", "Container size", "xl", "Keeps the bar aligned with page content."],
   ["open / defaultOpen / onOpenChange", "boolean / boolean / (open) => void", "—", "The mobile menu."],
 ];
@@ -49,8 +49,8 @@ export default function NavbarDoc() {
       <h1>Navbar</h1>
       <p className="dek">
         One site header for every website layout. Built from Container, Button, DropdownMenu and Sheet, so it inherits their keyboard
-        and focus behavior. A link can open a dropdown or a mega menu; below the breakpoint, links move into a Sheet with accordion
-        groups. Replaces Header, Nav and NavigationMenu.
+        and focus behavior. A link can open a dropdown or a mega menu; when the bar is narrower than its breakpoint, links move into a Sheet with accordion
+        groups. It fills its parent and never exceeds it, with the page gutter on each side. Replaces Header, Nav and NavigationMenu.
       </p>
 
       <Demo box="example" style={{ display: "block", padding: 0 }}>
@@ -67,9 +67,10 @@ export default function NavbarDoc() {
 
       <div className="doc-section">
         <h2>Appearances</h2>
-        <p className="lead"><b>solid</b> and <b>blur</b> (translucent, blurring the page behind) for most sites; <b>transparent</b> sits over a hero and turns solid once the page scrolls; <b>inverse</b> is an ink band that re-points the text and focus tokens, so the Buttons inside follow.</p>
+        <p className="lead"><b>solid</b> and <b>blur</b> (translucent, blurring the page behind) for most sites; <b>transparent</b> sits over a hero and turns solid once the page scrolls; <b>inverse</b> is an ink band (<b>bg.inverse</b>, <b>text.onInverse</b>) that re-points the text, fill, edge and focus tokens for everything inside: the primary action becomes the light button, and outline and ghost Buttons follow.</p>
         <Demo className="stack">
           {navbarAppearances.map((appearance) => <DemoNavbar key={appearance} appearance={appearance} size="compact" layout="start" />)}
+          <DemoNavbar appearance="inverse" actions={<><Button intent="neutral" appearance="outline" size="sm">Sign in</Button><Button intent="neutral" size="sm">Get started</Button></>} />
         </Demo>
       </div>
 
@@ -80,9 +81,9 @@ export default function NavbarDoc() {
 
       <div className="doc-section">
         <h2>Mobile</h2>
-        <p className="lead">Below <b>mobileBreakpoint</b> (640 / 768 / 1024px) the links fold into a Sheet: plain links as rows, menus as accordions, with the one holding the current page open. Narrow the window to see it.</p>
+        <p className="lead">When the bar is narrower than <b>mobileBreakpoint</b> (640 / 768 / 1024px) the links fold into a Sheet: plain links as rows, menus as accordions, with the one holding the current page open. It measures the bar, not the screen, so a navbar in a narrow column folds too — like this one in a 480px box.</p>
         <Demo>
-          <DemoNavbar mobileBreakpoint="lg" style={{ width: "100%" }} />
+          <div style={{ width: 480, maxWidth: "100%" }}><DemoNavbar /></div>
         </Demo>
       </div>
 
@@ -94,14 +95,14 @@ export default function NavbarDoc() {
       <div className="doc-section">
         <h2>Usage guidelines</h2>
         <Usage
-          dos={["Keep five to seven top-level links.", "Use one accent action; the rest ghost.", "Set maxWidth to match the page's Container."]}
+          dos={["Keep five to seven top-level links.", "Use one accent action; the rest ghost.", "Set maxWidth to match the page's Container.", "Raise mobileBreakpoint to lg when the links and actions don't fit at 768px."]}
           donts={["Use transparent where the hero behind it can't hold the text's contrast.", "Nest menus inside menus.", "Use hideOnScroll on a short page."]}
         />
       </div>
       <A11y items={[
-          ["Semantics", "A navigation landmark; the active link has aria-current=\"page\"."],
+          ["Semantics", "A navigation landmark; the active link has aria-current=\"page\" and is marked by a soft pill and primary text, not color alone."],
           ["Menus", "Links with items open a DropdownMenu: arrow keys move, Escape closes."],
-          ["Small screens", "Below the breakpoint the links move into a Sheet with focus trapped while it's open."],
+          ["Small screens", "When the bar is narrower than the breakpoint the links move into a Sheet with focus trapped while it's open."],
         ]} />
     </section>
 

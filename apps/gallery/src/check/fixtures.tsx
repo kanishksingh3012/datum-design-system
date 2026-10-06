@@ -68,6 +68,17 @@ function MidRange({ first, steps }: { first: DateValue; steps: number }) {
     </div>
   );
 }
+/** Presses the calendar's caption before the first paint: once for the month grid, twice for the years. */
+function CalendarAt({ presses, children }: { presses: number; children: ReactNode }) {
+  // one press per commit, so each press sees the view the last one opened
+  const [done, setDone] = useState(0);
+  useLayoutEffect(() => {
+    if (done >= presses) return;
+    document.querySelector<HTMLElement>("#fixture h2 button")?.click();
+    setDone(done + 1);
+  }, [done, presses]);
+  return <>{children}</>;
+}
 // dates around today, so "today" is always in the month shown
 const now = today(getLocalTimeZone());
 const picked = now.day > 15 ? now.subtract({ days: 4 }) : now.add({ days: 4 });
@@ -944,12 +955,15 @@ export const fixtures: Record<string, Fixture> = {
         {navbar()}
         {navbar({ layout: "start", size: "compact" })}
         {navbar({ layout: "centered", bordered: false })}
+        {/* a narrow parent: the bar folds by its own width and never exceeds the box */}
+        <div style={{ ...box, width: 520 }}>{navbar()}</div>
       </>
     ) : v === "appearances" ? (
       <>
         {navbar({ appearance: "blur", announcement: <>Datum 2 is out. <Link href="#">Read the notes</Link></> })}
         {navbar({ appearance: "transparent" })}
         {navbar({ appearance: "inverse", layout: "start" })}
+        {navbar({ appearance: "inverse", actions: <><Button intent="neutral" appearance="outline">Sign in</Button><Button intent="neutral">Get started</Button></> })}
       </>
     ) : v === "mobile menu" ? (
       // the collapsed bar and its menu trigger only exist below the breakpoint — their one real coverage
@@ -1406,7 +1420,7 @@ export const fixtures: Record<string, Fixture> = {
     ) : (
       <CommandPalette items={commands} defaultOpen defaultSearch={v === "filtered" ? "go" : v === "empty" ? "invoices" : undefined} />
     ), true),
-  DatePicker: states(["closed", "calendar", "mobile menu calendar"], (v) =>
+  DatePicker: states(["closed", "calendar", "mobile menu calendar", "months", "years"], (v) =>
     v === "closed" ? (
       <div style={{ ...narrow, display: "grid", gap: "var(--space-default)" }}>
         {sizes.map((size) => (
@@ -1419,15 +1433,18 @@ export const fixtures: Record<string, Fixture> = {
         <div style={box}><DatePicker label="On a surface" /></div>
       </div>
     ) : (
-      <DatePicker
-        label="Start"
-        defaultValue={picked}
-        minValue={monthStart.add({ days: 1 })}
-        isDateUnavailable={unavailable}
-        defaultOpen
-        data-check-skip=""
-        style={narrow}
-      />
+      <CalendarAt presses={v === "months" ? 1 : v === "years" ? 2 : 0}>
+        <DatePicker
+          label="Start"
+          defaultValue={picked}
+          minValue={monthStart.add({ days: 1 })}
+          maxValue={now.add({ years: 3 })}
+          isDateUnavailable={unavailable}
+          defaultOpen
+          data-check-skip=""
+          style={narrow}
+        />
+      </CalendarAt>
     ), true),
   DateRangePicker: states(["closed", "complete range", "mid-selection", "mobile menu range"], (v) =>
     v === "closed" ? (
