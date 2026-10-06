@@ -134,7 +134,7 @@ export function Table({
 
   return (
     <div className={[styles.root, className].filter(Boolean).join(" ")} style={style} data-status={status} {...rest}>
-      <ScrollArea orientation="both" padding="none" maxHeight={maxHeight} fade={false} tabIndex={-1}>
+      <ScrollArea orientation="both" padding="none" maxHeight={maxHeight} fade={false} scrollbarGutter={false} tabIndex={-1}>
         <table {...gridProps} ref={ref} className={styles.table} aria-busy={loading || undefined} data-selection={selectionMode}>
           <RowGroup type="thead" className={styles.head}>
             {collection.headerRows.map((headerRow) => (

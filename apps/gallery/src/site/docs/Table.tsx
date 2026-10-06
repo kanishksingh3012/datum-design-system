@@ -55,7 +55,7 @@ export default function TableDoc() {
     <>
     <section className="component-doc" id="table">
       <h1>Table</h1>
-      <p className="dek">A data grid on React Aria's <b>useTable</b> + <b>useTableState</b>: arrow keys move between cells, sortable headers take <b>sortDescriptor</b>, rows select with Datum Checkboxes. It scrolls sideways inside its own <b>radius.card</b> box and never widens the page; the header sticks when <b>maxHeight</b> is set.</p>
+      <p className="dek">A data grid on React Aria's <b>useTable</b> + <b>useTableState</b>: arrow keys move between cells, sortable headers take <b>sortDescriptor</b>, rows select with Datum Checkboxes. It fills its parent's width, with the columns sharing it, and scrolls sideways inside its own <b>radius.card</b> box when they can't fit, so it never widens the page; the header sticks when <b>maxHeight</b> is set.</p>
       <div className="example-box" style={{ display: "block" }}><SortedTable /></div>
       <div className="doc-section">
         <h2>Empty, loading and error</h2>

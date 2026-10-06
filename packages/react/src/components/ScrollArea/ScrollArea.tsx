@@ -13,6 +13,8 @@ export interface ScrollAreaOwnProps {
   padding?: ScrollAreaPadding;
   /** Fades the content out at an edge while more of it is hidden past that edge. @default true */
   fade?: boolean;
+  /** Keep room beside the content for an overlay scrollbar. Turn off when the content must run edge to edge (a table). @default true */
+  scrollbarGutter?: boolean;
   /** Names the scrolling region for screen readers. Without it, pass `aria-label` or `aria-labelledby` if it needs a name. */
   label?: string;
 }
@@ -36,6 +38,7 @@ export const ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(function S
     maxHeight,
     padding = "md",
     fade = true,
+    scrollbarGutter = true,
     label,
     className,
     style,
@@ -82,6 +85,7 @@ export const ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(function S
       className={[styles.root, className].filter(Boolean).join(" ")}
       data-orientation={orientation}
       data-padding={padding}
+      data-gutter={scrollbarGutter ? undefined : "none"}
       data-fade={fade ? hidden || undefined : undefined}
       style={maxHeight !== undefined ? { maxHeight, ...style } : style}
       {...rest}

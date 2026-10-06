@@ -101,6 +101,12 @@
   padding-bottom: var(--space-tight);
 }
 
+/* no gutter: the content runs to the region's edges (a table's rows) */
+.root[data-gutter="none"] .content {
+  padding-inline-end: 0;
+  padding-bottom: 0;
+}
+
 /* sideways, the content is as wide as it needs to be (a wide table, an unbroken line), never narrower than the region */
 .root:not([data-orientation="vertical"]) .content {
   width: fit-content;

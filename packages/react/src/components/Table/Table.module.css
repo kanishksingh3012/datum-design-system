@@ -1,5 +1,7 @@
-/* A surface-edged box; the grid scrolls inside it (ScrollArea) and never widens the page. */
+/* A surface-edged box that fills its parent; the grid scrolls inside it (ScrollArea) and never widens the page. */
 .root {
+  box-sizing: border-box;
+  width: 100%;
   min-width: 0;
   max-width: 100%;
   overflow: hidden;

@@ -6,6 +6,7 @@ const scrollAreaProps: PropRow[] = [
   ["maxHeight", "number | string", "—", "The largest it grows before it scrolls; or size it with style."],
   ["padding", "none | sm | md", "md", "0 / 12 / 16px between the box and the region the content scrolls in, on all four sides."],
   ["fade", "boolean", "true", "Fades content out at an edge while more is hidden past it."],
+  ["scrollbarGutter", "boolean", "true", "Keeps room beside the content for an overlay scrollbar. Turn off when content must run edge to edge, as Table does."],
   ["label", "string", "—", "Names it as a region for screen readers."],
 ];
 
