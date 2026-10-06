@@ -30,7 +30,7 @@ export default function ReasoningDoc() {
   const [streaming, setStreaming] = useState(false);
   return (
     <>
-    <Part a11y={[["Enter / Space", "Toggles the trace; aria-expanded reflects it."], ["Streaming", "Opens while streaming and closes after, unless the reader toggled it."]]} id="reasoning" title="Reasoning" dek="The model's trace behind one line. Opens while it streams and settles closed after — unless the reader toggled it." rows={[
+    <Part a11y={[["Enter / Space", "Toggles the trace; aria-expanded reflects it."], ["Streaming", "Opens while streaming and closes after, unless the reader toggled it."]]} id="reasoning" title="Reasoning" dek="The model's trace behind one line. Opens while it streams and settles closed after — unless the reader toggled it. The card is a container (bg.surface with a border); the trace sits beside a border.strong rule." rows={[
       ["title / streamingTitle", "ReactNode", "Reasoning / Thinking…", ""], ["streaming", "boolean", "false", ""], ["collapseOnComplete", "boolean", "true", ""], ["open / defaultOpen / onOpenChange", "boolean", "false", ""],
     ]}>
       <div style={{ display: "grid", gap: "var(--space-compact)" }}>

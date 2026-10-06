@@ -1,6 +1,7 @@
-/* The trace reads as an aside: a rule on its leading edge, secondary text. */
+/* The trace reads as an aside: a rule on its leading edge, secondary text. The rule is
+   border.strong: border.default is too close to the container fill it now sits on. */
 .trace {
   padding-inline-start: var(--space-tight);
-  border-inline-start: 2px solid var(--color-border-default);
+  border-inline-start: 2px solid var(--color-border-strong);
   white-space: pre-wrap;
 }
