@@ -43,7 +43,8 @@
   flex-direction: column;
   gap: var(--space-default);
 }
-.title {
+/* doubled class: these resets must beat a host page's own `ul` / `h2` rules */
+.title.title {
   margin: 0;
   padding: var(--space-compact) var(--space-tight);
   font-family: var(--type-ui-overline-family);
@@ -54,7 +55,7 @@
   text-transform: uppercase;
   color: var(--color-text-secondary);
 }
-.list {
+.list.list {
   display: flex;
   flex-direction: column;
   gap: 2px;

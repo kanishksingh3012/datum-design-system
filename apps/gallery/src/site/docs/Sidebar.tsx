@@ -9,7 +9,7 @@ const sidebarSections: SidebarSection[] = [
 ];
 const sections = ["Overview", "Activity", "Settings"];
 const sidebarProps: PropRow[] = [
-  ["sections", "{ title?, links }[]", "—", "Links: label, href, icon, badge, active."],
+  ["sections", "{ title?, links }[]", "—", "Links: label, href, icon, badge, active. The badge is soft neutral, and solid (ink) on the active row so the count stays readable in dark mode."],
   ["activeHref", "string", "—", "The link holding it gets aria-current=\"page\"."],
   ["label", "string", "Sidebar", "Names the navigation and the mobile menu."],
   ["header / footer", "ReactNode", "—", "A logo, an account row. The header stays in the mobile bar."],

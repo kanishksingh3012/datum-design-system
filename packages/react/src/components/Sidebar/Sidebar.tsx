@@ -152,7 +152,7 @@ function Nav({ sections, activeHref, label, onNavigate }: { sections: SidebarSec
                     {link.icon ? <span className={styles.icon} aria-hidden="true">{link.icon}</span> : null}
                     <span className={styles.label}>{link.label}</span>
                     {link.badge !== undefined ? (
-                      <Badge size="sm" intent={active ? "accent" : "neutral"} className={styles.badge}>
+                      <Badge size="sm" intent="neutral" appearance={active ? "solid" : "soft"} className={styles.badge}>
                         {link.badge}
                       </Badge>
                     ) : null}
