@@ -121,16 +121,16 @@ One fill ladder. Each step is visibly different from the step below it, in both 
 
 | Step | Token | Use | Light | Dark |
 |---|---|---|---|---|
-| sunken | `bg.surfaceSunken` | wells: input tracks, code blocks | 200 | 975 |
-| page | `bg.page` | the page itself | 50 | 950 |
-| container | `bg.surface` | cards, panels, table headers, tool calls, sidebars | 100 | 900 |
-| raised | `bg.surfaceRaised` | fields, popovers, menus, toasts, dialogs, sheets | white | 800 |
+| sunken | `bg.surfaceSunken` | wells: input tracks, code blocks | 200 | 975 (same as page) |
+| page | `bg.page` | the page itself | 100 (navy: 75) | 975 |
+| container | `bg.surface` | cards, panels, table headers, tool calls, sidebars | white | 950 |
+| raised | `bg.surfaceRaised` | fields, popovers, menus, toasts, dialogs, sheets | white | 925 |
 
-- **Direction:** in dark, each step up gets lighter. In light, container is tinted a shade darker than the page (Material 3's tonal containers), and raised is white; its shadow carries the lift.
+- **Direction** (re-tuned 2026-10-06 against HeroUI's theme): in dark, the page is near-black and each step up gets a little lighter. In light, the page is lightly tinted and containers are white. Raised is also white in light, so its shadow and border carry the lift. In dark, a well equals the page: it reads inside a card, and takes a border when it sits directly on the page.
 - **Nesting:** a container on a container of the same step either uses the **next step's fill plus a `border.default` border**, or has **no fill at all**. It never repeats its parent's fill without a border. Card does this automatically for a filled card inside a filled card.
 - **Text never clips:** inline highlighted text (inline `code`, badges, marks) uses `box-decoration-break: clone`, so a chip that wraps keeps its padding and radius on every line. Text chips never get a fixed height with `overflow: hidden`. Badges are `white-space: nowrap` unless `truncate` is asked for.
 - **Fill container:** block-level components (Table, DataTable, Tabs with `fullWidth`, charts, FileUpload, Composer, MessageScroller, CodeBlock, Alert) fill their parent's width by default (`width: 100%; min-width: 0; box-sizing: border-box`), like Auto Layout "fill". Inline controls hug their content.
-- **Known:** in dark, `border.default` equals the raised fill, so a raised panel's hairline border blends into its own fill. The step up in fill and the shadow still separate it. In light, `bg.disabled` equals the container fill.
+- **Known:** dark `*Subtle` tints (step 950 of each hue) are close in brightness to the dark container, so they are told apart by hue. Don't rely on a subtle fill alone to carry meaning; pair it with an icon, a border or text.
 
 ## Shapes & space
 

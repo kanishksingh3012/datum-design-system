@@ -109,7 +109,8 @@
 
 /* Preview / Code frames */
 .site-demo { margin-block: var(--space-tight); }
-.site-demo .sample-box, .site-demo .example-box { margin: 0; background: var(--color-bg-surfaceRaised); }
+/* the stage is the page itself, so cards and fields inside it show their real fills */
+.site-demo .sample-box, .site-demo .example-box { margin: 0; background: var(--color-bg-page); border: 1px solid var(--color-border-default); }
 .site-demo:has(> div > .example-box), .site-demo:first-of-type { margin-bottom: var(--space-section); }
 
 /* ---------- landing ---------- */

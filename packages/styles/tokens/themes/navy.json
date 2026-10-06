@@ -2,12 +2,12 @@
   "_meta": {"label": "Navy", "description": "Restrained, institutional. Deep navy fills carry white text; brighter navy steps handle links and focus; cool slate neutrals; cyan info held away from the brand hue.", "googleFonts": ["Instrument+Sans:wght@400;500;600;700", "Barlow:wght@700;800", "IBM+Plex+Mono:wght@400;500;600"]},
   "color": {
     "bg": {
-      "page": ["{color.slate.50}","{color.slate.950}"],
-      "surface": ["{color.slate.100}","{color.slate.900}"],
-      "surfaceRaised": ["{color.white}","{color.slate.800}"],
+      "page": ["{color.slate.75}","{color.slate.975}"],
+      "surface": ["{color.white}","{color.slate.950}"],
+      "surfaceRaised": ["{color.white}","{color.slate.925}"],
       "surfaceSunken": ["{color.slate.200}","{color.slate.975}"],
-      "tertiary": ["{color.slate.200}","{color.slate.700}"],
-      "disabled": ["{color.slate.100}","{color.slate.800}"],
+      "tertiary": ["{color.slate.200}","{color.slate.800}"],
+      "disabled": ["{color.slate.200}","{color.slate.900}"],
       "scrim": ["rgba(28,33,38,0.48)","rgba(0,0,0,0.64)"],
       "accent": ["{color.navy.700}","{color.navy.300}"],
       "accentHover": ["{color.navy.600}","{color.navy.200}"],
@@ -43,8 +43,8 @@
       "onInfo": "{color.white}"
     },
     "border": {
-      "subtle": ["{color.slate.100}","{color.slate.900}"],
-      "default": ["{color.slate.200}","{color.slate.800}"],
+      "subtle": ["{color.slate.100}","{color.slate.925}"],
+      "default": ["{color.slate.200}","{color.slate.900}"],
       "strong": ["{color.slate.600}","{color.slate.400}"],
       "focus": ["{color.navy.600}","{color.navy.300}"],
       "accent": ["{color.navy.700}","{color.navy.400}"],

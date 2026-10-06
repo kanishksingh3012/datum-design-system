@@ -2,12 +2,12 @@
   "_meta": {"label": "Orange", "description": "Warm, high-energy. Vivid orange carries dark text; warm stone neutrals; crimson danger and golden-yellow warning held away from the brand hue.", "googleFonts": ["Instrument+Sans:wght@400;500;600;700", "Barlow:wght@700;800", "IBM+Plex+Mono:wght@400;500;600"]},
   "color": {
     "bg": {
-      "page": ["{color.stone.50}","{color.stone.950}"],
-      "surface": ["{color.stone.100}","{color.stone.900}"],
-      "surfaceRaised": ["{color.white}","{color.stone.800}"],
+      "page": ["{color.stone.100}","{color.stone.975}"],
+      "surface": ["{color.white}","{color.stone.950}"],
+      "surfaceRaised": ["{color.white}","{color.stone.925}"],
       "surfaceSunken": ["{color.stone.200}","{color.stone.975}"],
-      "tertiary": ["{color.stone.200}","{color.stone.700}"],
-      "disabled": ["{color.stone.100}","{color.stone.800}"],
+      "tertiary": ["{color.stone.200}","{color.stone.800}"],
+      "disabled": ["{color.stone.200}","{color.stone.900}"],
       "scrim": ["rgba(27,27,27,0.48)","rgba(0,0,0,0.64)"],
       "accent": "{color.orange.700}",
       "accentHover": "{color.orange.800}",
@@ -43,8 +43,8 @@
       "onInfo": "{color.white}"
     },
     "border": {
-      "subtle": ["{color.stone.100}","{color.stone.900}"],
-      "default": ["{color.stone.200}","{color.stone.800}"],
+      "subtle": ["{color.stone.100}","{color.stone.925}"],
+      "default": ["{color.stone.200}","{color.stone.900}"],
       "strong": ["{color.stone.600}","{color.stone.400}"],
       "focus": ["{color.orange.600}","{color.orange.400}"],
       "accent": ["{color.orange.600}","{color.orange.500}"],
